@@ -1,0 +1,51 @@
+[tools]
+go = "1.26.1"
+"aqua:golangci/golangci-lint" = "2.10.1"
+"go:github.com/gotesttools/gotestfmt/v2/cmd/gotestfmt" = "2.5.0"
+"go:github.com/securego/gosec/v2/cmd/gosec" = "2.22.11"
+"go:golang.org/x/tools/gopls" = "0.21.0"
+"aqua:gotestyourself/gotestsum" = "1.13.0"
+hk = "1.32.0"
+"aqua:dominikh/go-tools/staticcheck" = "2026.1"
+"go:golang.org/x/vuln/cmd/govulncheck" = "1.1.4"
+"go:github.com/matryer/moq" = "0.7.1"
+pkl = "0.30.2"
+"aqua:golang-migrate/migrate" = "4.19.1"
+"go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "1.30.0"
+"go:github.com/xuri/xgen/cmd/xgen" = "v0.0.0-20260109003923-38cc1baf99f3"
+
+[env]
+_.file = '.env'
+
+# [tasks.build]
+# description = 'Run automated tests'
+# run = ['go build -o build/nf ./cmd/nf']
+# depends = ['lint']
+
+[tasks.check]
+description = 'Lint'
+run = 'golangci-lint run ./...'
+
+[tasks.lint]
+description = 'Lint with fixes'
+run = 'golangci-lint run --fix ./...'
+depends = ['format']
+
+
+[tasks.format]
+description = 'Format'
+run = 'golangci-lint fmt ./...'
+
+[tasks.test]
+description = 'Run automated tests'
+run = ['gotestsum ./...']
+# depends = ['build']
+
+[tasks.coverage]
+description = 'Run tests with coverage report'
+run = ['gotestsum -- -coverprofile=build/coverage.out ./...']
+# depends = ['build']
+
+[tasks."deploy:sync"]
+description = 'Sync secrets from .env to Fly.io via 1Password'
+run = 'op run --env-file .env -- sh -c "env | grep -E \"^(OPENROUTER_API_KEY|RESEND_API_KEY|RESEND_WEBHOOK_SECRET|TURSO_URL|BOT_EMAIL|MODEL_CLASSIFIER)=\" | fly secrets import"'

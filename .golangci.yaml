@@ -1,0 +1,146 @@
+# golangci-lint configuration
+# https://golangci-lint.run/usage/configuration/
+
+version: "2"
+
+run:
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - asasalint # checks for pass []any as any in variadic func(...any)
+    - asciicheck # checks that code does not contain non-ASCII identifiers
+    - bidichk # checks for dangerous unicode character sequences (trojan source)
+    - bodyclose # checks whether HTTP response body is closed successfully
+    - contextcheck # checks for non-inherited context usage
+    - copyloopvar # detects places where loop variables are copied (Go 1.22+)
+    - durationcheck # checks for two durations multiplied together
+    - errname # checks that sentinel errors are prefixed with Err and error types with Error
+    - errorlint # finds code that will cause problems with Go error wrapping
+    - exhaustive # checks exhaustiveness of enum switch statements
+    - exptostd # detects functions from golang.org/x/exp/ replaceable by std
+    - fatcontext # detects nested contexts in loops
+    - forcetypeassert # finds type assertions without error checking
+    - gocheckcompilerdirectives # validates go compiler directive comments (//go:)
+    - gochecksumtype # checks exhaustiveness on Go "sum types"
+    - gocognit # reports cognitive complexity of functions
+    - goconst # finds repeated strings that could be constants
+    - gocritic # provides diagnostics for bugs, performance and style issues
+    - gocyclo # reports cyclomatic complexity of functions
+    - gomoddirectives # manages use of replace, retract, and excludes in go.mod
+    - goprintffuncname # checks that printf-like functions are named with f at the end
+    - gosec # inspects code for security problems
+    - govet # reports suspicious constructs like Printf arg misalignment
+    - ineffassign # detects when assignments to existing variables are not used
+    - intrange # suggests use of integer range loops (Go 1.22+)
+    - makezero # finds slice declarations with non-zero initial length
+    - misspell # finds commonly misspelled English words
+    - nilerr # finds code that returns nil even if it checks that the error is not nil
+    - nilnesserr # finds code that returns error even if it checks that the error is nil
+    - noctx # finds HTTP requests without context.Context
+    - nolintlint # reports ill-formed or insufficient nolint directives
+    - nosprintfhostport # checks for misuse of Sprintf to construct host:port URLs
+    - perfsprint # detects fmt.Sprintf replaceable with faster alternatives
+    - predeclared # finds code that shadows predeclared identifiers
+    - reassign # checks that package variables are not reassigned
+    - revive # fast, configurable, extensible linter for Go
+    - sloglint # ensures consistent code style when using log/slog
+    - spancheck # checks for mistakes with OpenTelemetry spans
+    - sqlclosecheck # checks that sql.Rows and sql.Stmt are closed
+    - testifylint # checks usage of github.com/stretchr/testify
+    - thelper # detects test helpers without t.Helper()
+    - tparallel # detects inappropriate usage of t.Parallel()
+    - unconvert # removes unnecessary type conversions
+    - unused # checks for unused constants, variables, functions and types
+    - usestdlibvars # detects the possibility to use stdlib variables/constants
+    - wastedassign # finds wasted assignment statements
+
+  settings:
+    exhaustive:
+      default-signifies-exhaustive: true
+    gocognit:
+      min-complexity: 20
+    goconst:
+      min-len: 3
+      min-occurrences: 3
+      ignore-string-values: ^(true|false)$
+    gocritic:
+      enabled-tags:
+        - diagnostic
+      disabled-tags:
+        - style
+        - opinionated
+        - experimental
+    gocyclo:
+      min-complexity: 15
+    gosec:
+      excludes:
+        - G104 # Handled by errcheck
+        - G101 # False positives on test token addresses
+        - G117 # Config structs flagged for field names (APIKey, Password)
+    revive:
+      rules:
+        - name: var-naming
+          arguments:
+            - - ID
+              - URL
+              - HTTP
+              - API
+              - JSON
+              - XML
+          severity: warning
+        - name: unexported-return
+          severity: warning
+        - name: blank-imports
+          severity: warning
+        - name: context-keys-type
+          severity: warning
+
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      # Test files have relaxed rules
+      - linters:
+          - gocognit
+          - gocyclo
+          - gosec
+        path: _test\.go
+      # Generated files should be excluded
+      - linters:
+          - all
+        path: .*_gen\.go
+      - linters:
+          - all
+        path: app/api/gen/
+      - linters:
+          - all
+        path: gateways/repository/pg/gen/
+      # Package underscore names: too disruptive to rename existing packages
+      - linters:
+          - revive
+        path: domain/pending_user/
+        text: don't use an underscore in package name
+      - linters:
+          - revive
+        path: gateways/defi/zerox/internal/
+        text: don't use an underscore in package name
+      - linters:
+          - goconst
+        path: (.+)_test\.go
+      # Package names that are meaningless or conflict with stdlib
+      - linters:
+          - revive
+        path: (app/api/|app/api/handlers/common/|gateways/common/|domain/user/|internal/crypto/|internal/http/|gateways/crypto/|internal/metrics/)
+        text: "avoid meaningless package names|avoid package names that conflict"
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax

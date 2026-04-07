@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+  <NFe>
+    <infNFe versao="4.00" Id="NFe42220575277525000178550030000292481295366801">
+      <ide>
+        <cUF>42</cUF>
+        <cNF>29536680</cNF>
+        <natOp>Venda</natOp>
+        <mod>55</mod>
+        <serie>3</serie>
+        <nNF>29248</nNF>
+        <dhEmi>2022-05-27T08:52:04-03:00</dhEmi>
+        <dhSaiEnt>2022-05-27T11:55:50-03:00</dhSaiEnt>
+        <tpNF>1</tpNF>
+        <idDest>3</idDest>
+        <cMunFG>4202404</cMunFG>
+        <tpImp>1</tpImp>
+        <tpEmis>1</tpEmis>
+        <cDV>1</cDV>
+        <tpAmb>1</tpAmb>
+        <finNFe>1</finNFe>
+        <indFinal>1</indFinal>
+        <indPres>0</indPres>
+        <procEmi>0</procEmi>
+        <verProc>Odoo Brasil OCA 12.0</verProc>
+      </ide>
+      <emit>
+        <CNPJ>75277525000178</CNPJ>
+        <xNome>FORNOS LTDA</xNome>
+        <xFant>FORNOS LTDA</xFant>
+        <enderEmit>
+          <xLgr>Rua Bahia</xLgr>
+          <nro>3465</nro>
+          <xBairro>Salto</xBairro>
+          <cMun>4202404</cMun>
+          <xMun>Blumenau</xMun>
+          <UF>SC</UF>
+          <CEP>89031002</CEP>
+          <cPais>1058</cPais>
+          <xPais>Brasil</xPais>
+          <fone>554733270000</fone>
+        </enderEmit>
+        <IE>250745615</IE>
+        <CRT>3</CRT>
+      </emit>
+      <dest>
+        <idEstrangeiro>371780142</idEstrangeiro>
+        <xNome>Jung Usa Corporation</xNome>
+        <enderDest>
+          <xLgr>STREET, SUITE 1</xLgr>
+          <nro>806</nro>
+          <xCpl>806 VERONA STREET, SUITE 1 - 34741</xCpl>
+          <xBairro>EX</xBairro>
+          <cMun>9999999</cMun>
+          <xMun>EXTERIOR</xMun>
+          <UF>EX</UF>
+          <CEP>00037741</CEP>
+          <cPais>2496</cPais>
+          <xPais>Estados Unidos</xPais>
+        </enderDest>
+        <indIEDest>9</indIEDest>
+        <email>export@jung.com.br</email>
+      </dest>
+      <det nItem="1">
+        <prod>
+          <cProd>TB2001210</cProd>
+          <cEAN>SEM GTIN</cEAN>
+          <xProd>[TB2001210] FORNO LINHA INDUSTRIAL MODELO TB2001210</xProd>
+          <NCM>85141900</NCM>
+          <CFOP>7101</CFOP>
+          <uCom>UN</uCom>
+          <qCom>1.0000</qCom>
+          <vUnCom>23942.1312000000</vUnCom>
+          <vProd>23942.13</vProd>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <uTrib>UN</uTrib>
+          <qTrib>1.0000</qTrib>
+          <vUnTrib>23942.1312000000</vUnTrib>
+          <vFrete>7597.02</vFrete>
+          <indTot>1</indTot>
+        </prod>
+        <imposto>
+          <vTotTrib>0.00</vTotTrib>
+          <ICMS>
+            <ICMS40>
+              <orig>0</orig>
+              <CST>41</CST>
+            </ICMS40>
+          </ICMS>
+          <IPI>
+            <cEnq>999</cEnq>
+            <IPINT>
+              <CST>51</CST>
+            </IPINT>
+          </IPI>
+          <PIS>
+            <PISNT>
+              <CST>08</CST>
+            </PISNT>
+          </PIS>
+          <COFINS>
+            <COFINSNT>
+              <CST>08</CST>
+            </COFINSNT>
+          </COFINS>
+        </imposto>
+      </det>
+      <det nItem="2">
+        <prod>
+          <cProd>TB3001207</cProd>
+          <cEAN>SEM GTIN</cEAN>
+          <xProd>[TB3001207] FORNO LINHA INDSUTRIAL MODELO TB3001207</xProd>
+          <NCM>85141900</NCM>
+          <CFOP>7101</CFOP>
+          <uCom>UN</uCom>
+          <qCom>1.0000</qCom>
+          <vUnCom>32697.8914000000</vUnCom>
+          <vProd>32697.89</vProd>
+          <cEANTrib>SEM GTIN</cEANTrib>
+          <uTrib>UN</uTrib>
+          <qTrib>1.0000</qTrib>
+          <vUnTrib>32697.8914000000</vUnTrib>
+          <indTot>1</indTot>
+        </prod>
+        <imposto>
+          <vTotTrib>0.00</vTotTrib>
+          <ICMS>
+            <ICMS40>
+              <orig>0</orig>
+              <CST>41</CST>
+            </ICMS40>
+          </ICMS>
+          <IPI>
+            <cEnq>999</cEnq>
+            <IPINT>
+              <CST>51</CST>
+            </IPINT>
+          </IPI>
+          <PIS>
+            <PISNT>
+              <CST>08</CST>
+            </PISNT>
+          </PIS>
+          <COFINS>
+            <COFINSNT>
+              <CST>08</CST>
+            </COFINSNT>
+          </COFINS>
+        </imposto>
+      </det>
+      <total>
+        <ICMSTot>
+          <vBC>0.00</vBC>
+          <vICMS>0.00</vICMS>
+          <vICMSDeson>0.00</vICMSDeson>
+          <vFCPUFDest>0.00</vFCPUFDest>
+          <vICMSUFDest>0.00</vICMSUFDest>
+          <vICMSUFRemet>0.00</vICMSUFRemet>
+          <vFCP>0.00</vFCP>
+          <vBCST>0.00</vBCST>
+          <vST>0.00</vST>
+          <vFCPST>0.00</vFCPST>
+          <vFCPSTRet>0.00</vFCPSTRet>
+          <vProd>56640.02</vProd>
+          <vFrete>7597.02</vFrete>
+          <vSeg>0.00</vSeg>
+          <vDesc>0.00</vDesc>
+          <vII>0.00</vII>
+          <vIPI>0.00</vIPI>
+          <vIPIDevol>0.00</vIPIDevol>
+          <vPIS>0.00</vPIS>
+          <vCOFINS>0.00</vCOFINS>
+          <vOutro>0.00</vOutro>
+          <vNF>64237.04</vNF>
+          <vTotTrib>0.00</vTotTrib>
+        </ICMSTot>
+      </total>
+      <transp>
+        <modFrete>0</modFrete>
+        <transporta>
+          <CNPJ>03629957000190</CNPJ>
+          <xNome>TRANSLIGUE TRANSPORTES E SERVICOS LTDA</xNome>
+          <IE>253992508</IE>
+          <xEnder>ROD BR 280, 14100 - KM 58 GALPAO01 E 02</xEnder>
+          <xMun>Guaramirim</xMun>
+          <UF>SC</UF>
+        </transporta>
+        <vol>
+          <qVol>2</qVol>
+          <esp>CAIXAS DE MADEIRA</esp>
+          <pesoL>990.000</pesoL>
+          <pesoB>1100.000</pesoB>
+        </vol>
+      </transp>
+      <cobr>
+        <fat>
+          <nFat>29248</nFat>
+          <vOrig>64237.04</vOrig>
+          <vDesc>0.00</vDesc>
+          <vLiq>64237.04</vLiq>
+        </fat>
+        <dup>
+          <nDup>001</nDup>
+          <dVenc>2023-05-22</dVenc>
+          <vDup>64237.04</vDup>
+        </dup>
+      </cobr>
+      <pag>
+        <detPag>
+          <indPag>0</indPag>
+          <tPag>90</tPag>
+          <vPag>0.00</vPag>
+        </detPag>
+      </pag>
+      <infAdic>
+        <infAdFisco>PEDIDO 02997 | NUMERO DE SERIE FO0000010495 e FO0000010496. | Ambos equipamentos com N1200, comando 24VCC, Rele, 220 V - trifasico, 60 Hz.</infAdFisco>
+        <infCpl>Invoice 22-000004 | Processo de exportacao - Cliente Acein Aceros Industriales - Equador. Frete CPT aereo, DC Logistics.</infCpl>
+      </infAdic>
+      <exporta>
+        <UFSaidaPais>SC</UFSaidaPais>
+        <xLocExporta>BLUMENAU/SC</xLocExporta>
+        <xLocDespacho>BLUMENAU/SC</xLocDespacho>
+      </exporta>
+      <infRespTec>
+        <CNPJ>11034414000158</CNPJ>
+        <xContato>AKRETION LTDA ME</xContato>
+        <email>suporte@akretion.com.br</email>
+        <fone>1131649168</fone>
+      </infRespTec>
+    </infNFe>
+  </NFe>
+  <protNFe versao="4.00">
+    <infProt>
+      <tpAmb>1</tpAmb>
+      <verAplic>SVRS202204131008</verAplic>
+      <chNFe>42220575277525000178550030000292481295366801</chNFe>
+      <dhRecbto>2022-05-27T13:53:15-03:00</dhRecbto>
+      <nProt>342220106391922</nProt>
+      <digVal>d0nH/WkBxhWsv6P4p2+WpTOcNAc=</digVal>
+      <cStat>100</cStat>
+      <xMotivo>Autorizado o uso da NF-e</xMotivo>
+    </infProt>
+  </protNFe>
+</nfeProc>
