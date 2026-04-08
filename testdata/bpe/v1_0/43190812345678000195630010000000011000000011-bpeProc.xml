@@ -1,0 +1,52 @@
+<bpeProc xmlns="http://www.portalfiscal.inf.br/bpe" versao="1.00">
+  <BPe>
+    <infBPe versao="1.00" Id="BPe43190812345678000195630010000000011000000011">
+      <ide>
+        <cUF>43</cUF>
+        <tpAmb>2</tpAmb>
+        <mod></mod>
+        <serie></serie>
+        <nBP></nBP>
+        <cBP></cBP>
+        <cDV></cDV>
+        <modal></modal>
+        <dhEmi></dhEmi>
+        <tpEmis></tpEmis>
+        <verProc></verProc>
+        <tpBPe></tpBPe>
+        <indPres></indPres>
+        <UFIni></UFIni>
+        <cMunIni></cMunIni>
+        <UFFim></UFFim>
+        <cMunFim></cMunFim>
+        <dhCont></dhCont>
+        <xJust></xJust>
+      </ide>
+      <emit>
+        <CNPJ>12345678000195</CNPJ>
+        <IE></IE>
+        <xNome></xNome>
+        <IM></IM>
+        <CNAE></CNAE>
+        <CRT></CRT>
+      </emit>
+      <infViagem>
+        <cPercurso></cPercurso>
+        <xPercurso></xPercurso>
+        <tpViagem></tpViagem>
+        <tpServ></tpServ>
+        <tpAcomodacao></tpAcomodacao>
+        <tpTrecho></tpTrecho>
+        <dhViagem></dhViagem>
+      </infViagem>
+    </infBPe>
+  </BPe>
+  <protBPe versao="1.00">
+    <infProt>
+      <tpAmb>2</tpAmb>
+      <chBPe>43190812345678000195630010000000011000000011</chBPe>
+      <dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto>
+      <cStat>100</cStat>
+    </infProt>
+  </protBPe>
+</bpeProc>

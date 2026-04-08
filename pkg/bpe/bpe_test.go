@@ -5,6 +5,8 @@ import (
 	"cmp"
 	"encoding/xml"
 	"io"
+	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -18,6 +20,33 @@ const (
 	bpeNamespace = "http://www.portalfiscal.inf.br/bpe"
 	dsNamespace  = "http://www.w3.org/2000/09/xmldsig#"
 )
+
+type bpeCancEvento struct {
+	EvCancBPe struct {
+		DescEvento string `xml:"descEvento"`
+		NProt      string `xml:"nProt"`
+		XJust      string `xml:"xJust"`
+	} `xml:"evCancBPe"`
+}
+
+func TestParse_Fixtures(t *testing.T) {
+	t.Parallel()
+
+	for _, fixture := range allFixtureNames(t) {
+		t.Run(fixture, func(t *testing.T) {
+			t.Parallel()
+
+			original := readFixture(t, fixture)
+			doc := parseFixture(t, fixture)
+
+			assertFixtureShape(t, fixture, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, original), normalizeXML(t, roundTripped))
+		})
+	}
+}
 
 func TestParse_SupportedRoots(t *testing.T) {
 	t.Parallel()
@@ -151,7 +180,10 @@ func TestParse_SupportedRoots(t *testing.T) {
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
 				require.NotNil(t, doc.EventoBPe)
-				require.Contains(t, doc.EventoBPe.InfEvento.DetEvento.InnerXML, "<evCancBPe")
+				evento := decodeInnerXML[bpeCancEvento](t, doc.EventoBPe.InfEvento.DetEvento.InnerXML)
+				require.Equal(t, "Cancelamento", evento.EvCancBPe.DescEvento)
+				require.Equal(t, "123456789012345", evento.EvCancBPe.NProt)
+				require.Equal(t, "Justificativa de cancelamento", evento.EvCancBPe.XJust)
 			},
 		},
 		{
@@ -230,6 +262,72 @@ func TestMarshalXML_NilReceiver(t *testing.T) {
 	require.Empty(t, data)
 }
 
+func assertFixtureShape(t *testing.T, fixture string, doc *bpe.Document) {
+	t.Helper()
+
+	switch fixture {
+	case "43190812345678000195630010000000011000000011-bpe.xml":
+		require.NotNil(t, doc.BPe)
+		require.Equal(t, "1.00", doc.BPe.InfBPe.VersaoAttr)
+		require.Equal(t, "BPe43190812345678000195630010000000011000000011", doc.BPe.InfBPe.IdAttr)
+		require.Equal(t, "43", doc.BPe.InfBPe.Ide.CUF)
+		require.Equal(t, "12345678000195", doc.BPe.InfBPe.Emit.CNPJ)
+		require.Len(t, doc.BPe.InfBPe.InfViagem, 1)
+	case "43190812345678000195630010000000011000000011-bpeProc.xml":
+		require.NotNil(t, doc.BPeProc)
+		require.NotNil(t, doc.BPeProc.BPe)
+		require.NotNil(t, doc.BPeProc.ProtBPe)
+		require.Equal(t, "43190812345678000195630010000000011000000011", doc.BPeProc.ProtBPe.InfProt.ChBPe)
+		require.Equal(t, "100", doc.BPeProc.ProtBPe.InfProt.CStat)
+	case "1101114319081234567800019563001000000001100000001101-eventoBPe.xml":
+		require.NotNil(t, doc.EventoBPe)
+		require.Equal(t, "110111", doc.EventoBPe.InfEvento.TpEvento)
+		require.Equal(t, "43190812345678000195630010000000011000000011", doc.EventoBPe.InfEvento.ChBPe)
+		evento := decodeInnerXML[bpeCancEvento](t, doc.EventoBPe.InfEvento.DetEvento.InnerXML)
+		require.Equal(t, "Cancelamento", evento.EvCancBPe.DescEvento)
+		require.Equal(t, "123456789012345", evento.EvCancBPe.NProt)
+		require.Equal(t, "Justificativa de cancelamento", evento.EvCancBPe.XJust)
+	default:
+		t.Fatalf("unhandled fixture %s", fixture)
+	}
+}
+
+func allFixtureNames(t *testing.T) []string {
+	t.Helper()
+
+	entries, err := os.ReadDir(filepath.Join("..", "..", "testdata", "bpe", "v1_0"))
+	require.NoError(t, err)
+
+	names := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if entry.IsDir() || filepath.Ext(entry.Name()) != ".xml" {
+			continue
+		}
+		names = append(names, entry.Name())
+	}
+
+	slices.Sort(names)
+	return names
+}
+
+func parseFixture(t *testing.T, name string) *bpe.Document {
+	t.Helper()
+
+	data := readFixture(t, name)
+	doc, err := bpe.Parse(data)
+	require.NoError(t, err)
+	require.NotNil(t, doc)
+	return doc
+}
+
+func readFixture(t *testing.T, name string) []byte {
+	t.Helper()
+
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "bpe", "v1_0", name))
+	require.NoError(t, err)
+	return data
+}
+
 func minimalInfBPe() *schema.TAnonComplexInfBPe2 {
 	return &schema.TAnonComplexInfBPe2{
 		VersaoAttr: "1.00",
@@ -286,6 +384,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	var b strings.Builder
+	nsStack := []map[string]string{{}}
 
 	for {
 		tok, err := decoder.Token()
@@ -300,10 +399,30 @@ func normalizeXML(t *testing.T, data []byte) string {
 		case xml.StartElement:
 			b.WriteByte('<')
 			b.WriteString(qualifiedName(tok.Name))
+			currentNS := make(map[string]string, len(nsStack[len(nsStack)-1]))
+			for prefix, value := range nsStack[len(nsStack)-1] {
+				currentNS[prefix] = value
+			}
 			attrs := make([]xml.Attr, 0, len(tok.Attr))
 			for _, attr := range tok.Attr {
 				if isNamespaceDecl(attr) {
-					continue
+					prefix := attr.Name.Local
+					if attr.Name.Local == "xmlns" {
+						prefix = ""
+					}
+					value := strings.TrimSpace(attr.Value)
+					if value == dsNamespace {
+						prefix = "ds"
+					}
+					if currentNS[prefix] == value {
+						continue
+					}
+					currentNS[prefix] = value
+					if prefix == "" {
+						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
+					} else {
+						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
+					}
 				}
 				attrs = append(attrs, attr)
 			}
@@ -321,10 +440,14 @@ func normalizeXML(t *testing.T, data []byte) string {
 				b.WriteByte('"')
 			}
 			b.WriteByte('>')
+			nsStack = append(nsStack, currentNS)
 		case xml.EndElement:
 			b.WriteString("</")
 			b.WriteString(qualifiedName(tok.Name))
 			b.WriteByte('>')
+			if len(nsStack) > 1 {
+				nsStack = nsStack[:len(nsStack)-1]
+			}
 		case xml.CharData:
 			text := strings.TrimSpace(string(tok))
 			if text != "" {
@@ -354,6 +477,15 @@ func qualifiedName(name xml.Name) string {
 
 func isNamespaceDecl(attr xml.Attr) bool {
 	return attr.Name.Space == "xmlns" || attr.Name.Local == "xmlns"
+}
+
+func decodeInnerXML[T any](t *testing.T, fragment string) T {
+	t.Helper()
+
+	var value T
+	err := xml.Unmarshal([]byte("<root>"+fragment+"</root>"), &value)
+	require.NoError(t, err)
+	return value
 }
 
 const documentKey = "43190812345678000195630010000000011000000011"

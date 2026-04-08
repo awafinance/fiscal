@@ -249,6 +249,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	var b strings.Builder
+	nsStack := []map[string]string{{}}
 
 	for {
 		tok, err := decoder.Token()
@@ -263,10 +264,30 @@ func normalizeXML(t *testing.T, data []byte) string {
 		case xml.StartElement:
 			b.WriteByte('<')
 			b.WriteString(qualifiedName(tok.Name))
+			currentNS := make(map[string]string, len(nsStack[len(nsStack)-1]))
+			for prefix, value := range nsStack[len(nsStack)-1] {
+				currentNS[prefix] = value
+			}
 			attrs := make([]xml.Attr, 0, len(tok.Attr))
 			for _, attr := range tok.Attr {
 				if isNamespaceDecl(attr) {
-					continue
+					prefix := attr.Name.Local
+					if attr.Name.Local == "xmlns" {
+						prefix = ""
+					}
+					value := strings.TrimSpace(attr.Value)
+					if value == dsNamespace {
+						prefix = "ds"
+					}
+					if currentNS[prefix] == value {
+						continue
+					}
+					currentNS[prefix] = value
+					if prefix == "" {
+						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
+					} else {
+						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
+					}
 				}
 				attrs = append(attrs, attr)
 			}
@@ -284,10 +305,14 @@ func normalizeXML(t *testing.T, data []byte) string {
 				b.WriteByte('"')
 			}
 			b.WriteByte('>')
+			nsStack = append(nsStack, currentNS)
 		case xml.EndElement:
 			b.WriteString("</")
 			b.WriteString(qualifiedName(tok.Name))
 			b.WriteByte('>')
+			if len(nsStack) > 1 {
+				nsStack = nsStack[:len(nsStack)-1]
+			}
 		case xml.CharData:
 			text := strings.TrimSpace(string(tok))
 			if text != "" {

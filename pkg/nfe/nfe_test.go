@@ -143,6 +143,26 @@ func TestParse_SpecialFixtures(t *testing.T) {
 	}
 }
 
+func TestParse_SignedFixture(t *testing.T) {
+	t.Parallel()
+
+	doc := parseFixture(t, "35180834128745000152550010000476121675985748-nfe.xml")
+
+	require.NotNil(t, doc.NFe)
+	require.NotNil(t, doc.NFe.DsSignature)
+	require.NotNil(t, doc.NFe.DsSignature.SignedInfo)
+	require.Equal(t, "http://www.w3.org/TR/2001/REC-xml-c14n-20010315", doc.NFe.DsSignature.SignedInfo.CanonicalizationMethod.AlgorithmAttr)
+	require.Equal(t, "http://www.w3.org/2000/09/xmldsig#rsa-sha1", doc.NFe.DsSignature.SignedInfo.SignatureMethod.AlgorithmAttr)
+	require.Equal(t, "#NFe35180834128745000152550010000476121675985748", doc.NFe.DsSignature.SignedInfo.Reference.URIAttr)
+	require.Equal(t, "http://www.w3.org/2000/09/xmldsig#sha1", doc.NFe.DsSignature.SignedInfo.Reference.DigestMethod.AlgorithmAttr)
+	require.NotEmpty(t, doc.NFe.DsSignature.SignedInfo.Reference.DigestValue)
+	require.NotNil(t, doc.NFe.DsSignature.SignatureValue)
+	require.NotEmpty(t, doc.NFe.DsSignature.SignatureValue.Value)
+	require.NotNil(t, doc.NFe.DsSignature.KeyInfo)
+	require.NotNil(t, doc.NFe.DsSignature.KeyInfo.X509Data)
+	require.NotEmpty(t, doc.NFe.DsSignature.KeyInfo.X509Data.X509Certificate)
+}
+
 func TestParse_EventFixtures(t *testing.T) {
 	t.Parallel()
 
@@ -990,6 +1010,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	var b strings.Builder
+	nsStack := []map[string]string{{}}
 
 	for {
 		tok, err := decoder.Token()
@@ -1004,10 +1025,30 @@ func normalizeXML(t *testing.T, data []byte) string {
 		case xml.StartElement:
 			b.WriteByte('<')
 			b.WriteString(qualifiedName(tok.Name))
+			currentNS := make(map[string]string, len(nsStack[len(nsStack)-1]))
+			for prefix, value := range nsStack[len(nsStack)-1] {
+				currentNS[prefix] = value
+			}
 			attrs := make([]xml.Attr, 0, len(tok.Attr))
 			for _, attr := range tok.Attr {
 				if isNamespaceDecl(attr) {
-					continue
+					prefix := attr.Name.Local
+					if attr.Name.Local == "xmlns" {
+						prefix = ""
+					}
+					value := strings.TrimSpace(attr.Value)
+					if value == dsNamespace {
+						prefix = "ds"
+					}
+					if currentNS[prefix] == value {
+						continue
+					}
+					currentNS[prefix] = value
+					if prefix == "" {
+						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
+					} else {
+						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
+					}
 				}
 				attrs = append(attrs, attr)
 			}
@@ -1025,10 +1066,14 @@ func normalizeXML(t *testing.T, data []byte) string {
 				b.WriteByte('"')
 			}
 			b.WriteByte('>')
+			nsStack = append(nsStack, currentNS)
 		case xml.EndElement:
 			b.WriteString("</")
 			b.WriteString(qualifiedName(tok.Name))
 			b.WriteByte('>')
+			if len(nsStack) > 1 {
+				nsStack = nsStack[:len(nsStack)-1]
+			}
 		case xml.CharData:
 			text := strings.TrimSpace(string(tok))
 			if text != "" {

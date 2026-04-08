@@ -80,6 +80,30 @@ func TestMarshalXML_NilReceiver(t *testing.T) {
 	require.Empty(t, data)
 }
 
+func TestParse_SignedFixture(t *testing.T) {
+	t.Parallel()
+
+	doc := parseFixture(t, "ConsultarNFSeEnvio-ped-sitnfse.xml")
+
+	require.NotNil(t, doc.NFSe)
+	require.NotNil(t, doc.NFSe.DsSignature)
+	require.NotNil(t, doc.NFSe.DsSignature.SignedInfo)
+	require.Equal(t, "#NFS14001591201761135000132000000000000022097781063609", doc.NFSe.DsSignature.SignedInfo.Reference.URIAttr)
+	require.Equal(t, "http://www.w3.org/2000/09/xmldsig#sha1", doc.NFSe.DsSignature.SignedInfo.Reference.DigestMethod.AlgorithmAttr)
+	require.NotEmpty(t, doc.NFSe.DsSignature.SignatureValue.Value)
+	require.NotEmpty(t, doc.NFSe.DsSignature.KeyInfo.X509Data.X509Certificate)
+
+	require.NotNil(t, doc.NFSe.InfNFSe)
+	require.NotNil(t, doc.NFSe.InfNFSe.DPS)
+	require.NotNil(t, doc.NFSe.InfNFSe.DPS.DsSignature)
+	require.NotNil(t, doc.NFSe.InfNFSe.DPS.DsSignature.SignedInfo)
+	require.Equal(t, "#DPS140015920176113500013200900000000000000003", doc.NFSe.InfNFSe.DPS.DsSignature.SignedInfo.Reference.URIAttr)
+	require.Equal(t, "http://www.w3.org/2000/09/xmldsig#rsa-sha1", doc.NFSe.InfNFSe.DPS.DsSignature.SignedInfo.SignatureMethod.AlgorithmAttr)
+	require.Len(t, doc.NFSe.InfNFSe.DPS.DsSignature.SignedInfo.Reference.Transforms.Transform, 2)
+	require.NotEmpty(t, doc.NFSe.InfNFSe.DPS.DsSignature.SignatureValue.Value)
+	require.NotEmpty(t, doc.NFSe.InfNFSe.DPS.DsSignature.KeyInfo.X509Data.X509Certificate)
+}
+
 func assertFixtureShape(t *testing.T, fixture string, doc *nfse.Document) {
 	t.Helper()
 
@@ -162,6 +186,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	var b strings.Builder
+	nsStack := []map[string]string{{}}
 
 	for {
 		tok, err := decoder.Token()
@@ -176,10 +201,30 @@ func normalizeXML(t *testing.T, data []byte) string {
 		case xml.StartElement:
 			b.WriteByte('<')
 			b.WriteString(qualifiedName(tok.Name))
+			currentNS := make(map[string]string, len(nsStack[len(nsStack)-1]))
+			for prefix, value := range nsStack[len(nsStack)-1] {
+				currentNS[prefix] = value
+			}
 			attrs := make([]xml.Attr, 0, len(tok.Attr))
 			for _, attr := range tok.Attr {
 				if isNamespaceDecl(attr) {
-					continue
+					prefix := attr.Name.Local
+					if attr.Name.Local == "xmlns" {
+						prefix = ""
+					}
+					value := strings.TrimSpace(attr.Value)
+					if value == dsNamespace {
+						prefix = "ds"
+					}
+					if currentNS[prefix] == value {
+						continue
+					}
+					currentNS[prefix] = value
+					if prefix == "" {
+						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
+					} else {
+						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
+					}
 				}
 				attrs = append(attrs, attr)
 			}
@@ -197,10 +242,14 @@ func normalizeXML(t *testing.T, data []byte) string {
 				b.WriteByte('"')
 			}
 			b.WriteByte('>')
+			nsStack = append(nsStack, currentNS)
 		case xml.EndElement:
 			b.WriteString("</")
 			b.WriteString(qualifiedName(tok.Name))
 			b.WriteByte('>')
+			if len(nsStack) > 1 {
+				nsStack = nsStack[:len(nsStack)-1]
+			}
 		case xml.CharData:
 			text := strings.TrimSpace(string(tok))
 			if text != "" {
