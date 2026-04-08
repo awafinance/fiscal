@@ -213,9 +213,6 @@ func normalizeXML(t *testing.T, data []byte) string {
 						prefix = ""
 					}
 					value := strings.TrimSpace(attr.Value)
-					if value == dsNamespace {
-						prefix = "ds"
-					}
 					if currentNS[prefix] == value {
 						continue
 					}
