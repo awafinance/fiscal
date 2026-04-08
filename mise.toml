@@ -17,11 +17,6 @@ pkl = "0.30.2"
 [env]
 _.file = '.env'
 
-# [tasks.build]
-# description = 'Run automated tests'
-# run = ['go build -o build/nf ./cmd/nf']
-# depends = ['lint']
-
 [tasks.check]
 description = 'Lint'
 run = 'golangci-lint run ./...'
@@ -31,6 +26,10 @@ description = 'Lint with fixes'
 run = 'golangci-lint run --fix ./...'
 depends = ['format']
 
+[tasks.gen]
+description = 'Run Codegen'
+run = 'go generate ./...'
+
 
 [tasks.format]
 description = 'Format'
@@ -38,13 +37,16 @@ run = 'golangci-lint fmt ./...'
 
 [tasks.test]
 description = 'Run automated tests'
-run = ['gotestsum ./...']
-# depends = ['build']
+run = ['gotestsum -- -coverprofile=build/coverage.out ./...']
+depends = ['gen']
+
+[tasks."coverage:print"]
+description = 'Print coverage report'
+run = ['go tool cover -func=build/coverage.out']
 
 [tasks.coverage]
-description = 'Run tests with coverage report'
-run = ['gotestsum -- -coverprofile=build/coverage.out ./...']
-# depends = ['build']
+description = 'Open coverage report on the browser'
+run = ['go tool cover -html=build/coverage.out']
 
 [tasks."deploy:sync"]
 description = 'Sync secrets from .env to Fly.io via 1Password'

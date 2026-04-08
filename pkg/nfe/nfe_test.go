@@ -238,6 +238,166 @@ func TestMarshalXML_ManualDocumentWithoutRootName(t *testing.T) {
 	})
 }
 
+func TestMarshalXML_ManualDocumentEdgeStates(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		doc    *nfe.Document
+		assert func(t *testing.T, data string)
+	}{
+		{
+			name: "empty version attribute with protocol emits empty versao on nfeProc",
+			doc: &nfe.Document{
+				NFe:     minimalNFe(),
+				ProtNFe: &schema.TProtNFe{VersaoAttr: "4.00", InfProt: minimalInfProt()},
+			},
+			assert: func(t *testing.T, data string) {
+				t.Helper()
+				require.Contains(t, data, `<nfeProc xmlns="`+nfeNamespace+`" versao="">`)
+				require.Contains(t, data, "<protNFe")
+			},
+		},
+		{
+			name: "nil NFe without protocol still marshals as bare NFe",
+			doc:  &nfe.Document{VersaoAttr: "4.00"},
+			assert: func(t *testing.T, data string) {
+				t.Helper()
+				require.Equal(t, `<NFe xmlns="`+nfeNamespace+`"></NFe>`, data)
+			},
+		},
+		{
+			name: "protocol with nil infProt still marshals as processed nfe",
+			doc: &nfe.Document{
+				VersaoAttr: "4.00",
+				NFe:        minimalNFe(),
+				ProtNFe:    &schema.TProtNFe{VersaoAttr: "4.00"},
+			},
+			assert: func(t *testing.T, data string) {
+				t.Helper()
+				require.Contains(t, data, `<nfeProc xmlns="`+nfeNamespace+`" versao="4.00">`)
+				require.Contains(t, data, `<protNFe versao="4.00"></protNFe>`)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			encoded, err := xml.Marshal(tt.doc)
+			require.NoError(t, err)
+
+			tt.assert(t, string(encoded))
+		})
+	}
+}
+
+func TestParse_RootScanningEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		data   []byte
+		assert func(t *testing.T, doc *nfe.Document)
+	}{
+		{
+			name: "bom prefix before root",
+			data: append([]byte{0xEF, 0xBB, 0xBF}, []byte(minimalNFEXML("NFe", "", ""))...),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.Nil(t, doc.ProtNFe)
+			},
+		},
+		{
+			name: "processing instructions before root",
+			data: []byte(`<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="nfe.xsl"?>` + minimalNFEXML("NFe", "", "")),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.Nil(t, doc.ProtNFe)
+			},
+		},
+		{
+			name: "unusual namespace prefix on root",
+			data: []byte(minimalNFEXML("xsd123:NFe", ` xmlns:xsd123="`+nfeNamespace+`"`, "xsd123:")),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.Nil(t, doc.ProtNFe)
+			},
+		},
+		{
+			name: "mixed prefixed descendants under default namespace root",
+			data: []byte(minimalNFEXML(
+				"NFe",
+				` xmlns:nf="`+nfeNamespace+`"`,
+				"nf:",
+			)),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.Nil(t, doc.ProtNFe)
+				require.Equal(t, "Emitente", doc.NFe.InfNFe.Emit.XNome)
+				require.Equal(t, "Produto", doc.NFe.InfNFe.Det[0].Prod.XProd)
+			},
+		},
+		{
+			name: "prefixed nfeProc root and children",
+			data: []byte(minimalProcNFEXML(
+				"proc:nfeProc",
+				` xmlns:proc="`+nfeNamespace+`"`,
+				"proc:",
+			)),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.NotNil(t, doc.ProtNFe)
+				require.NotNil(t, doc.ProtNFe.InfProt)
+				require.Equal(t, "35180834128745000152550010000476121675985748", doc.ProtNFe.InfProt.ChNFe)
+			},
+		},
+		{
+			name: "prefixed nfeProc with different prefixes for sibling elements",
+			data: []byte(mixedPrefixProcNFEXML()),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.NotNil(t, doc.ProtNFe)
+				require.Equal(t, "100", doc.ProtNFe.InfProt.CStat)
+				require.Equal(t, "Emitente", doc.NFe.InfNFe.Emit.XNome)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := nfe.Parse(tt.data)
+			require.NoError(t, err)
+			require.NotNil(t, doc)
+			require.Equal(t, "4.00", doc.VersaoAttr)
+			require.NotNil(t, doc.NFe)
+			require.NotNil(t, doc.NFe.InfNFe)
+			require.Equal(t, "1", doc.NFe.InfNFe.Ide.NNF)
+			tt.assert(t, doc)
+		})
+	}
+}
+
+func TestParse_UnicodeFields(t *testing.T) {
+	t.Parallel()
+
+	doc, err := nfe.Parse([]byte(unicodeNFEXML()))
+	require.NoError(t, err)
+	require.Equal(t, "José & Filhos Comércio de Açúcar Ltda.", doc.NFe.InfNFe.Emit.XNome)
+	require.Equal(t, "Rua São João, nº 123", doc.NFe.InfNFe.Emit.EnderEmit.XLgr)
+	require.Equal(t, "São Paulo", doc.NFe.InfNFe.Emit.EnderEmit.XMun)
+	require.Equal(t, "Café torrado e moído 500g", doc.NFe.InfNFe.Det[0].Prod.XProd)
+
+	encoded, err := xml.Marshal(doc)
+	require.NoError(t, err)
+	require.Contains(t, string(encoded), "José &amp; Filhos Comércio de Açúcar Ltda.")
+	require.Contains(t, string(encoded), "Rua São João, nº 123")
+	require.Contains(t, string(encoded), "Café torrado e moído 500g")
+}
+
 func allFixtureNames(t *testing.T) []string {
 	t.Helper()
 
@@ -479,4 +639,163 @@ func minimalNFe() *schema.TNFe {
 
 func ptr[T any](v T) *T {
 	return &v
+}
+
+func minimalInfProt() *schema.TAnonComplexInfProt1 {
+	return &schema.TAnonComplexInfProt1{
+		TpAmb:    "2",
+		ChNFe:    "35180834128745000152550010000476121675985748",
+		DhRecbto: "2020-01-01T12:00:00-03:00",
+		CStat:    "100",
+	}
+}
+
+func minimalNFEXML(rootName, rootAttrs, prefix string) string {
+	return `<` + rootName + rootAttrs + ` xmlns="` + nfeNamespace + `">
+  <` + prefix + `infNFe versao="4.00" Id="NFe35180834128745000152550010000476121675985748">
+    <` + prefix + `ide>
+      <` + prefix + `cUF>35</` + prefix + `cUF>
+      <` + prefix + `cNF>12345678</` + prefix + `cNF>
+      <` + prefix + `natOp>Venda</` + prefix + `natOp>
+      <` + prefix + `mod>55</` + prefix + `mod>
+      <` + prefix + `serie>1</` + prefix + `serie>
+      <` + prefix + `nNF>1</` + prefix + `nNF>
+      <` + prefix + `dhEmi>2020-01-01T12:00:00-03:00</` + prefix + `dhEmi>
+      <` + prefix + `tpNF>1</` + prefix + `tpNF>
+      <` + prefix + `idDest>1</` + prefix + `idDest>
+      <` + prefix + `cMunFG>3550308</` + prefix + `cMunFG>
+      <` + prefix + `tpImp>1</` + prefix + `tpImp>
+      <` + prefix + `tpEmis>1</` + prefix + `tpEmis>
+      <` + prefix + `cDV>1</` + prefix + `cDV>
+      <` + prefix + `tpAmb>2</` + prefix + `tpAmb>
+      <` + prefix + `finNFe>1</` + prefix + `finNFe>
+      <` + prefix + `indFinal>1</` + prefix + `indFinal>
+      <` + prefix + `indPres>0</` + prefix + `indPres>
+      <` + prefix + `procEmi>0</` + prefix + `procEmi>
+      <` + prefix + `verProc>test</` + prefix + `verProc>
+    </` + prefix + `ide>
+    <` + prefix + `emit>
+      <` + prefix + `CNPJ>12345678000195</` + prefix + `CNPJ>
+      <` + prefix + `xNome>Emitente</` + prefix + `xNome>
+      <` + prefix + `enderEmit>
+        <` + prefix + `xLgr>Rua A</` + prefix + `xLgr>
+        <` + prefix + `nro>1</` + prefix + `nro>
+        <` + prefix + `xBairro>Centro</` + prefix + `xBairro>
+        <` + prefix + `cMun>3550308</` + prefix + `cMun>
+        <` + prefix + `xMun>Sao Paulo</` + prefix + `xMun>
+        <` + prefix + `UF>SP</` + prefix + `UF>
+        <` + prefix + `CEP>01001000</` + prefix + `CEP>
+      </` + prefix + `enderEmit>
+      <` + prefix + `IE>123</` + prefix + `IE>
+      <` + prefix + `CRT>1</` + prefix + `CRT>
+    </` + prefix + `emit>
+    <` + prefix + `det nItem="1">
+      <` + prefix + `prod>
+        <` + prefix + `cProd>1</` + prefix + `cProd>
+        <` + prefix + `cEAN>SEM GTIN</` + prefix + `cEAN>
+        <` + prefix + `xProd>Produto</` + prefix + `xProd>
+        <` + prefix + `NCM>00000000</` + prefix + `NCM>
+        <` + prefix + `CFOP>5102</` + prefix + `CFOP>
+        <` + prefix + `uCom>UN</` + prefix + `uCom>
+        <` + prefix + `qCom>1.0000</` + prefix + `qCom>
+        <` + prefix + `vUnCom>1.0000000000</` + prefix + `vUnCom>
+        <` + prefix + `vProd>1.00</` + prefix + `vProd>
+        <` + prefix + `cEANTrib>SEM GTIN</` + prefix + `cEANTrib>
+        <` + prefix + `uTrib>UN</` + prefix + `uTrib>
+        <` + prefix + `qTrib>1.0000</` + prefix + `qTrib>
+        <` + prefix + `vUnTrib>1.0000000000</` + prefix + `vUnTrib>
+        <` + prefix + `indTot>1</` + prefix + `indTot>
+      </` + prefix + `prod>
+    </` + prefix + `det>
+  </` + prefix + `infNFe>
+</` + rootName + `>`
+}
+
+func unicodeNFEXML() string {
+	return `<NFe xmlns="` + nfeNamespace + `">
+  <infNFe versao="4.00" Id="NFe35180834128745000152550010000476121675985748">
+    <ide>
+      <cUF>35</cUF>
+      <cNF>12345678</cNF>
+      <natOp>Venda</natOp>
+      <mod>55</mod>
+      <serie>1</serie>
+      <nNF>1</nNF>
+      <dhEmi>2020-01-01T12:00:00-03:00</dhEmi>
+      <tpNF>1</tpNF>
+      <idDest>1</idDest>
+      <cMunFG>3550308</cMunFG>
+      <tpImp>1</tpImp>
+      <tpEmis>1</tpEmis>
+      <cDV>1</cDV>
+      <tpAmb>2</tpAmb>
+      <finNFe>1</finNFe>
+      <indFinal>1</indFinal>
+      <indPres>0</indPres>
+      <procEmi>0</procEmi>
+      <verProc>teste-ação</verProc>
+    </ide>
+    <emit>
+      <CNPJ>12345678000195</CNPJ>
+      <xNome>José &amp; Filhos Comércio de Açúcar Ltda.</xNome>
+      <enderEmit>
+        <xLgr>Rua São João, nº 123</xLgr>
+        <nro>123</nro>
+        <xBairro>Centro Histórico</xBairro>
+        <cMun>3550308</cMun>
+        <xMun>São Paulo</xMun>
+        <UF>SP</UF>
+        <CEP>01001000</CEP>
+      </enderEmit>
+      <IE>123</IE>
+      <CRT>1</CRT>
+    </emit>
+    <det nItem="1">
+      <prod>
+        <cProd>1</cProd>
+        <cEAN>SEM GTIN</cEAN>
+        <xProd>Café torrado e moído 500g</xProd>
+        <NCM>00000000</NCM>
+        <CFOP>5102</CFOP>
+        <uCom>UN</uCom>
+        <qCom>1.0000</qCom>
+        <vUnCom>1.0000000000</vUnCom>
+        <vProd>1.00</vProd>
+        <cEANTrib>SEM GTIN</cEANTrib>
+        <uTrib>UN</uTrib>
+        <qTrib>1.0000</qTrib>
+        <vUnTrib>1.0000000000</vUnTrib>
+        <indTot>1</indTot>
+      </prod>
+    </det>
+  </infNFe>
+</NFe>`
+}
+
+func minimalProcNFEXML(rootName, rootAttrs, prefix string) string {
+	return `<` + rootName + rootAttrs + ` xmlns="` + nfeNamespace + `" versao="4.00">
+  ` + minimalNFEXML(prefix+`NFe`, "", prefix) + `
+  <` + prefix + `protNFe versao="4.00">
+    <` + prefix + `infProt>
+      <` + prefix + `tpAmb>2</` + prefix + `tpAmb>
+      <` + prefix + `chNFe>35180834128745000152550010000476121675985748</` + prefix + `chNFe>
+      <` + prefix + `dhRecbto>2020-01-01T12:00:00-03:00</` + prefix + `dhRecbto>
+      <` + prefix + `cStat>100</` + prefix + `cStat>
+    </` + prefix + `infProt>
+  </` + prefix + `protNFe>
+</` + rootName + `>`
+}
+
+func mixedPrefixProcNFEXML() string {
+	return `<a:nfeProc xmlns:a="` + nfeNamespace + `" xmlns:b="` + nfeNamespace + `" xmlns:c="` + nfeNamespace + `" versao="4.00">
+  ` + minimalNFEXML("b:NFe", "", "b:") + `
+  <c:protNFe versao="4.00">
+    <c:infProt>
+      <c:tpAmb>2</c:tpAmb>
+      <c:chNFe>35180834128745000152550010000476121675985748</c:chNFe>
+      <c:dhRecbto>2020-01-01T12:00:00-03:00</c:dhRecbto>
+      <c:cStat>100</c:cStat>
+    </c:infProt>
+  </c:protNFe>
+</a:nfeProc>`
 }
