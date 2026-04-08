@@ -48,7 +48,7 @@ func postprocessGenerated() error {
 		if d.IsDir() || filepath.Ext(path) != ".go" {
 			return nil
 		}
-		if isNestedImportedSchema(path) {
+		if isNestedImportedSchema(path) || isDuplicateGeneratedFragment(path) {
 			if err := os.Remove(path); err != nil {
 				return err
 			}
@@ -94,6 +94,25 @@ func isNestedImportedSchema(path string) bool {
 			return true
 		}
 	}
+	return false
+}
+
+func isDuplicateGeneratedFragment(path string) bool {
+	clean := filepath.Clean(path)
+	base := filepath.Base(clean)
+
+	switch {
+	case strings.Contains(clean, string(filepath.Separator)+filepath.Join("internal", "nfe", "gen", "v1_0", "ator_interessado")+string(filepath.Separator)):
+		return base == "110150_v1.00.xsd.go"
+	case strings.Contains(clean, string(filepath.Separator)+filepath.Join("internal", "nfe", "gen", "v1_0", "evento_mde")+string(filepath.Separator)):
+		return base == "e210200_v1.00.xsd.go" ||
+			base == "e210210_v1.00.xsd.go" ||
+			base == "e210220_v1.00.xsd.go" ||
+			base == "e210240_v1.00.xsd.go"
+	case strings.Contains(clean, string(filepath.Separator)+filepath.Join("internal", "nfe", "gen", "v1_0", "evento_insucesso")+string(filepath.Separator)):
+		return base == "tmp0000.xsd.go"
+	}
+
 	return false
 }
 

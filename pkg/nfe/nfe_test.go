@@ -11,7 +11,13 @@ import (
 	"strings"
 	"testing"
 
+	atorSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/ator_interessado"
 	distSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/dist_dfe"
+	insucessoCancelSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_cancel_insucesso"
+	genericSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_generico"
+	insucessoSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_insucesso"
+	mdeSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_mde"
+	consSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v2_0/cons"
 	schema "github.com/awa/nota-fiscal/internal/nfe/gen/v4_0/nfe_proc"
 	"github.com/awa/nota-fiscal/pkg/nfe"
 	"github.com/stretchr/testify/require"
@@ -206,7 +212,6 @@ func TestParse_InvalidInputs(t *testing.T) {
 		{name: "malformed xml", data: []byte(`<nfeProc>`), errContains: "decode nfeProc"},
 		{name: "malformed xml with unclosed nested tag", data: []byte(`<nfeProc><NFe></nfeProc>`), errContains: "decode nfeProc"},
 		{name: "unsupported root", data: []byte(`<not-nfe></not-nfe>`), errContains: `unsupported root element "not-nfe"`},
-		{name: "unsupported event type", data: []byte(`<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><infEvento><tpEvento>999999</tpEvento></infEvento></evento>`), errContains: `unsupported tpEvento "999999"`},
 		{name: "unsupported root with malformed xml", data: []byte(`<not-nfe><oops>`), errContains: "read root"},
 		{name: "nfeProc missing NFe", data: []byte(`<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"></nfeProc>`), errContains: "missing NFe"},
 		{name: "nfeProc missing infNFe", data: []byte(`<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><NFe></NFe></nfeProc>`), errContains: "missing infNFe"},
@@ -225,6 +230,299 @@ func TestParse_InvalidInputs(t *testing.T) {
 			require.Error(t, err)
 			require.ErrorContains(t, err, tt.errContains)
 			require.Nil(t, doc)
+		})
+	}
+}
+
+func TestParse_NewEventRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		value  any
+		assert func(t *testing.T, doc *nfe.Document)
+	}{
+		{
+			name: "ator interessado",
+			value: struct {
+				XMLName xml.Name `xml:"evento"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*atorSchema.TEvento
+			}{
+				XMLName: xml.Name{Local: "evento"},
+				XMLNS:   nfeNamespace,
+				TEvento: &atorSchema.TEvento{
+					VersaoAttr: "1.00",
+					InfEvento: &atorSchema.TAnonComplexInfEvento1{
+						IdAttr:     "ID1101503518080310245200017255001000047605169551186001",
+						COrgao:     "91",
+						TpAmb:      "1",
+						CNPJ:       stringPtr("12345678000195"),
+						ChNFe:      "35180803102452000172550010000476051695511860",
+						DhEvento:   "2024-01-02T03:04:05-03:00",
+						TpEvento:   "110150",
+						NSeqEvento: "1",
+						VerEvento:  "1.00",
+						DetEvento: &atorSchema.TAnonComplexDetEvento1{
+							VersaoAttr:  "1.00",
+							DescEvento:  "Ator interessado na NF-e",
+							COrgaoAutor: "91",
+							TpAutor:     "1",
+							AutXML:      &atorSchema.TAnonComplexAutXML1{CNPJ: stringPtr("12345678000195")},
+						},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoAtorInteressado)
+				require.Equal(t, "110150", doc.EventoAtorInteressado.InfEvento.TpEvento)
+			},
+		},
+		{
+			name: "mde",
+			value: struct {
+				XMLName xml.Name `xml:"evento"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*mdeSchema.TEvento
+			}{
+				XMLName: xml.Name{Local: "evento"},
+				XMLNS:   nfeNamespace,
+				TEvento: &mdeSchema.TEvento{
+					VersaoAttr: "1.00",
+					InfEvento: &mdeSchema.TAnonComplexInfEvento1{
+						IdAttr:     "ID2102403518080310245200017255001000047605169551186001",
+						COrgao:     "91",
+						TpAmb:      "1",
+						CNPJ:       stringPtr("12345678000195"),
+						ChNFe:      "35180803102452000172550010000476051695511860",
+						DhEvento:   "2024-01-02T03:04:05-03:00",
+						TpEvento:   "210240",
+						NSeqEvento: "1",
+						VerEvento:  "1.00",
+						DetEvento: &mdeSchema.TAnonComplexDetEvento1{
+							VersaoAttr: "1.00",
+							DescEvento: "Operacao nao Realizada",
+							XJust:      stringPtr("Mercadoria recusada"),
+						},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoMDE)
+				require.Equal(t, "210240", doc.EventoMDE.InfEvento.TpEvento)
+				require.Equal(t, "Mercadoria recusada", requirePtr(t, doc.EventoMDE.InfEvento.DetEvento.XJust))
+			},
+		},
+		{
+			name: "insucesso",
+			value: struct {
+				XMLName xml.Name `xml:"evento"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*insucessoSchema.TEvento
+			}{
+				XMLName: xml.Name{Local: "evento"},
+				XMLNS:   nfeNamespace,
+				TEvento: &insucessoSchema.TEvento{
+					VersaoAttr: "1.00",
+					InfEvento: &insucessoSchema.TAnonComplexInfEvento1{
+						IdAttr:     "ID1101923518080310245200017255001000047605169551186001",
+						COrgao:     "91",
+						TpAmb:      "1",
+						CNPJ:       stringPtr("12345678000195"),
+						ChNFe:      "35180803102452000172550010000476051695511860",
+						DhEvento:   "2024-01-02T03:04:05-03:00",
+						TpEvento:   "110192",
+						NSeqEvento: "1",
+						VerEvento:  "1.00",
+						DetEvento: &insucessoSchema.TAnonComplexDetEvento1{
+							VersaoAttr:           "1.00",
+							DescEvento:           "Insucesso na Entrega da NF-e",
+							COrgaoAutor:          "91",
+							DhTentativaEntrega:   "2024-01-02T03:04:05-03:00",
+							NTentativa:           stringPtr("1"),
+							TpMotivo:             "4",
+							XJustMotivo:          stringPtr("Endereco fechado"),
+							HashTentativaEntrega: "ABCDEF0123456789",
+						},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoInsucesso)
+				require.Equal(t, "110192", doc.EventoInsucesso.InfEvento.TpEvento)
+				require.Equal(t, "4", doc.EventoInsucesso.InfEvento.DetEvento.TpMotivo)
+			},
+		},
+		{
+			name: "cancel insucesso",
+			value: struct {
+				XMLName xml.Name `xml:"evento"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*insucessoCancelSchema.TEvento
+			}{
+				XMLName: xml.Name{Local: "evento"},
+				XMLNS:   nfeNamespace,
+				TEvento: &insucessoCancelSchema.TEvento{
+					VersaoAttr: "1.00",
+					InfEvento: &insucessoCancelSchema.TAnonComplexInfEvento1{
+						IdAttr:     "ID1101933518080310245200017255001000047605169551186001",
+						COrgao:     "91",
+						TpAmb:      "1",
+						CNPJ:       stringPtr("12345678000195"),
+						ChNFe:      "35180803102452000172550010000476051695511860",
+						DhEvento:   "2024-01-02T03:04:05-03:00",
+						TpEvento:   "110193",
+						NSeqEvento: "1",
+						VerEvento:  "1.00",
+						DetEvento: &insucessoCancelSchema.TAnonComplexDetEvento1{
+							VersaoAttr:  "1.00",
+							DescEvento:  "Cancelamento do Insucesso na Entrega da NF-e",
+							COrgaoAutor: "91",
+							NProtEvento: "135240000000001",
+						},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoCancInsucesso)
+				require.Equal(t, "110193", doc.EventoCancInsucesso.InfEvento.TpEvento)
+				require.Equal(t, "135240000000001", doc.EventoCancInsucesso.InfEvento.DetEvento.NProtEvento)
+			},
+		},
+		{
+			name: "generico fallback",
+			value: struct {
+				XMLName xml.Name `xml:"evento"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*genericSchema.TEvento
+			}{
+				XMLName: xml.Name{Local: "evento"},
+				XMLNS:   nfeNamespace,
+				TEvento: &genericSchema.TEvento{
+					VersaoAttr: "1.00",
+					InfEvento: &genericSchema.TAnonComplexInfEvento1{
+						IdAttr:     "ID9999993518080310245200017255001000047605169551186001",
+						COrgao:     "91",
+						TpAmb:      "1",
+						CNPJ:       stringPtr("12345678000195"),
+						ChNFe:      "35180803102452000172550010000476051695511860",
+						DhEvento:   "2024-01-02T03:04:05-03:00",
+						TpEvento:   "999999",
+						NSeqEvento: "1",
+						VerEvento:  "1.00",
+						DetEvento:  &genericSchema.TAnonComplexDetEvento1{},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoGenerico)
+				require.Equal(t, "999999", doc.EventoGenerico.InfEvento.TpEvento)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			data, err := xml.MarshalIndent(tt.value, "", "  ")
+			require.NoError(t, err)
+
+			doc, err := nfe.Parse(data)
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
+		})
+	}
+}
+
+func TestParse_ConsRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		value  any
+		assert func(t *testing.T, doc *nfe.Document)
+	}{
+		{
+			name: "consSitNFe",
+			value: struct {
+				XMLName xml.Name `xml:"consSitNFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consSchema.TConsSitNFe
+			}{
+				XMLName: xml.Name{Local: "consSitNFe"},
+				XMLNS:   nfeNamespace,
+				TConsSitNFe: &consSchema.TConsSitNFe{
+					VersaoAttr: "2.01",
+					TpAmb:      "1",
+					XServ:      "CONSULTAR",
+					ChNFe:      "35180803102452000172550010000476051695511860",
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ConsSitNFe)
+				require.Equal(t, "CONSULTAR", doc.ConsSitNFe.XServ)
+			},
+		},
+		{
+			name: "retConsSitNFe",
+			value: struct {
+				XMLName    xml.Name             `xml:"retConsSitNFe"`
+				XMLNS      string               `xml:"xmlns,attr"`
+				VersaoAttr string               `xml:"versao,attr"`
+				TpAmb      string               `xml:"tpAmb"`
+				VerAplic   *consSchema.TString  `xml:"verAplic,omitempty"`
+				CStat      string               `xml:"cStat"`
+				XMotivo    *consSchema.TString  `xml:"xMotivo,omitempty"`
+				CUF        string               `xml:"cUF"`
+				ChNFe      string               `xml:"chNFe"`
+				ProtNFe    *consSchema.TProtNFe `xml:"protNFe,omitempty"`
+			}{
+				XMLName:    xml.Name{Local: "retConsSitNFe"},
+				XMLNS:      nfeNamespace,
+				VersaoAttr: "2.01",
+				TpAmb:      "1",
+				VerAplic:   nfeConsTStringPtr("SVRS202401"),
+				CStat:      "100",
+				XMotivo:    nfeConsTStringPtr("Autorizado o uso da NF-e"),
+				CUF:        "35",
+				ChNFe:      "35180803102452000172550010000476051695511860",
+				ProtNFe: &consSchema.TProtNFe{
+					VersaoAttr: "2.01",
+					InfProt: &consSchema.TAnonComplexInfProt1{
+						TpAmb:    "1",
+						ChNFe:    "35180803102452000172550010000476051695511860",
+						DhRecbto: "2024-01-02T03:04:05-03:00",
+						CStat:    "100",
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetConsSitNFe)
+				require.Equal(t, "100", doc.RetConsSitNFe.CStat)
+				require.NotNil(t, doc.RetConsSitNFe.ProtNFe)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			data, err := xml.MarshalIndent(tt.value, "", "  ")
+			require.NoError(t, err)
+
+			doc, err := nfe.Parse(data)
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
 		})
 	}
 }
@@ -770,6 +1068,11 @@ func requirePtr[T any](t *testing.T, v *T) T {
 
 func stringPtr(v string) *string {
 	return &v
+}
+
+func nfeConsTStringPtr(v string) *consSchema.TString {
+	value := consSchema.TString(v)
+	return &value
 }
 
 func nfeTStringPtr(v string) *distSchema.TString {

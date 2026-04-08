@@ -7,25 +7,38 @@ import (
 	"fmt"
 	"io"
 
+	atorSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/ator_interessado"
 	distSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/dist_dfe"
 	epecSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/epec"
 	cancelSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_cancel"
+	insucessoCancelSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_cancel_insucesso"
 	cceSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_cce"
+	genericSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_generico"
+	insucessoSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_insucesso"
+	mdeSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/evento_mde"
+	consSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v2_0/cons"
 	schema "github.com/awa/nota-fiscal/internal/nfe/gen/v4_0/nfe_proc"
 )
 
 type Document struct {
-	VersaoAttr    string
-	NFe           *schema.TNFe
-	ProtNFe       *schema.TProtNFe
-	EventoCancel  *cancelSchema.TEvento
-	EventoCCe     *cceSchema.TEvento
-	EventoEPEC    *epecSchema.TEvento
-	DistDFeInt    *distSchema.TAnonComplexDistDFeInt1
-	RetDistDFeInt *distSchema.TAnonComplexRetDistDFeInt1
-	ResNFe        *distSchema.TAnonComplexResNFe1
-	ResEvento     *distSchema.TAnonComplexResEvento1
-	rootName      string
+	VersaoAttr            string
+	NFe                   *schema.TNFe
+	ProtNFe               *schema.TProtNFe
+	EventoCancel          *cancelSchema.TEvento
+	EventoCCe             *cceSchema.TEvento
+	EventoEPEC            *epecSchema.TEvento
+	EventoAtorInteressado *atorSchema.TEvento
+	EventoMDE             *mdeSchema.TEvento
+	EventoInsucesso       *insucessoSchema.TEvento
+	EventoCancInsucesso   *insucessoCancelSchema.TEvento
+	EventoGenerico        *genericSchema.TEvento
+	ConsSitNFe            *consSchema.TConsSitNFe
+	RetConsSitNFe         *consSchema.TRetConsSitNFe
+	DistDFeInt            *distSchema.TAnonComplexDistDFeInt1
+	RetDistDFeInt         *distSchema.TAnonComplexRetDistDFeInt1
+	ResNFe                *distSchema.TAnonComplexResNFe1
+	ResEvento             *distSchema.TAnonComplexResEvento1
+	rootName              string
 }
 
 // MarshalXML preserves the parsed root when possible.
@@ -38,7 +51,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d.rootName != "nfeProc" && d.ProtNFe == nil {
 		if d.NFe == nil {
 			switch {
-			case d.EventoCancel != nil && d.EventoCCe == nil && d.EventoEPEC == nil:
+			case d.EventoCancel != nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
 				type root struct {
 					XMLName     xml.Name                             `xml:"evento"`
 					XMLNS       string                               `xml:"xmlns,attr,omitempty"`
@@ -53,7 +66,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 					InfEvento:   d.EventoCancel.InfEvento,
 					DsSignature: d.EventoCancel.DsSignature,
 				})
-			case d.EventoCCe != nil && d.EventoCancel == nil && d.EventoEPEC == nil:
+			case d.EventoCCe != nil && d.EventoCancel == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
 				type root struct {
 					XMLName     xml.Name                          `xml:"evento"`
 					XMLNS       string                            `xml:"xmlns,attr,omitempty"`
@@ -68,7 +81,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 					InfEvento:   d.EventoCCe.InfEvento,
 					DsSignature: d.EventoCCe.DsSignature,
 				})
-			case d.EventoEPEC != nil && d.EventoCancel == nil && d.EventoCCe == nil:
+			case d.EventoEPEC != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
 				type root struct {
 					XMLName     xml.Name                           `xml:"evento"`
 					XMLNS       string                             `xml:"xmlns,attr,omitempty"`
@@ -83,7 +96,126 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 					InfEvento:   d.EventoEPEC.InfEvento,
 					DsSignature: d.EventoEPEC.DsSignature,
 				})
-			case d.DistDFeInt != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.RetDistDFeInt == nil && d.ResNFe == nil && d.ResEvento == nil:
+			case d.EventoAtorInteressado != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
+				type root struct {
+					XMLName     xml.Name                           `xml:"evento"`
+					XMLNS       string                             `xml:"xmlns,attr,omitempty"`
+					VersaoAttr  string                             `xml:"versao,attr,omitempty"`
+					InfEvento   *atorSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
+					DsSignature *atorSchema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+				}
+				return e.Encode(root{
+					XMLName:     xml.Name{Local: "evento"},
+					XMLNS:       "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.EventoAtorInteressado.VersaoAttr),
+					InfEvento:   d.EventoAtorInteressado.InfEvento,
+					DsSignature: d.EventoAtorInteressado.DsSignature,
+				})
+			case d.EventoMDE != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
+				type root struct {
+					XMLName     xml.Name                          `xml:"evento"`
+					XMLNS       string                            `xml:"xmlns,attr,omitempty"`
+					VersaoAttr  string                            `xml:"versao,attr,omitempty"`
+					InfEvento   *mdeSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
+					DsSignature *mdeSchema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+				}
+				return e.Encode(root{
+					XMLName:     xml.Name{Local: "evento"},
+					XMLNS:       "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.EventoMDE.VersaoAttr),
+					InfEvento:   d.EventoMDE.InfEvento,
+					DsSignature: d.EventoMDE.DsSignature,
+				})
+			case d.EventoInsucesso != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
+				type root struct {
+					XMLName     xml.Name                                `xml:"evento"`
+					XMLNS       string                                  `xml:"xmlns,attr,omitempty"`
+					VersaoAttr  string                                  `xml:"versao,attr,omitempty"`
+					InfEvento   *insucessoSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
+					DsSignature *insucessoSchema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+				}
+				return e.Encode(root{
+					XMLName:     xml.Name{Local: "evento"},
+					XMLNS:       "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.EventoInsucesso.VersaoAttr),
+					InfEvento:   d.EventoInsucesso.InfEvento,
+					DsSignature: d.EventoInsucesso.DsSignature,
+				})
+			case d.EventoCancInsucesso != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
+				type root struct {
+					XMLName     xml.Name                                      `xml:"evento"`
+					XMLNS       string                                        `xml:"xmlns,attr,omitempty"`
+					VersaoAttr  string                                        `xml:"versao,attr,omitempty"`
+					InfEvento   *insucessoCancelSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
+					DsSignature *insucessoCancelSchema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+				}
+				return e.Encode(root{
+					XMLName:     xml.Name{Local: "evento"},
+					XMLNS:       "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.EventoCancInsucesso.VersaoAttr),
+					InfEvento:   d.EventoCancInsucesso.InfEvento,
+					DsSignature: d.EventoCancInsucesso.DsSignature,
+				})
+			case d.EventoGenerico != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil:
+				type root struct {
+					XMLName     xml.Name                              `xml:"evento"`
+					XMLNS       string                                `xml:"xmlns,attr,omitempty"`
+					VersaoAttr  string                                `xml:"versao,attr,omitempty"`
+					InfEvento   *genericSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
+					DsSignature *genericSchema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+				}
+				return e.Encode(root{
+					XMLName:     xml.Name{Local: "evento"},
+					XMLNS:       "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.EventoGenerico.VersaoAttr),
+					InfEvento:   d.EventoGenerico.InfEvento,
+					DsSignature: d.EventoGenerico.DsSignature,
+				})
+			case d.ConsSitNFe != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.RetConsSitNFe == nil:
+				type root struct {
+					XMLName    xml.Name `xml:"consSitNFe"`
+					XMLNS      string   `xml:"xmlns,attr,omitempty"`
+					VersaoAttr string   `xml:"versao,attr,omitempty"`
+					TpAmb      string   `xml:"tpAmb"`
+					XServ      string   `xml:"xServ"`
+					ChNFe      string   `xml:"chNFe"`
+				}
+				return e.Encode(root{
+					XMLName:    xml.Name{Local: "consSitNFe"},
+					XMLNS:      "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr: firstNonEmpty(d.VersaoAttr, d.ConsSitNFe.VersaoAttr),
+					TpAmb:      d.ConsSitNFe.TpAmb,
+					XServ:      d.ConsSitNFe.XServ,
+					ChNFe:      d.ConsSitNFe.ChNFe,
+				})
+			case d.RetConsSitNFe != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil:
+				type root struct {
+					XMLName       xml.Name                  `xml:"retConsSitNFe"`
+					XMLNS         string                    `xml:"xmlns,attr,omitempty"`
+					VersaoAttr    string                    `xml:"versao,attr,omitempty"`
+					TpAmb         string                    `xml:"tpAmb"`
+					VerAplic      *consSchema.TString       `xml:"verAplic,omitempty"`
+					CStat         string                    `xml:"cStat"`
+					XMotivo       *consSchema.TString       `xml:"xMotivo,omitempty"`
+					CUF           string                    `xml:"cUF"`
+					ChNFe         string                    `xml:"chNFe"`
+					ProtNFe       *consSchema.TProtNFe      `xml:"protNFe,omitempty"`
+					ProcEventoNFe []*consSchema.TProcEvento `xml:"procEventoNFe,omitempty"`
+				}
+				return e.Encode(root{
+					XMLName:       xml.Name{Local: "retConsSitNFe"},
+					XMLNS:         "http://www.portalfiscal.inf.br/nfe",
+					VersaoAttr:    firstNonEmpty(d.VersaoAttr, d.RetConsSitNFe.VersaoAttr),
+					TpAmb:         d.RetConsSitNFe.TpAmb,
+					VerAplic:      d.RetConsSitNFe.VerAplic,
+					CStat:         d.RetConsSitNFe.CStat,
+					XMotivo:       d.RetConsSitNFe.XMotivo,
+					CUF:           d.RetConsSitNFe.CUF,
+					ChNFe:         d.RetConsSitNFe.ChNFe,
+					ProtNFe:       d.RetConsSitNFe.ProtNFe,
+					ProcEventoNFe: d.RetConsSitNFe.ProcEventoNFe,
+				})
+			case d.DistDFeInt != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil && d.RetDistDFeInt == nil && d.ResNFe == nil && d.ResEvento == nil:
 				type root struct {
 					XMLName    xml.Name                           `xml:"distDFeInt"`
 					XMLNS      string                             `xml:"xmlns,attr,omitempty"`
@@ -108,7 +240,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 					ConsNSU:    d.DistDFeInt.ConsNSU,
 					ConsChNFe:  d.DistDFeInt.ConsChNFe,
 				})
-			case d.RetDistDFeInt != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.DistDFeInt == nil && d.ResNFe == nil && d.ResEvento == nil:
+			case d.RetDistDFeInt != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil && d.DistDFeInt == nil && d.ResNFe == nil && d.ResEvento == nil:
 				type root struct {
 					XMLName        xml.Name                                `xml:"retDistDFeInt"`
 					XMLNS          string                                  `xml:"xmlns,attr,omitempty"`
@@ -135,7 +267,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 					MaxNSU:         d.RetDistDFeInt.MaxNSU,
 					LoteDistDFeInt: d.RetDistDFeInt.LoteDistDFeInt,
 				})
-			case d.ResNFe != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.DistDFeInt == nil && d.RetDistDFeInt == nil && d.ResEvento == nil:
+			case d.ResNFe != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil && d.DistDFeInt == nil && d.RetDistDFeInt == nil && d.ResEvento == nil:
 				return e.Encode(struct {
 					XMLName xml.Name `xml:"resNFe"`
 					XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -145,7 +277,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 					XMLNS:               "http://www.portalfiscal.inf.br/nfe",
 					TAnonComplexResNFe1: d.ResNFe,
 				})
-			case d.ResEvento != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.DistDFeInt == nil && d.RetDistDFeInt == nil && d.ResNFe == nil:
+			case d.ResEvento != nil && d.EventoCancel == nil && d.EventoCCe == nil && d.EventoEPEC == nil && d.EventoAtorInteressado == nil && d.EventoMDE == nil && d.EventoInsucesso == nil && d.EventoCancInsucesso == nil && d.EventoGenerico == nil && d.ConsSitNFe == nil && d.RetConsSitNFe == nil && d.DistDFeInt == nil && d.RetDistDFeInt == nil && d.ResNFe == nil:
 				return e.Encode(struct {
 					XMLName xml.Name `xml:"resEvento"`
 					XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -283,9 +415,121 @@ func Parse(data []byte) (*Document, error) {
 				return nil, err
 			}
 			return doc, nil
+		case "110150":
+			var event atorSchema.TEvento
+			if err := xml.Unmarshal(data, &event); err != nil {
+				return nil, fmt.Errorf("parse nfe: decode ator interessado event: %w", err)
+			}
+			doc := &Document{
+				VersaoAttr:            event.VersaoAttr,
+				EventoAtorInteressado: &event,
+				rootName:              rootName,
+			}
+			if err := validateDocument(doc); err != nil {
+				return nil, err
+			}
+			return doc, nil
+		case "110192":
+			var event insucessoSchema.TEvento
+			if err := xml.Unmarshal(data, &event); err != nil {
+				return nil, fmt.Errorf("parse nfe: decode insucesso event: %w", err)
+			}
+			doc := &Document{
+				VersaoAttr:      event.VersaoAttr,
+				EventoInsucesso: &event,
+				rootName:        rootName,
+			}
+			if err := validateDocument(doc); err != nil {
+				return nil, err
+			}
+			return doc, nil
+		case "110193":
+			var event insucessoCancelSchema.TEvento
+			if err := xml.Unmarshal(data, &event); err != nil {
+				return nil, fmt.Errorf("parse nfe: decode cancel insucesso event: %w", err)
+			}
+			doc := &Document{
+				VersaoAttr:          event.VersaoAttr,
+				EventoCancInsucesso: &event,
+				rootName:            rootName,
+			}
+			if err := validateDocument(doc); err != nil {
+				return nil, err
+			}
+			return doc, nil
+		case "210200", "210210", "210220", "210240":
+			var event mdeSchema.TEvento
+			if err := xml.Unmarshal(data, &event); err != nil {
+				return nil, fmt.Errorf("parse nfe: decode mde event: %w", err)
+			}
+			doc := &Document{
+				VersaoAttr: event.VersaoAttr,
+				EventoMDE:  &event,
+				rootName:   rootName,
+			}
+			if err := validateDocument(doc); err != nil {
+				return nil, err
+			}
+			return doc, nil
 		default:
-			return nil, fmt.Errorf("parse nfe: unsupported tpEvento %q", tpEvento)
+			var event genericSchema.TEvento
+			if err := xml.Unmarshal(data, &event); err != nil {
+				return nil, fmt.Errorf("parse nfe: decode generic event: %w", err)
+			}
+			doc := &Document{
+				VersaoAttr:     event.VersaoAttr,
+				EventoGenerico: &event,
+				rootName:       rootName,
+			}
+			if err := validateDocument(doc); err != nil {
+				return nil, err
+			}
+			return doc, nil
 		}
+	case "consSitNFe":
+		var parsed consSchema.TConsSitNFe
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse nfe: decode consSitNFe: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitNFe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "retConsSitNFe":
+		var parsed struct {
+			VersaoAttr    string                    `xml:"versao,attr"`
+			TpAmb         string                    `xml:"tpAmb"`
+			VerAplic      *consSchema.TString       `xml:"verAplic"`
+			CStat         string                    `xml:"cStat"`
+			XMotivo       *consSchema.TString       `xml:"xMotivo"`
+			CUF           string                    `xml:"cUF"`
+			ChNFe         string                    `xml:"chNFe"`
+			ProtNFe       *consSchema.TProtNFe      `xml:"protNFe"`
+			ProcEventoNFe []*consSchema.TProcEvento `xml:"procEventoNFe"`
+		}
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse nfe: decode retConsSitNFe: %w", err)
+		}
+		doc := &Document{
+			VersaoAttr: parsed.VersaoAttr,
+			RetConsSitNFe: &consSchema.TRetConsSitNFe{
+				VersaoAttr:    parsed.VersaoAttr,
+				TpAmb:         parsed.TpAmb,
+				VerAplic:      parsed.VerAplic,
+				CStat:         parsed.CStat,
+				XMotivo:       parsed.XMotivo,
+				CUF:           parsed.CUF,
+				ChNFe:         parsed.ChNFe,
+				ProtNFe:       parsed.ProtNFe,
+				ProcEventoNFe: parsed.ProcEventoNFe,
+			},
+			rootName: rootName,
+		}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
 	case "distDFeInt":
 		var parsed distSchema.TAnonComplexDistDFeInt1
 		if err := xml.Unmarshal(data, &parsed); err != nil {
@@ -440,6 +684,100 @@ func validateDocument(doc *Document) error {
 		}
 		if doc.EventoEPEC.InfEvento.DetEvento == nil {
 			return errors.New("parse nfe: missing detEvento")
+		}
+	}
+
+	if doc.EventoAtorInteressado != nil {
+		count++
+		if doc.EventoAtorInteressado.InfEvento == nil {
+			return errors.New("parse nfe: missing infEvento")
+		}
+		if doc.EventoAtorInteressado.InfEvento.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
+		}
+		if doc.EventoAtorInteressado.InfEvento.DetEvento == nil {
+			return errors.New("parse nfe: missing detEvento")
+		}
+	}
+
+	if doc.EventoMDE != nil {
+		count++
+		if doc.EventoMDE.InfEvento == nil {
+			return errors.New("parse nfe: missing infEvento")
+		}
+		if doc.EventoMDE.InfEvento.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
+		}
+		if doc.EventoMDE.InfEvento.DetEvento == nil {
+			return errors.New("parse nfe: missing detEvento")
+		}
+	}
+
+	if doc.EventoInsucesso != nil {
+		count++
+		if doc.EventoInsucesso.InfEvento == nil {
+			return errors.New("parse nfe: missing infEvento")
+		}
+		if doc.EventoInsucesso.InfEvento.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
+		}
+		if doc.EventoInsucesso.InfEvento.DetEvento == nil {
+			return errors.New("parse nfe: missing detEvento")
+		}
+	}
+
+	if doc.EventoCancInsucesso != nil {
+		count++
+		if doc.EventoCancInsucesso.InfEvento == nil {
+			return errors.New("parse nfe: missing infEvento")
+		}
+		if doc.EventoCancInsucesso.InfEvento.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
+		}
+		if doc.EventoCancInsucesso.InfEvento.DetEvento == nil {
+			return errors.New("parse nfe: missing detEvento")
+		}
+	}
+
+	if doc.EventoGenerico != nil {
+		count++
+		if doc.EventoGenerico.InfEvento == nil {
+			return errors.New("parse nfe: missing infEvento")
+		}
+		if doc.EventoGenerico.InfEvento.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
+		}
+		if doc.EventoGenerico.InfEvento.DetEvento == nil {
+			return errors.New("parse nfe: missing detEvento")
+		}
+	}
+
+	if doc.ConsSitNFe != nil {
+		count++
+		if doc.ConsSitNFe.TpAmb == "" {
+			return errors.New("parse nfe: missing tpAmb")
+		}
+		if doc.ConsSitNFe.XServ == "" {
+			return errors.New("parse nfe: missing xServ")
+		}
+		if doc.ConsSitNFe.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
+		}
+	}
+
+	if doc.RetConsSitNFe != nil {
+		count++
+		if doc.RetConsSitNFe.TpAmb == "" {
+			return errors.New("parse nfe: missing tpAmb")
+		}
+		if doc.RetConsSitNFe.CStat == "" {
+			return errors.New("parse nfe: missing cStat")
+		}
+		if doc.RetConsSitNFe.CUF == "" {
+			return errors.New("parse nfe: missing cUF")
+		}
+		if doc.RetConsSitNFe.ChNFe == "" {
+			return errors.New("parse nfe: missing chNFe")
 		}
 	}
 
