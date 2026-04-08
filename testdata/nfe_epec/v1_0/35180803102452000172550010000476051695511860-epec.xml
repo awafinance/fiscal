@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+  <infEvento Id="ID1101403518080310245200017255001000047605169551186001">
+    <cOrgao>91</cOrgao>
+    <tpAmb>1</tpAmb>
+    <CNPJ>75335849000115</CNPJ>
+    <chNFe>35180803102452000172550010000476051695511860</chNFe>
+    <dhEvento>2018-08-17T15:17:45-03:00</dhEvento>
+    <tpEvento>110140</tpEvento>
+    <nSeqEvento>1</nSeqEvento>
+    <verEvento>1.00</verEvento>
+    <detEvento versao="1.00">
+      <descEvento>EPEC</descEvento>
+      <cOrgaoAutor>35</cOrgaoAutor>
+      <tpAutor>1</tpAutor>
+      <verAplic>1.0</verAplic>
+      <dhEmi>2018-08-17T15:17:45-03:00</dhEmi>
+      <tpNF>1</tpNF>
+      <IE>123456789012</IE>
+      <dest>
+        <UF>SP</UF>
+        <CNPJ>03102452000172</CNPJ>
+        <IE>123456789012</IE>
+        <vNF>100.00</vNF>
+        <vICMS>18.00</vICMS>
+        <vST>0.00</vST>
+      </dest>
+    </detEvento>
+  </infEvento>
+</evento>

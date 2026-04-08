@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00">
+  <infEvento Id="ID1101113515010756541600010457000000001230100001230001">
+    <cOrgao>35</cOrgao>
+    <tpAmb>1</tpAmb>
+    <CNPJ>07565416000104</CNPJ>
+    <chCTe>35150107565416000104570000000012301000012300</chCTe>
+    <dhEvento>2015-01-12T10:00:00-02:00</dhEvento>
+    <tpEvento>110111</tpEvento>
+    <nSeqEvento>1</nSeqEvento>
+    <detEvento versaoEvento="4.00">
+      <evCancCTe>
+        <descEvento>Cancelamento</descEvento>
+        <nProt>135150000000001</nProt>
+        <xJust>Cancelamento homologacao</xJust>
+      </evCancCTe>
+    </detEvento>
+  </infEvento>
+</eventoCTe>

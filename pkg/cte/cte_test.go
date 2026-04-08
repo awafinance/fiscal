@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	distSchema "github.com/awa/nota-fiscal/internal/cte/gen/v1_0/dist_dfe"
 	"github.com/awa/nota-fiscal/pkg/cte"
 	"github.com/stretchr/testify/require"
 )
@@ -57,6 +58,7 @@ func TestParse_InvalidInputs(t *testing.T) {
 		{name: "invalid cte", data: []byte(`<CTe xmlns="http://www.portalfiscal.inf.br/cte"></CTe>`), errContains: "missing infCte"},
 		{name: "invalid cteos", data: []byte(`<CTeOS xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"></CTeOS>`), errContains: "missing infCte"},
 		{name: "invalid event", data: []byte(`<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"></eventoCTe>`), errContains: "missing infEvento"},
+		{name: "unsupported event type", data: []byte(`<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"><infEvento><tpEvento>999999</tpEvento></infEvento></eventoCTe>`), errContains: `unsupported tpEvento "999999"`},
 	}
 
 	for _, tt := range tests {
@@ -67,6 +69,84 @@ func TestParse_InvalidInputs(t *testing.T) {
 			require.Error(t, err)
 			require.Nil(t, doc)
 			require.ErrorContains(t, err, tt.errContains)
+		})
+	}
+}
+
+func TestParse_DistDFeRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		value  any
+		assert func(t *testing.T, doc *cte.Document)
+	}{
+		{
+			name: "distDFeInt",
+			value: struct {
+				XMLName xml.Name `xml:"distDFeInt"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distSchema.TAnonComplexDistDFeInt1
+			}{
+				XMLName: xml.Name{Local: "distDFeInt"},
+				XMLNS:   cteNamespace,
+				TAnonComplexDistDFeInt1: &distSchema.TAnonComplexDistDFeInt1{
+					VersaoAttr: "1.00",
+					TpAmb:      "1",
+					CUFAutor:   "35",
+					CNPJ:       stringPtr("12345678000195"),
+					DistNSU:    &distSchema.TAnonComplexDistNSU1{UltNSU: "000000000000001"},
+				},
+			},
+			assert: func(t *testing.T, doc *cte.Document) {
+				require.NotNil(t, doc.DistDFeInt)
+				require.Equal(t, "35", doc.DistDFeInt.CUFAutor)
+			},
+		},
+		{
+			name: "retDistDFeInt",
+			value: struct {
+				XMLName xml.Name `xml:"retDistDFeInt"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distSchema.TAnonComplexRetDistDFeInt1
+			}{
+				XMLName: xml.Name{Local: "retDistDFeInt"},
+				XMLNS:   cteNamespace,
+				TAnonComplexRetDistDFeInt1: &distSchema.TAnonComplexRetDistDFeInt1{
+					VersaoAttr: "1.00",
+					TpAmb:      "1",
+					VerAplic:   cteTStringPtr("test"),
+					CStat:      "138",
+					XMotivo:    cteTStringPtr("Documento localizado"),
+					DhResp:     "2024-01-02T03:04:05",
+					UltNSU:     "000000000000010",
+					MaxNSU:     "000000000000099",
+					LoteDistDFeInt: &distSchema.TAnonComplexLoteDistDFeInt1{
+						DocZip: []*distSchema.TAnonComplexDocZip1{{NSUAttr: "000000000000010", SchemaAttr: "procCTe_v4.00.xsd", Value: "ZGF0YQ=="}},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *cte.Document) {
+				require.NotNil(t, doc.RetDistDFeInt)
+				require.Len(t, doc.RetDistDFeInt.LoteDistDFeInt.DocZip, 1)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			data, err := xml.MarshalIndent(tt.value, "", "  ")
+			require.NoError(t, err)
+
+			doc, err := cte.Parse(data)
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
 		})
 	}
 }
@@ -106,6 +186,12 @@ func assertFixtureShape(t *testing.T, fixture string, doc *cte.Document) {
 		require.Equal(t, "35150107565416000104570000000012301000012300", doc.EventoCTe.InfEvento.ChCTe)
 		require.Equal(t, "110110", doc.EventoCTe.InfEvento.TpEvento)
 		require.Equal(t, "1", doc.EventoCTe.InfEvento.NSeqEvento)
+	case "cancel35150107565416000104570000000012301000012300-ped-eve.xml":
+		require.NotNil(t, doc.EventoCancCTe)
+		require.Equal(t, "4.00", doc.EventoCancCTe.VersaoAttr)
+		require.Equal(t, "35150107565416000104570000000012301000012300", doc.EventoCancCTe.InfEvento.ChCTe)
+		require.Equal(t, "110111", doc.EventoCancCTe.InfEvento.TpEvento)
+		require.Equal(t, "135150000000001", doc.EventoCancCTe.InfEvento.DetEvento.EvCancCTe.NProt)
 	default:
 		t.Fatalf("unhandled fixture %s", fixture)
 	}
@@ -117,6 +203,7 @@ func assertSameRoot(t *testing.T, expected, actual *cte.Document) {
 	require.Equal(t, expected.CTe != nil, actual.CTe != nil)
 	require.Equal(t, expected.CTeOS != nil, actual.CTeOS != nil)
 	require.Equal(t, expected.EventoCTe != nil, actual.EventoCTe != nil)
+	require.Equal(t, expected.EventoCancCTe != nil, actual.EventoCancCTe != nil)
 }
 
 func allFixtureNames(t *testing.T) []string {
@@ -236,4 +323,13 @@ func requirePtr[T any](t *testing.T, v *T) T {
 	t.Helper()
 	require.NotNil(t, v)
 	return *v
+}
+
+func stringPtr(v string) *string {
+	return &v
+}
+
+func cteTStringPtr(v string) *distSchema.TString {
+	value := distSchema.TString(v)
+	return &value
 }

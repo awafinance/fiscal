@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	distSchema "github.com/awa/nota-fiscal/internal/nfe/gen/v1_0/dist_dfe"
 	schema "github.com/awa/nota-fiscal/internal/nfe/gen/v4_0/nfe_proc"
 	"github.com/awa/nota-fiscal/pkg/nfe"
 	"github.com/stretchr/testify/require"
@@ -136,6 +137,61 @@ func TestParse_SpecialFixtures(t *testing.T) {
 	}
 }
 
+func TestParse_EventFixtures(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		fixture string
+		assert  func(t *testing.T, doc *nfe.Document)
+	}{
+		{
+			fixture: filepath.Join("..", "..", "testdata", "nfe_evento_cce", "v1_0", "35180803102452000172550010000476051695511860-01-cce.xml"),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.NotNil(t, doc.EventoCCe)
+				require.Equal(t, "110110", doc.EventoCCe.InfEvento.TpEvento)
+				require.Equal(t, "VOLUME: 4 VOLUMES", doc.EventoCCe.InfEvento.DetEvento.XCorrecao)
+			},
+		},
+		{
+			fixture: filepath.Join("..", "..", "testdata", "nfe_evento_cancel", "v1_0", "35180803102452000172550010000476051695511860-cancel.xml"),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.NotNil(t, doc.EventoCancel)
+				require.Equal(t, "110111", doc.EventoCancel.InfEvento.TpEvento)
+				require.Equal(t, "135180000000001", doc.EventoCancel.InfEvento.DetEvento.NProt)
+			},
+		},
+		{
+			fixture: filepath.Join("..", "..", "testdata", "nfe_epec", "v1_0", "35180803102452000172550010000476051695511860-epec.xml"),
+			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
+				require.NotNil(t, doc.EventoEPEC)
+				require.Equal(t, "110140", doc.EventoEPEC.InfEvento.TpEvento)
+				require.Equal(t, "EPEC", doc.EventoEPEC.InfEvento.DetEvento.DescEvento)
+				require.Equal(t, "100.00", doc.EventoEPEC.InfEvento.DetEvento.Dest.VNF)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(filepath.Base(tt.fixture), func(t *testing.T) {
+			t.Parallel()
+
+			data, err := os.ReadFile(tt.fixture)
+			require.NoError(t, err)
+
+			doc, err := nfe.Parse(data)
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
+		})
+	}
+}
+
 func TestParse_InvalidInputs(t *testing.T) {
 	t.Parallel()
 
@@ -150,6 +206,7 @@ func TestParse_InvalidInputs(t *testing.T) {
 		{name: "malformed xml", data: []byte(`<nfeProc>`), errContains: "decode nfeProc"},
 		{name: "malformed xml with unclosed nested tag", data: []byte(`<nfeProc><NFe></nfeProc>`), errContains: "decode nfeProc"},
 		{name: "unsupported root", data: []byte(`<not-nfe></not-nfe>`), errContains: `unsupported root element "not-nfe"`},
+		{name: "unsupported event type", data: []byte(`<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><infEvento><tpEvento>999999</tpEvento></infEvento></evento>`), errContains: `unsupported tpEvento "999999"`},
 		{name: "unsupported root with malformed xml", data: []byte(`<not-nfe><oops>`), errContains: "read root"},
 		{name: "nfeProc missing NFe", data: []byte(`<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"></nfeProc>`), errContains: "missing NFe"},
 		{name: "nfeProc missing infNFe", data: []byte(`<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><NFe></NFe></nfeProc>`), errContains: "missing infNFe"},
@@ -168,6 +225,138 @@ func TestParse_InvalidInputs(t *testing.T) {
 			require.Error(t, err)
 			require.ErrorContains(t, err, tt.errContains)
 			require.Nil(t, doc)
+		})
+	}
+}
+
+func TestParse_DistDFeRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		value  any
+		assert func(t *testing.T, doc *nfe.Document)
+	}{
+		{
+			name: "distDFeInt",
+			value: struct {
+				XMLName xml.Name `xml:"distDFeInt"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distSchema.TAnonComplexDistDFeInt1
+			}{
+				XMLName: xml.Name{Local: "distDFeInt"},
+				XMLNS:   nfeNamespace,
+				TAnonComplexDistDFeInt1: &distSchema.TAnonComplexDistDFeInt1{
+					VersaoAttr: "1.01",
+					TpAmb:      "1",
+					CNPJ:       stringPtr("12345678000195"),
+					DistNSU:    &distSchema.TAnonComplexDistNSU1{UltNSU: "000000000000001"},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.DistDFeInt)
+				require.Equal(t, "000000000000001", doc.DistDFeInt.DistNSU.UltNSU)
+			},
+		},
+		{
+			name: "retDistDFeInt",
+			value: struct {
+				XMLName xml.Name `xml:"retDistDFeInt"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distSchema.TAnonComplexRetDistDFeInt1
+			}{
+				XMLName: xml.Name{Local: "retDistDFeInt"},
+				XMLNS:   nfeNamespace,
+				TAnonComplexRetDistDFeInt1: &distSchema.TAnonComplexRetDistDFeInt1{
+					VersaoAttr: "1.01",
+					TpAmb:      "1",
+					VerAplic:   nfeTStringPtr("test"),
+					CStat:      "138",
+					XMotivo:    nfeTStringPtr("Documento localizado"),
+					DhResp:     "2024-01-02T03:04:05-03:00",
+					UltNSU:     "000000000000010",
+					MaxNSU:     "000000000000099",
+					LoteDistDFeInt: &distSchema.TAnonComplexLoteDistDFeInt1{
+						DocZip: []*distSchema.TAnonComplexDocZip1{{NSUAttr: "000000000000010", SchemaAttr: "resNFe_v1.01.xsd", Value: "ZGF0YQ=="}},
+					},
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetDistDFeInt)
+				require.Len(t, doc.RetDistDFeInt.LoteDistDFeInt.DocZip, 1)
+			},
+		},
+		{
+			name: "resNFe",
+			value: struct {
+				XMLName xml.Name `xml:"resNFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distSchema.TAnonComplexResNFe1
+			}{
+				XMLName: xml.Name{Local: "resNFe"},
+				XMLNS:   nfeNamespace,
+				TAnonComplexResNFe1: &distSchema.TAnonComplexResNFe1{
+					VersaoAttr: "1.01",
+					ChNFe:      "35180803102452000172550010000476051695511860",
+					CNPJ:       stringPtr("12345678000195"),
+					XNome:      "Emitente Teste",
+					IE:         "ISENTO",
+					DhEmi:      "2024-01-02T03:04:05-03:00",
+					TpNF:       "1",
+					VNF:        "100.00",
+					DhRecbto:   "2024-01-02T03:05:06-03:00",
+					NProt:      "123456789012345",
+					CSitNFe:    "1",
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ResNFe)
+				require.Equal(t, "Emitente Teste", doc.ResNFe.XNome)
+			},
+		},
+		{
+			name: "resEvento",
+			value: struct {
+				XMLName xml.Name `xml:"resEvento"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distSchema.TAnonComplexResEvento1
+			}{
+				XMLName: xml.Name{Local: "resEvento"},
+				XMLNS:   nfeNamespace,
+				TAnonComplexResEvento1: &distSchema.TAnonComplexResEvento1{
+					VersaoAttr: "1.01",
+					COrgao:     "91",
+					CNPJ:       stringPtr("12345678000195"),
+					ChNFe:      "35180803102452000172550010000476051695511860",
+					DhEvento:   "2024-01-02T03:04:05-03:00",
+					TpEvento:   "110111",
+					NSeqEvento: "1",
+					XEvento:    "Cancelamento",
+					DhRecbto:   "2024-01-02T03:05:06-03:00",
+					NProt:      "123456789012345",
+				},
+			},
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ResEvento)
+				require.Equal(t, "110111", doc.ResEvento.TpEvento)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			data, err := xml.MarshalIndent(tt.value, "", "  ")
+			require.NoError(t, err)
+
+			doc, err := nfe.Parse(data)
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
 		})
 	}
 }
@@ -577,6 +766,15 @@ func requirePtr[T any](t *testing.T, v *T) T {
 	t.Helper()
 	require.NotNil(t, v)
 	return *v
+}
+
+func stringPtr(v string) *string {
+	return &v
+}
+
+func nfeTStringPtr(v string) *distSchema.TString {
+	value := distSchema.TString(v)
+	return &value
 }
 
 func minimalNFe() *schema.TNFe {

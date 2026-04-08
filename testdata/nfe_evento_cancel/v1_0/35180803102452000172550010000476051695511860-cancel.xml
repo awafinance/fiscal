@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+  <infEvento Id="ID1101113518080310245200017255001000047605169551186001">
+    <cOrgao>91</cOrgao>
+    <tpAmb>1</tpAmb>
+    <CNPJ>75335849000115</CNPJ>
+    <chNFe>35180803102452000172550010000476051695511860</chNFe>
+    <dhEvento>2018-08-17T15:17:45-03:00</dhEvento>
+    <tpEvento>110111</tpEvento>
+    <nSeqEvento>1</nSeqEvento>
+    <verEvento>1.00</verEvento>
+    <detEvento versao="1.00">
+      <descEvento>Cancelamento</descEvento>
+      <nProt>135180000000001</nProt>
+      <xJust>Cancelamento homologacao</xJust>
+    </detEvento>
+  </infEvento>
+</evento>

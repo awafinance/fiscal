@@ -1,0 +1,2653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/bpe" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import xmlns="http://www.w3.org/2001/XMLSchema" namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposGeralBPe_v1.00.xsd"></include>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TTipoBPeTM">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de BP-e Transporte Metropolitano</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="4"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_serie_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TSerie"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cBP_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{8}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cDV_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{1}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_modal_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TModal"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpEmis_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_verProc_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xJust_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="15"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="256"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ide_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código da UF do emitente do BP-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código da UF do emitente do Documento Fiscal. Utilizar a
+Tabela do IBGE de código de unidades da federação.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do Ambiente</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="mod" type="TModBPe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Modelo do Bilhete de Passagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar o código 63 para identificação do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="serie" type="TAnon_serie_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Série do documento fiscal</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a série do documento fiscal (informar zero se inexistente).</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nBP" type="TNF">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do bilhete de passagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número que identifica o bilhete 1 a 999999999.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cBP" type="TAnon_cBP_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código numérico que compõe a Chave de Acesso. </documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código aleatório gerado pelo emitente, com o objetivo de evitar acessos indevidos ao documento.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cDV" type="TAnon_cDV_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Digito verificador da chave de acesso</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar o dígito  de controle da chave de acesso do BP-e, que deve ser calculado com a aplicação do algoritmo módulo 11 (base 2,9) da chave de acesso. </documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="modal" type="TAnon_modal_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Modalidade de transporte</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Rodoviário; 3 - Aquaviário; 4 - Ferroviário.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhEmi" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de emissão do Bilhete de Passagem </documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dCompet" type="TData">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data da Competência a que se refere o Transporte Metropolitano</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpEmis" type="TAnon_tpEmis_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Forma de emissão do Bilhete (Normal ou Contingência Off-Line)</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Normal
+; 2 - Contingência Off-Line</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verProc" type="TAnon_verProc_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do processo de emissão</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a versão do aplicativo emissor de BP-e.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpBPe" type="TTipoBPeTM">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do BP-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">4 - BP-e Transporte Metropolitano</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CFOP" type="TCfop">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código Fiscal de Operações e Prestações</documentation>
+        </annotation>
+      </element>
+      <sequence xmlns="http://www.w3.org/2001/XMLSchema" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar apenas
+para tpEmis diferente de 1</documentation>
+        </annotation>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhCont" type="TDateTimeUTC">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e Hora da entrada em contingência</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a data e hora no formato AAAA-MM-DDTHH:MM:SS</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="xJust" type="TAnon_xJust_1">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Justificativa da entrada em contingência</documentation>
+          </annotation>
+        </element>
+      </sequence>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IE_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TIe"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IEST_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TIe"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xFant_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IM_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="15"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CNAE_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{7}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CRT_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_TAR_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_emit_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ do emitente</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="IE" type="TAnon_IE_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Estadual do emitente</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="IEST" minOccurs="0" type="TAnon_IEST_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Estadual do Substituto Tributário</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Razão social ou Nome do emitente</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xFant" minOccurs="0" type="TAnon_xFant_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome fantasia do emitente</documentation>
+        </annotation>
+      </element>
+      <sequence xmlns="http://www.w3.org/2001/XMLSchema" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo de informações de interesse da Prefeitura</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Este campo deve ser informado, quando ocorrer a emissão de BP-e conjugado, com prestação de serviços sujeitos ao ISSQN.</documentation>
+        </annotation>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="IM" type="TAnon_IM_1">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Municipal</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNAE" type="TAnon_CNAE_1">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNAE Fiscal</documentation>
+          </annotation>
+        </element>
+      </sequence>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CRT" type="TAnon_CRT_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código de Regime Tributário. </documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Este campo será obrigatoriamente preenchido com:
+1 – Simples Nacional;
+2 – Simples Nacional – excesso de sublimite de receita bruta;
+3 – Regime Normal.
+</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="enderEmit" type="TEndeEmi">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço do emitente</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="TAR" minOccurs="0" type="TAnon_TAR_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Termo de Autorização de Serviço Regular</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Registro obrigatório do emitente do BP-e junto à ANTT para exercer a atividade&#x9;&#x9;</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_prefixo_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nContInicio_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nContFim_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_qPass_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infAdFisco_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="2000"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_imp_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMS" type="TImp">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações relativas ao ICMS</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema"></documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdFisco" minOccurs="0" type="TAnon_infAdFisco_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações adicionais de interesse do Fisco</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Norma referenciada, informações complementares, etc</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="15"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_qComp_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{5}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_Comp_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do componente</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Exxemplos: ISENTOS, VT, CARTAO PRE-PAGO, IDOSOS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="qComp" type="TAnon_qComp_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Quantidade do componente</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_det_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMunIni" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do município do início da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMunFim" type="TCodMunIBGE" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do município do fim da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nContInicio" minOccurs="0" type="TAnon_nContInicio_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Contador início da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nContFim" minOccurs="0" type="TAnon_nContFim_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Contador fim da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="qPass" type="TAnon_qPass_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Quantidade de Passagens da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBP" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor da soma dos Bilhetes de Passagem da viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Pode conter zeros quando o BP-e for de complemento de ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="imp" type="TAnonComplex_imp_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações relativas aos Impostos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="Comp" maxOccurs="unbounded" type="TAnonComplex_Comp_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Componentes da viagem</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="nViagem" use="required">
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+          <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+          <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[1-9]{1}[0-9]{0,1}|[1-8]{1}[0-9]{2}|[9]{1}[0-8]{1}[0-9]{1}|[9]{1}[9]{1}[0]{1}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_detBPeTM_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="UFIniViagem" type="TUf_sem_EX">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Sigla da UF início da Viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar a Tabela do IBGE de código de unidades da federação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="UFFimViagem" type="TUf_sem_EX" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Sigla da UF fim da Viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar a Tabela do IBGE de código de unidades da federação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="placa" type="TPlaca" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Placa do coletivo</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="prefixo" minOccurs="0" type="TAnon_prefixo_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Prefixo da linha</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="det" maxOccurs="990" type="TAnonComplex_det_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Datalhamento da viagem por trechos do BPeTM</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="idEqpCont" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador do equipamento contador</documentation>
+      </annotation>
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+          <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+          <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[1-9]{1}[0-9]{0,1}|[1-8]{1}[0-9]{2}|[9]{1}[0-8]{1}[0-9]{1}|[9]{1}[9]{1}[0]{1}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_qPass_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{1,6}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMSTot_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBC" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">BC do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vICMS" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor Total do ICMS</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_total_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="qPass" type="TAnon_qPass_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Quantidade total de passagens</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBP" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor Total do Bilhete de Passagem Transporte Metropolitano</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Pode conter zeros quando o BP-e for de complemento de ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMSTot" type="TAnonComplex_ICMSTot_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Totais referentes ao ICMS</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_autXML_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <choice xmlns="http://www.w3.org/2001/XMLSchema">
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ do autorizado</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CPF do autorizado</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+          </annotation>
+        </element>
+      </choice>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infAdFisco_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="2000"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infCpl_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="5000"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infAdic_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdFisco" minOccurs="0" type="TAnon_infAdFisco_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações adicionais de interesse do Fisco</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Norma referenciada, informações complementares, etc</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infCpl" minOccurs="0" type="TAnon_infCpl_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações complementares de interesse do Contribuinte</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infBPe_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ide" type="TAnonComplex_ide_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do BPe TM</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="emit" type="TAnonComplex_emit_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Emitente do BPe TM</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="detBPeTM" maxOccurs="99" type="TAnonComplex_detBPeTM_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo de informações detalhadas do BPe TM</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="total" type="TAnonComplex_total_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações dos totais do BPe TM</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="autXML" minOccurs="0" maxOccurs="10" type="TAnonComplex_autXML_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Autorizados para download do XML do DF-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar CNPJ ou CPF. Preencher os zeros não significativos.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdic" minOccurs="0" type="TAnonComplex_infAdic_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações Adicionais</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infRespTec" type="TRespTec" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do Responsável Técnico pela emissão do DF-e</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerBPe" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do leiaute</documentation>
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Ex: &#34;3.00&#34;</documentation>
+      </annotation>
+    </attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="Id" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador da tag a ser assinada</documentation>
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a chave de acesso do BP-e e precedida do literal &#34;BPe&#34;</documentation>
+      </annotation>
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:ID">
+          <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="BPe[0-9]{44}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_serie_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TSerie"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cBP_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{8}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cDV_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{1}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_modal_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TModal"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpEmis_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_verProc_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpBPe_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TTipoBPe"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xJust_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="15"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="256"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ide_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código da UF do emitente do BP-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código da UF do emitente do Documento Fiscal. Utilizar a
+Tabela do IBGE de código de unidades da federação.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do Ambiente</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="mod" type="TModBPe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Modelo do Bilhete de Passagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar o código 63 para identificação do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="serie" type="TAnon_serie_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Série do documento fiscal</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a série do documento fiscal (informar zero se inexistente).</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nBP" type="TNF">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do bilhete de passagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número que identifica o bilhete 1 a 999999999.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cBP" type="TAnon_cBP_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código numérico que compõe a Chave de Acesso. </documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código aleatório gerado pelo emitente, com o objetivo de evitar acessos indevidos ao documento.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cDV" type="TAnon_cDV_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Digito verificador da chave de acesso</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar o dígito  de controle da chave de acesso do BP-e, que deve ser calculado com a aplicação do algoritmo módulo 11 (base 2,9) da chave de acesso. </documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="modal" type="TAnon_modal_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Modalidade de transporte</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Rodoviário; 3 - Aquaviário; 4 - Ferroviário.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhEmi" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de emissão do Bilhete de Passagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpEmis" type="TAnon_tpEmis_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Forma de emissão do Bilhete (Normal ou Contingência Off-Line)</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Normal
+; 2 - Contingência Off-Line</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verProc" type="TAnon_verProc_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do processo de emissão</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a versão do aplicativo emissor de BP-e.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpBPe" type="TAnon_tpBPe_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do BP-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">0 - BP-e normal 3 - BP-e substituição</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indPres" type="TIndPres">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicador de presença do comprador no estabelecimento comercial no momento da operação</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1=Operação presencial não embarcado;
+2=Operação não presencial, pela Internet;
+3=Operação não presencial, Teleatendimento;
+4=BP-e em operação com entrega a domicílio;
+5=Operação presencial embarcada;
+9=Operação não presencial, outros.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="UFIni" type="TUf_sem_EX">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Sigla da UF Início da Viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar a Tabela do IBGE de código de unidades da federação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMunIni" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do município do início da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="UFFim" type="TUf">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Sigla da UF do Fim da Viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar a Tabela do IBGE de código de unidades da federação.
+Informar &#39;EX&#39; para operações com o exterior.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMunFim" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do município do fim da viagem</documentation>
+        </annotation>
+      </element>
+      <sequence xmlns="http://www.w3.org/2001/XMLSchema" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar apenas
+para tpEmis diferente de 1</documentation>
+        </annotation>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhCont" type="TDateTimeUTC">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e Hora da entrada em contingência</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a data e hora no formato AAAA-MM-DDTHH:MM:SS</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="xJust" type="TAnon_xJust_2">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Justificativa da entrada em contingência</documentation>
+          </annotation>
+        </element>
+      </sequence>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IE_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TIe"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IEST_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TIe"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_3">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xFant_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IM_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="15"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CNAE_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{7}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CRT_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_TAR_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_emit_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ do emitente</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="IE" type="TAnon_IE_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Estadual do emitente</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="IEST" minOccurs="0" type="TAnon_IEST_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Estadual do Substituto Tributário</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_3">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Razão social ou Nome do emitente</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xFant" minOccurs="0" type="TAnon_xFant_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome fantasia do emitente</documentation>
+        </annotation>
+      </element>
+      <sequence xmlns="http://www.w3.org/2001/XMLSchema" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo de informações de interesse da Prefeitura</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Este campo deve ser informado, quando ocorrer a emissão de BP-e conjugado, com prestação de serviços sujeitos ao ISSQN.</documentation>
+        </annotation>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="IM" type="TAnon_IM_2">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Municipal</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNAE" type="TAnon_CNAE_2">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNAE Fiscal</documentation>
+          </annotation>
+        </element>
+      </sequence>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CRT" type="TAnon_CRT_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código de Regime Tributário. </documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Este campo será obrigatoriamente preenchido com:
+1 – Simples Nacional;
+2 – Simples Nacional – excesso de sublimite de receita bruta;
+3 – Regime Normal.
+</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="enderEmit" type="TEndeEmi">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço do emitente</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="TAR" minOccurs="0" type="TAnon_TAR_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Termo de Autorização de Serviço Regular</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Registro obrigatório do emitente do BP-e junto à ANTT para exercer a atividade&#x9;&#x9;</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_4">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_idEstrangeiro_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="([!-ÿ]{0}|[!-ÿ]{5,20})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_IE_3">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TIeDest"></restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_comp_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_4">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Razão social ou Nome do comprador</documentation>
+        </annotation>
+      </element>
+      <choice xmlns="http://www.w3.org/2001/XMLSchema">
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpjOpc">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CNPJ</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Em caso de empresa não estabelecida no Brasil, será informado o CNPJ com zeros.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Informar os zeros não significativos.</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CPF</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos.</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="idEstrangeiro" type="TAnon_idEstrangeiro_1">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador do comprador em caso de comprador estrangeiro</documentation>
+          </annotation>
+        </element>
+      </choice>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="IE" minOccurs="0" type="TAnon_IE_3">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Inscrição Estadual</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a IE do remetente ou ISENTO se remetente é contribuinte do ICMS isento de inscrição no cadastro de contribuintes do ICMS. Caso o remetente não seja contribuinte do ICMS não informar a tag.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="enderComp" type="TEndereco">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço do comprador</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_5">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_agencia_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_5">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Razão social ou Nome da Agência</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpjOpc">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CNPJ</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Em caso de empresa não estabelecida no Brasil, será informado o CNPJ com zeros.
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Informar os zeros não significativos.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="enderAgencia" type="TEndereco">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço da agência</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infBPeSub_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="chBPe" type="TChDFe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Chave do Bilhete de Passagem Substituido</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpSub" type="TTipoSubstituicao">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Substituição</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1 - Remarcação
+
+
+2 - Transferência
+
+3 - Transferência e Remarcação</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cLocOrig_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="7"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xLocOrig_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cLocDest_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="7"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xLocDest_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_6">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nDoc_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xDoc_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="100"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_dNasc_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TData"></restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_fone_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{7,12}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infPassageiro_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_6">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do Passageiro</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CPF</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpDoc" type="TDoc">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do Documento de identificação</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">1-RG
+
+2-Título de Eleitor
+
+3-Passaporte
+
+4-CNH
+5-Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nDoc" type="TAnon_nDoc_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Documento do passageiro</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xDoc" minOccurs="0" type="TAnon_xDoc_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do tipo de documento &#34;outros&#34;</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dNasc" minOccurs="0" type="TAnon_dNasc_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data de Nascimento</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="fone" minOccurs="0" type="TAnon_fone_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Telefone</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="email" type="TEmail" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço de E-mail</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infPassagem_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cLocOrig" type="TAnon_cLocOrig_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código da Localidade de Origem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xLocOrig" type="TAnon_xLocOrig_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição da Localidade de Origem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cLocDest" type="TAnon_cLocDest_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema"></documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xLocDest" type="TAnon_xLocDest_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição da Localidade de Destino</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhEmb" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de embarque</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhValidade" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de validade do bilhete</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infPassageiro" minOccurs="0" type="TAnonComplex_infPassageiro_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do passageiro</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cPercurso_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xPercurso_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="100"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpViagem_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="00"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpServ_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="4"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="5"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="6"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="7"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="8"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="9"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="10"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="11"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpAcomodacao_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="4"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="5"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpTrecho_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_prefixo_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_poltrona_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="3"></maxLength>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="0|[1-9]{1}[0-9]{0,2}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_plataforma_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="10"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpVeiculo_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="02"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="03"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="04"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="05"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="06"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="07"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="08"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="09"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="10"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="11"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="12"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="13"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="14"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="15"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="16"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="17"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="18"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="19"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="20"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="21"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="22"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="23"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="24"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="25"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="26"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="27"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="28"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="29"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="99"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_sitVeiculo_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infTravessia_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpVeiculo" type="TAnon_tpVeiculo_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do veículo transportado</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">01-Motocicleta
+02-Automóvel
+03-Automóvel com reboque
+04-Caminhonete
+05-Caminhonete com reboque
+06-Micro-onibus
+07-Van
+08-Ônibus - 2 ou 3 eixos
+09-Ônibus 4 eixos
+10-Caminhão 3/4
+11-Caminhão toco
+12-Caminhão Truck
+13-Carreta
+14-Bi-Trem
+15-Rodo-Trem - 9 eixos
+16-Romeu e Julieta - 7 eixos
+17-Jamanta - 6 eixos
+18-Jamanta - 5 eixos
+19-Jamanta - 4 eixos
+20-Trator de esteira
+21-Pá mecânica
+22-Patrol
+23-Trator de Pneu Grande
+24-Trator de Pneu com reboque
+25-Trator de Pneu sem reboque
+26-Carroça
+27-Mobilete
+28-Bicicleta
+29-Passageiro
+99-Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="sitVeiculo" type="TAnon_sitVeiculo_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Situação do veículo transportado</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">01 - Vazio; 02 - Carregado; 03 - Não se aplica</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infViagem_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cPercurso" type="TAnon_cPercurso_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do percurso da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xPercurso" type="TAnon_xPercurso_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Percurso da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpViagem" type="TAnon_tpViagem_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informa o código do tipo da viagem (00-regular, 01-extra)</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpServ" type="TAnon_tpServ_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Serviço</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar o código do tipo de serviço (1-Convencional com sanitário, 2-Convencional sem sanitário, 3-Semileito, 4-Leito com ar condicionado, 5-Leito sem ar condicionado, 6-Executivo, 7-Semiurbano, 8-Longitudinal, 9-Travessia, 10-Cama, 11-Micro-onibus)</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAcomodacao" type="TAnon_tpAcomodacao_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Acomodação</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar o código do tipo de acomodação (1-Assento/poltrona, 2-Rede, 3-Rede com ar-condicionado, 4-Cabine, 5-Outros)</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpTrecho" type="TAnon_tpTrecho_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de trecho da viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar do tipo de trecho (1-Normal, 2-Trecho Inicial, 3-Conexão)</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhViagem" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de referencia para a viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhConexao" type="TDateTimeUTC" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora da conexão
+Informar se tpTrecho = 3</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Formato AAAA-MM-DDTHH:MM:DD TZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="prefixo" minOccurs="0" type="TAnon_prefixo_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Prefixo da linha</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="poltrona" minOccurs="0" type="TAnon_poltrona_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número da Poltrona / assento / cabine</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="plataforma" minOccurs="0" type="TAnon_plataforma_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Plataforma/carro/barco de Embarque</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infTravessia" minOccurs="0" type="TAnonComplex_infTravessia_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do transporte aquaviário de travessia</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpDesconto_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="02"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="03"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="04"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="05"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="06"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="07"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="08"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="09"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="10"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="99"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xDesconto_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="100"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cDesconto_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpComp_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="02"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="03"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="04"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="05"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="06"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="99"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_Comp_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpComp" type="TAnon_tpComp_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do Componente</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">01 - TARIFA; 02 - PEDÁGIO;
+03 - TAXA EMBARQUE;
+04 - SEGURO;
+05-TAXA DE MANUTENÇÃO RODOVIA (TMR); 06 - SERVIÇO DE VENDA INTEGRADA (SVI); 99 - OUTROS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vComp" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do componente</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infValorBPe_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBP" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do Bilhete de Passagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Pode conter zeros quando o BP-e for de complemento de ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vDesconto" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do desconto concedido ao comprador</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicar o valor total concedido em função dos benefícios concedidos ou política de desconto da empresa
+Informar 0.00 em caso de passagem comercializada sem nenhum desconto</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vPgto" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor pago pelo BP-e (vBP - vDesconto)</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vTroco" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do troco</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpDesconto" minOccurs="0" type="TAnon_tpDesconto_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de desconto/benefício para o BP-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">01 - Tarifa promocional
+02 - Idoso
+03 - Criança
+04 - Deficiente
+05 - Estudante
+06 - Animal Doméstico
+07 - Acordo Coletivo
+08 - Profissional em Deslocamento
+09 - Profissional da Empresa
+10 - Jovem 
+99 - Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xDesconto" minOccurs="0" type="TAnon_xDesconto_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do tipo de desconto/benefício concedido</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cDesconto" minOccurs="0" type="TAnon_cDesconto_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do desconto quando informado com tipo 99 - Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="Comp" maxOccurs="unbounded" type="TAnonComplex_Comp_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Componentes do Valor do Bilhete</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infAdFisco_3">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="2000"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMSUFFim_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBCUFFim" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor da BC do ICMS na UF fim da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pFCPUFFim" type="TDec_0302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Percentual do ICMS relativo ao Fundo de Combate à pobreza (FCP) na UF fim da viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota adotada nas operações internas na UF do destinatário</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pICMSUFFim" type="TDec_0302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota interna da UF fim da viagem</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota adotada nas operações internas na UF do destinatário</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pICMSInter" type="TDec_0302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota interestadual das UF envolvidas</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota interestadual das UF envolvidas
+</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vFCPUFFim" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do ICMS relativo ao Fundo de Combate á Pobreza (FCP) da UF fim da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vICMSUFFim" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do ICMS de partilha para a UF fim da viagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vICMSUFIni" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do ICMS de partilha para a UF início da viagem</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_imp_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMS" type="TImp">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações relativas ao ICMS</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema"></documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vTotTrib" type="TDec_1302" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor Total dos Tributos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdFisco" minOccurs="0" type="TAnon_infAdFisco_3">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações adicionais de interesse do Fisco</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Norma referenciada, informações complementares, etc</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMSUFFim" minOccurs="0" type="TAnonComplex_ICMSUFFim_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do ICMS de partilha com a UF de término do serviço de transporte na operação interestadual</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo a ser informado nas prestações interestaduais para consumidor final, não contribuinte do ICMS</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tPag_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="02"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="03"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="04"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="05"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="06"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="99"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xPag_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="100"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nDocPag_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpIntegra_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tBand_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="02"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="03"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="04"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="05"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="06"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="99"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xBand_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="100"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cAut_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nsuTrans_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nsuHost_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nParcelas_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="3"></maxLength>
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{3}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infAdCard_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="2000"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_card_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpIntegra" type="TAnon_tpIntegra_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Integração do processo de pagamento com o sistema de automação da empresa&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;1=Pagamento integrado com o sistema de automação da empresa Ex. equipamento TEF , Comercio Eletronico&#x9;&#x9;&#x9;&#x9;&#x9;2=Pagamento não integrado com o sistema de automação da empresa Ex: equipamento POS
+</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ da credenciadora de cartão de crédito/débito</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tBand" minOccurs="0" type="TAnon_tBand_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Bandeira da operadora de cartão de crédito/débito</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">01–Visa; 02–Mastercard; 03–American Express; 04–Sorocred; 05 - Elo; 06 - Diners; 99–Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xBand" minOccurs="0" type="TAnon_xBand_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição da operador de cartão para 99 - Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cAut" minOccurs="0" type="TAnon_cAut_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número de autorização da operação cartão de crédito/débito</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nsuTrans" minOccurs="0" type="TAnon_nsuTrans_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número sequencial único da transação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nsuHost" minOccurs="0" type="TAnon_nsuHost_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número sequencial único do Host</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nParcelas" minOccurs="0" type="TAnon_nParcelas_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número de parcelas</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdCard" minOccurs="0" type="TAnon_infAdCard_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações adicionais operacionais para integração do cartão de crédito</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Norma referenciada, informações complementares, etc</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_pag_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tPag" type="TAnon_tPag_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Forma de Pagamento:01-Dinheiro;02-Cheque;03-Cartão de Crédito;04-Cartão de Débito;05-Vale Transportel;06 - PIX; 99 - Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xPag" minOccurs="0" type="TAnon_xPag_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição da forma de pagamento 99 - Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nDocPag" minOccurs="0" type="TAnon_nDocPag_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do documento ou carteira apresentada nas formas de pagamento diferentes de 03 e 04</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vPag" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do Pagamento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="card" minOccurs="0" type="TAnonComplex_card_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo de Cartões</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_autXML_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <choice xmlns="http://www.w3.org/2001/XMLSchema">
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ do autorizado</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+          </annotation>
+        </element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CPF do autorizado</documentation>
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+          </annotation>
+        </element>
+      </choice>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infAdFisco_4">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="2000"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_infCpl_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="5000"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infAdic_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdFisco" minOccurs="0" type="TAnon_infAdFisco_4">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações adicionais de interesse do Fisco</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Norma referenciada, informações complementares, etc</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infCpl" minOccurs="0" type="TAnon_infCpl_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações complementares de interesse do Contribuinte</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infBPe_2">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ide" type="TAnonComplex_ide_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="emit" type="TAnonComplex_emit_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Emitente do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="comp" minOccurs="0" type="TAnonComplex_comp_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Comprador do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="agencia" minOccurs="0" type="TAnonComplex_agencia_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação da agência/preposto/terceiro que comercializou o BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infBPeSub" minOccurs="0" type="TAnonComplex_infBPeSub_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações dos BP-e de Substituição para remarcação e/ou transferência</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infPassagem" type="TAnonComplex_infPassagem_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do detalhamento da Passagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infViagem" maxOccurs="unbounded" type="TAnonComplex_infViagem_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo de informações da viagem do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infValorBPe" type="TAnonComplex_infValorBPe_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações dos valores do Bilhete de Passagem</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="imp" type="TAnonComplex_imp_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações relativas aos Impostos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pag" maxOccurs="10" type="TAnonComplex_pag_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Dados de Pagamento. </documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="autXML" minOccurs="0" maxOccurs="10" type="TAnonComplex_autXML_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Autorizados para download do XML do DF-e</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar CNPJ ou CPF. Preencher os zeros não significativos.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infAdic" minOccurs="0" type="TAnonComplex_infAdic_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações Adicionais</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infRespTec" type="TRespTec" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do Responsável Técnico pela emissão do DF-e</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerBPe" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do leiaute</documentation>
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Ex: &#34;3.00&#34;</documentation>
+      </annotation>
+    </attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="Id" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador da tag a ser assinada</documentation>
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a chave de acesso do BP-e e precedida do literal &#34;BPe&#34;</documentation>
+      </annotation>
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:ID">
+          <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="BPe[0-9]{44}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_qrCodBPe_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="50"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="1000"></maxLength>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="((HTTPS?|https?)://.*\?chBPe=[0-9]{44}&amp;tpAmb=[1-2](&amp;sign=[!-ÿ]{1}[ -ÿ]{0,}[!-ÿ]{1}|[!-ÿ]{1})?)"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_boardPassBPe_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="50"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="1000"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infBPeSupl_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="qrCodBPe" type="TAnon_qrCodBPe_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Texto com o QR-Code impresso no DABPE</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="boardPassBPe" minOccurs="0" type="TAnon_boardPassBPe_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Texto contendo o boarding Pass impresso no DABPE (padrão PDF417)</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">O boarding Pass poderá ser gerado no padrão PDF417 e impresso no DABPE opcionalmente pelo emitente para colocar informações operacionais do bilhete e/ou prestar informações para a agência reguladora do setor</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xLgr_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nro_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xCpl_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xBairro_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xMun_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CEP_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{8}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_fone_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{7,12}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xLgr_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="255"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nro_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xCpl_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xBairro_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xMun_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CEP_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{8}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cPais_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{1,4}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xPais_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_fone_3">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{7,12}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cStat_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TStat"></restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infProt_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="chBPe" type="TChDFe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Chave de acesso do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhRecbto" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de processamento, no formato AAAA-MM-DDTHH:MM:SS TZD.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do BP-e.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="digVal" type="ds:DigestValueType" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Digest Value do BP-e processado. Utilizado para conferir a integridade do BP-e original.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TAnon_cStat_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do status do BP-e.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do BP-e.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="Id" type="xs:ID" use="optional"></attribute>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cMsg_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TStat"></restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infFisco_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMsg" type="TAnon_cMsg_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do status da mensagem do fisco</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMsg" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Mensagem do Fisco</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CST_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="00"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMS00_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CST" type="TAnon_CST_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">classificação Tributária do Serviço</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">00 - tributação normal ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBC" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor da BC do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pICMS" type="TDec_0302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vICMS" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do ICMS</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CST_2">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="20"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMS20_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CST" type="TAnon_CST_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Classificação Tributária do serviço</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">20 - tributação com BC reduzida do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pRedBC" type="TDec_0302Opc">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Percentual de redução da BC</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBC" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor da BC do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pICMS" type="TDec_0302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vICMS" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do ICMS</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CST_3">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="40"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="41"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="51"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMS45_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CST" type="TAnon_CST_3">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Classificação Tributária do Serviço</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Preencher com:
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;40 - ICMS isenção;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;41 - ICMS não tributada;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;51 - ICMS diferido</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CST_4">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="90"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMS90_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CST" type="TAnon_CST_4">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Classificação Tributária do Serviço</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema"> 90 - ICMS outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pRedBC" type="TDec_0302Opc" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Percentual de redução da BC</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vBC" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor da BC do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="pICMS" type="TDec_0302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Alíquota do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vICMS" type="TDec_1302">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vCred" type="TDec_1302" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do Crédito Outorgado/Presumido</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_CST_5">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="90"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_indSN_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_ICMSSN_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CST" type="TAnon_CST_5">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Classificação Tributária do Serviço</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">90 - ICMS Simples Nacional</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indSN" type="TAnon_indSN_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indica se o contribuinte é Simples Nacional&#x9;&#x9;&#x9;1=Sim</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xContato_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_fone_4">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{7,12}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_idCSRT_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{3}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_hashCSRT_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:base64Binary">
+      <length xmlns="http://www.w3.org/2001/XMLSchema" value="20"></length>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TBPeTM">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Bilhete de Passagem Eletrônico Transporte Metropolitano</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infBPe" type="TAnonComplex_infBPe_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do BPeTM</documentation>
+        </annotation>
+        <unique xmlns="http://www.w3.org/2001/XMLSchema" name="pk_idEqpCont">
+          <selector xmlns="http://www.w3.org/2001/XMLSchema" xpath="./*"></selector>
+          <field xmlns="http://www.w3.org/2001/XMLSchema" xpath="@idEqpCont"></field>
+        </unique>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" ref="ds:Signature"></element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Bilhete de Passagem Eletrônico</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infBPe" type="TAnonComplex_infBPe_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infBPeSupl" type="TAnonComplex_infBPeSupl_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações suplementares do BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" ref="ds:Signature"></element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TEnviBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Pedido de Concessão de Autorização de BP-e</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="idLote" type="TIdLote"></element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="BPe" type="TBPe"></element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerBPe" use="required"></attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TEndeEmi">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Dados do Endereço</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xLgr" type="TAnon_xLgr_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Logradouro</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nro" type="TAnon_nro_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xCpl" minOccurs="0" type="TAnon_xCpl_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Complemento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xBairro" type="TAnon_xBairro_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Bairro</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMun" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do município (utilizar a tabela do IBGE)</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMun" type="TAnon_xMun_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do município</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CEP" minOccurs="0" type="TAnon_CEP_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CEP</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar zeros não significativos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="UF" type="TUf_sem_EX">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Sigla da UF</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="fone" minOccurs="0" type="TAnon_fone_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Telefone</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="email" type="TEmail" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço de E-mail</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TEndereco">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Dados do Endereço</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xLgr" type="TAnon_xLgr_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Logradouro</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nro" type="TAnon_nro_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xCpl" minOccurs="0" type="TAnon_xCpl_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Complemento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xBairro" type="TAnon_xBairro_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Bairro</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMun" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do município (utilizar a tabela do IBGE), informar 9999999 para operações com o exterior.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMun" type="TAnon_xMun_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do município, informar EXTERIOR para operações com o exterior.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CEP" minOccurs="0" type="TAnon_CEP_2">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CEP</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="UF" type="TUf">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Sigla da UF, informar EX para operações com o exterior.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cPais" minOccurs="0" type="TAnon_cPais_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do país</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Utilizar a tabela do BACEN</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xPais" minOccurs="0" type="TAnon_xPais_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do país</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="fone" minOccurs="0" type="TAnon_fone_3">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Telefone</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="email" type="TEmail" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Endereço de E-mail</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TProtBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Protocolo de status resultado do processamento do BP-e (Modelo 63)</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infProt" type="TAnonComplex_infProt_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Dados do protocolo de status</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infFisco" minOccurs="0" type="TAnonComplex_infFisco_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Mensagem do Fisco</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" ref="ds:Signature" minOccurs="0"></element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerBPe" use="required"></attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TRetBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Retorno do Pedido de Autorização de BP-e (Modelo 63)</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação da UF</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o BP-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">código do status do retorno da consulta.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do do retorno da consulta.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="protBPe" type="TProtBPe" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Reposta ao processamento do BP-e</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerBPe" use="required"></attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TImp">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Dados do Imposto BP-e</documentation>
+    </annotation>
+    <choice xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMS00" type="TAnonComplex_ICMS00_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Prestação sujeito à tributação normal do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMS20" type="TAnonComplex_ICMS20_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Prestação sujeito à tributação com redução de BC do ICMS</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMS45" type="TAnonComplex_ICMS45_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">ICMS  Isento, não Tributado ou diferido</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMS90" type="TAnonComplex_ICMS90_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">ICMS Outros</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ICMSSN" type="TAnonComplex_ICMSSN_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Simples Nacional</documentation>
+        </annotation>
+      </element>
+    </choice>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TRespTec">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Dados da Responsável Técnico</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ da pessoa jurídica responsável técnica pelo sistema utilizado na emissão do documento fiscal eletrônico</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar o CNPJ da pessoa jurídica desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xContato" type="TAnon_xContato_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome da pessoa a ser contatada</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar o nome da pessoa a ser contatada na empresa desenvolvedora do sistema utilizado na emissão do documento fiscal eletrônico. No caso de pessoa física, informar o respectivo nome.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="email" type="TEmail">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Email da pessoa jurídica a ser contatada</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="fone" type="TAnon_fone_4">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Telefone da pessoa jurídica a ser contatada</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Preencher com o Código DDD + número do telefone.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="idCSRT" minOccurs="0" type="TAnon_idCSRT_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador do código de segurança do responsável técnico</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador do CSRT utilizado para geração do hash</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="hashCSRT" minOccurs="0" type="TAnon_hashCSRT_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Hash do token do código de segurança do responsável técnico</documentation>
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">O hashCSRT é o resultado das funções SHA-1 e base64 do token CSRT fornecido pelo fisco + chave de acesso do DF-e. (Implementação em futura NT)
+
+
+Observação: 28 caracteres são representados no schema como 20 bytes do tipo base64Binary</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TProcEmi">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo processo de emissão do BP-e</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TIdLote">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Identificador de controle do envio do lote. Número seqüencial auto-incremental, de controle correspondente ao identificador único do lote enviado. A responsabilidade de gerar e controlar esse número é do próprio contribuinte.</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{1,15}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TModal">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Modal do BP-e</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="4"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TVerBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema"> Tipo Versão do BP-e</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="1\.00"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TTime">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema"> Tipo hora</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="(([0-1][0-9])|([2][0-3])):([0-5][0-9]):([0-5][0-9])"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TEmail">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Email</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[^@]+@[^\.]+\..+"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TForPag">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Forma de Pagamento</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TTipoBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de BP-e</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TTipoSubstituicao">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Substituição</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TTipoOper">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Operação</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TIndPres">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Indicador de Presença</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="4"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="5"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="9"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TDoc">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Documento de Identificação</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="4"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="5"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TCfop">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo CFOP</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[123567][0-9]([0-9][1-9]|[1-9][0-9])"></pattern>
+    </restriction>
+  </simpleType>
+</schema>

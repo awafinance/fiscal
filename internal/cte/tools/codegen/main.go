@@ -14,8 +14,10 @@ import (
 const xmlDSigSignatureTag = "`xml:\"ds:Signature\"`"
 const detEventoStruct = "type DetEvento struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
 const detEventoStructCCe = "type DetEvento struct {\n\tXMLName          xml.Name             `xml:\"detEvento\"`\n\tVersaoEventoAttr string               `xml:\"versaoEvento,attr\"`\n\tEvCCeCTe         *TAnonComplexEvCCeCTe1 `xml:\"evCCeCTe\"`\n}"
+const detEventoStructCancel = "type DetEvento struct {\n\tXMLName          xml.Name             `xml:\"detEvento\"`\n\tVersaoEventoAttr string               `xml:\"versaoEvento,attr\"`\n\tEvCancCTe        *TAnonComplexEvCancCTe1 `xml:\"evCancCTe\"`\n}"
 const anonDetEventoStruct = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
 const anonDetEventoStructCCe = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name                `xml:\"detEvento\"`\n\tVersaoEventoAttr string                  `xml:\"versaoEvento,attr\"`\n\tEvCCeCTe         *TAnonComplexEvCCeCTe1  `xml:\"evCCeCTe\"`\n}"
+const anonDetEventoStructCancel = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name                  `xml:\"detEvento\"`\n\tVersaoEventoAttr string                    `xml:\"versaoEvento,attr\"`\n\tEvCancCTe        *TAnonComplexEvCancCTe1   `xml:\"evCancCTe\"`\n}"
 const infModalStruct = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
 const infModalStructWithInnerXML = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
 const anonInfModalStruct = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
@@ -89,8 +91,14 @@ func postprocessGenerated() error {
 		updated = optionalFieldXJust.ReplaceAllString(updated, "\n\tXJust          *string `xml:\"xJust\"`")
 		updated = optionalFieldCRT.ReplaceAllString(updated, "\n\tCRT       *string   `xml:\"CRT\"`")
 		if strings.HasSuffix(path, string(filepath.Separator)+"eventoCTeTiposBasico_v4.00.xsd.go") {
-			updated = strings.Replace(updated, detEventoStruct, detEventoStructCCe, 1)
-			updated = strings.Replace(updated, anonDetEventoStruct, anonDetEventoStructCCe, 1)
+			switch {
+			case strings.Contains(path, string(filepath.Separator)+"evento_cce"+string(filepath.Separator)):
+				updated = strings.Replace(updated, detEventoStruct, detEventoStructCCe, 1)
+				updated = strings.Replace(updated, anonDetEventoStruct, anonDetEventoStructCCe, 1)
+			case strings.Contains(path, string(filepath.Separator)+"evento_cancel"+string(filepath.Separator)):
+				updated = strings.Replace(updated, detEventoStruct, detEventoStructCancel, 1)
+				updated = strings.Replace(updated, anonDetEventoStruct, anonDetEventoStructCancel, 1)
+			}
 		}
 		if updated == string(text) {
 			return nil
@@ -132,6 +140,7 @@ func normalizeSchemas(args []string) error {
 			filepath.Join("internal", "cte", "schemas", "v4_0", "cte"),
 			filepath.Join("internal", "cte", "schemas", "v4_0", "cte_os"),
 			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cce"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cancel"),
 		}
 	}
 

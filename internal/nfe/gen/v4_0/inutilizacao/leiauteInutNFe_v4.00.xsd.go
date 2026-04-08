@@ -13,7 +13,7 @@ type InfInut struct {
 	XMLName xml.Name    `xml:"infInut"`
 	IdAttr  string      `xml:"Id,attr"`
 	TpAmb   string      `xml:"tpAmb"`
-	XServ   interface{} `xml:"xServ"`
+	XServ   string `xml:"xServ"`
 	CUF     string      `xml:"cUF"`
 	Ano     string      `xml:"ano"`
 	CNPJ    string      `xml:"CNPJ"`

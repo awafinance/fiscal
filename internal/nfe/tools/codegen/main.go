@@ -63,6 +63,12 @@ func postprocessGenerated() error {
 
 		updated := strings.ReplaceAll(string(text), xmlDSigSignatureTag, "`xml:\"http://www.w3.org/2000/09/xmldsig# Signature\"`")
 		updated = anonComplexXMLName.ReplaceAllString(updated, "`xml:\"$1\"`")
+		updated = strings.ReplaceAll(updated, "*interface{}", "*string")
+		updated = strings.ReplaceAll(updated, "interface{}", "string")
+		if strings.Contains(path, string(filepath.Separator)+filepath.Join("internal", "nfe", "gen", "v1_0", "evento_cce")+string(filepath.Separator)) {
+			updated = strings.ReplaceAll(updated, "*TCOrgaoIBGE", "*string")
+			updated = strings.ReplaceAll(updated, "*TVerEvento", "*string")
+		}
 		if updated == string(text) {
 			return nil
 		}
@@ -78,8 +84,17 @@ func postprocessGenerated() error {
 
 func isNestedImportedSchema(path string) bool {
 	clean := filepath.Clean(path)
-	pattern := string(filepath.Separator) + filepath.Join("internal", "nfe", "schemas") + string(filepath.Separator)
-	return strings.Contains(clean, pattern)
+	patterns := []string{
+		string(filepath.Separator) + filepath.Join("internal", "nfe", "schemas") + string(filepath.Separator),
+		string(filepath.Separator) + filepath.Join("internal", "nfe", "gen") + string(filepath.Separator) + "v1_0" + string(filepath.Separator) + "schemas" + string(filepath.Separator),
+		string(filepath.Separator) + filepath.Join("internal", "nfe", "gen") + string(filepath.Separator) + "v4_0" + string(filepath.Separator) + "schemas" + string(filepath.Separator),
+	}
+	for _, pattern := range patterns {
+		if strings.Contains(clean, pattern) {
+			return true
+		}
+	}
+	return false
 }
 
 func normalizeSchemas(args []string) error {

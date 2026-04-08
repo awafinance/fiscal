@@ -7,7 +7,7 @@ type TConsStatServ struct {
 	VersaoAttr string      `xml:"versao,attr"`
 	TpAmb      string      `xml:"tpAmb"`
 	CUF        string      `xml:"cUF"`
-	XServ      interface{} `xml:"xServ"`
+	XServ      string `xml:"xServ"`
 }
 
 // TRetConsStatServ is Campo observação utilizado para incluir informações ao contribuinte

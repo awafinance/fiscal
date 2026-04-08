@@ -12,7 +12,7 @@ import (
 type TConsSitNFe struct {
 	VersaoAttr string      `xml:"versao,attr"`
 	TpAmb      string      `xml:"tpAmb"`
-	XServ      interface{} `xml:"xServ"`
+	XServ      string `xml:"xServ"`
 	ChNFe      string      `xml:"chNFe"`
 }
 
@@ -88,9 +88,9 @@ type InfEvento struct {
 	CPF        *string     `xml:"CPF"`
 	ChNFe      string      `xml:"chNFe"`
 	DhEvento   string      `xml:"dhEvento"`
-	TpEvento   interface{} `xml:"tpEvento"`
-	NSeqEvento interface{} `xml:"nSeqEvento"`
-	VerEvento  interface{} `xml:"verEvento"`
+	TpEvento   string `xml:"tpEvento"`
+	NSeqEvento string `xml:"nSeqEvento"`
+	VerEvento  string `xml:"verEvento"`
 	DetEvento  *DetEvento  `xml:"detEvento"`
 }
 

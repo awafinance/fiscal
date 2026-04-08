@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/nfe" targetNamespace="http://www.portalfiscal.inf.br/nfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposDistDFe_v1.01.xsd"></include>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_docZip_1">
+    <simpleContent xmlns="http://www.w3.org/2001/XMLSchema">
+      <extension xmlns="http://www.w3.org/2001/XMLSchema" base="xs:base64Binary">
+        <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="NSU" type="TNSU" use="required">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">NSU do documento fiscal</documentation>
+          </annotation>
+        </attribute>
+        <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="schema" type="xs:string" use="required">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Schema XML que será utilizado para validar o XML existente no conteúdo da tag docZip. Vai identificar o tipo do documento e sua versão. Exemplos: resNFe_v1.00.xsd, procNFe_v3.10.xsd, resEvento_1.00.xsd, procEventoNFe_v1.00.xsd</documentation>
+          </annotation>
+        </attribute>
+      </extension>
+    </simpleContent>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_loteDistDFeInt_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" maxOccurs="50">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="docZip" type="TAnonComplex_docZip_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informação resumida ou documento fiscal eletrônico de interesse da pessoa ou empresa. O conteúdo desta tag estará compactado no padrão gZip. O tipo do campo é base64Binary.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_retDistDFeInt_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+            1 - Produção
+            2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Web Service NFeDistribuicaoDFe</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do status de processamento da requisição</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do processamento da requisição</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhResp" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e Hora de processamento da requisição no formato AAAA-MM-DDTHH:MM:SSTZD</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ultNSU" type="TNSU">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Último NSU pesquisado no Ambiente Nacional. Se for o caso, o solicitante pode continuar a consulta a partir deste NSU para obter novos resultados.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="maxNSU" type="TNSU">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Maior NSU existente no Ambiente Nacional para o CNPJ/CPF informado</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="loteDistDFeInt" minOccurs="0" type="TAnonComplex_loteDistDFeInt_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Conjunto de informações resumidas e documentos fiscais eletrônicos de interesse da pessoa ou empresa.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerDistDFe" use="required"></attribute>
+  </complexType>
+  <element xmlns="http://www.w3.org/2001/XMLSchema" name="retDistDFeInt" type="TAnonComplex_retDistDFeInt_1">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema do resultado do pedido de distribuição de DF-e de interesse</documentation>
+    </annotation>
+  </element>
+</schema>
