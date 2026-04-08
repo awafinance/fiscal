@@ -1,0 +1,233 @@
+package nfse_test
+
+import (
+	"bytes"
+	"cmp"
+	"encoding/xml"
+	"io"
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"testing"
+
+	"github.com/awa/nota-fiscal/pkg/nfse"
+	"github.com/stretchr/testify/require"
+)
+
+const (
+	nfseNamespace = "http://www.sped.fazenda.gov.br/nfse"
+	dsNamespace   = "http://www.w3.org/2000/09/xmldsig#"
+)
+
+func TestParse_Fixtures(t *testing.T) {
+	t.Parallel()
+
+	for _, fixture := range allFixtureNames(t) {
+		t.Run(fixture, func(t *testing.T) {
+			t.Parallel()
+
+			original := readFixture(t, fixture)
+			doc := parseFixture(t, fixture)
+
+			assertFixtureShape(t, fixture, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, original), normalizeXML(t, roundTripped))
+
+			reparsed, err := nfse.Parse(roundTripped)
+			require.NoError(t, err)
+			assertSameRoot(t, doc, reparsed)
+			assertFixtureShape(t, fixture, reparsed)
+		})
+	}
+}
+
+func TestParse_InvalidInputs(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name        string
+		data        []byte
+		errContains string
+	}{
+		{name: "empty", data: nil, errContains: "empty xml document"},
+		{name: "unsupported root", data: []byte(`<foo></foo>`), errContains: `unsupported root element "foo"`},
+		{name: "invalid dps", data: []byte(`<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></DPS>`), errContains: "missing infDPS"},
+		{name: "invalid nfse", data: []byte(`<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></NFSe>`), errContains: "missing infNFSe"},
+		{name: "invalid event", data: []byte(`<pedRegEvento xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></pedRegEvento>`), errContains: "missing infPedReg"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := nfse.Parse(tt.data)
+			require.Error(t, err)
+			require.Nil(t, doc)
+			require.ErrorContains(t, err, tt.errContains)
+		})
+	}
+}
+
+func TestMarshalXML_NilReceiver(t *testing.T) {
+	t.Parallel()
+
+	var doc *nfse.Document
+	data, err := xml.Marshal(doc)
+	require.NoError(t, err)
+	require.Empty(t, data)
+}
+
+func assertFixtureShape(t *testing.T, fixture string, doc *nfse.Document) {
+	t.Helper()
+
+	switch fixture {
+	case "dps-regime-normal.xml":
+		require.NotNil(t, doc.DPS)
+		require.Equal(t, "1.00", doc.DPS.VersaoAttr)
+		require.Equal(t, "00007", doc.DPS.InfDPS.Serie)
+		require.Equal(t, "2", doc.DPS.InfDPS.NDPS)
+		require.Equal(t, "4202404", doc.DPS.InfDPS.CLocEmi)
+		require.Equal(t, "010101", doc.DPS.InfDPS.Serv.CServ.CTribNac)
+	case "dps-simples.xml", "ConsultarNFSeRPS-ped-sitnfserps.xml":
+		require.NotNil(t, doc.DPS)
+		require.Equal(t, "900", doc.DPS.InfDPS.Serie)
+		require.Equal(t, "6", doc.DPS.InfDPS.NDPS)
+		require.NotNil(t, doc.DPS.InfDPS.Prest.RegTrib)
+	case "ConsultarNFSeEnvio-ped-sitnfse.xml":
+		require.NotNil(t, doc.NFSe)
+		require.Equal(t, "1.00", doc.NFSe.VersaoAttr)
+		require.Equal(t, "2", doc.NFSe.InfNFSe.NNFSe)
+		require.Equal(t, "100", doc.NFSe.InfNFSe.CStat)
+		require.NotNil(t, doc.NFSe.InfNFSe.DPS)
+	case "CancelarNFSe-ped-cannfse.xml":
+		require.NotNil(t, doc.PedRegEvento)
+		require.Equal(t, "1.00", doc.PedRegEvento.VersaoAttr)
+		require.Equal(t, "001", doc.PedRegEvento.InfPedReg.NPedRegEvento)
+		require.NotNil(t, doc.PedRegEvento.InfPedReg.E101101)
+		require.Equal(t, "1", doc.PedRegEvento.InfPedReg.E101101.CMotivo)
+	default:
+		t.Fatalf("unhandled fixture %s", fixture)
+	}
+}
+
+func assertSameRoot(t *testing.T, expected, actual *nfse.Document) {
+	t.Helper()
+
+	require.Equal(t, expected.DPS != nil, actual.DPS != nil)
+	require.Equal(t, expected.NFSe != nil, actual.NFSe != nil)
+	require.Equal(t, expected.PedRegEvento != nil, actual.PedRegEvento != nil)
+}
+
+func allFixtureNames(t *testing.T) []string {
+	t.Helper()
+
+	entries, err := os.ReadDir(filepath.Join("..", "..", "testdata", "nfse", "v1_0"))
+	require.NoError(t, err)
+
+	names := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if entry.IsDir() || filepath.Ext(entry.Name()) != ".xml" {
+			continue
+		}
+		names = append(names, entry.Name())
+	}
+
+	slices.Sort(names)
+	return names
+}
+
+func parseFixture(t *testing.T, name string) *nfse.Document {
+	t.Helper()
+
+	data := readFixture(t, name)
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+	require.NotNil(t, doc)
+	return doc
+}
+
+func readFixture(t *testing.T, name string) []byte {
+	t.Helper()
+
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "nfse", "v1_0", name))
+	require.NoError(t, err)
+	return data
+}
+
+func normalizeXML(t *testing.T, data []byte) string {
+	t.Helper()
+
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	var b strings.Builder
+
+	for {
+		tok, err := decoder.Token()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			require.NoError(t, err)
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			b.WriteByte('<')
+			b.WriteString(qualifiedName(tok.Name))
+			attrs := make([]xml.Attr, 0, len(tok.Attr))
+			for _, attr := range tok.Attr {
+				if isNamespaceDecl(attr) {
+					continue
+				}
+				attrs = append(attrs, attr)
+			}
+			slices.SortFunc(attrs, func(a, b xml.Attr) int {
+				return cmp.Or(
+					strings.Compare(a.Name.Space, b.Name.Space),
+					strings.Compare(a.Name.Local, b.Name.Local),
+				)
+			})
+			for _, attr := range attrs {
+				b.WriteByte(' ')
+				b.WriteString(qualifiedName(attr.Name))
+				b.WriteString(`="`)
+				b.WriteString(strings.TrimSpace(attr.Value))
+				b.WriteByte('"')
+			}
+			b.WriteByte('>')
+		case xml.EndElement:
+			b.WriteString("</")
+			b.WriteString(qualifiedName(tok.Name))
+			b.WriteByte('>')
+		case xml.CharData:
+			text := strings.TrimSpace(string(tok))
+			if text != "" {
+				b.WriteString(text)
+			}
+		}
+	}
+
+	return b.String()
+}
+
+func qualifiedName(name xml.Name) string {
+	switch name.Space {
+	case "", nfseNamespace:
+		return name.Local
+	case dsNamespace:
+		return "ds:" + name.Local
+	case "xmlns":
+		if name.Local == "" {
+			return "xmlns"
+		}
+		return "xmlns:" + name.Local
+	}
+
+	return name.Space + ":" + name.Local
+}
+
+func isNamespaceDecl(attr xml.Attr) bool {
+	return attr.Name.Space == "xmlns" || attr.Name.Local == "xmlns"
+}

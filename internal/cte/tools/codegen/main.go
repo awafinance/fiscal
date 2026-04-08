@@ -12,12 +12,27 @@ import (
 )
 
 const xmlDSigSignatureTag = "`xml:\"ds:Signature\"`"
+const detEventoStruct = "type DetEvento struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
+const detEventoStructCCe = "type DetEvento struct {\n\tXMLName          xml.Name             `xml:\"detEvento\"`\n\tVersaoEventoAttr string               `xml:\"versaoEvento,attr\"`\n\tEvCCeCTe         *TAnonComplexEvCCeCTe1 `xml:\"evCCeCTe\"`\n}"
+const anonDetEventoStruct = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
+const anonDetEventoStructCCe = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name                `xml:\"detEvento\"`\n\tVersaoEventoAttr string                  `xml:\"versaoEvento,attr\"`\n\tEvCCeCTe         *TAnonComplexEvCCeCTe1  `xml:\"evCCeCTe\"`\n}"
+const infModalStruct = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
+const infModalStructWithInnerXML = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
+const anonInfModalStruct = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
+const anonInfModalStructWithInnerXML = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
+const anonInfModalStruct2 = "type TAnonComplexInfModal2 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
+const anonInfModalStructWithInnerXML2 = "type TAnonComplexInfModal2 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
+const anonInfModalStruct3 = "type TAnonComplexInfModal3 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
+const anonInfModalStructWithInnerXML3 = "type TAnonComplexInfModal3 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
 
 var anonComplexXMLName = regexp.MustCompile("`xml:\"TAnonComplex_([^\"_]+(?:_[^\"_]+)*)_\\d+\"`")
+var optionalFieldDhCont = regexp.MustCompile(`\n\tDhCont\s+string\s+` + "`xml:\"dhCont\"`")
+var optionalFieldXJust = regexp.MustCompile(`\n\tXJust\s+string\s+` + "`xml:\"xJust\"`")
+var optionalFieldCRT = regexp.MustCompile(`\n\tCRT\s+string\s+` + "`xml:\"CRT\"`")
 
 func main() {
 	if len(os.Args) < 2 {
-		fatalf("usage: go run ./internal/nfe/tools/codegen <normalize-schemas|postprocess-generated> [schema-dir ...]")
+		fatalf("usage: go run ./internal/cte/tools/codegen <normalize-schemas|postprocess-generated> [schema-dir ...]")
 	}
 
 	switch os.Args[1] {
@@ -40,7 +55,7 @@ func postprocessGenerated() error {
 		return err
 	}
 
-	root := filepath.Join(repoRoot, "internal", "nfe", "gen")
+	root := filepath.Join(repoRoot, "internal", "cte", "gen")
 	return filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -61,8 +76,22 @@ func postprocessGenerated() error {
 			return err
 		}
 
-		updated := strings.ReplaceAll(string(text), xmlDSigSignatureTag, "`xml:\"http://www.w3.org/2000/09/xmldsig# Signature\"`")
+		updated := string(text)
+		updated = strings.ReplaceAll(updated, xmlDSigSignatureTag, "`xml:\"http://www.w3.org/2000/09/xmldsig# Signature\"`")
 		updated = anonComplexXMLName.ReplaceAllString(updated, "`xml:\"$1\"`")
+		updated = strings.ReplaceAll(updated, "*interface{}", "*string")
+		updated = strings.ReplaceAll(updated, "interface{}", "string")
+		updated = strings.Replace(updated, infModalStruct, infModalStructWithInnerXML, 1)
+		updated = strings.Replace(updated, anonInfModalStruct, anonInfModalStructWithInnerXML, 1)
+		updated = strings.Replace(updated, anonInfModalStruct2, anonInfModalStructWithInnerXML2, 1)
+		updated = strings.Replace(updated, anonInfModalStruct3, anonInfModalStructWithInnerXML3, 1)
+		updated = optionalFieldDhCont.ReplaceAllString(updated, "\n\tDhCont         *string `xml:\"dhCont\"`")
+		updated = optionalFieldXJust.ReplaceAllString(updated, "\n\tXJust          *string `xml:\"xJust\"`")
+		updated = optionalFieldCRT.ReplaceAllString(updated, "\n\tCRT       *string   `xml:\"CRT\"`")
+		if strings.HasSuffix(path, string(filepath.Separator)+"eventoCTeTiposBasico_v4.00.xsd.go") {
+			updated = strings.Replace(updated, detEventoStruct, detEventoStructCCe, 1)
+			updated = strings.Replace(updated, anonDetEventoStruct, anonDetEventoStructCCe, 1)
+		}
 		if updated == string(text) {
 			return nil
 		}
@@ -78,8 +107,17 @@ func postprocessGenerated() error {
 
 func isNestedImportedSchema(path string) bool {
 	clean := filepath.Clean(path)
-	pattern := string(filepath.Separator) + filepath.Join("internal", "nfe", "schemas") + string(filepath.Separator)
-	return strings.Contains(clean, pattern)
+	patterns := []string{
+		string(filepath.Separator) + filepath.Join("nfelib", "nfelib", "cte", "schemas") + string(filepath.Separator),
+		string(filepath.Separator) + filepath.Join("internal", "cte", "schemas") + string(filepath.Separator),
+		string(filepath.Separator) + filepath.Join("internal", "cte", "gen") + string(filepath.Separator) + "v4_0" + string(filepath.Separator) + "schemas" + string(filepath.Separator),
+	}
+	for _, pattern := range patterns {
+		if strings.Contains(clean, pattern) {
+			return true
+		}
+	}
+	return false
 }
 
 func normalizeSchemas(args []string) error {
@@ -90,7 +128,11 @@ func normalizeSchemas(args []string) error {
 
 	roots := args
 	if len(roots) == 0 {
-		roots = []string{filepath.Join("internal", "nfe", "schemas", "v4_0", "nfe_proc")}
+		roots = []string{
+			filepath.Join("internal", "cte", "schemas", "v4_0", "cte"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "cte_os"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cce"),
+		}
 	}
 
 	for _, rootArg := range roots {
@@ -179,7 +221,6 @@ func flattenOptionalDirectElementSequences(root *element) int {
 			if child.XMLName.Local != "sequence" || child.attr("minOccurs") != "0" {
 				continue
 			}
-
 			if !sequenceHasOnlyDirectElements(child) {
 				continue
 			}
@@ -326,11 +367,6 @@ func insertChildren(children []*element, idx int, inserted []element) []*element
 	return newChildren
 }
 
-func fatalf(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, format+"\n", args...)
-	os.Exit(1)
-}
-
 func findRepoRoot() (string, error) {
 	dir, err := os.Getwd()
 	if err != nil {
@@ -344,10 +380,15 @@ func findRepoRoot() (string, error) {
 
 		parent := filepath.Dir(dir)
 		if parent == dir {
-			return "", fmt.Errorf("could not locate repo root from %s", dir)
+			return "", fmt.Errorf("could not find repo root from %s", dir)
 		}
 		dir = parent
 	}
+}
+
+func fatalf(format string, args ...interface{}) {
+	fmt.Fprintf(os.Stderr, format+"\n", args...)
+	os.Exit(1)
 }
 
 type element struct {

@@ -1,5 +1,7 @@
 package gen
 
+//go:generate xgen -i ../schemas/v1_0/evento_entrega -o ./v1_0/evento_entrega -l Go
+//go:generate xgen -i ../schemas/v1_0/evento_cancel_entrega -o ./v1_0/evento_cancel_entrega -l Go
 //go:generate xgen -i ../schemas/v4_0/nfe_proc -o ./v4_0/nfe_proc -l Go
 //go:generate xgen -i ../schemas/v4_0/consulta_situacao -o ./v4_0/consulta_situacao -l Go
 //go:generate xgen -i ../schemas/v4_0/status_servico -o ./v4_0/status_servico -l Go
