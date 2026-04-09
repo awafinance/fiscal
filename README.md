@@ -1,6 +1,8 @@
 # fiscal
 
-`fiscal` is a Go library for parsing and marshaling Brazilian fiscal XML documents with strongly typed structs generated from the official schemas.
+`fiscal` is a Go library for parsing and marshaling Brazilian fiscal XML
+documents with strongly typed structs generated from the adapted
+official XSD schemas.
 
 It currently covers:
 
@@ -10,20 +12,16 @@ It currently covers:
 - MDF-e
 - BP-e
 
-The library supports primary documents, processed wrappers, distribution responses, service/status and consultation roots where implemented, and typed event documents where applicable.
+The library supports primary documents, processed wrappers, distribution
+responses, service/status and consultation roots where implemented, and
+typed event documents where applicable.
 
-## Why this library
-
-- Strongly typed Go structs generated from official XSDs
-- Family-specific parsing with root dispatch
-- Event-specific dispatch for families that reuse generic event envelopes
-- Round-trip XML support through `xml.Marshal` / `xml.MarshalIndent`
-- No runtime dependencies
-
-## Install
+## Setup
 
 ```bash
-go get github.com/awafinance/fiscal
+git clone git@github.com:awafinance/fiscal.git
+cd fiscal
+mise trust && mise install
 ```
 
 ## Packages
@@ -44,7 +42,8 @@ Each package exposes the same core entrypoint:
 Parse(data []byte) (*Document, error)
 ```
 
-The returned `Document` is a tagged container where exactly one root field is expected to be populated.
+The returned `Document` is a tagged container where exactly one root field is
+expected to be populated.
 
 ## Basic usage
 
@@ -52,37 +51,25 @@ The returned `Document` is a tagged container where exactly one root field is ex
 package main
 
 import (
-	"encoding/xml"
-	"fmt"
-	"os"
+ "encoding/xml"
+ "fmt"
+ "os"
 
-	"github.com/awafinance/fiscal/pkg/nfe"
+ "github.com/awafinance/fiscal/pkg/nfe"
 )
 
 func main() {
-	data, err := os.ReadFile("nfe.xml")
-	if err != nil {
-		panic(err)
-	}
+ data, err := os.ReadFile("nfe.xml")
+ if err != nil {
+  panic(err)
+ }
 
-	doc, err := nfe.Parse(data)
-	if err != nil {
-		panic(err)
-	}
+ doc, err := nfe.Parse(data)
+ if err != nil {
+  panic(err)
+ }
 
-	switch {
-	case doc.NFe != nil:
-		fmt.Println(doc.NFe.InfNFe.Emit.XNome)
-	case doc.ProtNFe != nil:
-		fmt.Println(doc.ProtNFe.InfProt.CStat)
-	}
-
-	out, err := xml.MarshalIndent(doc, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	_ = out
+ ...
 }
 ```
 
@@ -144,17 +131,19 @@ Generation is schema-driven. The generated code is post-processed to fix XML nam
 Regenerate bindings for a family with:
 
 ```bash
-go generate ./internal/nfe/gen
-go generate ./internal/cte/gen
-go generate ./internal/mdfe/gen
-go generate ./internal/bpe/gen
-go generate ./internal/nfse/gen
+mise run gen
 ```
 
 Run tests with:
 
 ```bash
-go test ./...
+mise run test
+```
+
+Check all commands available:
+
+```bash
+mise tasks
 ```
 
 ## License
