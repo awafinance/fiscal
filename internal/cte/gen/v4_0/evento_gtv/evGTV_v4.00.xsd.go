@@ -29,9 +29,9 @@ type TAnonTpEspecie1 string
 
 // TAnonComplexInfEspecie1 is Valor Transportada em Espécie indicada
 type TAnonComplexInfEspecie1 struct {
-	XMLName   xml.Name `xml:"infEspecie"`
-	TpEspecie string   `xml:"tpEspecie"`
-	VEspecie  *string  `xml:"vEspecie"`
+	XMLName		xml.Name	`xml:"infEspecie" json:"-"`
+	TpEspecie	string		`xml:"tpEspecie" json:"tpEspecie,omitempty"`
+	VEspecie	*string		`xml:"vEspecie" json:"vEspecie,omitempty"`
 }
 
 // TAnonIE1 ...
@@ -42,12 +42,12 @@ type TAnonXNome1 string
 
 // TAnonComplexRem1 is Razão social ou nome do remetente
 type TAnonComplexRem1 struct {
-	XMLName xml.Name `xml:"rem"`
-	CNPJ    *string  `xml:"CNPJ"`
-	CPF     *string  `xml:"CPF"`
-	IE      *string  `xml:"IE"`
-	UF      string   `xml:"UF"`
-	XNome   string   `xml:"xNome"`
+	XMLName	xml.Name	`xml:"rem" json:"-"`
+	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	IE	*string		`xml:"IE" json:"IE,omitempty"`
+	UF	string		`xml:"UF" json:"UF,omitempty"`
+	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
 }
 
 // TAnonIE2 ...
@@ -58,12 +58,12 @@ type TAnonXNome2 string
 
 // TAnonComplexDest1 is Razão social ou nome do destinatário
 type TAnonComplexDest1 struct {
-	XMLName xml.Name `xml:"dest"`
-	CNPJ    *string  `xml:"CNPJ"`
-	CPF     *string  `xml:"CPF"`
-	IE      *string  `xml:"IE"`
-	UF      string   `xml:"UF"`
-	XNome   string   `xml:"xNome"`
+	XMLName	xml.Name	`xml:"dest" json:"-"`
+	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	IE	*string		`xml:"IE" json:"IE,omitempty"`
+	UF	string		`xml:"UF" json:"UF,omitempty"`
+	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
 }
 
 // TAnonRNTRC1 ...
@@ -71,27 +71,27 @@ type TAnonRNTRC1 string
 
 // TAnonComplexInfGTV1 is RNTRC do transportador
 type TAnonComplexInfGTV1 struct {
-	XMLName    xml.Name                   `xml:"infGTV"`
-	NDoc       string                     `xml:"nDoc"`
-	Id         string                     `xml:"id"`
-	Serie      *string                    `xml:"serie"`
-	Subserie   *string                    `xml:"subserie"`
-	DEmi       string                     `xml:"dEmi"`
-	NDV        string                     `xml:"nDV"`
-	QCarga     string                     `xml:"qCarga"`
-	InfEspecie []*TAnonComplexInfEspecie1 `xml:"infEspecie"`
-	Rem        *TAnonComplexRem1          `xml:"rem"`
-	Dest       *TAnonComplexDest1         `xml:"dest"`
-	Placa      *string                    `xml:"placa"`
-	UF         *string                    `xml:"UF"`
-	RNTRC      *string                    `xml:"RNTRC"`
+	XMLName		xml.Name			`xml:"infGTV" json:"-"`
+	NDoc		string				`xml:"nDoc" json:"nDoc,omitempty"`
+	Id		string				`xml:"id" json:"id,omitempty"`
+	Serie		*string				`xml:"serie" json:"serie,omitempty"`
+	Subserie	*string				`xml:"subserie" json:"subserie,omitempty"`
+	DEmi		string				`xml:"dEmi" json:"dEmi,omitempty"`
+	NDV		string				`xml:"nDV" json:"nDV,omitempty"`
+	QCarga		string				`xml:"qCarga" json:"qCarga,omitempty"`
+	InfEspecie	[]*TAnonComplexInfEspecie1	`xml:"infEspecie" json:"infEspecie,omitempty"`
+	Rem		*TAnonComplexRem1		`xml:"rem" json:"rem,omitempty"`
+	Dest		*TAnonComplexDest1		`xml:"dest" json:"dest,omitempty"`
+	Placa		*string				`xml:"placa" json:"placa,omitempty"`
+	UF		*string				`xml:"UF" json:"UF,omitempty"`
+	RNTRC		*string				`xml:"RNTRC" json:"RNTRC,omitempty"`
 }
 
 // TAnonComplexEvGTV1 is Grupo de Informações das GTV
 type TAnonComplexEvGTV1 struct {
-	XMLName    xml.Name               `xml:"evGTV"`
-	DescEvento string                 `xml:"descEvento"`
-	InfGTV     []*TAnonComplexInfGTV1 `xml:"infGTV"`
+	XMLName		xml.Name		`xml:"evGTV" json:"-"`
+	DescEvento	string			`xml:"descEvento" json:"descEvento,omitempty"`
+	InfGTV		[]*TAnonComplexInfGTV1	`xml:"infGTV" json:"infGTV,omitempty"`
 }
 
 // EvGTV is Schema XML de validação do evento informações da GTV 110170

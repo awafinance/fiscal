@@ -17,9 +17,9 @@ type TAnonNroViagem1 string
 
 // TAnonComplexInfViagens1 is Número de referência da viagem do MDFe referenciado.
 type TAnonComplexInfViagens1 struct {
-	XMLName    xml.Name `xml:"infViagens"`
-	QtdViagens string   `xml:"qtdViagens"`
-	NroViagem  string   `xml:"nroViagem"`
+	XMLName		xml.Name	`xml:"infViagens" json:"-"`
+	QtdViagens	string		`xml:"qtdViagens" json:"qtdViagens,omitempty"`
+	NroViagem	string		`xml:"nroViagem" json:"nroViagem,omitempty"`
 }
 
 // TAnonXNome1 ...
@@ -36,10 +36,10 @@ type TAnonXComp1 string
 
 // TAnonComplexComp1 is Descrição do componente do tipo Outros
 type TAnonComplexComp1 struct {
-	XMLName xml.Name `xml:"Comp"`
-	TpComp  string   `xml:"tpComp"`
-	VComp   string   `xml:"vComp"`
-	XComp   *string  `xml:"xComp"`
+	XMLName	xml.Name	`xml:"Comp" json:"-"`
+	TpComp	string		`xml:"tpComp" json:"tpComp,omitempty"`
+	VComp	string		`xml:"vComp" json:"vComp,omitempty"`
+	XComp	*string		`xml:"xComp" json:"xComp,omitempty"`
 }
 
 // TAnonIndPag1 ...
@@ -53,10 +53,10 @@ type TAnonNParcela1 string
 
 // TAnonComplexInfPrazo1 is Valor da Parcela
 type TAnonComplexInfPrazo1 struct {
-	XMLName  xml.Name `xml:"infPrazo"`
-	NParcela string   `xml:"nParcela"`
-	DVenc    string   `xml:"dVenc"`
-	VParcela string   `xml:"vParcela"`
+	XMLName		xml.Name	`xml:"infPrazo" json:"-"`
+	NParcela	string		`xml:"nParcela" json:"nParcela,omitempty"`
+	DVenc		string		`xml:"dVenc" json:"dVenc,omitempty"`
+	VParcela	string		`xml:"vParcela" json:"vParcela,omitempty"`
 }
 
 // TAnonTpAntecip1 ...
@@ -74,37 +74,37 @@ type TAnonPIX1 string
 // TAnonComplexInfBanc1 is Informar a chave PIX para recebimento do frete.
 // Pode ser email, CPF/ CNPJ (somente numeros), Telefone com a seguinte formatação (+5599999999999) ou a chave aleatória gerada pela instituição.
 type TAnonComplexInfBanc1 struct {
-	XMLName    xml.Name `xml:"infBanc"`
-	CodBanco   *string  `xml:"codBanco"`
-	CodAgencia *string  `xml:"codAgencia"`
-	CNPJIPEF   *string  `xml:"CNPJIPEF"`
-	PIX        *string  `xml:"PIX"`
+	XMLName		xml.Name	`xml:"infBanc" json:"-"`
+	CodBanco	*string		`xml:"codBanco" json:"codBanco,omitempty"`
+	CodAgencia	*string		`xml:"codAgencia" json:"codAgencia,omitempty"`
+	CNPJIPEF	*string		`xml:"CNPJIPEF" json:"CNPJIPEF,omitempty"`
+	PIX		*string		`xml:"PIX" json:"PIX,omitempty"`
 }
 
 // TAnonComplexInfPag1 is Informações bancárias
 type TAnonComplexInfPag1 struct {
-	XMLName           xml.Name                 `xml:"infPag"`
-	XNome             *string                  `xml:"xNome"`
-	CPF               *string                  `xml:"CPF"`
-	CNPJ              *string                  `xml:"CNPJ"`
-	IdEstrangeiro     *string                  `xml:"idEstrangeiro"`
-	Comp              []*TAnonComplexComp1     `xml:"Comp"`
-	VContrato         string                   `xml:"vContrato"`
-	IndPag            string                   `xml:"indPag"`
-	VAdiant           *string                  `xml:"vAdiant"`
-	IndAntecipaAdiant *string                  `xml:"indAntecipaAdiant"`
-	InfPrazo          []*TAnonComplexInfPrazo1 `xml:"infPrazo"`
-	TpAntecip         *string                  `xml:"tpAntecip"`
-	InfBanc           *TAnonComplexInfBanc1    `xml:"infBanc"`
+	XMLName			xml.Name			`xml:"infPag" json:"-"`
+	XNome			*string				`xml:"xNome" json:"xNome,omitempty"`
+	CPF			*string				`xml:"CPF" json:"CPF,omitempty"`
+	CNPJ			*string				`xml:"CNPJ" json:"CNPJ,omitempty"`
+	IdEstrangeiro		*string				`xml:"idEstrangeiro" json:"idEstrangeiro,omitempty"`
+	Comp			[]*TAnonComplexComp1		`xml:"Comp" json:"Comp,omitempty"`
+	VContrato		string				`xml:"vContrato" json:"vContrato,omitempty"`
+	IndPag			string				`xml:"indPag" json:"indPag,omitempty"`
+	VAdiant			*string				`xml:"vAdiant" json:"vAdiant,omitempty"`
+	IndAntecipaAdiant	*string				`xml:"indAntecipaAdiant" json:"indAntecipaAdiant,omitempty"`
+	InfPrazo		[]*TAnonComplexInfPrazo1	`xml:"infPrazo" json:"infPrazo,omitempty"`
+	TpAntecip		*string				`xml:"tpAntecip" json:"tpAntecip,omitempty"`
+	InfBanc			*TAnonComplexInfBanc1		`xml:"infBanc" json:"infBanc,omitempty"`
 }
 
 // TAnonComplexEvPagtoOperMDFe1 is Informações do Pagamento do Frete
 type TAnonComplexEvPagtoOperMDFe1 struct {
-	XMLName    xml.Name                 `xml:"evPagtoOperMDFe"`
-	DescEvento string                   `xml:"descEvento"`
-	NProt      string                   `xml:"nProt"`
-	InfViagens *TAnonComplexInfViagens1 `xml:"infViagens"`
-	InfPag     []*TAnonComplexInfPag1   `xml:"infPag"`
+	XMLName		xml.Name			`xml:"evPagtoOperMDFe" json:"-"`
+	DescEvento	string				`xml:"descEvento" json:"descEvento,omitempty"`
+	NProt		string				`xml:"nProt" json:"nProt,omitempty"`
+	InfViagens	*TAnonComplexInfViagens1	`xml:"infViagens" json:"infViagens,omitempty"`
+	InfPag		[]*TAnonComplexInfPag1		`xml:"infPag" json:"infPag,omitempty"`
 }
 
 // EvPagtoOperMDFe is Schema XML de validação do evento de pagamento da operação de transporte 110116

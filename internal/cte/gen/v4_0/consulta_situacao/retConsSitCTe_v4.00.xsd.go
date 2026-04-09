@@ -3,4 +3,4 @@
 package schema
 
 // RetConsSitCTe is Schema XML de validação do retorno da consulta da situação atual do CT-e.
-type RetConsSitCTe *TRetConsSitCTe
+type RetConsSitCTe string

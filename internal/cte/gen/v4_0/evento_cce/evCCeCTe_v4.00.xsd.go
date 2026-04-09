@@ -24,11 +24,11 @@ type TAnonNroItemAlterado1 string
 // TAnonComplexInfCorrecao1 is Preencher com o indice do item alterado caso a alteração ocorra em uma lista.
 // OBS: O indice inicia sempre  em 1
 type TAnonComplexInfCorrecao1 struct {
-	XMLName         xml.Name `xml:"infCorrecao"`
-	GrupoAlterado   string   `xml:"grupoAlterado"`
-	CampoAlterado   string   `xml:"campoAlterado"`
-	ValorAlterado   string   `xml:"valorAlterado"`
-	NroItemAlterado *string  `xml:"nroItemAlterado"`
+	XMLName		xml.Name	`xml:"infCorrecao" json:"-"`
+	GrupoAlterado	string		`xml:"grupoAlterado" json:"grupoAlterado,omitempty"`
+	CampoAlterado	string		`xml:"campoAlterado" json:"campoAlterado,omitempty"`
+	ValorAlterado	string		`xml:"valorAlterado" json:"valorAlterado,omitempty"`
+	NroItemAlterado	*string		`xml:"nroItemAlterado" json:"nroItemAlterado,omitempty"`
 }
 
 // TAnonXCondUso1 ...
@@ -37,10 +37,10 @@ type TAnonXCondUso1 string
 // TAnonComplexEvCCeCTe1 is informar a literal :Condições de uso da Carta de Correção, informar a literal:
 // “A Carta de Correção é disciplinada pelo Art. 58-B do CONVÊNIO/SINIEF 06/89: Fica permitida a utilização de carta de correção, para regularização de erro ocorrido na emissão de documentos fiscais relativos à prestação de serviço de transporte, desde que o erro não esteja relacionado com: I - as variáveis que determinam o valor do imposto tais como: base de cálculo, alíquota, diferença de preço, quantidade, valor da prestação;II - a correção de dados cadastrais que implique mudança do emitente, tomador, remetente ou do destinatário;III - a data de emissão ou de saída.” (texto com acentuação)  ou “A Carta de Correcao e disciplinada pelo Art. 58-B do CONVENIO/SINIEF 06/89: Fica permitida a utilizacao de carta de correcao, para regularizacao de erro ocorrido na emissao de documentos fiscais relativos a prestacao de servico de transporte, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da prestacao;II - a correcao de dados cadastrais que implique mudança do emitente, tomador, remetente ou do destinatario;III - a data de emissao ou de saida.” (texto sem acentuação)
 type TAnonComplexEvCCeCTe1 struct {
-	XMLName     xml.Name                    `xml:"evCCeCTe"`
-	DescEvento  string                      `xml:"descEvento"`
-	InfCorrecao []*TAnonComplexInfCorrecao1 `xml:"infCorrecao"`
-	XCondUso    string                      `xml:"xCondUso"`
+	XMLName		xml.Name			`xml:"evCCeCTe" json:"-"`
+	DescEvento	string				`xml:"descEvento" json:"descEvento,omitempty"`
+	InfCorrecao	[]*TAnonComplexInfCorrecao1	`xml:"infCorrecao" json:"infCorrecao,omitempty"`
+	XCondUso	string				`xml:"xCondUso" json:"xCondUso,omitempty"`
 }
 
 // EvCCeCTe is Schema XML de validação do evento carta de correção

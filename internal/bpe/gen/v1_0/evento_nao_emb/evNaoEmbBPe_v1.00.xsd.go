@@ -11,10 +11,10 @@ type TAnonDescEvento1 string
 
 // TAnonComplexEvNaoEmbBPe1 is Justificativa do Não Embarque
 type TAnonComplexEvNaoEmbBPe1 struct {
-	XMLName    xml.Name `xml:"evNaoEmbBPe"`
-	DescEvento string   `xml:"descEvento"`
-	NProt      string   `xml:"nProt"`
-	XJust      *TString `xml:"xJust"`
+	XMLName		xml.Name	`xml:"evNaoEmbBPe" json:"-"`
+	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
+	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	XJust		*TString	`xml:"xJust" json:"xJust,omitempty"`
 }
 
 // EvNaoEmbBPe is Schema XML de validação do evento do não embarque

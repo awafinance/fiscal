@@ -14,11 +14,11 @@ type TAnonQBagagem1 string
 
 // TAnonComplexEvExcessoBagagem1 is Pode conter zeros quando o BP-e for de complemento de ICMS
 type TAnonComplexEvExcessoBagagem1 struct {
-	XMLName    xml.Name `xml:"evExcessoBagagem"`
-	DescEvento string   `xml:"descEvento"`
-	NProt      *TProt   `xml:"nProt"`
-	QBagagem   string   `xml:"qBagagem"`
-	VTotBag    string   `xml:"vTotBag"`
+	XMLName		xml.Name	`xml:"evExcessoBagagem" json:"-"`
+	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
+	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	QBagagem	string		`xml:"qBagagem" json:"qBagagem,omitempty"`
+	VTotBag		string		`xml:"vTotBag" json:"vTotBag,omitempty"`
 }
 
 // EvExcessoBagagem is Schema XML de validação do evento de excesso de bagagem

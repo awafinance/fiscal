@@ -23,19 +23,19 @@ type TAnonHashComprovante1 string
 
 // TAnonComplexDetEvento1 is Data e hora da geração do hash do Comprovante de Entrega da NF-e. Formato AAAA-MMDDThh:mm:ssTZD.
 type TAnonComplexDetEvento1 struct {
-	XMLName           xml.Name `xml:"detEvento" json:"-"`
-	VersaoAttr        string   `xml:"versao,attr" json:"versao,omitempty"`
-	DescEvento        string   `xml:"descEvento" json:"descEvento,omitempty"`
-	COrgaoAutor       string   `xml:"cOrgaoAutor" json:"cOrgaoAutor,omitempty"`
-	TpAutor           string   `xml:"tpAutor" json:"tpAutor,omitempty"`
-	VerAplic          *TString `xml:"verAplic" json:"verAplic,omitempty"`
-	DhEntrega         string   `xml:"dhEntrega" json:"dhEntrega,omitempty"`
-	NDoc              string   `xml:"nDoc" json:"nDoc,omitempty"`
-	XNome             string   `xml:"xNome" json:"xNome,omitempty"`
-	LatGPS            *string  `xml:"latGPS" json:"latGPS,omitempty"`
-	LongGPS           *string  `xml:"longGPS" json:"longGPS,omitempty"`
-	HashComprovante   string   `xml:"hashComprovante" json:"hashComprovante,omitempty"`
-	DhHashComprovante *string  `xml:"dhHashComprovante" json:"dhHashComprovante,omitempty"`
+	XMLName			xml.Name	`xml:"detEvento" json:"-"`
+	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
+	DescEvento		string		`xml:"descEvento" json:"descEvento,omitempty"`
+	COrgaoAutor		string		`xml:"cOrgaoAutor" json:"cOrgaoAutor,omitempty"`
+	TpAutor			string		`xml:"tpAutor" json:"tpAutor,omitempty"`
+	VerAplic		*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	DhEntrega		string		`xml:"dhEntrega" json:"dhEntrega,omitempty"`
+	NDoc			string		`xml:"nDoc" json:"nDoc,omitempty"`
+	XNome			string		`xml:"xNome" json:"xNome,omitempty"`
+	LatGPS			*string		`xml:"latGPS" json:"latGPS,omitempty"`
+	LongGPS			*string		`xml:"longGPS" json:"longGPS,omitempty"`
+	HashComprovante		string		`xml:"hashComprovante" json:"hashComprovante,omitempty"`
+	DhHashComprovante	*string		`xml:"dhHashComprovante" json:"dhHashComprovante,omitempty"`
 }
 
 // DetEvento is Schema XML de validação do evento de Comprovante de Entrega da NF-e

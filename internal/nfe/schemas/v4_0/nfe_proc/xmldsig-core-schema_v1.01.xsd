@@ -1,90 +1,86 @@
-<?xml version='1.0' encoding='utf-8'?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1">
-	<xs:complexType name="TAnonComplex_CanonicalizationMethod_1">
-					<xs:attribute name="Algorithm" type="anyURI" use="required" fixed="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
-				</xs:complexType>
-			<xs:complexType name="TAnonComplex_SignatureMethod_1">
-					<xs:attribute name="Algorithm" type="anyURI" use="required" fixed="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
-				</xs:complexType>
-			<xs:complexType name="TAnonComplex_DigestMethod_1">
-					<xs:attribute name="Algorithm" type="anyURI" use="required" fixed="http://www.w3.org/2000/09/xmldsig#sha1" />
-				</xs:complexType>
-			<xs:element name="Signature" type="ds:SignatureType" />
-	<xs:complexType name="SignatureType">
-		<xs:sequence>
-			<xs:element name="SignedInfo" type="ds:SignedInfoType" />
-			<xs:element name="SignatureValue" type="ds:SignatureValueType" />
-			<xs:element name="KeyInfo" type="ds:KeyInfoType" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="ID" use="optional" />
-	</xs:complexType>
-	<xs:complexType name="SignatureValueType">
-		<xs:simpleContent>
-			<xs:extension base="base64Binary">
-				<xs:attribute name="Id" type="ID" use="optional" />
-			</xs:extension>
-		</xs:simpleContent>
-	</xs:complexType>
-	<xs:complexType name="SignedInfoType">
-		<xs:sequence>
-			<xs:element name="CanonicalizationMethod" type="TAnonComplex_CanonicalizationMethod_1">
-				</xs:element>
-			<xs:element name="SignatureMethod" type="TAnonComplex_SignatureMethod_1">
-				</xs:element>
-			<xs:element name="Reference" type="ds:ReferenceType" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="ID" use="optional" />
-	</xs:complexType>
-	<xs:complexType name="ReferenceType">
-		<xs:sequence>
-			<xs:element name="Transforms" type="ds:TransformsType">
-				
-				<xs:unique name="unique_Transf_Alg">
-					<xs:selector xpath="./*" />
-					<xs:field xpath="@Algorithm" />
-				</xs:unique>
-			</xs:element>
-			<xs:element name="DigestMethod" type="TAnonComplex_DigestMethod_1">
-				</xs:element>
-			<xs:element name="DigestValue" type="ds:DigestValueType" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="ID" use="optional" />
-		<xs:attribute name="URI" use="required">
-			<xs:simpleType>
-				<xs:restriction base="anyURI">
-					<xs:minLength value="2" />
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-		<xs:attribute name="Type" type="anyURI" use="optional" />
-	</xs:complexType>
-	<xs:complexType name="TransformsType">
-		<xs:sequence>
-			<xs:element name="Transform" type="ds:TransformType" minOccurs="2" maxOccurs="2" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="TransformType">
-		<xs:element name="XPath" type="string" minOccurs="0" />
-		<xs:attribute name="Algorithm" type="ds:TTransformURI" use="required" />
-	</xs:complexType>
-	<xs:complexType name="KeyInfoType">
-		<xs:sequence>
-			<xs:element name="X509Data" type="ds:X509DataType" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="ID" use="optional" />
-	</xs:complexType>
-	<xs:complexType name="X509DataType">
-		<xs:sequence>
-			<xs:element name="X509Certificate" type="base64Binary" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:simpleType name="DigestValueType">
-		<xs:restriction base="base64Binary" />
-	</xs:simpleType>
-	<xs:simpleType name="TTransformURI">
-		<xs:restriction base="anyURI">
-			<xs:enumeration value="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
-			<xs:enumeration value="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
-		</xs:restriction>
-	</xs:simpleType>
-</xs:schema>
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1">
+  <complexType name="TAnonComplex_CanonicalizationMethod_1">
+    <attribute name="Algorithm" type="anyURI" use="required" fixed="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></attribute>
+  </complexType>
+  <complexType name="TAnonComplex_SignatureMethod_1">
+    <attribute name="Algorithm" type="anyURI" use="required" fixed="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></attribute>
+  </complexType>
+  <complexType name="TAnonComplex_DigestMethod_1">
+    <attribute name="Algorithm" type="anyURI" use="required" fixed="http://www.w3.org/2000/09/xmldsig#sha1"></attribute>
+  </complexType>
+  <element name="Signature" type="ds:SignatureType"></element>
+  <complexType name="SignatureType">
+    <sequence>
+      <element name="SignedInfo" type="ds:SignedInfoType"></element>
+      <element name="SignatureValue" type="ds:SignatureValueType"></element>
+      <element name="KeyInfo" type="ds:KeyInfoType"></element>
+    </sequence>
+    <attribute name="Id" type="ID" use="optional"></attribute>
+  </complexType>
+  <complexType name="SignatureValueType">
+    <simpleContent>
+      <extension base="base64Binary">
+        <attribute name="Id" type="ID" use="optional"></attribute>
+      </extension>
+    </simpleContent>
+  </complexType>
+  <complexType name="SignedInfoType">
+    <sequence>
+      <element name="CanonicalizationMethod" type="TAnonComplex_CanonicalizationMethod_1"></element>
+      <element name="SignatureMethod" type="TAnonComplex_SignatureMethod_1"></element>
+      <element name="Reference" type="ds:ReferenceType"></element>
+    </sequence>
+    <attribute name="Id" type="ID" use="optional"></attribute>
+  </complexType>
+  <complexType name="ReferenceType">
+    <sequence>
+      <element name="Transforms" type="ds:TransformsType">
+        <unique name="unique_Transf_Alg">
+          <selector xpath="./*"></selector>
+          <field xpath="@Algorithm"></field>
+        </unique>
+      </element>
+      <element name="DigestMethod" type="TAnonComplex_DigestMethod_1"></element>
+      <element name="DigestValue" type="ds:DigestValueType"></element>
+    </sequence>
+    <attribute name="Id" type="ID" use="optional"></attribute>
+    <attribute name="URI" use="required">
+      <simpleType>
+        <restriction base="anyURI">
+          <minLength value="2"></minLength>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="Type" type="anyURI" use="optional"></attribute>
+  </complexType>
+  <complexType name="TransformsType">
+    <sequence>
+      <element name="Transform" type="ds:TransformType" minOccurs="2" maxOccurs="2"></element>
+    </sequence>
+  </complexType>
+  <complexType name="TransformType">
+    <element name="XPath" type="string" minOccurs="0"></element>
+    <attribute name="Algorithm" type="ds:TTransformURI" use="required"></attribute>
+  </complexType>
+  <complexType name="KeyInfoType">
+    <sequence>
+      <element name="X509Data" type="ds:X509DataType"></element>
+    </sequence>
+    <attribute name="Id" type="ID" use="optional"></attribute>
+  </complexType>
+  <complexType name="X509DataType">
+    <sequence>
+      <element name="X509Certificate" type="base64Binary"></element>
+    </sequence>
+  </complexType>
+  <simpleType name="DigestValueType">
+    <restriction base="base64Binary"></restriction>
+  </simpleType>
+  <simpleType name="TTransformURI">
+    <restriction base="anyURI">
+      <enumeration value="http://www.w3.org/2000/09/xmldsig#enveloped-signature"></enumeration>
+      <enumeration value="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></enumeration>
+    </restriction>
+  </simpleType>
+</schema>

@@ -26,27 +26,27 @@ type TAnonXCondUso1 string
 
 // TAnonComplexDetEvento1 is Texto Fixo com as condições de uso da Carta de Correção
 type TAnonComplexDetEvento1 struct {
-	XMLName    xml.Name `xml:"detEvento" json:"-"`
-	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
-	DescEvento string   `xml:"descEvento" json:"descEvento,omitempty"`
-	XCorrecao  string   `xml:"xCorrecao" json:"xCorrecao,omitempty"`
-	XCondUso   string   `xml:"xCondUso" json:"xCondUso,omitempty"`
+	XMLName		xml.Name	`xml:"detEvento" json:"-"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
+	XCorrecao	string		`xml:"xCorrecao" json:"xCorrecao,omitempty"`
+	XCondUso	string		`xml:"xCondUso" json:"xCondUso,omitempty"`
 }
 
 // TAnonComplexInfEvento1 is Evento do carta de correção e1101110
 type TAnonComplexInfEvento1 struct {
-	XMLName    xml.Name                `xml:"infEvento" json:"-"`
-	IdAttr     string                  `xml:"Id,attr" json:"Id,omitempty"`
-	COrgao     string                  `xml:"cOrgao" json:"cOrgao,omitempty"`
-	TpAmb      string                  `xml:"tpAmb" json:"tpAmb,omitempty"`
-	CNPJ       *string                 `xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF        *string                 `xml:"CPF" json:"CPF,omitempty"`
-	ChNFe      string                  `xml:"chNFe" json:"chNFe,omitempty"`
-	DhEvento   string                  `xml:"dhEvento" json:"dhEvento,omitempty"`
-	TpEvento   string                  `xml:"tpEvento" json:"tpEvento,omitempty"`
-	NSeqEvento string                  `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
-	VerEvento  string                  `xml:"verEvento" json:"verEvento,omitempty"`
-	DetEvento  *TAnonComplexDetEvento1 `xml:"detEvento" json:"detEvento,omitempty"`
+	XMLName		xml.Name		`xml:"infEvento" json:"-"`
+	IdAttr		string			`xml:"Id,attr" json:"Id,omitempty"`
+	COrgao		string			`xml:"cOrgao" json:"cOrgao,omitempty"`
+	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
+	CNPJ		*string			`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF		*string			`xml:"CPF" json:"CPF,omitempty"`
+	ChNFe		string			`xml:"chNFe" json:"chNFe,omitempty"`
+	DhEvento	string			`xml:"dhEvento" json:"dhEvento,omitempty"`
+	TpEvento	string			`xml:"tpEvento" json:"tpEvento,omitempty"`
+	NSeqEvento	string			`xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	VerEvento	string			`xml:"verEvento" json:"verEvento,omitempty"`
+	DetEvento	*TAnonComplexDetEvento1	`xml:"detEvento" json:"detEvento,omitempty"`
 }
 
 // TAnonTpEvento2 ...
@@ -66,22 +66,22 @@ type TAnonDhRegEvento1 string
 
 // TAnonComplexInfEvento2 is Número do protocolo de registro do evento
 type TAnonComplexInfEvento2 struct {
-	XMLName     xml.Name `xml:"infEvento" json:"-"`
-	IdAttr      *string  `xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb       string   `xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic    *TString `xml:"verAplic" json:"verAplic,omitempty"`
-	COrgao      string   `xml:"cOrgao" json:"cOrgao,omitempty"`
-	CStat       string   `xml:"cStat" json:"cStat,omitempty"`
-	XMotivo     *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
-	ChNFe       *string  `xml:"chNFe" json:"chNFe,omitempty"`
-	TpEvento    *string  `xml:"tpEvento" json:"tpEvento,omitempty"`
-	XEvento     *string  `xml:"xEvento" json:"xEvento,omitempty"`
-	NSeqEvento  *string  `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
-	CNPJDest    *string  `xml:"CNPJDest" json:"CNPJDest,omitempty"`
-	CPFDest     *string  `xml:"CPFDest" json:"CPFDest,omitempty"`
-	EmailDest   *string  `xml:"emailDest" json:"emailDest,omitempty"`
-	DhRegEvento string   `xml:"dhRegEvento" json:"dhRegEvento,omitempty"`
-	NProt       *string  `xml:"nProt" json:"nProt,omitempty"`
+	XMLName		xml.Name	`xml:"infEvento" json:"-"`
+	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	COrgao		string		`xml:"cOrgao" json:"cOrgao,omitempty"`
+	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	ChNFe		*string		`xml:"chNFe" json:"chNFe,omitempty"`
+	TpEvento	*string		`xml:"tpEvento" json:"tpEvento,omitempty"`
+	XEvento		*string		`xml:"xEvento" json:"xEvento,omitempty"`
+	NSeqEvento	*string		`xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	CNPJDest	*string		`xml:"CNPJDest" json:"CNPJDest,omitempty"`
+	CPFDest		*string		`xml:"CPFDest" json:"CPFDest,omitempty"`
+	EmailDest	*string		`xml:"emailDest" json:"emailDest,omitempty"`
+	DhRegEvento	string		`xml:"dhRegEvento" json:"dhRegEvento,omitempty"`
+	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
 }
 
 // TAnonIdLote1 ...
@@ -92,42 +92,42 @@ type TAnonIdLote2 string
 
 // TEvento is Tipo Evento
 type TEvento struct {
-	VersaoAttr  string                  `xml:"versao,attr" json:"versao,omitempty"`
-	InfEvento   *TAnonComplexInfEvento1 `xml:"infEvento" json:"infEvento,omitempty"`
-	DsSignature *SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento	*TAnonComplexInfEvento1	`xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TretEvento is Tipo retorno do Evento
 type TretEvento struct {
-	VersaoAttr  string                  `xml:"versao,attr" json:"versao,omitempty"`
-	InfEvento   *TAnonComplexInfEvento2 `xml:"infEvento" json:"infEvento,omitempty"`
-	DsSignature *SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento	*TAnonComplexInfEvento2	`xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TEnvEvento is Tipo Lote de Envio
 type TEnvEvento struct {
-	VersaoAttr string     `xml:"versao,attr" json:"versao,omitempty"`
-	IdLote     string     `xml:"idLote" json:"idLote,omitempty"`
-	Evento     []*TEvento `xml:"evento" json:"evento,omitempty"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	IdLote		string		`xml:"idLote" json:"idLote,omitempty"`
+	Evento		[]*TEvento	`xml:"evento" json:"evento,omitempty"`
 }
 
 // TRetEnvEvento is Descrição literal do status do registro do Evento
 type TRetEnvEvento struct {
-	VersaoAttr string        `xml:"versao,attr" json:"versao,omitempty"`
-	IdLote     string        `xml:"idLote" json:"idLote,omitempty"`
-	TpAmb      string        `xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic   *TString      `xml:"verAplic" json:"verAplic,omitempty"`
-	COrgao     string        `xml:"cOrgao" json:"cOrgao,omitempty"`
-	CStat      string        `xml:"cStat" json:"cStat,omitempty"`
-	XMotivo    *TString      `xml:"xMotivo" json:"xMotivo,omitempty"`
-	RetEvento  []*TretEvento `xml:"retEvento" json:"retEvento,omitempty"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	IdLote		string		`xml:"idLote" json:"idLote,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	COrgao		string		`xml:"cOrgao" json:"cOrgao,omitempty"`
+	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	RetEvento	[]*TretEvento	`xml:"retEvento" json:"retEvento,omitempty"`
 }
 
 // TProcEvento is Tipo procEvento
 type TProcEvento struct {
-	VersaoAttr string      `xml:"versao,attr" json:"versao,omitempty"`
-	Evento     *TEvento    `xml:"evento" json:"evento,omitempty"`
-	RetEvento  *TretEvento `xml:"retEvento" json:"retEvento,omitempty"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	Evento		*TEvento	`xml:"evento" json:"evento,omitempty"`
+	RetEvento	*TretEvento	`xml:"retEvento" json:"retEvento,omitempty"`
 }
 
 // TVerEnvEvento is Tipo Versão do EnvEvento

@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.portalfiscal.inf.br/bpe" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/bpe" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="bpeTiposBasico_v1.00.xsd"></include>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_bpeTMProc_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="BPeTM" type="TBPeTM"></element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="protBPe" type="TProtBPe"></element>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="bpeTiposBasico_v1.00.xsd"></include>
+  <complexType name="TAnonComplex_bpeTMProc_1">
+    <sequence>
+      <element name="BPeTM" type="TBPeTM"></element>
+      <element name="protBPe" type="TProtBPe"></element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerBPe" use="required"></attribute>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="ipTransmissor" type="TIPv4" use="optional">
-      <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-        <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">IP do transmissor do documento fiscal para o ambiente autorizador</documentation>
+    <attribute name="versao" type="TVerBPe" use="required"></attribute>
+    <attribute name="ipTransmissor" type="TIPv4" use="optional">
+      <annotation>
+        <documentation>IP do transmissor do documento fiscal para o ambiente autorizador</documentation>
       </annotation>
     </attribute>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="nPortaCon" use="optional">
-      <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-        <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Porta de origem utilizada na conexão (De 0 a 65535)</documentation>
+    <attribute name="nPortaCon" use="optional">
+      <annotation>
+        <documentation>Porta de origem utilizada na conexão (De 0 a 65535)</documentation>
       </annotation>
-      <simpleType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-        <restriction xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-          <pattern xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{1,5}"></pattern>
+      <simpleType>
+        <restriction base="xs:string">
+          <pattern value="[0-9]{1,5}"></pattern>
         </restriction>
       </simpleType>
     </attribute>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="dhConexao" type="TDateTimeUTC" use="optional">
-      <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-        <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Data e Hora da Conexão de Origem</documentation>
+    <attribute name="dhConexao" type="TDateTimeUTC" use="optional">
+      <annotation>
+        <documentation>Data e Hora da Conexão de Origem</documentation>
       </annotation>
     </attribute>
   </complexType>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="bpeTMProc" type="TAnonComplex_bpeTMProc_1">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"> BP-e TM processado</documentation>
+  <element name="bpeTMProc" type="TAnonComplex_bpeTMProc_1">
+    <annotation>
+      <documentation>BP-e TM processado</documentation>
     </annotation>
   </element>
 </schema>

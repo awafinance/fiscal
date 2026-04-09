@@ -1,168 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.portalfiscal.inf.br/mdfe" xmlns="http://www.portalfiscal.inf.br/mdfe" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:_xmlns="xmlns" _xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <import xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
-  <include xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposGeralMDFe_v3.00.xsd"></include>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_dhRecbto_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" base="TDateTimeUTC"></restriction>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
+  <include schemaLocation="tiposGeralMDFe_v3.00.xsd"></include>
+  <simpleType name="TAnon_dhRecbto_1">
+    <restriction base="TDateTimeUTC"></restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cStat_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" base="TStat"></restriction>
+  <simpleType name="TAnon_cStat_1">
+    <restriction base="TStat"></restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infProt_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+  <complexType name="TAnonComplex_infProt_1">
+    <sequence>
+      <element name="tpAmb" type="TAmb">
+        <annotation>
+          <documentation>Identificação do Ambiente:
 1 - Produção
 2 - Homologação</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o MDF-e</documentation>
+      <element name="verAplic" type="TVerAplic">
+        <annotation>
+          <documentation>Versão do Aplicativo que processou o MDF-e</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="chMDFe" type="TChMDFe">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Chaves de acesso do MDF-e, </documentation>
+      <element name="chMDFe" type="TChMDFe">
+        <annotation>
+          <documentation>Chaves de acesso do MDF-e,</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="dhRecbto" type="TAnon_dhRecbto_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de processamento, no formato AAAA-MM-DDTHH:MM:SS TZD. </documentation>
+      <element name="dhRecbto" type="TAnon_dhRecbto_1">
+        <annotation>
+          <documentation>Data e hora de processamento, no formato AAAA-MM-DDTHH:MM:SS TZD.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt" minOccurs="0">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do MDF-e.</documentation>
+      <element name="nProt" type="TProt" minOccurs="0">
+        <annotation>
+          <documentation>Número do Protocolo de Status do MDF-e.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="digVal" type="ds:DigestValueType" minOccurs="0">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Digest Value do MDF-e processado. Utilizado para conferir a integridade do MDF-e original.</documentation>
+      <element name="digVal" type="ds:DigestValueType" minOccurs="0">
+        <annotation>
+          <documentation>Digest Value do MDF-e processado. Utilizado para conferir a integridade do MDF-e original.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TAnon_cStat_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Código do status do MDF-e.</documentation>
+      <element name="cStat" type="TAnon_cStat_1">
+        <annotation>
+          <documentation>Código do status do MDF-e.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do MDF-e.</documentation>
+      <element name="xMotivo" type="TMotivo">
+        <annotation>
+          <documentation>Descrição literal do status do MDF-e.</documentation>
         </annotation>
       </element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="Id" type="xs:ID" use="optional"></attribute>
+    <attribute name="Id" type="xs:ID" use="optional"></attribute>
   </complexType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_cMsg_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" base="TStat"></restriction>
+  <simpleType name="TAnon_cMsg_1">
+    <restriction base="TStat"></restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infFisco_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="cMsg" type="TAnon_cMsg_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Código do status da mensagem do fisco</documentation>
+  <complexType name="TAnonComplex_infFisco_1">
+    <sequence>
+      <element name="cMsg" type="TAnon_cMsg_1">
+        <annotation>
+          <documentation>Código do status da mensagem do fisco</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="xMsg" type="TMotivo">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Mensagem do Fisco</documentation>
+      <element name="xMsg" type="TMotivo">
+        <annotation>
+          <documentation>Mensagem do Fisco</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TProtMDFe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Tipo Protocolo de status resultado do processamento do MDF-e</documentation>
+  <complexType name="TProtMDFe">
+    <annotation>
+      <documentation>Tipo Protocolo de status resultado do processamento do MDF-e</documentation>
     </annotation>
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="infProt" type="TAnonComplex_infProt_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Dados do protocolo de status</documentation>
+    <sequence>
+      <element name="infProt" type="TAnonComplex_infProt_1">
+        <annotation>
+          <documentation>Dados do protocolo de status</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="infFisco" minOccurs="0" type="TAnonComplex_infFisco_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Mensagem do Fisco</documentation>
+      <element name="infFisco" minOccurs="0" type="TAnonComplex_infFisco_1">
+        <annotation>
+          <documentation>Mensagem do Fisco</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" ref="ds:Signature" minOccurs="0"></element>
+      <element ref="ds:Signature" minOccurs="0"></element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsReciMDFe" use="required"></attribute>
+    <attribute name="versao" type="TVerConsReciMDFe" use="required"></attribute>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TConsReciMDFe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Tipo Pedido de Consulta do Recibo do MDF-e</documentation>
+  <complexType name="TConsReciMDFe">
+    <annotation>
+      <documentation>Tipo Pedido de Consulta do Recibo do MDF-e</documentation>
     </annotation>
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+    <sequence>
+      <element name="tpAmb" type="TAmb">
+        <annotation>
+          <documentation>Identificação do Ambiente:
 1 - Produção
 2 - Homologação</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="nRec" type="TRec">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Número do Recibo do arquivo a ser consultado</documentation>
+      <element name="nRec" type="TRec">
+        <annotation>
+          <documentation>Número do Recibo do arquivo a ser consultado</documentation>
         </annotation>
       </element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsReciMDFe" use="required"></attribute>
+    <attribute name="versao" type="TVerConsReciMDFe" use="required"></attribute>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TRetConsReciMDFe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Tipo Retorno do Pedido de  Consulta do Recibo do MDF-e</documentation>
+  <complexType name="TRetConsReciMDFe">
+    <annotation>
+      <documentation>Tipo Retorno do Pedido de  Consulta do Recibo do MDF-e</documentation>
     </annotation>
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+    <sequence>
+      <element name="tpAmb" type="TAmb">
+        <annotation>
+          <documentation>Identificação do Ambiente:
 1 - Produção
 2 - Homologação</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o MDF-e</documentation>
+      <element name="verAplic" type="TVerAplic">
+        <annotation>
+          <documentation>Versão do Aplicativo que processou o MDF-e</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="nRec" type="TRec">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Número do Recibo Consultado</documentation>
+      <element name="nRec" type="TRec">
+        <annotation>
+          <documentation>Número do Recibo Consultado</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">código do status do retorno da consulta.</documentation>
+      <element name="cStat" type="TStat">
+        <annotation>
+          <documentation>código do status do retorno da consulta.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do do retorno da consulta.</documentation>
+      <element name="xMotivo" type="TMotivo">
+        <annotation>
+          <documentation>Descrição literal do status do do retorno da consulta.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Idntificação da UF</documentation>
+      <element name="cUF" type="TCodUfIBGE">
+        <annotation>
+          <documentation>Idntificação da UF</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="protMDFe" type="TProtMDFe" minOccurs="0">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Resultado do processamento do MDF-e</documentation>
+      <element name="protMDFe" type="TProtMDFe" minOccurs="0">
+        <annotation>
+          <documentation>Resultado do processamento do MDF-e</documentation>
         </annotation>
       </element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsReciMDFe" use="required"></attribute>
+    <attribute name="versao" type="TVerConsReciMDFe" use="required"></attribute>
   </complexType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TVerConsReciMDFe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"> Tipo Versão do Consulta de MDF-e - 3.00</documentation>
+  <simpleType name="TVerConsReciMDFe">
+    <annotation>
+      <documentation>Tipo Versão do Consulta de MDF-e - 3.00</documentation>
     </annotation>
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <pattern xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" value="3\.00"></pattern>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="3\.00"></pattern>
     </restriction>
   </simpleType>
 </schema>

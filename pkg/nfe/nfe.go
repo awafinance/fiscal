@@ -1257,7 +1257,7 @@ func validateDocument(doc *Document) error {
 		if doc.RetInutNFe.InfInut.TpAmb == "" {
 			return errors.New("parse nfe: missing tpAmb")
 		}
-		if doc.RetInutNFe.InfInut.CNPJ == "" {
+		if doc.RetInutNFe.InfInut.CNPJ == nil || *doc.RetInutNFe.InfInut.CNPJ == "" {
 			return errors.New("parse nfe: missing CNPJ")
 		}
 	}

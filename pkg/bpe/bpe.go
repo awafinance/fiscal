@@ -17,32 +17,32 @@ import (
 const namespace = "http://www.portalfiscal.inf.br/bpe"
 
 type Document struct {
-	VersaoAttr                  string
-	BPe                         *schema.TBPe
-	BPeTM                       *schema.TBPeTM
-	BPeProc                     *schema.TAnonComplexBpeProc1
-	BPeTMProc                   *schema.TAnonComplexBpeTMProc1
-	RetBPe                      *schema.TRetBPe
-	ConsSitBPe                  *schema.TConsSitBPe
-	RetConsSitBPe               *schema.TRetConsSitBPe
-	ConsStatServBPe             *schema.TConsStatServ
-	RetConsStatServBPe          *schema.TRetConsStatServ
-	EventoBPe                   *schema.TEvento
-	RetEventoBPe                *schema.TRetEvento
-	ProcEventoBPe               *schema.TProcEvento
-	EventoCancBPe               *cancelEventSchema.TEvento
-	RetEventoCancBPe            *cancelEventSchema.TRetEvento
-	ProcEventoCancBPe           *cancelEventSchema.TProcEvento
-	EventoAlteracaoPoltrona     *alteracaoPoltronaEventSchema.TEvento
-	RetEventoAlteracaoPoltrona  *alteracaoPoltronaEventSchema.TRetEvento
-	ProcEventoAlteracaoPoltrona *alteracaoPoltronaEventSchema.TProcEvento
-	EventoExcessoBagagem        *excessoBagagemEventSchema.TEvento
-	RetEventoExcessoBagagem     *excessoBagagemEventSchema.TRetEvento
-	ProcEventoExcessoBagagem    *excessoBagagemEventSchema.TProcEvento
-	EventoNaoEmbBPe             *naoEmbEventSchema.TEvento
-	RetEventoNaoEmbBPe          *naoEmbEventSchema.TRetEvento
-	ProcEventoNaoEmbBPe         *naoEmbEventSchema.TProcEvento
-	rootName                    string
+	VersaoAttr                  string                                    `json:"versao,omitempty"`
+	BPe                         *schema.TBPe                              `json:"BPe,omitempty"`
+	BPeTM                       *schema.TBPeTM                            `json:"BPeTM,omitempty"`
+	BPeProc                     *schema.TAnonComplexBpeProc1              `json:"bpeProc,omitempty"`
+	BPeTMProc                   *schema.TAnonComplexBpeTMProc1            `json:"bpeTMProc,omitempty"`
+	RetBPe                      *schema.TRetBPe                           `json:"retBPe,omitempty"`
+	ConsSitBPe                  *schema.TConsSitBPe                       `json:"consSitBPe,omitempty"`
+	RetConsSitBPe               *schema.TRetConsSitBPe                    `json:"retConsSitBPe,omitempty"`
+	ConsStatServBPe             *schema.TConsStatServ                     `json:"consStatServBPe,omitempty"`
+	RetConsStatServBPe          *schema.TRetConsStatServ                  `json:"retConsStatServBPe,omitempty"`
+	EventoBPe                   *schema.TEvento                           `json:"eventoBPe,omitempty"`
+	RetEventoBPe                *schema.TRetEvento                        `json:"retEventoBPe,omitempty"`
+	ProcEventoBPe               *schema.TProcEvento                       `json:"procEventoBPe,omitempty"`
+	EventoCancBPe               *cancelEventSchema.TEvento                `json:"eventoCancBPe,omitempty"`
+	RetEventoCancBPe            *cancelEventSchema.TRetEvento             `json:"retEventoCancBPe,omitempty"`
+	ProcEventoCancBPe           *cancelEventSchema.TProcEvento            `json:"procEventoCancBPe,omitempty"`
+	EventoAlteracaoPoltrona     *alteracaoPoltronaEventSchema.TEvento     `json:"eventoAlteracaoPoltrona,omitempty"`
+	RetEventoAlteracaoPoltrona  *alteracaoPoltronaEventSchema.TRetEvento  `json:"retEventoAlteracaoPoltrona,omitempty"`
+	ProcEventoAlteracaoPoltrona *alteracaoPoltronaEventSchema.TProcEvento `json:"procEventoAlteracaoPoltrona,omitempty"`
+	EventoExcessoBagagem        *excessoBagagemEventSchema.TEvento        `json:"eventoExcessoBagagem,omitempty"`
+	RetEventoExcessoBagagem     *excessoBagagemEventSchema.TRetEvento     `json:"retEventoExcessoBagagem,omitempty"`
+	ProcEventoExcessoBagagem    *excessoBagagemEventSchema.TProcEvento    `json:"procEventoExcessoBagagem,omitempty"`
+	EventoNaoEmbBPe             *naoEmbEventSchema.TEvento                `json:"eventoNaoEmbBPe,omitempty"`
+	RetEventoNaoEmbBPe          *naoEmbEventSchema.TRetEvento             `json:"retEventoNaoEmbBPe,omitempty"`
+	ProcEventoNaoEmbBPe         *naoEmbEventSchema.TProcEvento            `json:"procEventoNaoEmbBPe,omitempty"`
+	rootName                    string                                    `json:"-"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

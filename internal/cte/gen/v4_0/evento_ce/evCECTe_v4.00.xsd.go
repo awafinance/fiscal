@@ -26,23 +26,23 @@ type TAnonDhHashEntrega1 string
 
 // TAnonComplexInfEntrega1 is Chave de acesso da NF-e entregue
 type TAnonComplexInfEntrega1 struct {
-	XMLName xml.Name `xml:"infEntrega"`
-	ChNFe   string   `xml:"chNFe"`
+	XMLName	xml.Name	`xml:"infEntrega" json:"-"`
+	ChNFe	string		`xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TAnonComplexEvCECTe1 is Informar o grupo apenas para CT-e com tipo de serviço Normal
 type TAnonComplexEvCECTe1 struct {
-	XMLName       xml.Name                   `xml:"evCECTe"`
-	DescEvento    string                     `xml:"descEvento"`
-	NProt         string                     `xml:"nProt"`
-	DhEntrega     string                     `xml:"dhEntrega"`
-	NDoc          string                     `xml:"nDoc"`
-	XNome         string                     `xml:"xNome"`
-	Latitude      *string                    `xml:"latitude"`
-	Longitude     *string                    `xml:"longitude"`
-	HashEntrega   string                     `xml:"hashEntrega"`
-	DhHashEntrega string                     `xml:"dhHashEntrega"`
-	InfEntrega    []*TAnonComplexInfEntrega1 `xml:"infEntrega"`
+	XMLName		xml.Name			`xml:"evCECTe" json:"-"`
+	DescEvento	string				`xml:"descEvento" json:"descEvento,omitempty"`
+	NProt		string				`xml:"nProt" json:"nProt,omitempty"`
+	DhEntrega	string				`xml:"dhEntrega" json:"dhEntrega,omitempty"`
+	NDoc		string				`xml:"nDoc" json:"nDoc,omitempty"`
+	XNome		string				`xml:"xNome" json:"xNome,omitempty"`
+	Latitude	*string				`xml:"latitude" json:"latitude,omitempty"`
+	Longitude	*string				`xml:"longitude" json:"longitude,omitempty"`
+	HashEntrega	string				`xml:"hashEntrega" json:"hashEntrega,omitempty"`
+	DhHashEntrega	string				`xml:"dhHashEntrega" json:"dhHashEntrega,omitempty"`
+	InfEntrega	[]*TAnonComplexInfEntrega1	`xml:"infEntrega" json:"infEntrega,omitempty"`
 }
 
 // EvCECTe is Schema XML de validação do evento comprovante de entrega eletrônico do CT-e

@@ -28,51 +28,51 @@ import (
 const namespace = "http://www.portalfiscal.inf.br/mdfe"
 
 type Document struct {
-	VersaoAttr                       string
-	MDFe                             *mdfeSchema.TMDFe
-	MDFeProc                         *mdfeSchema.TAnonComplexMdfeProc1
-	EnviMDFe                         *mdfeSchema.TEnviMDFe
-	RetEnviMDFe                      *mdfeSchema.TRetEnviMDFe
-	RetMDFe                          *mdfeSchema.TRetMDFe
-	ConsNaoEnc                       *consNaoEncSchema.TConsMDFeNaoEnc
-	RetConsNaoEnc                    *consNaoEncSchema.TRetConsMDFeNaoEnc
-	ConsReciMDFe                     *consReciSchema.TConsReciMDFe
-	RetConsReciMDFe                  *consReciSchema.TRetConsReciMDFe
-	ConsSitMDFe                      *consSitSchema.TConsSitMDFe
-	RetConsSitMDFe                   *consSitSchema.TRetConsSitMDFe
-	ConsStatServMDFe                 *statusSchema.TConsStatServ
-	RetConsStatServMDFe              *statusSchema.TRetConsStatServ
-	EventoMDFe                       *eventSchema.TEvento
-	RetEventoMDFe                    *eventSchema.TRetEvento
-	ProcEventoMDFe                   *eventSchema.TProcEvento
-	EventoCancMDFe                   *cancelEventSchema.TEvento
-	RetEventoCancMDFe                *cancelEventSchema.TRetEvento
-	ProcEventoCancMDFe               *cancelEventSchema.TProcEvento
-	EventoEncMDFe                    *encEventSchema.TEvento
-	RetEventoEncMDFe                 *encEventSchema.TRetEvento
-	ProcEventoEncMDFe                *encEventSchema.TProcEvento
-	EventoIncCondutorMDFe            *incCondutorEventSchema.TEvento
-	RetEventoIncCondutorMDFe         *incCondutorEventSchema.TRetEvento
-	ProcEventoIncCondutorMDFe        *incCondutorEventSchema.TProcEvento
-	EventoInclusaoDFeMDFe            *inclusaoDFeEventSchema.TEvento
-	RetEventoInclusaoDFeMDFe         *inclusaoDFeEventSchema.TRetEvento
-	ProcEventoInclusaoDFeMDFe        *inclusaoDFeEventSchema.TProcEvento
-	EventoPagtoOperMDFe              *pagtoOperEventSchema.TEvento
-	RetEventoPagtoOperMDFe           *pagtoOperEventSchema.TRetEvento
-	ProcEventoPagtoOperMDFe          *pagtoOperEventSchema.TProcEvento
-	EventoAlteracaoPagtoServMDFe     *alteracaoPagtoServEventSchema.TEvento
-	RetEventoAlteracaoPagtoServMDFe  *alteracaoPagtoServEventSchema.TRetEvento
-	ProcEventoAlteracaoPagtoServMDFe *alteracaoPagtoServEventSchema.TProcEvento
-	EventoConfirmaServMDFe           *confirmaServEventSchema.TEvento
-	RetEventoConfirmaServMDFe        *confirmaServEventSchema.TRetEvento
-	ProcEventoConfirmaServMDFe       *confirmaServEventSchema.TProcEvento
-	DistDFeInt                       *distSchema.TAnonComplexDistDFeInt1
-	RetDistDFeInt                    *distSchema.TAnonComplexRetDistDFeInt1
-	DistMDFe                         *distMDFeSchema.TDistDFe
-	RetDistMDFe                      *distMDFeSchema.TRetDistDFe
-	MDFeConsultaDFe                  *consultaDFESchema.TMDFeConsultaDFe
-	RetMDFeConsultaDFe               *consultaDFESchema.TRetMDFeConsultaDFe
-	rootName                         string
+	VersaoAttr                       string                                     `json:"versao,omitempty"`
+	MDFe                             *mdfeSchema.TMDFe                          `json:"MDFe,omitempty"`
+	MDFeProc                         *mdfeSchema.TAnonComplexMdfeProc1          `json:"mdfeProc,omitempty"`
+	EnviMDFe                         *mdfeSchema.TEnviMDFe                      `json:"enviMDFe,omitempty"`
+	RetEnviMDFe                      *mdfeSchema.TRetEnviMDFe                   `json:"retEnviMDFe,omitempty"`
+	RetMDFe                          *mdfeSchema.TRetMDFe                       `json:"retMDFe,omitempty"`
+	ConsNaoEnc                       *consNaoEncSchema.TConsMDFeNaoEnc          `json:"consMDFeNaoEnc,omitempty"`
+	RetConsNaoEnc                    *consNaoEncSchema.TRetConsMDFeNaoEnc       `json:"retConsMDFeNaoEnc,omitempty"`
+	ConsReciMDFe                     *consReciSchema.TConsReciMDFe              `json:"consReciMDFe,omitempty"`
+	RetConsReciMDFe                  *consReciSchema.TRetConsReciMDFe           `json:"retConsReciMDFe,omitempty"`
+	ConsSitMDFe                      *consSitSchema.TConsSitMDFe                `json:"consSitMDFe,omitempty"`
+	RetConsSitMDFe                   *consSitSchema.TRetConsSitMDFe             `json:"retConsSitMDFe,omitempty"`
+	ConsStatServMDFe                 *statusSchema.TConsStatServ                `json:"consStatServMDFe,omitempty"`
+	RetConsStatServMDFe              *statusSchema.TRetConsStatServ             `json:"retConsStatServMDFe,omitempty"`
+	EventoMDFe                       *eventSchema.TEvento                       `json:"eventoMDFe,omitempty"`
+	RetEventoMDFe                    *eventSchema.TRetEvento                    `json:"retEventoMDFe,omitempty"`
+	ProcEventoMDFe                   *eventSchema.TProcEvento                   `json:"procEventoMDFe,omitempty"`
+	EventoCancMDFe                   *cancelEventSchema.TEvento                 `json:"eventoCancMDFe,omitempty"`
+	RetEventoCancMDFe                *cancelEventSchema.TRetEvento              `json:"retEventoCancMDFe,omitempty"`
+	ProcEventoCancMDFe               *cancelEventSchema.TProcEvento             `json:"procEventoCancMDFe,omitempty"`
+	EventoEncMDFe                    *encEventSchema.TEvento                    `json:"eventoEncMDFe,omitempty"`
+	RetEventoEncMDFe                 *encEventSchema.TRetEvento                 `json:"retEventoEncMDFe,omitempty"`
+	ProcEventoEncMDFe                *encEventSchema.TProcEvento                `json:"procEventoEncMDFe,omitempty"`
+	EventoIncCondutorMDFe            *incCondutorEventSchema.TEvento            `json:"eventoIncCondutorMDFe,omitempty"`
+	RetEventoIncCondutorMDFe         *incCondutorEventSchema.TRetEvento         `json:"retEventoIncCondutorMDFe,omitempty"`
+	ProcEventoIncCondutorMDFe        *incCondutorEventSchema.TProcEvento        `json:"procEventoIncCondutorMDFe,omitempty"`
+	EventoInclusaoDFeMDFe            *inclusaoDFeEventSchema.TEvento            `json:"eventoInclusaoDFeMDFe,omitempty"`
+	RetEventoInclusaoDFeMDFe         *inclusaoDFeEventSchema.TRetEvento         `json:"retEventoInclusaoDFeMDFe,omitempty"`
+	ProcEventoInclusaoDFeMDFe        *inclusaoDFeEventSchema.TProcEvento        `json:"procEventoInclusaoDFeMDFe,omitempty"`
+	EventoPagtoOperMDFe              *pagtoOperEventSchema.TEvento              `json:"eventoPagtoOperMDFe,omitempty"`
+	RetEventoPagtoOperMDFe           *pagtoOperEventSchema.TRetEvento           `json:"retEventoPagtoOperMDFe,omitempty"`
+	ProcEventoPagtoOperMDFe          *pagtoOperEventSchema.TProcEvento          `json:"procEventoPagtoOperMDFe,omitempty"`
+	EventoAlteracaoPagtoServMDFe     *alteracaoPagtoServEventSchema.TEvento     `json:"eventoAlteracaoPagtoServMDFe,omitempty"`
+	RetEventoAlteracaoPagtoServMDFe  *alteracaoPagtoServEventSchema.TRetEvento  `json:"retEventoAlteracaoPagtoServMDFe,omitempty"`
+	ProcEventoAlteracaoPagtoServMDFe *alteracaoPagtoServEventSchema.TProcEvento `json:"procEventoAlteracaoPagtoServMDFe,omitempty"`
+	EventoConfirmaServMDFe           *confirmaServEventSchema.TEvento           `json:"eventoConfirmaServMDFe,omitempty"`
+	RetEventoConfirmaServMDFe        *confirmaServEventSchema.TRetEvento        `json:"retEventoConfirmaServMDFe,omitempty"`
+	ProcEventoConfirmaServMDFe       *confirmaServEventSchema.TProcEvento       `json:"procEventoConfirmaServMDFe,omitempty"`
+	DistDFeInt                       *distSchema.TAnonComplexDistDFeInt1        `json:"distDFeInt,omitempty"`
+	RetDistDFeInt                    *distSchema.TAnonComplexRetDistDFeInt1     `json:"retDistDFeInt,omitempty"`
+	DistMDFe                         *distMDFeSchema.TDistDFe                   `json:"distMDFe,omitempty"`
+	RetDistMDFe                      *distMDFeSchema.TRetDistDFe                `json:"retDistMDFe,omitempty"`
+	MDFeConsultaDFe                  *consultaDFESchema.TMDFeConsultaDFe        `json:"mdfeConsultaDFe,omitempty"`
+	RetMDFeConsultaDFe               *consultaDFESchema.TRetMDFeConsultaDFe     `json:"retMDFeConsultaDFe,omitempty"`
+	rootName                         string                                     `json:"-"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

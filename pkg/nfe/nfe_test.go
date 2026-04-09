@@ -1197,7 +1197,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			data: `<retInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa inutilizada</xJust></infInut></retInutNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
 				require.NotNil(t, doc.RetInutNFe)
-				require.Equal(t, "12345678000195", doc.RetInutNFe.InfInut.CNPJ)
+				require.Equal(t, "12345678000195", requirePtr(t, doc.RetInutNFe.InfInut.CNPJ))
 			},
 		},
 		{
@@ -1274,7 +1274,7 @@ func minimalNFe() *schema.TNFe {
 		InfNFe: &schema.TAnonComplexInfNFe1{
 			VersaoAttr: "4.00",
 			IdAttr:     "NFe35180834128745000152550010000476121675985748",
-			Ide: &schema.Ide{
+			Ide: &schema.TAnonComplexIde1{
 				CUF:      "35",
 				CNF:      "12345678",
 				NatOp:    "Venda",
@@ -1295,17 +1295,17 @@ func minimalNFe() *schema.TNFe {
 				ProcEmi:  "0",
 				VerProc:  "test",
 			},
-			Emit: &schema.Emit{
+			Emit: &schema.TAnonComplexEmit1{
 				CNPJ:      ptr("12345678000195"),
 				XNome:     "Emitente",
 				EnderEmit: &schema.TEnderEmi{XLgr: "Rua A", Nro: "1", CMun: "3550308", XMun: "Sao Paulo", UF: "SP", CEP: "01001000"},
 				IE:        "123",
 				CRT:       "1",
 			},
-			Det: []*schema.Det{
+			Det: []*schema.TAnonComplexDet1{
 				{
 					NItemAttr: "1",
-					Prod: &schema.Prod{
+					Prod: &schema.TAnonComplexProd1{
 						CProd:    "1",
 						CEAN:     "SEM GTIN",
 						XProd:    "Produto",

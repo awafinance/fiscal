@@ -17,10 +17,10 @@ type TAnonXObs1 string
 
 // TAnonComplexEvPrestDesacordo1 is Observações do tomador
 type TAnonComplexEvPrestDesacordo1 struct {
-	XMLName          xml.Name `xml:"evPrestDesacordo"`
-	DescEvento       string   `xml:"descEvento"`
-	IndDesacordoOper string   `xml:"indDesacordoOper"`
-	XObs             string   `xml:"xObs"`
+	XMLName			xml.Name	`xml:"evPrestDesacordo" json:"-"`
+	DescEvento		string		`xml:"descEvento" json:"descEvento,omitempty"`
+	IndDesacordoOper	string		`xml:"indDesacordoOper" json:"indDesacordoOper,omitempty"`
+	XObs			string		`xml:"xObs" json:"xObs,omitempty"`
 }
 
 // EvPrestDesacordo is Schema XML de validação do evento Prestação do Serviço em Desacordo 610110

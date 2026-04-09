@@ -7,110 +7,18 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
-const xmlDSigSignatureTag = "`xml:\"ds:Signature\"`"
-const detEventoStruct = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
-const detEventoStructWithInnerXML = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n\tInnerXML         string   `xml:\",innerxml\"`\n}"
-const infBPeCompField = "\tComp        *TAnonComplexComp1        `xml:\"comp\"`"
-const infBPeCompFieldFixed = "\tComp        *TAnonComplexComp12       `xml:\"comp\"`"
-
-var anonComplexXMLName = regexp.MustCompile("`xml:\"TAnonComplex_([^\"_]+(?:_[^\"_]+)*)_\\d+\"`")
-
-func main() {
-	if len(os.Args) < 2 {
-		fatalf("usage: go run ./internal/bpe/tools/codegen <normalize-schemas|postprocess-generated> [schema-dir ...]")
-	}
-
-	switch os.Args[1] {
-	case "normalize-schemas":
-		if err := normalizeSchemas(os.Args[2:]); err != nil {
-			fatalf("normalize schemas: %v", err)
-		}
-	case "postprocess-generated":
-		if err := postprocessGenerated(); err != nil {
-			fatalf("postprocess generated: %v", err)
-		}
-	default:
-		fatalf("unknown subcommand %q", os.Args[1])
-	}
+type normalizeStats struct {
+	files                      int
+	rewritten                  int
+	generatedTypes             int
+	flattenedOptionalSequences int
 }
 
-func postprocessGenerated() error {
-	repoRoot, err := findRepoRoot()
-	if err != nil {
-		return err
-	}
-
-	root := filepath.Join(repoRoot, "internal", "bpe", "gen")
-	return filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if d.IsDir() || filepath.Ext(path) != ".go" {
-			return nil
-		}
-		if isNestedImportedSchema(path) {
-			if err := os.Remove(path); err != nil {
-				return err
-			}
-			fmt.Printf("removed duplicated imported schema package %s\n", path)
-			return nil
-		}
-
-		text, err := os.ReadFile(path)
-		if err != nil {
-			return err
-		}
-
-		updated := strings.ReplaceAll(string(text), xmlDSigSignatureTag, "`xml:\"http://www.w3.org/2000/09/xmldsig# Signature\"`")
-		updated = anonComplexXMLName.ReplaceAllString(updated, "`xml:\"$1\"`")
-		updated = strings.ReplaceAll(updated, "*interface{}", "*string")
-		updated = strings.ReplaceAll(updated, "interface{}", "string")
-		updated = strings.ReplaceAll(updated, infBPeCompField, infBPeCompFieldFixed)
-		if strings.HasSuffix(path, string(filepath.Separator)+"eventoBPeTiposBasico_v1.00.xsd.go") {
-			updated = strings.Replace(updated, detEventoStruct, detEventoStructWithInnerXML, 1)
-		}
-		if updated == string(text) {
-			return nil
-		}
-
-		if err := os.WriteFile(path, []byte(updated), 0o644); err != nil {
-			return err
-		}
-
-		fmt.Printf("postprocessed generated xml tags in %s\n", path)
-		return nil
-	})
-}
-
-func isNestedImportedSchema(path string) bool {
-	clean := filepath.Clean(path)
-	patterns := []string{
-		string(filepath.Separator) + filepath.Join("internal", "bpe", "schemas") + string(filepath.Separator),
-		string(filepath.Separator) + filepath.Join("internal", "bpe", "gen") + string(filepath.Separator) + "v1_0" + string(filepath.Separator) + "schemas" + string(filepath.Separator),
-	}
-	for _, pattern := range patterns {
-		if strings.Contains(clean, pattern) {
-			return true
-		}
-	}
-	return false
-}
-
-func normalizeSchemas(args []string) error {
-	repoRoot, err := findRepoRoot()
-	if err != nil {
-		return err
-	}
-
-	roots := args
-	if len(roots) == 0 {
-		roots = []string{filepath.Join("internal", "bpe", "schemas", "v1_0", "core")}
-	}
-
+func normalizeSchemas(repoRoot string, roots []string) (normalizeStats, error) {
+	var stats normalizeStats
 	for _, rootArg := range roots {
 		root := rootArg
 		if !filepath.IsAbs(root) {
@@ -119,7 +27,7 @@ func normalizeSchemas(args []string) error {
 
 		entries, err := os.ReadDir(root)
 		if err != nil {
-			return err
+			return stats, err
 		}
 
 		for _, entry := range entries {
@@ -128,28 +36,32 @@ func normalizeSchemas(args []string) error {
 			}
 
 			path := filepath.Join(root, entry.Name())
-			changed, flattened, err := normalizeSchema(path)
+			fileStats, err := normalizeSchema(path)
 			if err != nil {
-				return fmt.Errorf("%s: %w", path, err)
+				return stats, fmt.Errorf("%s: %w", path, err)
 			}
 
-			fmt.Printf("normalized %d inline simpleType elements in %s\n", changed, path)
-			fmt.Printf("flattened %d optional direct-element sequences in %s\n", flattened, path)
+			stats.files++
+			stats.rewritten += fileStats.rewritten
+			stats.generatedTypes += fileStats.generatedTypes
+			stats.flattenedOptionalSequences += fileStats.flattenedOptionalSequences
 		}
 	}
 
-	return nil
+	return stats, nil
 }
 
-func normalizeSchema(path string) (generatedTypes int, flattenedOptionalSequences int, err error) {
+func normalizeSchema(path string) (normalizeStats, error) {
+	var stats normalizeStats
+
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return 0, 0, err
+		return stats, err
 	}
 
 	var schema element
 	if err := xml.Unmarshal(data, &schema); err != nil {
-		return 0, 0, err
+		return stats, err
 	}
 
 	typeInsertAt := 0
@@ -161,27 +73,31 @@ func normalizeSchema(path string) (generatedTypes int, flattenedOptionalSequence
 		break
 	}
 
-	flattenedOptionalSequences = flattenOptionalDirectElementSequences(&schema)
+	stats.flattenedOptionalSequences = flattenOptionalDirectElementSequences(&schema)
 
 	simpleCounters := map[string]int{}
 	complexCounters := map[string]int{}
 	var generated []element
 	collectInlineTypes(&schema, simpleCounters, complexCounters, &generated)
-	generatedTypes = len(generated)
-	if generatedTypes > 0 {
+	stats.generatedTypes = len(generated)
+	if stats.generatedTypes > 0 {
 		schema.Children = insertChildren(schema.Children, typeInsertAt, generated)
 	}
 
 	output, err := marshalXML(schema)
 	if err != nil {
-		return 0, 0, err
+		return stats, err
+	}
+
+	if bytes.Equal(data, output) {
+		return stats, nil
 	}
 
 	if err := os.WriteFile(path, output, 0o644); err != nil {
-		return 0, 0, err
+		return stats, err
 	}
-
-	return generatedTypes, flattenedOptionalSequences, nil
+	stats.rewritten = 1
+	return stats, nil
 }
 
 func flattenOptionalDirectElementSequences(root *element) int {
@@ -197,6 +113,7 @@ func flattenOptionalDirectElementSequences(root *element) int {
 			if child.XMLName.Local != "sequence" || child.attr("minOccurs") != "0" {
 				continue
 			}
+
 			if !sequenceHasOnlyDirectElements(child) {
 				continue
 			}
@@ -263,7 +180,7 @@ func marshalXML(schema element) ([]byte, error) {
 
 	encoder := xml.NewEncoder(&buf)
 	encoder.Indent("", "  ")
-	if err := encodeElement(encoder, &schema); err != nil {
+	if err := encodeElement(encoder, &schema, true); err != nil {
 		return nil, err
 	}
 	if err := encoder.Flush(); err != nil {
@@ -273,8 +190,8 @@ func marshalXML(schema element) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func encodeElement(enc *xml.Encoder, node *element) error {
-	start := xml.StartElement{Name: node.XMLName, Attr: append([]xml.Attr(nil), node.Attrs...)}
+func encodeElement(enc *xml.Encoder, node *element, root bool) error {
+	start := xml.StartElement{Name: xml.Name{Local: node.XMLName.Local}, Attr: encodeAttrs(node.Attrs, root)}
 	if err := enc.EncodeToken(start); err != nil {
 		return err
 	}
@@ -286,12 +203,90 @@ func encodeElement(enc *xml.Encoder, node *element) error {
 	}
 
 	for _, child := range node.Children {
-		if err := encodeElement(enc, child); err != nil {
+		if err := encodeElement(enc, child, false); err != nil {
 			return err
 		}
 	}
 
 	return enc.EncodeToken(start.End())
+}
+
+func encodeAttrs(attrs []xml.Attr, root bool) []xml.Attr {
+	encoded := make([]xml.Attr, 0, len(attrs))
+	namespaces := rootNamespaces(attrs)
+
+	if root {
+		encoded = append(encoded, namespaces...)
+	}
+
+	seen := map[string]bool{}
+	for _, attr := range attrs {
+		if isNamespaceAttr(attr) {
+			continue
+		}
+		if attr.Name.Local == "" {
+			continue
+		}
+
+		name := xml.Name{Local: attr.Name.Local}
+		if seen[name.Local] {
+			continue
+		}
+		seen[name.Local] = true
+		encoded = append(encoded, xml.Attr{Name: name, Value: attr.Value})
+	}
+
+	return encoded
+}
+
+func rootNamespaces(attrs []xml.Attr) []xml.Attr {
+	var namespaces []xml.Attr
+	var defaultNamespace *xml.Attr
+	seen := map[string]bool{}
+
+	for _, attr := range attrs {
+		name, ok := namespaceAttrName(attr)
+		if !ok {
+			continue
+		}
+
+		if name.Local == "xmlns" {
+			candidate := xml.Attr{Name: name, Value: attr.Value}
+			if defaultNamespace == nil || attr.Value == "http://www.w3.org/2001/XMLSchema" {
+				defaultNamespace = &candidate
+			}
+			continue
+		}
+
+		if strings.HasPrefix(name.Local, "xmlns:_") || seen[name.Local] {
+			continue
+		}
+		seen[name.Local] = true
+		namespaces = append(namespaces, xml.Attr{Name: name, Value: attr.Value})
+	}
+
+	if defaultNamespace != nil {
+		namespaces = append([]xml.Attr{*defaultNamespace}, namespaces...)
+	}
+	return namespaces
+}
+
+func isNamespaceAttr(attr xml.Attr) bool {
+	_, ok := namespaceAttrName(attr)
+	return ok
+}
+
+func namespaceAttrName(attr xml.Attr) (xml.Name, bool) {
+	switch {
+	case attr.Name.Space == "" && attr.Name.Local == "xmlns":
+		return xml.Name{Local: "xmlns"}, true
+	case attr.Name.Space == "xmlns" && attr.Name.Local != "":
+		return xml.Name{Local: "xmlns:" + attr.Name.Local}, true
+	case strings.HasPrefix(attr.Name.Local, "xmlns:"):
+		return xml.Name{Local: attr.Name.Local}, true
+	default:
+		return xml.Name{}, false
+	}
 }
 
 func isSchemaPrelude(local string) bool {
@@ -357,6 +352,47 @@ type element struct {
 	Content  string     `xml:",chardata"`
 }
 
+func (e *element) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	e.XMLName = start.Name
+	e.Attrs = append([]xml.Attr(nil), start.Attr...)
+
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
+			return err
+		}
+
+		switch tok := tok.(type) {
+		case xml.StartElement:
+			child := &element{}
+			if err := child.UnmarshalXML(d, tok); err != nil {
+				return err
+			}
+			e.Children = append(e.Children, child)
+		case xml.EndElement:
+			if tok.Name == start.Name {
+				return nil
+			}
+		case xml.CharData:
+			text := strings.TrimSpace(string(tok))
+			if text != "" {
+				if e.Content == "" {
+					e.Content = text
+				} else {
+					e.Content += text
+				}
+			}
+		}
+	}
+}
+
+func (e *element) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {
+	return encodeElement(enc, e, true)
+}
+
 func (e *element) attr(name string) string {
 	for _, attr := range e.Attrs {
 		if attr.Name.Local == name {
@@ -377,11 +413,18 @@ func (e *element) setAttr(name, value string) {
 }
 
 func (e *element) deepCopy() *element {
+	if e == nil {
+		return nil
+	}
 	copy := e.deepCopyValue()
 	return &copy
 }
 
 func (e *element) deepCopyValue() element {
+	if e == nil {
+		return element{}
+	}
+
 	clone := element{
 		XMLName: e.XMLName,
 		Attrs:   append([]xml.Attr(nil), e.Attrs...),
@@ -394,27 +437,4 @@ func (e *element) deepCopyValue() element {
 		}
 	}
 	return clone
-}
-
-func findRepoRoot() (string, error) {
-	dir, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-
-	for {
-		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			return dir, nil
-		}
-		parent := filepath.Dir(dir)
-		if parent == dir {
-			return "", io.EOF
-		}
-		dir = parent
-	}
-}
-
-func fatalf(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, format+"\n", args...)
-	os.Exit(1)
 }

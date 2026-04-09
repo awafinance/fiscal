@@ -8,38 +8,38 @@ import (
 
 // TAnonComplexProcMDFe1 is Autorização de Uso do MDF-e
 type TAnonComplexProcMDFe1 struct {
-	XMLName    xml.Name `xml:"procMDFe"`
-	VersaoAttr string   `xml:"versao,attr"`
+	XMLName		xml.Name	`xml:"procMDFe" json:"-"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
 }
 
 // TAnonComplexProcEventoMDFe1 is Demais eventos vinculados ao MDF-e
 type TAnonComplexProcEventoMDFe1 struct {
-	XMLName    xml.Name `xml:"procEventoMDFe"`
-	VersaoAttr string   `xml:"versao,attr"`
+	XMLName		xml.Name	`xml:"procEventoMDFe" json:"-"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
 }
 
 // TMDFeConsultaDFe is Chaves de acesso do MDF-e, compostas por: UF do emitente, AAMM da emissão do MDF-e, CNPJ do emitente, modelo, série e número do MDF-e e código numérico + DV.
 type TMDFeConsultaDFe struct {
-	VersaoAttr string   `xml:"versao,attr"`
-	TpAmb      string   `xml:"tpAmb"`
-	XServ      *TString `xml:"xServ"`
-	ChMDFe     string   `xml:"chMDFe"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ		*TString	`xml:"xServ" json:"xServ,omitempty"`
+	ChMDFe		string		`xml:"chMDFe" json:"chMDFe,omitempty"`
 }
 
 // TRetMDFeConsultaDFe is Descrição literal do status da consulta do MDF-e
 type TRetMDFeConsultaDFe struct {
-	VersaoAttr string    `xml:"versao,attr"`
-	TpAmb      string    `xml:"tpAmb"`
-	VerAplic   *TString  `xml:"verAplic"`
-	CStat      string    `xml:"cStat"`
-	XMotivo    *TString  `xml:"xMotivo"`
-	MDFeDFe    *TMDFeDFe `xml:"MDFeDFe"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	MDFeDFe		*TMDFeDFe	`xml:"MDFeDFe" json:"MDFeDFe,omitempty"`
 }
 
 // TMDFeDFe is Tipo Documento Fiscal Eletrônico MDF-e
 type TMDFeDFe struct {
-	ProcMDFe       *TAnonComplexProcMDFe1         `xml:"procMDFe"`
-	ProcEventoMDFe []*TAnonComplexProcEventoMDFe1 `xml:"procEventoMDFe"`
+	ProcMDFe	*TAnonComplexProcMDFe1		`xml:"procMDFe" json:"procMDFe,omitempty"`
+	ProcEventoMDFe	[]*TAnonComplexProcEventoMDFe1	`xml:"procEventoMDFe" json:"procEventoMDFe,omitempty"`
 }
 
 // TVerMDFeConsultaDFe is Tipo Versão do Consulta DFe de MDF-e - 3.00

@@ -11,30 +11,30 @@ type TAnonXServ1 string
 
 // TAnonComplexInfProt1 is Descrição literal do status do serviço solicitado.
 type TAnonComplexInfProt1 struct {
-	XMLName  xml.Name `xml:"infProt" json:"-"`
-	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic *TString `xml:"verAplic" json:"verAplic,omitempty"`
-	ChNFe    string   `xml:"chNFe" json:"chNFe,omitempty"`
-	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
-	DigVal   *string  `xml:"digVal" json:"digVal,omitempty"`
-	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
-	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
+	XMLName		xml.Name	`xml:"infProt" json:"-"`
+	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	ChNFe		string		`xml:"chNFe" json:"chNFe,omitempty"`
+	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
+	DigVal		*string		`xml:"digVal" json:"digVal,omitempty"`
+	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TAnonComplexInfCanc1 is Número do Protocolo de Status da NF-e. 1 posição (1 – Secretaria de Fazenda Estadual 2 – Receita Federal); 2 - código da UF - 2 posições ano; 10 seqüencial no ano.
 type TAnonComplexInfCanc1 struct {
-	XMLName  xml.Name `xml:"infCanc" json:"-"`
-	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic *TString `xml:"verAplic" json:"verAplic,omitempty"`
-	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
-	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF      string   `xml:"cUF" json:"cUF,omitempty"`
-	ChNFe    *string  `xml:"chNFe" json:"chNFe,omitempty"`
-	DhRecbto *string  `xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
+	XMLName		xml.Name	`xml:"infCanc" json:"-"`
+	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
+	ChNFe		*string		`xml:"chNFe" json:"chNFe,omitempty"`
+	DhRecbto	*string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
 }
 
 // TAnonDhEvento1 ...
@@ -56,18 +56,18 @@ type TAnonComplexDetEvento1 struct {
 
 // TAnonComplexInfEvento1 is Detalhe Específico do Evento
 type TAnonComplexInfEvento1 struct {
-	XMLName    xml.Name                `xml:"infEvento" json:"-"`
-	IdAttr     string                  `xml:"Id,attr" json:"Id,omitempty"`
-	COrgao     string                  `xml:"cOrgao" json:"cOrgao,omitempty"`
-	TpAmb      string                  `xml:"tpAmb" json:"tpAmb,omitempty"`
-	CNPJ       *string                 `xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF        *string                 `xml:"CPF" json:"CPF,omitempty"`
-	ChNFe      string                  `xml:"chNFe" json:"chNFe,omitempty"`
-	DhEvento   string                  `xml:"dhEvento" json:"dhEvento,omitempty"`
-	TpEvento   string                  `xml:"tpEvento" json:"tpEvento,omitempty"`
-	NSeqEvento string                  `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
-	VerEvento  string                  `xml:"verEvento" json:"verEvento,omitempty"`
-	DetEvento  *TAnonComplexDetEvento1 `xml:"detEvento" json:"detEvento,omitempty"`
+	XMLName		xml.Name		`xml:"infEvento" json:"-"`
+	IdAttr		string			`xml:"Id,attr" json:"Id,omitempty"`
+	COrgao		string			`xml:"cOrgao" json:"cOrgao,omitempty"`
+	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
+	CNPJ		*string			`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF		*string			`xml:"CPF" json:"CPF,omitempty"`
+	ChNFe		string			`xml:"chNFe" json:"chNFe,omitempty"`
+	DhEvento	string			`xml:"dhEvento" json:"dhEvento,omitempty"`
+	TpEvento	string			`xml:"tpEvento" json:"tpEvento,omitempty"`
+	NSeqEvento	string			`xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	VerEvento	string			`xml:"verEvento" json:"verEvento,omitempty"`
+	DetEvento	*TAnonComplexDetEvento1	`xml:"detEvento" json:"detEvento,omitempty"`
 }
 
 // TAnonTpEvento2 ...
@@ -87,80 +87,80 @@ type TAnonDhRegEvento1 string
 
 // TAnonComplexInfEvento2 is Número do protocolo de registro do evento
 type TAnonComplexInfEvento2 struct {
-	XMLName     xml.Name `xml:"infEvento" json:"-"`
-	IdAttr      *string  `xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb       string   `xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic    *TString `xml:"verAplic" json:"verAplic,omitempty"`
-	COrgao      string   `xml:"cOrgao" json:"cOrgao,omitempty"`
-	CStat       string   `xml:"cStat" json:"cStat,omitempty"`
-	XMotivo     *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
-	ChNFe       *string  `xml:"chNFe" json:"chNFe,omitempty"`
-	TpEvento    *string  `xml:"tpEvento" json:"tpEvento,omitempty"`
-	XEvento     *string  `xml:"xEvento" json:"xEvento,omitempty"`
-	NSeqEvento  *string  `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
-	CNPJDest    *string  `xml:"CNPJDest" json:"CNPJDest,omitempty"`
-	CPFDest     *string  `xml:"CPFDest" json:"CPFDest,omitempty"`
-	EmailDest   *string  `xml:"emailDest" json:"emailDest,omitempty"`
-	DhRegEvento string   `xml:"dhRegEvento" json:"dhRegEvento,omitempty"`
-	NProt       *string  `xml:"nProt" json:"nProt,omitempty"`
+	XMLName		xml.Name	`xml:"infEvento" json:"-"`
+	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	COrgao		string		`xml:"cOrgao" json:"cOrgao,omitempty"`
+	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	ChNFe		*string		`xml:"chNFe" json:"chNFe,omitempty"`
+	TpEvento	*string		`xml:"tpEvento" json:"tpEvento,omitempty"`
+	XEvento		*string		`xml:"xEvento" json:"xEvento,omitempty"`
+	NSeqEvento	*string		`xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	CNPJDest	*string		`xml:"CNPJDest" json:"CNPJDest,omitempty"`
+	CPFDest		*string		`xml:"CPFDest" json:"CPFDest,omitempty"`
+	EmailDest	*string		`xml:"emailDest" json:"emailDest,omitempty"`
+	DhRegEvento	string		`xml:"dhRegEvento" json:"dhRegEvento,omitempty"`
+	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
 }
 
 // TConsSitNFe is Chaves de acesso da NF-e, compostas por: UF do emitente, AAMM da emissão da NFe, CNPJ do emitente, modelo, série e número da NF-e e código numérico + DV.
 type TConsSitNFe struct {
-	VersaoAttr string `xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb      string `xml:"tpAmb" json:"tpAmb,omitempty"`
-	XServ      string `xml:"xServ" json:"xServ,omitempty"`
-	ChNFe      string `xml:"chNFe" json:"chNFe,omitempty"`
+	VersaoAttr	string	`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb		string	`xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ		string	`xml:"xServ" json:"xServ,omitempty"`
+	ChNFe		string	`xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TRetConsSitNFe is Protocolo de registro de evento da NF-e
 type TRetConsSitNFe struct {
-	VersaoAttr    string              `xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb         string              `xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic      *TString            `xml:"verAplic" json:"verAplic,omitempty"`
-	CStat         string              `xml:"cStat" json:"cStat,omitempty"`
-	XMotivo       *TString            `xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF           string              `xml:"cUF" json:"cUF,omitempty"`
-	ChNFe         string              `xml:"chNFe" json:"chNFe,omitempty"`
-	ProtNFe       *TProtNFe           `xml:"protNFe" json:"protNFe,omitempty"`
-	RetCancNFe    *TRetCancNFeV200107 `xml:"retCancNFe" json:"retCancNFe,omitempty"`
-	ProcEventoNFe []*TProcEvento      `xml:"procEventoNFe" json:"procEventoNFe,omitempty"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString		`xml:"verAplic" json:"verAplic,omitempty"`
+	CStat		string			`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo		*TString		`xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF		string			`xml:"cUF" json:"cUF,omitempty"`
+	ChNFe		string			`xml:"chNFe" json:"chNFe,omitempty"`
+	ProtNFe		*TProtNFe		`xml:"protNFe" json:"protNFe,omitempty"`
+	RetCancNFe	*TRetCancNFeV200107	`xml:"retCancNFe" json:"retCancNFe,omitempty"`
+	ProcEventoNFe	[]*TProcEvento		`xml:"procEventoNFe" json:"procEventoNFe,omitempty"`
 }
 
 // TProtNFe is Dados do protocolo de status
 type TProtNFe struct {
-	VersaoAttr  string                `xml:"versao,attr" json:"versao,omitempty"`
-	InfProt     *TAnonComplexInfProt1 `xml:"infProt" json:"infProt,omitempty"`
-	DsSignature *SignatureType        `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	InfProt		*TAnonComplexInfProt1	`xml:"infProt" json:"infProt,omitempty"`
+	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TRetCancNFeV200107 is Dados do Resultado do Pedido de Cancelamento da Nota Fiscal Eletrônica
 type TRetCancNFeV200107 struct {
-	XMLName     xml.Name              `xml:"TRetCancNFe_v200107" json:"-"`
-	VersaoAttr  string                `xml:"versao,attr" json:"versao,omitempty"`
-	InfCanc     *TAnonComplexInfCanc1 `xml:"infCanc" json:"infCanc,omitempty"`
-	DsSignature *SignatureType        `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	XMLName		xml.Name		`xml:"TRetCancNFe_v200107" json:"-"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	InfCanc		*TAnonComplexInfCanc1	`xml:"infCanc" json:"infCanc,omitempty"`
+	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TEvento is Tipo Evento
 type TEvento struct {
-	VersaoAttr  string                  `xml:"versao,attr" json:"versao,omitempty"`
-	InfEvento   *TAnonComplexInfEvento1 `xml:"infEvento" json:"infEvento,omitempty"`
-	DsSignature *SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento	*TAnonComplexInfEvento1	`xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TRetEvento is Tipo retorno do Evento
 type TRetEvento struct {
-	VersaoAttr  string                  `xml:"versao,attr" json:"versao,omitempty"`
-	InfEvento   *TAnonComplexInfEvento2 `xml:"infEvento" json:"infEvento,omitempty"`
-	DsSignature *SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento	*TAnonComplexInfEvento2	`xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProcEvento is Tipo procEvento
 type TProcEvento struct {
-	VersaoAttr string      `xml:"versao,attr" json:"versao,omitempty"`
-	Evento     *TEvento    `xml:"evento" json:"evento,omitempty"`
-	RetEvento  *TRetEvento `xml:"retEvento" json:"retEvento,omitempty"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	Evento		*TEvento	`xml:"evento" json:"evento,omitempty"`
+	RetEvento	*TRetEvento	`xml:"retEvento" json:"retEvento,omitempty"`
 }
 
 // TVerNFe is Tipo Versão da NF-e - 2.00/1.10/1.07

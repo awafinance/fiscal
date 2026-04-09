@@ -11,10 +11,10 @@ type TAnonDescEvento1 string
 
 // TAnonComplexEvCancCTe1 is Justificativa do Cancelamento
 type TAnonComplexEvCancCTe1 struct {
-	XMLName    xml.Name `xml:"evCancCTe"`
-	DescEvento string   `xml:"descEvento"`
-	NProt      string   `xml:"nProt"`
-	XJust      *TString `xml:"xJust"`
+	XMLName		xml.Name	`xml:"evCancCTe" json:"-"`
+	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
+	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	XJust		*TString	`xml:"xJust" json:"xJust,omitempty"`
 }
 
 // EvCancCTe is Schema XML de validação do evento do cancelamento

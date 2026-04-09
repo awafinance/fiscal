@@ -8,13 +8,13 @@ import (
 
 // TAnonComplexCteProc1 ...
 type TAnonComplexCteProc1 struct {
-	XMLName           xml.Name  `xml:"cteProc"`
-	VersaoAttr        string    `xml:"versao,attr"`
-	IpTransmissorAttr *string   `xml:"ipTransmissor,attr"`
-	NPortaConAttr     *string   `xml:"nPortaCon,attr"`
-	DhConexaoAttr     *string   `xml:"dhConexao,attr"`
-	CTe               *TCTe     `xml:"CTe"`
-	ProtCTe           *TProtCTe `xml:"protCTe"`
+	XMLName			xml.Name	`xml:"cteProc" json:"-"`
+	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
+	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	NPortaConAttr		*string		`xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
+	DhConexaoAttr		*string		`xml:"dhConexao,attr" json:"dhConexao,omitempty"`
+	CTe			*TCTe		`xml:"CTe" json:"CTe,omitempty"`
+	ProtCTe			*TProtCTe	`xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // CteProc is CT-e processado

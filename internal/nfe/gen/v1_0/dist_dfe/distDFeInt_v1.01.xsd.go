@@ -8,33 +8,33 @@ import (
 
 // TAnonComplexDistNSU1 is Último NSU recebido pelo ator. Caso seja informado com zero, ou com um NSU muito antigo, a consulta retornará unicamente as informações resumidas e documentos fiscais eletrônicos que tenham sido recepcionados pelo Ambiente Nacional nos últimos 3 meses.
 type TAnonComplexDistNSU1 struct {
-	XMLName xml.Name `xml:"distNSU" json:"-"`
-	UltNSU  string   `xml:"ultNSU" json:"ultNSU,omitempty"`
+	XMLName	xml.Name	`xml:"distNSU" json:"-"`
+	UltNSU	string		`xml:"ultNSU" json:"ultNSU,omitempty"`
 }
 
 // TAnonComplexConsNSU1 is Número Sequencial Único. Geralmente esta consulta será utilizada quando identificado pelo interessado um NSU faltante. O Web Service retornará o documento ou informará que o NSU não existe no Ambiente Nacional. Assim, esta consulta fechará a lacuna do NSU identificado como faltante.
 type TAnonComplexConsNSU1 struct {
-	XMLName xml.Name `xml:"consNSU" json:"-"`
-	NSU     string   `xml:"NSU" json:"NSU,omitempty"`
+	XMLName	xml.Name	`xml:"consNSU" json:"-"`
+	NSU	string		`xml:"NSU" json:"NSU,omitempty"`
 }
 
 // TAnonComplexConsChNFe1 is Chave de acesso da NF-e a ser consultada
 type TAnonComplexConsChNFe1 struct {
-	XMLName xml.Name `xml:"consChNFe" json:"-"`
-	ChNFe   string   `xml:"chNFe" json:"chNFe,omitempty"`
+	XMLName	xml.Name	`xml:"consChNFe" json:"-"`
+	ChNFe	string		`xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TAnonComplexDistDFeInt1 is Grupo para consultar uma NF-e a partir da chave de acesso
 type TAnonComplexDistDFeInt1 struct {
-	XMLName    xml.Name                `xml:"distDFeInt" json:"-"`
-	VersaoAttr string                  `xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb      string                  `xml:"tpAmb" json:"tpAmb,omitempty"`
-	CUFAutor   *string                 `xml:"cUFAutor" json:"cUFAutor,omitempty"`
-	CNPJ       *string                 `xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF        *string                 `xml:"CPF" json:"CPF,omitempty"`
-	DistNSU    *TAnonComplexDistNSU1   `xml:"distNSU" json:"distNSU,omitempty"`
-	ConsNSU    *TAnonComplexConsNSU1   `xml:"consNSU" json:"consNSU,omitempty"`
-	ConsChNFe  *TAnonComplexConsChNFe1 `xml:"consChNFe" json:"consChNFe,omitempty"`
+	XMLName		xml.Name		`xml:"distDFeInt" json:"-"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
+	CUFAutor	*string			`xml:"cUFAutor" json:"cUFAutor,omitempty"`
+	CNPJ		*string			`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF		*string			`xml:"CPF" json:"CPF,omitempty"`
+	DistNSU		*TAnonComplexDistNSU1	`xml:"distNSU" json:"distNSU,omitempty"`
+	ConsNSU		*TAnonComplexConsNSU1	`xml:"consNSU" json:"consNSU,omitempty"`
+	ConsChNFe	*TAnonComplexConsChNFe1	`xml:"consChNFe" json:"consChNFe,omitempty"`
 }
 
 // DistDFeInt is Schema de pedido de distribuição de DF-e de interesse

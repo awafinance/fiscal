@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/bpe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoBPeTiposBasico_v1.00.xsd"></include>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_descEvento_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Excesso Bagagem"></enumeration>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="eventoBPeTiposBasico_v1.00.xsd"></include>
+  <simpleType name="TAnon_descEvento_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="Excesso Bagagem"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_qBagagem_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
+  <simpleType name="TAnon_qBagagem_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <minLength value="1"></minLength>
+      <maxLength value="20"></maxLength>
     </restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_evExcessoBagagem_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="descEvento" type="TAnon_descEvento_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Evento - “Excesso Bagagem”</documentation>
+  <complexType name="TAnonComplex_evExcessoBagagem_1">
+    <sequence>
+      <element name="descEvento" type="TAnon_descEvento_1">
+        <annotation>
+          <documentation>Descrição do Evento - “Excesso Bagagem”</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do BP-e.</documentation>
+      <element name="nProt" type="TProt">
+        <annotation>
+          <documentation>Número do Protocolo de Status do BP-e.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="qBagagem" type="TAnon_qBagagem_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Quantidade de volumes de bagagem carregados</documentation>
+      <element name="qBagagem" type="TAnon_qBagagem_1">
+        <annotation>
+          <documentation>Quantidade de volumes de bagagem carregados</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vTotBag" type="TDec_1302">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor total do serviço</documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Pode conter zeros quando o BP-e for de complemento de ICMS</documentation>
+      <element name="vTotBag" type="TDec_1302">
+        <annotation>
+          <documentation>Valor total do serviço</documentation>
+          <documentation>Pode conter zeros quando o BP-e for de complemento de ICMS</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" name="evExcessoBagagem" type="TAnonComplex_evExcessoBagagem_1">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do evento de excesso de bagagem 
+  <element name="evExcessoBagagem" type="TAnonComplex_evExcessoBagagem_1">
+    <annotation>
+      <documentation>Schema XML de validação do evento de excesso de bagagem 
 110117</documentation>
     </annotation>
   </element>

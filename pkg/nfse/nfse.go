@@ -13,11 +13,11 @@ import (
 const namespace = "http://www.sped.fazenda.gov.br/nfse"
 
 type Document struct {
-	VersaoAttr   string
-	DPS          *schema.TCDPS
-	NFSe         *schema.TCNFSe
-	PedRegEvento *schema.TCPedRegEvt
-	rootName     string
+	VersaoAttr   string              `json:"versao,omitempty"`
+	DPS          *schema.TCDPS       `json:"DPS,omitempty"`
+	NFSe         *schema.TCNFSe      `json:"NFSe,omitempty"`
+	PedRegEvento *schema.TCPedRegEvt `json:"pedRegEvento,omitempty"`
+	rootName     string              `json:"-"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_descEvento_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Inclusao Condutor"></enumeration>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
+  <simpleType name="TAnon_descEvento_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="Inclusao Condutor"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+  <simpleType name="TAnon_xNome_1">
+    <restriction base="TString">
+      <maxLength value="60"></maxLength>
+      <minLength value="2"></minLength>
     </restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_condutor_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" type="TAnon_xNome_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do Condutor</documentation>
+  <complexType name="TAnonComplex_condutor_1">
+    <sequence>
+      <element name="xNome" type="TAnon_xNome_1">
+        <annotation>
+          <documentation>Nome do Condutor</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">CPF do Condutor</documentation>
+      <element name="CPF" type="TCpf">
+        <annotation>
+          <documentation>CPF do Condutor</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_evIncCondutorMDFe_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="descEvento" type="TAnon_descEvento_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Evento - “Inclusao Condutor”</documentation>
+  <complexType name="TAnonComplex_evIncCondutorMDFe_1">
+    <sequence>
+      <element name="descEvento" type="TAnon_descEvento_1">
+        <annotation>
+          <documentation>Descrição do Evento - “Inclusao Condutor”</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="condutor" type="TAnonComplex_condutor_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do(s) Condutor(s) do veículo</documentation>
+      <element name="condutor" type="TAnonComplex_condutor_1">
+        <annotation>
+          <documentation>Informações do(s) Condutor(s) do veículo</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" name="evIncCondutorMDFe" type="TAnonComplex_evIncCondutorMDFe_1">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do evento de inclusao de condutor 110114</documentation>
+  <element name="evIncCondutorMDFe" type="TAnonComplex_evIncCondutorMDFe_1">
+    <annotation>
+      <documentation>Schema XML de validação do evento de inclusao de condutor 110114</documentation>
     </annotation>
   </element>
 </schema>

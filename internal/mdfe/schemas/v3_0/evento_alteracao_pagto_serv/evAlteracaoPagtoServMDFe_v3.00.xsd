@@ -1,254 +1,252 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_descEvento_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Alteração Pagamento Serviço MDFe"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Alteracao Pagamento Servico MDFe"></enumeration>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
+  <simpleType name="TAnon_descEvento_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="Alteração Pagamento Serviço MDFe"></enumeration>
+      <enumeration value="Alteracao Pagamento Servico MDFe"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xNome_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+  <simpleType name="TAnon_xNome_1">
+    <restriction base="TString">
+      <maxLength value="60"></maxLength>
+      <minLength value="2"></minLength>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_idEstrangeiro_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="20"></maxLength>
-      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="([!-ÿ]{0}|[!-ÿ]{5,20})?"></pattern>
+  <simpleType name="TAnon_idEstrangeiro_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <minLength value="2"></minLength>
+      <maxLength value="20"></maxLength>
+      <pattern value="([!-ÿ]{0}|[!-ÿ]{5,20})?"></pattern>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpComp_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="01"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="02"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="03"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="99"></enumeration>
+  <simpleType name="TAnon_tpComp_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="01"></enumeration>
+      <enumeration value="02"></enumeration>
+      <enumeration value="03"></enumeration>
+      <enumeration value="99"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xComp_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+  <simpleType name="TAnon_xComp_1">
+    <restriction base="TString">
+      <maxLength value="60"></maxLength>
+      <minLength value="2"></minLength>
     </restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_Comp_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpComp" type="TAnon_tpComp_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo do Componente</documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">
-01 - Vale Pedágio; 
+  <complexType name="TAnonComplex_Comp_1">
+    <sequence>
+      <element name="tpComp" type="TAnon_tpComp_1">
+        <annotation>
+          <documentation>Tipo do Componente</documentation>
+          <documentation>01 - Vale Pedágio; 
 02 - Impostos, taxas e contribuições; 
 03 - Despesas (bancárias, meios de pagamento, outras)
 ; 99 - Outros</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vComp" type="TDec_1302">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do componente</documentation>
+      <element name="vComp" type="TDec_1302">
+        <annotation>
+          <documentation>Valor do componente</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xComp" minOccurs="0" type="TAnon_xComp_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do componente do tipo Outros</documentation>
-        </annotation>
-      </element>
-    </sequence>
-  </complexType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_indPag_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
-    </restriction>
-  </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_indAntecipaAdiant_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
-    </restriction>
-  </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_nParcela_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="[0-9]{3}"></pattern>
-    </restriction>
-  </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infPrazo_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nParcela" type="TAnon_nParcela_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número da Parcela</documentation>
-        </annotation>
-      </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dVenc" type="TData">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data de vencimento da Parcela (AAAA-MM-DD)</documentation>
-        </annotation>
-      </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vParcela" type="TDec_1302Opc">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor da Parcela</documentation>
+      <element name="xComp" minOccurs="0" type="TAnon_xComp_1">
+        <annotation>
+          <documentation>Descrição do componente do tipo Outros</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_tpAntecip_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+  <simpleType name="TAnon_indPag_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="0"></enumeration>
+      <enumeration value="1"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_codBanco_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="3"></minLength>
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="5"></maxLength>
+  <simpleType name="TAnon_indAntecipaAdiant_1">
+    <restriction base="xs:string">
+      <enumeration value="1"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_codAgencia_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="10"></maxLength>
+  <simpleType name="TAnon_nParcela_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{3}"></pattern>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_PIX_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
-      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
-      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+  <complexType name="TAnonComplex_infPrazo_1">
+    <sequence>
+      <element name="nParcela" type="TAnon_nParcela_1">
+        <annotation>
+          <documentation>Número da Parcela</documentation>
+        </annotation>
+      </element>
+      <element name="dVenc" type="TData">
+        <annotation>
+          <documentation>Data de vencimento da Parcela (AAAA-MM-DD)</documentation>
+        </annotation>
+      </element>
+      <element name="vParcela" type="TDec_1302Opc">
+        <annotation>
+          <documentation>Valor da Parcela</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <simpleType name="TAnon_tpAntecip_1">
+    <restriction base="xs:string">
+      <enumeration value="0"></enumeration>
+      <enumeration value="1"></enumeration>
+      <enumeration value="2"></enumeration>
     </restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infBanc_1">
-    <choice xmlns="http://www.w3.org/2001/XMLSchema">
-      <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="codBanco" type="TAnon_codBanco_1">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do banco</documentation>
+  <simpleType name="TAnon_codBanco_1">
+    <restriction base="TString">
+      <minLength value="3"></minLength>
+      <maxLength value="5"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType name="TAnon_codAgencia_1">
+    <restriction base="TString">
+      <minLength value="1"></minLength>
+      <maxLength value="10"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType name="TAnon_PIX_1">
+    <restriction base="TString">
+      <maxLength value="60"></maxLength>
+      <minLength value="2"></minLength>
+    </restriction>
+  </simpleType>
+  <complexType name="TAnonComplex_infBanc_1">
+    <choice>
+      <sequence>
+        <element name="codBanco" type="TAnon_codBanco_1">
+          <annotation>
+            <documentation>Número do banco</documentation>
           </annotation>
         </element>
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="codAgencia" type="TAnon_codAgencia_1">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número da agência bancária </documentation>
+        <element name="codAgencia" type="TAnon_codAgencia_1">
+          <annotation>
+            <documentation>Número da agência bancária</documentation>
           </annotation>
         </element>
       </sequence>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJIPEF" type="TCnpjOpc">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CNPJ da Instituição de Pagamento Eletrônico do Frete</documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos.</documentation>
+      <element name="CNPJIPEF" type="TCnpjOpc">
+        <annotation>
+          <documentation>Número do CNPJ da Instituição de Pagamento Eletrônico do Frete</documentation>
+          <documentation>Informar os zeros não significativos.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="PIX" type="TAnon_PIX_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Chave PIX </documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar a chave PIX para recebimento do frete. 
+      <element name="PIX" type="TAnon_PIX_1">
+        <annotation>
+          <documentation>Chave PIX</documentation>
+          <documentation>Informar a chave PIX para recebimento do frete. 
 Pode ser email, CPF/ CNPJ (somente numeros), Telefone com a seguinte formatação (+5599999999999) ou a chave aleatória gerada pela instituição.</documentation>
         </annotation>
       </element>
     </choice>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infPag_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xNome" minOccurs="0" type="TAnon_xNome_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Razão social ou Nome do responsavel pelo pagamento</documentation>
+  <complexType name="TAnonComplex_infPag_1">
+    <sequence>
+      <element name="xNome" minOccurs="0" type="TAnon_xNome_1">
+        <annotation>
+          <documentation>Razão social ou Nome do responsavel pelo pagamento</documentation>
         </annotation>
       </element>
-      <choice xmlns="http://www.w3.org/2001/XMLSchema">
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CPF do responsável pelo pgto</documentation>
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos.</documentation>
+      <choice>
+        <element name="CPF" type="TCpf">
+          <annotation>
+            <documentation>Número do CPF do responsável pelo pgto</documentation>
+            <documentation>Informar os zeros não significativos.</documentation>
           </annotation>
         </element>
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpjOpc">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do CNPJ do responsável pelo pgto</documentation>
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar os zeros não significativos.</documentation>
+        <element name="CNPJ" type="TCnpjOpc">
+          <annotation>
+            <documentation>Número do CNPJ do responsável pelo pgto</documentation>
+            <documentation>Informar os zeros não significativos.</documentation>
           </annotation>
         </element>
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="idEstrangeiro" type="TAnon_idEstrangeiro_1">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificador do responsável pelo pgto em caso de ser estrangeiro</documentation>
+        <element name="idEstrangeiro" type="TAnon_idEstrangeiro_1">
+          <annotation>
+            <documentation>Identificador do responsável pelo pgto em caso de ser estrangeiro</documentation>
           </annotation>
         </element>
       </choice>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="Comp" maxOccurs="unbounded" type="TAnonComplex_Comp_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Componentes do Pagamentoi do Frete</documentation>
+      <element name="Comp" maxOccurs="unbounded" type="TAnonComplex_Comp_1">
+        <annotation>
+          <documentation>Componentes do Pagamentoi do Frete</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vContrato" type="TDec_1302">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor Total do Contrato</documentation>
+      <element name="vContrato" type="TDec_1302">
+        <annotation>
+          <documentation>Valor Total do Contrato</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indPag" type="TAnon_indPag_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicador da Forma de Pagamento:0-Pagamento à Vista;1-Pagamento à Prazo;</documentation>
+      <element name="indPag" type="TAnon_indPag_1">
+        <annotation>
+          <documentation>Indicador da Forma de Pagamento:0-Pagamento à Vista;1-Pagamento à Prazo;</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="vAdiant" type="TDec_1302" minOccurs="0">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Valor do Adiantamento (usar apenas em pagamento à Prazo</documentation>
+      <element name="vAdiant" type="TDec_1302" minOccurs="0">
+        <annotation>
+          <documentation>Valor do Adiantamento (usar apenas em pagamento à Prazo</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indAntecipaAdiant" minOccurs="0" type="TAnon_indAntecipaAdiant_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicador para declarar concordância em antecipar o adiantamento</documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Operação de transporte com utilização de veículos de frotas dedicadas ou fidelizadas.
-Preencher com “1” para indicar operação de transporte de alto desempenho, demais casos não informar a tag
-</documentation>
+      <element name="indAntecipaAdiant" minOccurs="0" type="TAnon_indAntecipaAdiant_1">
+        <annotation>
+          <documentation>Indicador para declarar concordância em antecipar o adiantamento</documentation>
+          <documentation>Operação de transporte com utilização de veículos de frotas dedicadas ou fidelizadas.
+Preencher com “1” para indicar operação de transporte de alto desempenho, demais casos não informar a tag</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infPrazo" minOccurs="0" maxOccurs="unbounded" type="TAnonComplex_infPrazo_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do pagamento a prazo. </documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar somente se indPag for à Prazo</documentation>
+      <element name="infPrazo" minOccurs="0" maxOccurs="unbounded" type="TAnonComplex_infPrazo_1">
+        <annotation>
+          <documentation>Informações do pagamento a prazo.</documentation>
+          <documentation>Informar somente se indPag for à Prazo</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAntecip" minOccurs="0" type="TAnon_tpAntecip_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo de Permissão em relação a antecipação das parcelas</documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">0 - Não permite antecipar
+      <element name="tpAntecip" minOccurs="0" type="TAnon_tpAntecip_1">
+        <annotation>
+          <documentation>Tipo de Permissão em relação a antecipação das parcelas</documentation>
+          <documentation>0 - Não permite antecipar
 1 - Permite antecipar as parcelas
 2 - Permite antecipar as parcelas mediante confirmação</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infBanc" type="TAnonComplex_infBanc_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações bancárias</documentation>
+      <element name="infBanc" type="TAnonComplex_infBanc_1">
+        <annotation>
+          <documentation>Informações bancárias</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_evAlteracaoPagtoServMDFe_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="descEvento" type="TAnon_descEvento_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Evento - “Alteração Pagamento Serviço MDFe”</documentation>
+  <complexType name="TAnonComplex_evAlteracaoPagtoServMDFe_1">
+    <sequence>
+      <element name="descEvento" type="TAnon_descEvento_1">
+        <annotation>
+          <documentation>Descrição do Evento - “Alteração Pagamento Serviço MDFe”</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do MDF-e. </documentation>
+      <element name="nProt" type="TProt">
+        <annotation>
+          <documentation>Número do Protocolo de Status do MDF-e.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infPag" maxOccurs="unbounded" type="TAnonComplex_infPag_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações do Pagamento do Frete</documentation>
+      <element name="infPag" maxOccurs="unbounded" type="TAnonComplex_infPag_1">
+        <annotation>
+          <documentation>Informações do Pagamento do Frete</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" name="evAlteracaoPagtoServMDFe" type="TAnonComplex_evAlteracaoPagtoServMDFe_1">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do evento de alteração do pagamento do serviçp de transporte 110118</documentation>
+  <element name="evAlteracaoPagtoServMDFe" type="TAnonComplex_evAlteracaoPagtoServMDFe_1">
+    <annotation>
+      <documentation>Schema XML de validação do evento de alteração do pagamento do serviçp de transporte 110118</documentation>
     </annotation>
   </element>
 </schema>

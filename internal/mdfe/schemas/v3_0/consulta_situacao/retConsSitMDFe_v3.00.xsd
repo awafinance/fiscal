@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="consSitMDFeTiposBasico_v3.00.xsd"></include>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" name="retConsSitMDFe" type="TRetConsSitMDFe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do retorno da consulta da situação atual do MDF-e.</documentation>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="consSitMDFeTiposBasico_v3.00.xsd"></include>
+  <element name="retConsSitMDFe" type="TRetConsSitMDFe">
+    <annotation>
+      <documentation>Schema XML de validação do retorno da consulta da situação atual do MDF-e.</documentation>
     </annotation>
   </element>
 </schema>

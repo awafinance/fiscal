@@ -41,22 +41,22 @@ type TAnonXNome1 string
 
 // TAnonComplexFerroEnv1 is Dados do endereço da ferrovia envolvida
 type TAnonComplexFerroEnv1 struct {
-	XMLName    xml.Name   `xml:"ferroEnv"`
-	CNPJ       string     `xml:"CNPJ"`
-	CInt       *string    `xml:"cInt"`
-	IE         *string    `xml:"IE"`
-	XNome      string     `xml:"xNome"`
-	EnderFerro *TEnderFer `xml:"enderFerro"`
+	XMLName		xml.Name	`xml:"ferroEnv" json:"-"`
+	CNPJ		string		`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CInt		*string		`xml:"cInt" json:"cInt,omitempty"`
+	IE		*string		`xml:"IE" json:"IE,omitempty"`
+	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
+	EnderFerro	*TEnderFer	`xml:"enderFerro" json:"enderFerro,omitempty"`
 }
 
 // TAnonComplexTrafMut1 is Informações das Ferrovias Envolvidas
 type TAnonComplexTrafMut1 struct {
-	XMLName          xml.Name                 `xml:"trafMut"`
-	RespFat          string                   `xml:"respFat"`
-	FerrEmi          string                   `xml:"ferrEmi"`
-	VFrete           string                   `xml:"vFrete"`
-	ChCTeFerroOrigem *string                  `xml:"chCTeFerroOrigem"`
-	FerroEnv         []*TAnonComplexFerroEnv1 `xml:"ferroEnv"`
+	XMLName			xml.Name			`xml:"trafMut" json:"-"`
+	RespFat			string				`xml:"respFat" json:"respFat,omitempty"`
+	FerrEmi			string				`xml:"ferrEmi" json:"ferrEmi,omitempty"`
+	VFrete			string				`xml:"vFrete" json:"vFrete,omitempty"`
+	ChCTeFerroOrigem	*string				`xml:"chCTeFerroOrigem" json:"chCTeFerroOrigem,omitempty"`
+	FerroEnv		[]*TAnonComplexFerroEnv1	`xml:"ferroEnv" json:"ferroEnv,omitempty"`
 }
 
 // TAnonFluxo1 ...
@@ -64,22 +64,22 @@ type TAnonFluxo1 string
 
 // TAnonComplexFerrov1 is Trata-se de um número identificador do contrato firmado com o cliente
 type TAnonComplexFerrov1 struct {
-	XMLName xml.Name              `xml:"ferrov"`
-	TpTraf  string                `xml:"tpTraf"`
-	TrafMut *TAnonComplexTrafMut1 `xml:"trafMut"`
-	Fluxo   string                `xml:"fluxo"`
+	XMLName	xml.Name		`xml:"ferrov" json:"-"`
+	TpTraf	string			`xml:"tpTraf" json:"tpTraf,omitempty"`
+	TrafMut	*TAnonComplexTrafMut1	`xml:"trafMut" json:"trafMut,omitempty"`
+	Fluxo	string			`xml:"fluxo" json:"fluxo,omitempty"`
 }
 
 // TEnderFer is Informar EX para operações com o exterior.
 type TEnderFer struct {
-	XLgr    string  `xml:"xLgr"`
-	Nro     *string `xml:"nro"`
-	XCpl    *string `xml:"xCpl"`
-	XBairro *string `xml:"xBairro"`
-	CMun    string  `xml:"cMun"`
-	XMun    string  `xml:"xMun"`
-	CEP     string  `xml:"CEP"`
-	UF      string  `xml:"UF"`
+	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
+	Nro	*string	`xml:"nro" json:"nro,omitempty"`
+	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro	*string	`xml:"xBairro" json:"xBairro,omitempty"`
+	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
+	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
+	CEP	string	`xml:"CEP" json:"CEP,omitempty"`
+	UF	string	`xml:"UF" json:"UF,omitempty"`
 }
 
 // Ferrov is Informações do modal Ferroviário

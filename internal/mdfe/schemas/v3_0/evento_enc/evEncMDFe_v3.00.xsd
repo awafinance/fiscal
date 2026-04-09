@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_descEvento_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Encerramento"></enumeration>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
+  <simpleType name="TAnon_descEvento_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="Encerramento"></enumeration>
     </restriction>
   </simpleType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_indEncPorTerceiro_1">
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+  <simpleType name="TAnon_indEncPorTerceiro_1">
+    <restriction base="xs:string">
+      <enumeration value="1"></enumeration>
     </restriction>
   </simpleType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_evEncMDFe_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="descEvento" type="TAnon_descEvento_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Evento - “Encerramento”</documentation>
+  <complexType name="TAnonComplex_evEncMDFe_1">
+    <sequence>
+      <element name="descEvento" type="TAnon_descEvento_1">
+        <annotation>
+          <documentation>Descrição do Evento - “Encerramento”</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do MDF-e. 
+      <element name="nProt" type="TProt">
+        <annotation>
+          <documentation>Número do Protocolo de Status do MDF-e. 
 1 posição tipo de autorizador (9 - SEFAZ Nacional ); 
 2 posições ano;
 10 seqüencial no ano.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dtEnc" type="TData">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data que o Manifesto foi encerrado</documentation>
+      <element name="dtEnc" type="TData">
+        <annotation>
+          <documentation>Data que o Manifesto foi encerrado</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE_EX">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">UF de encerramento do Manifesto</documentation>
+      <element name="cUF" type="TCodUfIBGE_EX">
+        <annotation>
+          <documentation>UF de encerramento do Manifesto</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMun" type="TCodMunIBGE">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do Município de Encerramento do manifesto</documentation>
+      <element name="cMun" type="TCodMunIBGE">
+        <annotation>
+          <documentation>Código do Município de Encerramento do manifesto</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indEncPorTerceiro" minOccurs="0" type="TAnon_indEncPorTerceiro_1">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicador que deve ser informado quando o encerramento for registrado pelo transportador terceiro</documentation>
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informar valor 1 quando o MDFe for encerrado pelo transportador terceiro, este sendo diferente do emitente do MDFe</documentation>
+      <element name="indEncPorTerceiro" minOccurs="0" type="TAnon_indEncPorTerceiro_1">
+        <annotation>
+          <documentation>Indicador que deve ser informado quando o encerramento for registrado pelo transportador terceiro</documentation>
+          <documentation>Informar valor 1 quando o MDFe for encerrado pelo transportador terceiro, este sendo diferente do emitente do MDFe</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" name="evEncMDFe" type="TAnonComplex_evEncMDFe_1">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do evento do encerramento 
+  <element name="evEncMDFe" type="TAnonComplex_evEncMDFe_1">
+    <annotation>
+      <documentation>Schema XML de validação do evento do encerramento 
 110112</documentation>
     </annotation>
   </element>

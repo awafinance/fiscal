@@ -28,7 +28,7 @@ depends = ['format']
 
 [tasks.gen]
 description = 'Run Codegen'
-run = 'go generate ./...'
+run = 'go run ./internal/codegen'
 
 
 [tasks.format]

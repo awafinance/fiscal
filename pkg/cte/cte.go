@@ -30,59 +30,59 @@ import (
 const namespace = "http://www.portalfiscal.inf.br/cte"
 
 type Document struct {
-	VersaoAttr                   string
-	CTe                          *cteSchema.TCTe
-	CTeProc                      *cteSchema.TAnonComplexCteProc1
-	RetCTe                       *cteSchema.TRetCTe
-	CTeOS                        *cteOSSchema.TCTeOS
-	CTeOSProc                    *cteOSSchema.TAnonComplexCteOSProc1
-	RetCTeOS                     *cteOSSchema.TRetCTeOS
-	CTeSimp                      *cteSimpSchema.TCTeSimp
-	CTeSimpProc                  *cteSimpSchema.TAnonComplexCteSimpProc1
-	RetCTeSimp                   *cteSimpSchema.TRetCTeSimp
-	GTVe                         *gtveSchema.TGTVe
-	GTVeProc                     *gtveSchema.TAnonComplexGTVeProc1
-	RetGTVe                      *gtveSchema.TRetGTVe
-	ConsSitCTe                   *consSitSchema.TConsSitCTe
-	RetConsSitCTe                *consSitSchema.TRetConsSitCTe
-	ConsStatServCTe              *statusSchema.TConsStatServ
-	RetConsStatServCTe           *statusSchema.TRetConsStatServ
-	EventoCTe                    *eventSchema.TEvento
-	RetEventoCTe                 *eventSchema.TRetEvento
-	ProcEventoCTe                *eventSchema.TProcEvento
-	EventoCancCTe                *cancelEventSchema.TEvento
-	RetEventoCancCTe             *cancelEventSchema.TRetEvento
-	ProcEventoCancCTe            *cancelEventSchema.TProcEvento
-	EventoCECTe                  *ceEventSchema.TEvento
-	RetEventoCECTe               *ceEventSchema.TRetEvento
-	ProcEventoCECTe              *ceEventSchema.TProcEvento
-	EventoCancCECTe              *cancelCEEventSchema.TEvento
-	RetEventoCancCECTe           *cancelCEEventSchema.TRetEvento
-	ProcEventoCancCECTe          *cancelCEEventSchema.TProcEvento
-	EventoEPECCTe                *epecEventSchema.TEvento
-	RetEventoEPECCTe             *epecEventSchema.TRetEvento
-	ProcEventoEPECCTe            *epecEventSchema.TProcEvento
-	EventoRegMultimodal          *regMultimodalEventSchema.TEvento
-	RetEventoRegMultimodal       *regMultimodalEventSchema.TRetEvento
-	ProcEventoRegMultimodal      *regMultimodalEventSchema.TProcEvento
-	EventoGTV                    *gtvEventSchema.TEvento
-	RetEventoGTV                 *gtvEventSchema.TRetEvento
-	ProcEventoGTV                *gtvEventSchema.TProcEvento
-	EventoIECTe                  *ieEventSchema.TEvento
-	RetEventoIECTe               *ieEventSchema.TRetEvento
-	ProcEventoIECTe              *ieEventSchema.TProcEvento
-	EventoCancIECTe              *cancelIEEventSchema.TEvento
-	RetEventoCancIECTe           *cancelIEEventSchema.TRetEvento
-	ProcEventoCancIECTe          *cancelIEEventSchema.TProcEvento
-	EventoPrestDesacordo         *prestDesacordoEventSchema.TEvento
-	RetEventoPrestDesacordo      *prestDesacordoEventSchema.TRetEvento
-	ProcEventoPrestDesacordo     *prestDesacordoEventSchema.TProcEvento
-	EventoCancPrestDesacordo     *cancelPrestDesacordoEventSchema.TEvento
-	RetEventoCancPrestDesacordo  *cancelPrestDesacordoEventSchema.TRetEvento
-	ProcEventoCancPrestDesacordo *cancelPrestDesacordoEventSchema.TProcEvento
-	DistDFeInt                   *distSchema.TAnonComplexDistDFeInt1
-	RetDistDFeInt                *distSchema.TAnonComplexRetDistDFeInt1
-	rootName                     string
+	VersaoAttr                   string                                       `json:"versao,omitempty"`
+	CTe                          *cteSchema.TCTe                              `json:"CTe,omitempty"`
+	CTeProc                      *cteSchema.TAnonComplexCteProc1              `json:"cteProc,omitempty"`
+	RetCTe                       *cteSchema.TRetCTe                           `json:"retCTe,omitempty"`
+	CTeOS                        *cteOSSchema.TCTeOS                          `json:"CTeOS,omitempty"`
+	CTeOSProc                    *cteOSSchema.TAnonComplexCteOSProc1          `json:"cteOSProc,omitempty"`
+	RetCTeOS                     *cteOSSchema.TRetCTeOS                       `json:"retCTeOS,omitempty"`
+	CTeSimp                      *cteSimpSchema.TCTeSimp                      `json:"CTeSimp,omitempty"`
+	CTeSimpProc                  *cteSimpSchema.TAnonComplexCteSimpProc1      `json:"cteSimpProc,omitempty"`
+	RetCTeSimp                   *cteSimpSchema.TRetCTeSimp                   `json:"retCTeSimp,omitempty"`
+	GTVe                         *gtveSchema.TGTVe                            `json:"GTVe,omitempty"`
+	GTVeProc                     *gtveSchema.TAnonComplexGTVeProc1            `json:"GTVeProc,omitempty"`
+	RetGTVe                      *gtveSchema.TRetGTVe                         `json:"retGTVe,omitempty"`
+	ConsSitCTe                   *consSitSchema.TConsSitCTe                   `json:"consSitCTe,omitempty"`
+	RetConsSitCTe                *consSitSchema.TRetConsSitCTe                `json:"retConsSitCTe,omitempty"`
+	ConsStatServCTe              *statusSchema.TConsStatServ                  `json:"consStatServCTe,omitempty"`
+	RetConsStatServCTe           *statusSchema.TRetConsStatServ               `json:"retConsStatServCTe,omitempty"`
+	EventoCTe                    *eventSchema.TEvento                         `json:"eventoCTe,omitempty"`
+	RetEventoCTe                 *eventSchema.TRetEvento                      `json:"retEventoCTe,omitempty"`
+	ProcEventoCTe                *eventSchema.TProcEvento                     `json:"procEventoCTe,omitempty"`
+	EventoCancCTe                *cancelEventSchema.TEvento                   `json:"eventoCancCTe,omitempty"`
+	RetEventoCancCTe             *cancelEventSchema.TRetEvento                `json:"retEventoCancCTe,omitempty"`
+	ProcEventoCancCTe            *cancelEventSchema.TProcEvento               `json:"procEventoCancCTe,omitempty"`
+	EventoCECTe                  *ceEventSchema.TEvento                       `json:"eventoCECTe,omitempty"`
+	RetEventoCECTe               *ceEventSchema.TRetEvento                    `json:"retEventoCECTe,omitempty"`
+	ProcEventoCECTe              *ceEventSchema.TProcEvento                   `json:"procEventoCECTe,omitempty"`
+	EventoCancCECTe              *cancelCEEventSchema.TEvento                 `json:"eventoCancCECTe,omitempty"`
+	RetEventoCancCECTe           *cancelCEEventSchema.TRetEvento              `json:"retEventoCancCECTe,omitempty"`
+	ProcEventoCancCECTe          *cancelCEEventSchema.TProcEvento             `json:"procEventoCancCECTe,omitempty"`
+	EventoEPECCTe                *epecEventSchema.TEvento                     `json:"eventoEPECCTe,omitempty"`
+	RetEventoEPECCTe             *epecEventSchema.TRetEvento                  `json:"retEventoEPECCTe,omitempty"`
+	ProcEventoEPECCTe            *epecEventSchema.TProcEvento                 `json:"procEventoEPECCTe,omitempty"`
+	EventoRegMultimodal          *regMultimodalEventSchema.TEvento            `json:"eventoRegMultimodal,omitempty"`
+	RetEventoRegMultimodal       *regMultimodalEventSchema.TRetEvento         `json:"retEventoRegMultimodal,omitempty"`
+	ProcEventoRegMultimodal      *regMultimodalEventSchema.TProcEvento        `json:"procEventoRegMultimodal,omitempty"`
+	EventoGTV                    *gtvEventSchema.TEvento                      `json:"eventoGTV,omitempty"`
+	RetEventoGTV                 *gtvEventSchema.TRetEvento                   `json:"retEventoGTV,omitempty"`
+	ProcEventoGTV                *gtvEventSchema.TProcEvento                  `json:"procEventoGTV,omitempty"`
+	EventoIECTe                  *ieEventSchema.TEvento                       `json:"eventoIECTe,omitempty"`
+	RetEventoIECTe               *ieEventSchema.TRetEvento                    `json:"retEventoIECTe,omitempty"`
+	ProcEventoIECTe              *ieEventSchema.TProcEvento                   `json:"procEventoIECTe,omitempty"`
+	EventoCancIECTe              *cancelIEEventSchema.TEvento                 `json:"eventoCancIECTe,omitempty"`
+	RetEventoCancIECTe           *cancelIEEventSchema.TRetEvento              `json:"retEventoCancIECTe,omitempty"`
+	ProcEventoCancIECTe          *cancelIEEventSchema.TProcEvento             `json:"procEventoCancIECTe,omitempty"`
+	EventoPrestDesacordo         *prestDesacordoEventSchema.TEvento           `json:"eventoPrestDesacordo,omitempty"`
+	RetEventoPrestDesacordo      *prestDesacordoEventSchema.TRetEvento        `json:"retEventoPrestDesacordo,omitempty"`
+	ProcEventoPrestDesacordo     *prestDesacordoEventSchema.TProcEvento       `json:"procEventoPrestDesacordo,omitempty"`
+	EventoCancPrestDesacordo     *cancelPrestDesacordoEventSchema.TEvento     `json:"eventoCancPrestDesacordo,omitempty"`
+	RetEventoCancPrestDesacordo  *cancelPrestDesacordoEventSchema.TRetEvento  `json:"retEventoCancPrestDesacordo,omitempty"`
+	ProcEventoCancPrestDesacordo *cancelPrestDesacordoEventSchema.TProcEvento `json:"procEventoCancPrestDesacordo,omitempty"`
+	DistDFeInt                   *distSchema.TAnonComplexDistDFeInt1          `json:"distDFeInt,omitempty"`
+	RetDistDFeInt                *distSchema.TAnonComplexRetDistDFeInt1       `json:"retDistDFeInt,omitempty"`
+	rootName                     string                                       `json:"-"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {

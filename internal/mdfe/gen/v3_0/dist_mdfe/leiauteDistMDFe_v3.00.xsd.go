@@ -17,36 +17,36 @@ type TAnonIndCompRet1 uint32
 
 // TAnonComplexProc1 is informação do proc
 type TAnonComplexProc1 struct {
-	XMLName           xml.Name `xml:"proc"`
-	SchemaAttr        string   `xml:"schema,attr"`
-	NSUAttr           string   `xml:"NSU,attr"`
-	IpTransmissorAttr *string  `xml:"ipTransmissor,attr"`
+	XMLName			xml.Name	`xml:"proc" json:"-"`
+	SchemaAttr		string		`xml:"schema,attr" json:"schema,omitempty"`
+	NSUAttr			string		`xml:"NSU,attr" json:"NSU,omitempty"`
+	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
 }
 
 // TDistDFe is último NSU recebido, caso seja informado com zero, o Ambiente Autorizador tentará localizar o primeiro DF-e existente.
 type TDistDFe struct {
-	VersaoAttr string   `xml:"versao,attr"`
-	TpAmb      string   `xml:"tpAmb"`
-	VerAplic   *TString `xml:"verAplic"`
-	IndDFe     uint32   `xml:"indDFe"`
-	IndCompRet uint32   `xml:"indCompRet"`
-	UltNSU     string   `xml:"ultNSU"`
+	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	IndDFe		uint32		`xml:"indDFe" json:"indDFe,omitempty"`
+	IndCompRet	uint32		`xml:"indCompRet" json:"indCompRet,omitempty"`
+	UltNSU		string		`xml:"ultNSU" json:"ultNSU,omitempty"`
 }
 
 // TRetDistDFe is último NSU
 type TRetDistDFe struct {
-	VersaoAttr       string        `xml:"versao,attr"`
-	TpAmb            string        `xml:"tpAmb"`
-	VerAplic         *TString      `xml:"verAplic"`
-	CStat            string        `xml:"cStat"`
-	XMotivo          *TString      `xml:"xMotivo"`
-	UltNSU           *string       `xml:"ultNSU"`
-	LoteDistMDFeComp *string       `xml:"loteDistMDFeComp"`
-	LoteDistMDFe     *TLoteDistDFe `xml:"loteDistMDFe"`
+	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb			string		`xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic		*TString	`xml:"verAplic" json:"verAplic,omitempty"`
+	CStat			string		`xml:"cStat" json:"cStat,omitempty"`
+	XMotivo			*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	UltNSU			*string		`xml:"ultNSU" json:"ultNSU,omitempty"`
+	LoteDistMDFeComp	*string		`xml:"loteDistMDFeComp" json:"loteDistMDFeComp,omitempty"`
+	LoteDistMDFe		*TLoteDistDFe	`xml:"loteDistMDFe" json:"loteDistMDFe,omitempty"`
 }
 
 // TLoteDistDFe is Schema XML de validação da área de dados descompactada
 type TLoteDistDFe struct {
-	VersaoAttr string               `xml:"versao,attr"`
-	Proc       []*TAnonComplexProc1 `xml:"proc"`
+	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
+	Proc		[]*TAnonComplexProc1	`xml:"proc" json:"proc,omitempty"`
 }

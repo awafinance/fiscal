@@ -17,9 +17,9 @@ type TAnonXSeg1 string
 
 // TAnonComplexInfSeg1 is Obrigatório apenas se responsável pelo seguro for (2) responsável pela contratação do transporte - pessoa jurídica
 type TAnonComplexInfSeg1 struct {
-	XMLName xml.Name `xml:"infSeg"`
-	XSeg    string   `xml:"xSeg"`
-	CNPJ    string   `xml:"CNPJ"`
+	XMLName	xml.Name	`xml:"infSeg" json:"-"`
+	XSeg	string		`xml:"xSeg" json:"xSeg,omitempty"`
+	CNPJ	string		`xml:"CNPJ" json:"CNPJ,omitempty"`
 }
 
 // TAnonNApol1 ...
@@ -30,18 +30,18 @@ type TAnonNAver1 string
 
 // TAnonComplexSeg1 is Não é obrigatório, pois muitas averbações ocorrem aapós a emissão do CT, mensalmente, por exemplo.
 type TAnonComplexSeg1 struct {
-	XMLName xml.Name             `xml:"seg"`
-	InfSeg  *TAnonComplexInfSeg1 `xml:"infSeg"`
-	NApol   string               `xml:"nApol"`
-	NAver   string               `xml:"nAver"`
+	XMLName	xml.Name		`xml:"seg" json:"-"`
+	InfSeg	*TAnonComplexInfSeg1	`xml:"infSeg" json:"infSeg,omitempty"`
+	NApol	string			`xml:"nApol" json:"nApol,omitempty"`
+	NAver	string			`xml:"nAver" json:"nAver,omitempty"`
 }
 
 // TAnonComplexMultimodal1 is Informações de Seguro do Multimodal
 type TAnonComplexMultimodal1 struct {
-	XMLName       xml.Name          `xml:"multimodal"`
-	COTM          string            `xml:"COTM"`
-	IndNegociavel string            `xml:"indNegociavel"`
-	Seg           *TAnonComplexSeg1 `xml:"seg"`
+	XMLName		xml.Name		`xml:"multimodal" json:"-"`
+	COTM		string			`xml:"COTM" json:"COTM,omitempty"`
+	IndNegociavel	string			`xml:"indNegociavel" json:"indNegociavel,omitempty"`
+	Seg		*TAnonComplexSeg1	`xml:"seg" json:"seg,omitempty"`
 }
 
 // Multimodal is Informações do Multimodal
