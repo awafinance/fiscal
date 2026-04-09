@@ -3,4 +3,4 @@
 package schema
 
 // ConsSitCTe is Schema de validação XML dp Pedido de Consulta da Situação Atual do CT-e.
-type ConsSitCTe string
+type ConsSitCTe *TConsSitCTe
