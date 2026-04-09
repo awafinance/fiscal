@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:ns1="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoMDFeTiposBasico_v3.00.xsd"></include>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_descEvento_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Inclusão DF-e"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Inclusao DF-e"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xMunCarrega_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_xMunDescarga_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TString">
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="2"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="60"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_infDoc_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMunDescarga" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do Município de Descarregamento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMunDescarga" type="TAnon_xMunDescarga_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do Município de Descarregamento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="chNFe" type="TChNFe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nota Fiscal Eletrônica</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_evIncDFeMDFe_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="descEvento" type="TAnon_descEvento_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Evento - “Inclusão DF-e”</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do MDF-e. 
+1 posição tipo de autorizador (9 - SEFAZ Nacional ); 
+2 posições ano;
+10 seqüencial no ano.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cMunCarrega" type="TCodMunIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" source="Código do Munícpio de Carregamento">Código do Município de Carregamento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMunCarrega" type="TAnon_xMunCarrega_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Nome do Município de Carregamento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="infDoc" maxOccurs="unbounded" type="TAnonComplex_infDoc_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Informações dos Documentos fiscais vinculados ao manifesto</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <element xmlns="http://www.w3.org/2001/XMLSchema" name="evIncDFeMDFe" type="TAnonComplex_evIncDFeMDFe_1">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do evento de inclusão de DFe 
+110115</documentation>
+    </annotation>
+  </element>
+</schema>

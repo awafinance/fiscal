@@ -1,77 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/bpe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposGeralBPe_v1.00.xsd"></include>
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoBPeTiposBasico_v1.00.xsd"></include>
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="bpeTiposBasico_v1.00.xsd"></include>
-  <import xmlns="http://www.w3.org/2001/XMLSchema" namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TConsSitBPe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Pedido de Consulta da Situação Atual do Bilhete de Passagem Eletrônico</documentation>
+<schema xmlns="http://www.portalfiscal.inf.br/bpe" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/bpe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposGeralBPe_v1.00.xsd"></include>
+  <include xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoBPeTiposBasico_v1.00.xsd"></include>
+  <include xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="bpeTiposBasico_v1.00.xsd"></include>
+  <import xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TConsSitBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Tipo Pedido de Consulta da Situação Atual do Bilhete de Passagem Eletrônico</documentation>
     </annotation>
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
 1 - Produção
 2 - Homologação</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xServ" type="TServ" fixed="CONSULTAR">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Serviço Solicitado</documentation>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="xServ" type="TServ" fixed="CONSULTAR">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Serviço Solicitado</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="chBPe" type="TChDFe">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Chaves de acesso do BP-e</documentation>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="chBPe" type="TChDFe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Chaves de acesso do BP-e</documentation>
         </annotation>
       </element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsSitBPe" use="required"></attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsSitBPe" use="required"></attribute>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TRetConsSitBPe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Retorno de Pedido de Consulta da Situação Atual do Bilhete de Passagem Eletrônico</documentation>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TRetConsSitBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Tipo Retorno de Pedido de Consulta da Situação Atual do Bilhete de Passagem Eletrônico</documentation>
     </annotation>
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
 1 - Produção
 2 - Homologação</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o BP-e</documentation>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o BP-e</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do status da mensagem enviada.</documentation>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Código do status da mensagem enviada.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do serviço solicitado.</documentation>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do serviço solicitado.</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">código da UF de atendimento</documentation>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">código da UF de atendimento</documentation>
         </annotation>
       </element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="protBPe" type="TProtBPe" minOccurs="0" maxOccurs="unbounded"></element>
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="procEventoBPe" type="TProcEvento" minOccurs="0" maxOccurs="unbounded"></element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="protBPe" type="TProtBPe" minOccurs="0" maxOccurs="unbounded"></element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="procEventoBPe" type="TProcEvento" minOccurs="0" maxOccurs="unbounded"></element>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsSitBPe" use="required"></attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsSitBPe" use="required"></attribute>
   </complexType>
-  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TVerConsSitBPe">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema"> Tipo Versão do Consulta situação de BP-e - 1.00</documentation>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TVerConsSitBPe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema"> Tipo Versão do Consulta situação de BP-e - 1.00</documentation>
     </annotation>
-    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
-      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="1\.00"></pattern>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" value="1\.00"></pattern>
     </restriction>
   </simpleType>
 </schema>

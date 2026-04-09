@@ -13,24 +13,32 @@ import (
 
 const xmlDSigSignatureTag = "`xml:\"ds:Signature\"`"
 const detEventoStruct = "type DetEvento struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
-const detEventoStructCCe = "type DetEvento struct {\n\tXMLName          xml.Name             `xml:\"detEvento\"`\n\tVersaoEventoAttr string               `xml:\"versaoEvento,attr\"`\n\tEvCCeCTe         *TAnonComplexEvCCeCTe1 `xml:\"evCCeCTe\"`\n}"
-const detEventoStructCancel = "type DetEvento struct {\n\tXMLName          xml.Name             `xml:\"detEvento\"`\n\tVersaoEventoAttr string               `xml:\"versaoEvento,attr\"`\n\tEvCancCTe        *TAnonComplexEvCancCTe1 `xml:\"evCancCTe\"`\n}"
 const anonDetEventoStruct = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
-const anonDetEventoStructCCe = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name                `xml:\"detEvento\"`\n\tVersaoEventoAttr string                  `xml:\"versaoEvento,attr\"`\n\tEvCCeCTe         *TAnonComplexEvCCeCTe1  `xml:\"evCCeCTe\"`\n}"
-const anonDetEventoStructCancel = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name                  `xml:\"detEvento\"`\n\tVersaoEventoAttr string                    `xml:\"versaoEvento,attr\"`\n\tEvCancCTe        *TAnonComplexEvCancCTe1   `xml:\"evCancCTe\"`\n}"
 const infModalStruct = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
-const infModalStructWithInnerXML = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
 const anonInfModalStruct = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
-const anonInfModalStructWithInnerXML = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
 const anonInfModalStruct2 = "type TAnonComplexInfModal2 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
-const anonInfModalStructWithInnerXML2 = "type TAnonComplexInfModal2 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
 const anonInfModalStruct3 = "type TAnonComplexInfModal3 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
-const anonInfModalStructWithInnerXML3 = "type TAnonComplexInfModal3 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
+const xmlOnlyImportBlock = "import (\n\t\"encoding/xml\"\n)"
+const typedInfModalImportBlock = "import (\n\t\"encoding/xml\"\n\n\tmodalaereo \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_aereo\"\n\tmodalaquaviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_aquaviario\"\n\tmodaldutoviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_dutoviario\"\n\tmodalferroviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_ferroviario\"\n\tmodalmultimodal \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_multimodal\"\n\tmodalrodoviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario\"\n\tmodalrodoviarioos \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
+const typedInfModalImportBlockOS = "import (\n\t\"encoding/xml\"\n\n\tmodalrodoviarioos \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
 
 var anonComplexXMLName = regexp.MustCompile("`xml:\"TAnonComplex_([^\"_]+(?:_[^\"_]+)*)_\\d+\"`")
 var optionalFieldDhCont = regexp.MustCompile(`\n\tDhCont\s+string\s+` + "`xml:\"dhCont\"`")
 var optionalFieldXJust = regexp.MustCompile(`\n\tXJust\s+string\s+` + "`xml:\"xJust\"`")
 var optionalFieldCRT = regexp.MustCompile(`\n\tCRT\s+string\s+` + "`xml:\"CRT\"`")
+var eventPayloads = map[string]string{
+	"evento_cce":                    "evCCeCTe",
+	"evento_cancel":                 "evCancCTe",
+	"evento_ce":                     "evCECTe",
+	"evento_cancel_ce":              "evCancCECTe",
+	"evento_cancel_ie":              "evCancIECTe",
+	"evento_cancel_prest_desacordo": "evCancPrestDesacordo",
+	"evento_epec":                   "evEPECCTe",
+	"evento_gtv":                    "evGTV",
+	"evento_ie":                     "evIECTe",
+	"evento_prest_desacordo":        "evPrestDesacordo",
+	"evento_reg_multimodal":         "evRegMultimodal",
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -65,6 +73,13 @@ func postprocessGenerated() error {
 		if d.IsDir() || filepath.Ext(path) != ".go" {
 			return nil
 		}
+		if isDiscardedModalSupportFile(path) {
+			if err := os.Remove(path); err != nil {
+				return err
+			}
+			fmt.Printf("removed modal support schema package %s\n", path)
+			return nil
+		}
 		if isNestedImportedSchema(path) {
 			if err := os.Remove(path); err != nil {
 				return err
@@ -83,21 +98,31 @@ func postprocessGenerated() error {
 		updated = anonComplexXMLName.ReplaceAllString(updated, "`xml:\"$1\"`")
 		updated = strings.ReplaceAll(updated, "*interface{}", "*string")
 		updated = strings.ReplaceAll(updated, "interface{}", "string")
-		updated = strings.Replace(updated, infModalStruct, infModalStructWithInnerXML, 1)
-		updated = strings.Replace(updated, anonInfModalStruct, anonInfModalStructWithInnerXML, 1)
-		updated = strings.Replace(updated, anonInfModalStruct2, anonInfModalStructWithInnerXML2, 1)
-		updated = strings.Replace(updated, anonInfModalStruct3, anonInfModalStructWithInnerXML3, 1)
 		updated = optionalFieldDhCont.ReplaceAllString(updated, "\n\tDhCont         *string `xml:\"dhCont\"`")
 		updated = optionalFieldXJust.ReplaceAllString(updated, "\n\tXJust          *string `xml:\"xJust\"`")
 		updated = optionalFieldCRT.ReplaceAllString(updated, "\n\tCRT       *string   `xml:\"CRT\"`")
+		if strings.HasSuffix(path, string(filepath.Separator)+"cteTiposBasico_v4.00.xsd.go") && usesTypedInfModal(path) {
+			if strings.Contains(path, string(filepath.Separator)+"cte_os"+string(filepath.Separator)) {
+				updated = strings.Replace(updated, xmlOnlyImportBlock, typedInfModalImportBlockOS, 1)
+				updated = strings.Replace(updated, infModalStruct, typedInfModal("InfModal", true), 1)
+				updated = strings.Replace(updated, anonInfModalStruct, typedInfModal("TAnonComplexInfModal1", true), 1)
+				updated = strings.Replace(updated, anonInfModalStruct2, typedInfModal("TAnonComplexInfModal2", true), 1)
+				updated = strings.Replace(updated, anonInfModalStruct3, typedInfModal("TAnonComplexInfModal3", true), 1)
+			} else {
+				updated = strings.Replace(updated, xmlOnlyImportBlock, typedInfModalImportBlock, 1)
+				updated = strings.Replace(updated, infModalStruct, typedInfModal("InfModal", false), 1)
+				updated = strings.Replace(updated, anonInfModalStruct, typedInfModal("TAnonComplexInfModal1", false), 1)
+				updated = strings.Replace(updated, anonInfModalStruct2, typedInfModal("TAnonComplexInfModal2", false), 1)
+				updated = strings.Replace(updated, anonInfModalStruct3, typedInfModal("TAnonComplexInfModal3", true), 1)
+			}
+		}
 		if strings.HasSuffix(path, string(filepath.Separator)+"eventoCTeTiposBasico_v4.00.xsd.go") {
-			switch {
-			case strings.Contains(path, string(filepath.Separator)+"evento_cce"+string(filepath.Separator)):
-				updated = strings.Replace(updated, detEventoStruct, detEventoStructCCe, 1)
-				updated = strings.Replace(updated, anonDetEventoStruct, anonDetEventoStructCCe, 1)
-			case strings.Contains(path, string(filepath.Separator)+"evento_cancel"+string(filepath.Separator)):
-				updated = strings.Replace(updated, detEventoStruct, detEventoStructCancel, 1)
-				updated = strings.Replace(updated, anonDetEventoStruct, anonDetEventoStructCancel, 1)
+			for folder, element := range eventPayloads {
+				if strings.Contains(path, string(filepath.Separator)+folder+string(filepath.Separator)) {
+					updated = strings.Replace(updated, detEventoStruct, detEventoReplacement("DetEvento", element), 1)
+					updated = strings.Replace(updated, anonDetEventoStruct, detEventoReplacement("TAnonComplexDetEvento1", element), 1)
+					break
+				}
 			}
 		}
 		if updated == string(text) {
@@ -111,6 +136,30 @@ func postprocessGenerated() error {
 		fmt.Printf("postprocessed generated xml tags in %s\n", path)
 		return nil
 	})
+}
+
+func isDiscardedModalSupportFile(path string) bool {
+	if filepath.Base(filepath.Dir(path)) == "v4_0" && strings.HasPrefix(filepath.Base(path), "modal_") {
+		return true
+	}
+
+	parent := filepath.Base(filepath.Dir(path))
+	allowed := map[string]string{
+		"modal_aereo":         "cteModalAereo_v4.00.xsd.go",
+		"modal_aquaviario":    "cteModalAquaviario_v4.00.xsd.go",
+		"modal_dutoviario":    "cteModalDutoviario_v4.00.xsd.go",
+		"modal_ferroviario":   "cteModalFerroviario_v4.00.xsd.go",
+		"modal_rodoviario":    "cteModalRodoviario_v4.00.xsd.go",
+		"modal_rodoviario_os": "cteModalRodoviarioOS_v4.00.xsd.go",
+		"modal_multimodal":    "cteMultiModal_v4.00.xsd.go",
+	}
+
+	rootFile, ok := allowed[parent]
+	if !ok {
+		return false
+	}
+
+	return filepath.Base(path) != rootFile
 }
 
 func isNestedImportedSchema(path string) bool {
@@ -139,8 +188,21 @@ func normalizeSchemas(args []string) error {
 		roots = []string{
 			filepath.Join("internal", "cte", "schemas", "v4_0", "cte"),
 			filepath.Join("internal", "cte", "schemas", "v4_0", "cte_os"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "consulta_situacao"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "status_servico"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "cte_simp"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "gtve"),
 			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cce"),
 			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cancel"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_ce"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cancel_ce"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cancel_ie"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_cancel_prest_desacordo"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_epec"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_gtv"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_ie"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_prest_desacordo"),
+			filepath.Join("internal", "cte", "schemas", "v4_0", "evento_reg_multimodal"),
 		}
 	}
 
@@ -172,6 +234,40 @@ func normalizeSchemas(args []string) error {
 	}
 
 	return nil
+}
+
+func detEventoReplacement(typeName, element string) string {
+	typeSuffix := strings.ToUpper(element[:1]) + element[1:]
+	return fmt.Sprintf(
+		"type %s struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n\t%s         *TAnonComplex%s1 `xml:\"%s\"`\n}",
+		typeName,
+		typeSuffix,
+		typeSuffix,
+		element,
+	)
+}
+
+func usesTypedInfModal(path string) bool {
+	parent := filepath.Base(filepath.Dir(path))
+	for _, folder := range []string{"cte", "cte_os", "cte_simp", "gtve"} {
+		if parent == folder {
+			return true
+		}
+	}
+	return false
+}
+
+func typedInfModal(typeName string, osOnly bool) string {
+	if osOnly {
+		return fmt.Sprintf(
+			"type %s struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tRodoOS          modalrodoviarioos.RodoOS `xml:\"rodoOS,omitempty\"`\n}",
+			typeName,
+		)
+	}
+	return fmt.Sprintf(
+		"type %s struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tRodo            modalrodoviario.Rodo `xml:\"rodo,omitempty\"`\n\tAereo           modalaereo.Aereo `xml:\"aereo,omitempty\"`\n\tAquav           modalaquaviario.Aquav `xml:\"aquav,omitempty\"`\n\tFerrov          modalferroviario.Ferrov `xml:\"ferrov,omitempty\"`\n\tDuto            modaldutoviario.Duto `xml:\"duto,omitempty\"`\n\tMultimodal      modalmultimodal.Multimodal `xml:\"multimodal,omitempty\"`\n}",
+		typeName,
+	)
 }
 
 func normalizeSchema(path string) (generatedTypes int, flattenedOptionalSequences int, err error) {

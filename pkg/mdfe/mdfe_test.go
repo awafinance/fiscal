@@ -12,6 +12,11 @@ import (
 	"testing"
 
 	distSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v1_0/dist_dfe"
+	consultaDFESchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/consulta_dfe"
+	consSitSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/consulta_situacao"
+	distMDFeSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/dist_mdfe"
+	mdfeSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/mdfe"
+	statusSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/status_servico"
 	"github.com/awa/nota-fiscal/pkg/mdfe"
 	"github.com/stretchr/testify/require"
 )
@@ -19,6 +24,7 @@ import (
 const (
 	mdfeNamespace = "http://www.portalfiscal.inf.br/mdfe"
 	dsNamespace   = "http://www.w3.org/2000/09/xmldsig#"
+	mdfeDocumentKey = "41240112345678000195580010000000011000000011"
 )
 
 type mdfeRodoModal struct {
@@ -259,6 +265,279 @@ func TestParse_DistDFeRoots(t *testing.T) {
 	}
 }
 
+func TestParse_SupportedRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		value  any
+		assert func(t *testing.T, doc *mdfe.Document)
+	}{
+		{
+			name: "mdfeProc",
+			value: struct {
+				XMLName    xml.Name                    `xml:"mdfeProc"`
+				XMLNS      string                      `xml:"xmlns,attr"`
+				VersaoAttr string                      `xml:"versao,attr"`
+				MDFe       *mdfeSchema.TMDFe           `xml:"MDFe"`
+				ProtMDFe   *mdfeSchema.TProtMDFe       `xml:"protMDFe"`
+			}{
+				XMLName:    xml.Name{Local: "mdfeProc"},
+				XMLNS:      mdfeNamespace,
+				VersaoAttr: "3.00",
+				MDFe:       minimalMDFe(),
+				ProtMDFe:   minimalProtMDFe(),
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.MDFeProc)
+				require.NotNil(t, doc.MDFeProc.MDFe)
+				require.NotNil(t, doc.MDFeProc.ProtMDFe)
+			},
+		},
+		{
+			name: "enviMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"enviMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*mdfeSchema.TEnviMDFe
+			}{
+				XMLName: xml.Name{Local: "enviMDFe"},
+				XMLNS:   mdfeNamespace,
+				TEnviMDFe: &mdfeSchema.TEnviMDFe{
+					VersaoAttr: "3.00",
+					IdLote:     "1",
+					MDFe:       minimalMDFe(),
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.EnviMDFe)
+				require.Equal(t, "1", doc.EnviMDFe.IdLote)
+			},
+		},
+		{
+			name: "retEnviMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retEnviMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*mdfeSchema.TRetEnviMDFe
+			}{
+				XMLName: xml.Name{Local: "retEnviMDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetEnviMDFe: &mdfeSchema.TRetEnviMDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      stringPtr("2"),
+					CUF:        "41",
+					CStat:      "103",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetEnviMDFe)
+				require.Equal(t, "103", doc.RetEnviMDFe.CStat)
+			},
+		},
+		{
+			name: "retMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*mdfeSchema.TRetMDFe
+			}{
+				XMLName: xml.Name{Local: "retMDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetMDFe: &mdfeSchema.TRetMDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      stringPtr("2"),
+					CUF:        "41",
+					CStat:      "100",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetMDFe)
+				require.Equal(t, "100", doc.RetMDFe.CStat)
+			},
+		},
+		{
+			name: "consSitMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"consSitMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consSitSchema.TConsSitMDFe
+			}{
+				XMLName: xml.Name{Local: "consSitMDFe"},
+				XMLNS:   mdfeNamespace,
+				TConsSitMDFe: &consSitSchema.TConsSitMDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					ChMDFe:     mdfeDocumentKey,
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.ConsSitMDFe)
+				require.Equal(t, mdfeDocumentKey, doc.ConsSitMDFe.ChMDFe)
+			},
+		},
+		{
+			name: "retConsSitMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retConsSitMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consSitSchema.TRetConsSitMDFe
+			}{
+				XMLName: xml.Name{Local: "retConsSitMDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetConsSitMDFe: &consSitSchema.TRetConsSitMDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					CUF:        "41",
+					CStat:      "100",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetConsSitMDFe)
+				require.Equal(t, "100", doc.RetConsSitMDFe.CStat)
+			},
+		},
+		{
+			name: "consStatServMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"consStatServMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*statusSchema.TConsStatServ
+			}{
+				XMLName: xml.Name{Local: "consStatServMDFe"},
+				XMLNS:   mdfeNamespace,
+				TConsStatServ: &statusSchema.TConsStatServ{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.ConsStatServMDFe)
+				require.Equal(t, "2", doc.ConsStatServMDFe.TpAmb)
+			},
+		},
+		{
+			name: "retConsStatServMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retConsStatServMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*statusSchema.TRetConsStatServ
+			}{
+				XMLName: xml.Name{Local: "retConsStatServMDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetConsStatServ: &statusSchema.TRetConsStatServ{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					CUF:        "41",
+					CStat:      "107",
+					DhRecbto:   "2024-01-02T03:04:05-03:00",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetConsStatServMDFe)
+				require.Equal(t, "107", doc.RetConsStatServMDFe.CStat)
+			},
+		},
+		{
+			name: "distMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"distMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distMDFeSchema.TDistDFe
+			}{
+				XMLName: xml.Name{Local: "distMDFe"},
+				XMLNS:   mdfeNamespace,
+				TDistDFe: &distMDFeSchema.TDistDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					UltNSU:     "000000000000001",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.DistMDFe)
+				require.Equal(t, "000000000000001", doc.DistMDFe.UltNSU)
+			},
+		},
+		{
+			name: "retDistMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retDistMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*distMDFeSchema.TRetDistDFe
+			}{
+				XMLName: xml.Name{Local: "retDistMDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetDistDFe: &distMDFeSchema.TRetDistDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					CStat:      "138",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetDistMDFe)
+				require.Equal(t, "138", doc.RetDistMDFe.CStat)
+			},
+		},
+		{
+			name: "mdfeConsultaDFe",
+			value: struct {
+				XMLName xml.Name `xml:"mdfeConsultaDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consultaDFESchema.TMDFeConsultaDFe
+			}{
+				XMLName: xml.Name{Local: "mdfeConsultaDFe"},
+				XMLNS:   mdfeNamespace,
+				TMDFeConsultaDFe: &consultaDFESchema.TMDFeConsultaDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					ChMDFe:     mdfeDocumentKey,
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.MDFeConsultaDFe)
+				require.Equal(t, mdfeDocumentKey, doc.MDFeConsultaDFe.ChMDFe)
+			},
+		},
+		{
+			name: "retMDFeConsultaDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retMDFeConsultaDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consultaDFESchema.TRetMDFeConsultaDFe
+			}{
+				XMLName: xml.Name{Local: "retMDFeConsultaDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetMDFeConsultaDFe: &consultaDFESchema.TRetMDFeConsultaDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					CStat:      "100",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetMDFeConsultaDFe)
+				require.Equal(t, "100", doc.RetMDFeConsultaDFe.CStat)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			data, err := xml.MarshalIndent(tt.value, "", "  ")
+			require.NoError(t, err)
+
+			doc, err := mdfe.Parse(data)
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+			require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
+		})
+	}
+}
+
 func TestMarshalXML_NilReceiver(t *testing.T) {
 	t.Parallel()
 
@@ -307,42 +586,42 @@ func assertFixtureShape(t *testing.T, fixture string, doc *mdfe.Document) {
 		require.Equal(t, "1", doc.ConsReciMDFe.TpAmb)
 		require.Equal(t, "310000007934162", doc.ConsReciMDFe.NRec)
 	case "cancelameto1101103511031029073900013955001000000001105112804101-ped-eve.xml":
-		require.NotNil(t, doc.EventoMDFe)
-		require.Equal(t, "110111", doc.EventoMDFe.InfEvento.TpEvento)
-		require.Equal(t, "35110310290739000139550010000000011051128041", doc.EventoMDFe.InfEvento.ChMDFe)
-		evento := decodeInnerXML[mdfeCancEvento](t, doc.EventoMDFe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoCancMDFe)
+		require.Equal(t, "110111", doc.EventoCancMDFe.InfEvento.TpEvento)
+		require.Equal(t, "35110310290739000139550010000000011051128041", doc.EventoCancMDFe.InfEvento.ChMDFe)
+		evento := decodeInnerXML[mdfeCancEvento](t, doc.EventoCancMDFe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Cancelamento", evento.EvCancMDFe.DescEvento)
 		require.Equal(t, "010101010101010", evento.EvCancMDFe.NProt)
 		require.Equal(t, "Justificativa do cancelamento", evento.EvCancMDFe.XJust)
 	case "encerramento1101123511031029073900013955001000000001105112804101-ped-eve.xml":
-		require.NotNil(t, doc.EventoMDFe)
-		require.Equal(t, "110112", doc.EventoMDFe.InfEvento.TpEvento)
-		evento := decodeInnerXML[mdfeEncEvento](t, doc.EventoMDFe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoEncMDFe)
+		require.Equal(t, "110112", doc.EventoEncMDFe.InfEvento.TpEvento)
+		evento := decodeInnerXML[mdfeEncEvento](t, doc.EventoEncMDFe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Encerramento", evento.EvEncMDFe.DescEvento)
 		require.Equal(t, "010101010101010", evento.EvEncMDFe.NProt)
 		require.Equal(t, "2013-10-31", evento.EvEncMDFe.DtEnc)
 		require.Equal(t, "35", evento.EvEncMDFe.CUF)
 		require.Equal(t, "4118402", evento.EvEncMDFe.CMun)
 	case "inclusaocondutor31131223864838000129580000000000051003000003-ped-eve.xml":
-		require.NotNil(t, doc.EventoMDFe)
-		require.Equal(t, "110114", doc.EventoMDFe.InfEvento.TpEvento)
-		evento := decodeInnerXML[mdfeIncCondutorEvento](t, doc.EventoMDFe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoIncCondutorMDFe)
+		require.Equal(t, "110114", doc.EventoIncCondutorMDFe.InfEvento.TpEvento)
+		evento := decodeInnerXML[mdfeIncCondutorEvento](t, doc.EventoIncCondutorMDFe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Inclusao Condutor", evento.EvIncCondutorMDFe.DescEvento)
 		require.Equal(t, "JOSE ALMEIDA", evento.EvIncCondutorMDFe.Condutor.XNome)
 		require.Equal(t, "00000000191", evento.EvIncCondutorMDFe.Condutor.CPF)
 	case "inclusaoDFe1101154119060611747300015058001000000001111700344401-ped-eve.xml":
-		require.NotNil(t, doc.EventoMDFe)
-		require.Equal(t, "110115", doc.EventoMDFe.InfEvento.TpEvento)
-		evento := decodeInnerXML[mdfeIncDFeEvento](t, doc.EventoMDFe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoInclusaoDFeMDFe)
+		require.Equal(t, "110115", doc.EventoInclusaoDFeMDFe.InfEvento.TpEvento)
+		evento := decodeInnerXML[mdfeIncDFeEvento](t, doc.EventoInclusaoDFeMDFe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Inclusao DF-e", evento.EvIncDFeMDFe.DescEvento)
 		require.Equal(t, "941190000014312", evento.EvIncDFeMDFe.NProt)
 		require.Equal(t, "4118402", evento.EvIncDFeMDFe.CMunCarrega)
 		require.Equal(t, "PARANAVAI", evento.EvIncDFeMDFe.XMunCarrega)
 		require.Equal(t, "41190606117473000150550020000025691118027981", evento.EvIncDFeMDFe.InfDoc.ChNFe)
 	case "PagamentoOperacaoMDFe_1101164120039999999999999958001000000999999999999901-ped-eve.xml":
-		require.NotNil(t, doc.EventoMDFe)
-		require.Equal(t, "110116", doc.EventoMDFe.InfEvento.TpEvento)
-		evento := decodeInnerXML[mdfePagtoEvento](t, doc.EventoMDFe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoPagtoOperMDFe)
+		require.Equal(t, "110116", doc.EventoPagtoOperMDFe.InfEvento.TpEvento)
+		evento := decodeInnerXML[mdfePagtoEvento](t, doc.EventoPagtoOperMDFe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Pagamento Operacao MDF-e", evento.EvPagtoOperMDFe.DescEvento)
 		require.Equal(t, "999999999999999", evento.EvPagtoOperMDFe.NProt)
 		require.Equal(t, "7184", evento.EvPagtoOperMDFe.InfViagens.NroViagem)
@@ -351,9 +630,9 @@ func assertFixtureShape(t *testing.T, fixture string, doc *mdfe.Document) {
 		require.Equal(t, "500.00", evento.EvPagtoOperMDFe.InfPag.VAdiant)
 		require.Equal(t, "+5544993333223", evento.EvPagtoOperMDFe.InfPag.InfBanc.PIX)
 	case "pagamentoOperacao1101103511031029073900013955001000000001105112804101-ped-eve.xml":
-		require.NotNil(t, doc.EventoMDFe)
-		require.Equal(t, "110116", doc.EventoMDFe.InfEvento.TpEvento)
-		evento := decodeInnerXML[mdfePagtoEvento](t, doc.EventoMDFe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoPagtoOperMDFe)
+		require.Equal(t, "110116", doc.EventoPagtoOperMDFe.InfEvento.TpEvento)
+		evento := decodeInnerXML[mdfePagtoEvento](t, doc.EventoPagtoOperMDFe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Pagamento Operação MDF-e", evento.EvPagtoOperMDFe.DescEvento)
 		require.Equal(t, "935200000016234", evento.EvPagtoOperMDFe.NProt)
 		require.Equal(t, "1795", evento.EvPagtoOperMDFe.InfViagens.NroViagem)
@@ -372,9 +651,18 @@ func assertSameRoot(t *testing.T, expected, actual *mdfe.Document) {
 	t.Helper()
 
 	require.Equal(t, expected.MDFe != nil, actual.MDFe != nil)
+	require.Equal(t, expected.MDFeProc != nil, actual.MDFeProc != nil)
+	require.Equal(t, expected.EnviMDFe != nil, actual.EnviMDFe != nil)
+	require.Equal(t, expected.RetEnviMDFe != nil, actual.RetEnviMDFe != nil)
+	require.Equal(t, expected.RetMDFe != nil, actual.RetMDFe != nil)
 	require.Equal(t, expected.ConsNaoEnc != nil, actual.ConsNaoEnc != nil)
 	require.Equal(t, expected.ConsReciMDFe != nil, actual.ConsReciMDFe != nil)
 	require.Equal(t, expected.EventoMDFe != nil, actual.EventoMDFe != nil)
+	require.Equal(t, expected.EventoCancMDFe != nil, actual.EventoCancMDFe != nil)
+	require.Equal(t, expected.EventoEncMDFe != nil, actual.EventoEncMDFe != nil)
+	require.Equal(t, expected.EventoIncCondutorMDFe != nil, actual.EventoIncCondutorMDFe != nil)
+	require.Equal(t, expected.EventoInclusaoDFeMDFe != nil, actual.EventoInclusaoDFeMDFe != nil)
+	require.Equal(t, expected.EventoPagtoOperMDFe != nil, actual.EventoPagtoOperMDFe != nil)
 }
 
 func allFixtureNames(t *testing.T) []string {
@@ -533,6 +821,51 @@ func decodeInnerXML[T any](t *testing.T, fragment string) T {
 
 func stringPtr(v string) *string {
 	return &v
+}
+
+func minimalMDFe() *mdfeSchema.TMDFe {
+	return &mdfeSchema.TMDFe{
+		InfMDFe: &mdfeSchema.TAnonComplexInfMDFe1{
+			VersaoAttr: "3.00",
+			IdAttr:     "MDFe" + mdfeDocumentKey,
+			Ide: &mdfeSchema.TAnonComplexIde1{
+				CUF:  "41",
+				TpAmb: "2",
+				Mod:  "58",
+				Serie: "1",
+				NMDF: "1",
+				CMDF: "12345678",
+				CDV:  "1",
+				Modal: "1",
+				DhEmi: "2024-01-02T03:04:05-03:00",
+				TpEmis: "1",
+				ProcEmi: "0",
+				VerProc: "test",
+				UFIni: "PR",
+				UFFim: "SP",
+				InfMunCarrega: []*mdfeSchema.TAnonComplexInfMunCarrega1{{
+					CMunCarrega: "4106902",
+					XMunCarrega: "CURITIBA",
+				}},
+			},
+			Emit: &mdfeSchema.TAnonComplexEmit1{
+				CNPJ: stringPtr("12345678000195"),
+				XNome: "Emitente",
+			},
+			InfModal: &mdfeSchema.TAnonComplexInfModal1{VersaoModalAttr: "3.00", InnerXML: "<rodo></rodo>"},
+		},
+	}
+}
+
+func minimalProtMDFe() *mdfeSchema.TProtMDFe {
+	return &mdfeSchema.TProtMDFe{
+		InfProt: &mdfeSchema.TAnonComplexInfProt1{
+			TpAmb: "2",
+			ChMDFe: mdfeDocumentKey,
+			DhRecbto: "2024-01-02T03:04:05-03:00",
+			CStat: "100",
+		},
+	}
 }
 
 func mdfeTStringPtr(v string) *distSchema.TString {

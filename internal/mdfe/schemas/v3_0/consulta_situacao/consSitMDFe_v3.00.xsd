@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="consSitMDFeTiposBasico_v3.00.xsd"></include>
+  <element xmlns="http://www.w3.org/2001/XMLSchema" name="consSitMDFe" type="TConsSitMDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema de validação XML dp Pedido de Consulta da Situação Atual do MDF-e.</documentation>
+    </annotation>
+  </element>
+</schema>

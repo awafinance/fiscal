@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposGeralMDFe_v3.00.xsd"></include>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TVerDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema"> Tipo Versão</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="3\.00"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_indDFe_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:unsignedInt">
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="2"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="8"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="9"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_indCompRet_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:unsignedInt">
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="0"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1"></enumeration>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_proc_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <any xmlns="http://www.w3.org/2001/XMLSchema" processContents="skip">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">informação do proc</documentation>
+        </annotation>
+      </any>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="schema" type="xs:string" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Schema XML de validação do proc, Ex. procMDFe_v1.00.xsd.</documentation>
+      </annotation>
+    </attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="NSU" type="TNSU" use="required">
+      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+        <documentation xmlns="http://www.w3.org/2001/XMLSchema">número sequencial único do Ambiente Autorizador</documentation>
+      </annotation>
+    </attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="ipTransmissor" type="TIPv4" use="optional"></attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TDistDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação da área de dados da mensagem da solicitação de distribuição de DF-e</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:  1 - Produção  2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que solicitou a distribuição de DF-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indDFe" type="TAnon_indDFe_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicador de DF-e solicitados: 
+0 - DF-e autorizados pela UF; 
+1 - DF-e com carregamento na UF; 
+2 – DF-e com descarregamento na UF;
+3 – DF-e com percurso pela UF; 
+8 – DF-e carregados  (1), descarregados (2)  e que tiveram percurso na UF (3);
+9 - Todos DF-e que fazem referência a UF.
+</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="indCompRet" type="TAnon_indCompRet_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Indicador de Compactação da Mensagem de retorno:  0 - sem compactação;  1 - compactação padrão gZip</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ultNSU" type="TNSU">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">último NSU recebido, caso seja informado com zero, o Ambiente Autorizador tentará localizar o primeiro DF-e existente.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerDFe" use="required"></attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TRetDistDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do lote de retorno de documentos ficais eletronicos</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:  1 - Produção  2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que atendeu a pedido de distribuição de DF-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">código do status de resultado da pesquisa</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">descrição do resultado do pesquisa </documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ultNSU" type="TNSU" minOccurs="0">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">último NSU</documentation>
+        </annotation>
+      </element>
+      <choice xmlns="http://www.w3.org/2001/XMLSchema" minOccurs="0">
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="loteDistMDFeComp" type="xs:base64Binary"></element>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" name="loteDistMDFe" type="TLoteDistDFe"></element>
+      </choice>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerDFe" use="required"></attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TLoteDistDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação da área de dados descompactada</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" maxOccurs="50">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="proc" type="TAnonComplex_proc_1"></element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerDFe" use="required"></attribute>
+  </complexType>
+</schema>

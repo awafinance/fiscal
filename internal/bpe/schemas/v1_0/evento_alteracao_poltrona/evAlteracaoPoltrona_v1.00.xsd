@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/bpe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/bpe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="eventoBPeTiposBasico_v1.00.xsd"></include>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_descEvento_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Alteração Poltrona"></enumeration>
+      <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="Alteracao Poltrona"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnon_poltrona_1">
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+      <minLength xmlns="http://www.w3.org/2001/XMLSchema" value="1"></minLength>
+      <maxLength xmlns="http://www.w3.org/2001/XMLSchema" value="3"></maxLength>
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="0|[1-9]{1}[0-9]{0,2}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_evAlteracaoPoltrona_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="descEvento" type="TAnon_descEvento_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição do Evento - “Alteração de Poltrona”</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProt" type="TProt">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de Status do BP-e.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="poltrona" type="TAnon_poltrona_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número da Poltrona / assento / cabine</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <element xmlns="http://www.w3.org/2001/XMLSchema" name="evAlteracaoPoltrona" type="TAnonComplex_evAlteracaoPoltrona_1">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema XML de validação do evento de alteração de poltrona 
+110116</documentation>
+    </annotation>
+  </element>
+</schema>

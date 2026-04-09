@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposGeralMDFe_v3.00.xsd"></include>
+  <import xmlns="http://www.w3.org/2001/XMLSchema" namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_protMDFe_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <any xmlns="http://www.w3.org/2001/XMLSchema" processContents="skip">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Retornar protMDFe da versão correspondente do MDF-e autorizado</documentation>
+        </annotation>
+      </any>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" use="required">
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+          <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+          <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1.00"></enumeration>
+          <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3.00"></enumeration>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_procEventoMDFe_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <any xmlns="http://www.w3.org/2001/XMLSchema" processContents="skip">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Retornar procEventoMDFe da versão correspondente do evento MDF-e autorizado</documentation>
+        </annotation>
+      </any>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" use="required">
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+          <whiteSpace xmlns="http://www.w3.org/2001/XMLSchema" value="preserve"></whiteSpace>
+          <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="1.00"></enumeration>
+          <enumeration xmlns="http://www.w3.org/2001/XMLSchema" value="3.00"></enumeration>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_procInfraSA_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="nProtDTe" type="TProt">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número do Protocolo de geração do DTe</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="dhProt" type="TDateTimeUTC">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Data e hora de geração do protocolo, no formato AAAA-MM-DDTHH:MM:SS TZD.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TConsSitMDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Pedido de Consulta da Situação Atual do MDF-e</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xServ" type="TServ" fixed="CONSULTAR">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Serviço Solicitado</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="chMDFe" type="TChNFe">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Chaves de acesso do MDF-e, compostas por: UF do emitente, AAMM da emissão do MDF-e, CNPJ do emitente, modelo, série, tipo de emissão e número do MDF-e e código numérico + DV.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" use="required">
+      <simpleType xmlns="http://www.w3.org/2001/XMLSchema">
+        <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="TVerConsSitMDFe"></restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TRetConsSitMDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Tipo Retorno de Pedido de Consulta da Situação Atual do MDF-e</documentation>
+    </annotation>
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="verAplic" type="TVerAplic">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Versão do Aplicativo que processou o MDF-e</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cStat" type="TStat">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Código do status da mensagem enviada.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="xMotivo" type="TMotivo">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Descrição literal do status do serviço solicitado.</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="cUF" type="TCodUfIBGE">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">código da UF de atendimento</documentation>
+        </annotation>
+      </element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="protMDFe" minOccurs="0" type="TAnonComplex_protMDFe_1"></element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="procEventoMDFe" minOccurs="0" maxOccurs="unbounded" type="TAnonComplex_procEventoMDFe_1"></element>
+      <element xmlns="http://www.w3.org/2001/XMLSchema" name="procInfraSA" minOccurs="0" type="TAnonComplex_procInfraSA_1">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo de informações do compartilhamento do MDFe com InfraSA para geração do DTe</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerConsSitMDFe" use="required"></attribute>
+  </complexType>
+  <simpleType xmlns="http://www.w3.org/2001/XMLSchema" name="TVerConsSitMDFe">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema"> Tipo Versão do Consulta situação de MDF-e - 1.00</documentation>
+    </annotation>
+    <restriction xmlns="http://www.w3.org/2001/XMLSchema" base="xs:string">
+      <pattern xmlns="http://www.w3.org/2001/XMLSchema" value="3\.00"></pattern>
+    </restriction>
+  </simpleType>
+</schema>

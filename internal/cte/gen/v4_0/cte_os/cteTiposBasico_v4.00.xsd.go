@@ -4,6 +4,8 @@ package schema
 
 import (
 	"encoding/xml"
+
+	modalrodoviarioos "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario_os"
 )
 
 // TModTranspGTVe is Tipo Modal transporte GTVe
@@ -701,7 +703,7 @@ type TAnonComplexDet1 struct {
 type TAnonComplexInfModal1 struct {
 	XMLName         xml.Name `xml:"infModal"`
 	VersaoModalAttr string   `xml:"versaoModal,attr"`
-	InnerXML        string   `xml:",innerxml"`
+	RodoOS          modalrodoviarioos.RodoOS `xml:"rodoOS,omitempty"`
 }
 
 // TAnonNFat1 ...
@@ -1466,7 +1468,7 @@ type TAnonComplexDocAnt1 struct {
 type TAnonComplexInfModal2 struct {
 	XMLName         xml.Name `xml:"infModal"`
 	VersaoModalAttr string   `xml:"versaoModal,attr"`
-	InnerXML        string   `xml:",innerxml"`
+	RodoOS          modalrodoviarioos.RodoOS `xml:"rodoOS,omitempty"`
 }
 
 // TAnonChassi1 ...
@@ -1936,7 +1938,7 @@ type TAnonComplexSeg1 struct {
 type TAnonComplexInfModal3 struct {
 	XMLName         xml.Name `xml:"infModal"`
 	VersaoModalAttr string   `xml:"versaoModal,attr"`
-	InnerXML        string   `xml:",innerxml"`
+	RodoOS          modalrodoviarioos.RodoOS `xml:"rodoOS,omitempty"`
 }
 
 // TAnonChCte3 ...

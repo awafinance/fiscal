@@ -7,26 +7,42 @@ import (
 	"fmt"
 	"io"
 
+	alteracaoPoltronaEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
+	cancelEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_cancel"
+	excessoBagagemEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
+	naoEmbEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
 	schema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/core"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/bpe"
 
 type Document struct {
-	VersaoAttr         string
-	BPe                *schema.TBPe
-	BPeTM              *schema.TBPeTM
-	BPeProc            *schema.TAnonComplexBpeProc1
-	BPeTMProc          *schema.TAnonComplexBpeTMProc1
-	RetBPe             *schema.TRetBPe
-	ConsSitBPe         *schema.TConsSitBPe
-	RetConsSitBPe      *schema.TRetConsSitBPe
-	ConsStatServBPe    *schema.TConsStatServ
-	RetConsStatServBPe *schema.TRetConsStatServ
-	EventoBPe          *schema.TEvento
-	RetEventoBPe       *schema.TRetEvento
-	ProcEventoBPe      *schema.TProcEvento
-	rootName           string
+	VersaoAttr                  string
+	BPe                         *schema.TBPe
+	BPeTM                       *schema.TBPeTM
+	BPeProc                     *schema.TAnonComplexBpeProc1
+	BPeTMProc                   *schema.TAnonComplexBpeTMProc1
+	RetBPe                      *schema.TRetBPe
+	ConsSitBPe                  *schema.TConsSitBPe
+	RetConsSitBPe               *schema.TRetConsSitBPe
+	ConsStatServBPe             *schema.TConsStatServ
+	RetConsStatServBPe          *schema.TRetConsStatServ
+	EventoBPe                   *schema.TEvento
+	RetEventoBPe                *schema.TRetEvento
+	ProcEventoBPe               *schema.TProcEvento
+	EventoCancBPe               *cancelEventSchema.TEvento
+	RetEventoCancBPe            *cancelEventSchema.TRetEvento
+	ProcEventoCancBPe           *cancelEventSchema.TProcEvento
+	EventoAlteracaoPoltrona     *alteracaoPoltronaEventSchema.TEvento
+	RetEventoAlteracaoPoltrona  *alteracaoPoltronaEventSchema.TRetEvento
+	ProcEventoAlteracaoPoltrona *alteracaoPoltronaEventSchema.TProcEvento
+	EventoExcessoBagagem        *excessoBagagemEventSchema.TEvento
+	RetEventoExcessoBagagem     *excessoBagagemEventSchema.TRetEvento
+	ProcEventoExcessoBagagem    *excessoBagagemEventSchema.TProcEvento
+	EventoNaoEmbBPe             *naoEmbEventSchema.TEvento
+	RetEventoNaoEmbBPe          *naoEmbEventSchema.TRetEvento
+	ProcEventoNaoEmbBPe         *naoEmbEventSchema.TProcEvento
+	rootName                    string
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -36,7 +52,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 
 	switch d.rootName {
 	case "BPe", "":
-		if d.BPe != nil && onlyBPeRoot(d) {
+		if d.BPe != nil && activeRootCount(d) == 1 {
 			type root struct {
 				XMLName     xml.Name                        `xml:"BPe"`
 				XMLNS       string                          `xml:"xmlns,attr,omitempty"`
@@ -53,7 +69,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "BPeTM":
-		if d.BPeTM != nil && onlyBPeTMRoot(d) {
+		if d.BPeTM != nil && activeRootCount(d) == 1 {
 			type root struct {
 				XMLName     xml.Name                    `xml:"BPeTM"`
 				XMLNS       string                      `xml:"xmlns,attr,omitempty"`
@@ -68,7 +84,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "bpeProc":
-		if d.BPeProc != nil && onlyBPeProcRoot(d) {
+		if d.BPeProc != nil && activeRootCount(d) == 1 {
 			type root struct {
 				XMLName           xml.Name         `xml:"bpeProc"`
 				XMLNS             string           `xml:"xmlns,attr,omitempty"`
@@ -91,7 +107,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "bpeTMProc":
-		if d.BPeTMProc != nil && onlyBPeTMProcRoot(d) {
+		if d.BPeTMProc != nil && activeRootCount(d) == 1 {
 			type root struct {
 				XMLName           xml.Name         `xml:"bpeTMProc"`
 				XMLNS             string           `xml:"xmlns,attr,omitempty"`
@@ -114,7 +130,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "retBPe":
-		if d.RetBPe != nil && onlyRetBPeRoot(d) {
+		if d.RetBPe != nil && activeRootCount(d) == 1 {
 			return e.Encode(struct {
 				XMLName xml.Name `xml:"retBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -126,7 +142,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "consSitBPe":
-		if d.ConsSitBPe != nil && onlyConsSitRoot(d) {
+		if d.ConsSitBPe != nil && activeRootCount(d) == 1 {
 			return e.Encode(struct {
 				XMLName xml.Name `xml:"consSitBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -138,7 +154,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "retConsSitBPe":
-		if d.RetConsSitBPe != nil && onlyRetConsSitRoot(d) {
+		if d.RetConsSitBPe != nil && activeRootCount(d) == 1 {
 			return e.Encode(struct {
 				XMLName xml.Name `xml:"retConsSitBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -150,7 +166,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "consStatServBPe":
-		if d.ConsStatServBPe != nil && onlyConsStatRoot(d) {
+		if d.ConsStatServBPe != nil && activeRootCount(d) == 1 {
 			return e.Encode(struct {
 				XMLName xml.Name `xml:"consStatServBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -162,7 +178,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "retConsStatServBPe":
-		if d.RetConsStatServBPe != nil && onlyRetConsStatRoot(d) {
+		if d.RetConsStatServBPe != nil && activeRootCount(d) == 1 {
 			return e.Encode(struct {
 				XMLName xml.Name `xml:"retConsStatServBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
@@ -174,62 +190,11 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			})
 		}
 	case "eventoBPe":
-		if d.EventoBPe != nil && onlyEventoRoot(d) {
-			type root struct {
-				XMLName     xml.Name                       `xml:"eventoBPe"`
-				XMLNS       string                         `xml:"xmlns,attr,omitempty"`
-				VersaoAttr  string                         `xml:"versao,attr,omitempty"`
-				InfEvento   *schema.TAnonComplexInfEvento1 `xml:"infEvento"`
-				DsSignature *schema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-			return e.Encode(root{
-				XMLName:     xml.Name{Local: "eventoBPe"},
-				XMLNS:       namespace,
-				VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.EventoBPe.VersaoAttr),
-				InfEvento:   d.EventoBPe.InfEvento,
-				DsSignature: d.EventoBPe.DsSignature,
-			})
-		}
+		return marshalEventRoot(e, d)
 	case "retEventoBPe":
-		if d.RetEventoBPe != nil && onlyRetEventoRoot(d) {
-			type root struct {
-				XMLName     xml.Name                       `xml:"retEventoBPe"`
-				XMLNS       string                         `xml:"xmlns,attr,omitempty"`
-				VersaoAttr  string                         `xml:"versao,attr,omitempty"`
-				InfEvento   *schema.TAnonComplexInfEvento2 `xml:"infEvento"`
-				DsSignature *schema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-			return e.Encode(root{
-				XMLName:     xml.Name{Local: "retEventoBPe"},
-				XMLNS:       namespace,
-				VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.RetEventoBPe.VersaoAttr),
-				InfEvento:   d.RetEventoBPe.InfEvento,
-				DsSignature: d.RetEventoBPe.DsSignature,
-			})
-		}
+		return marshalRetEventRoot(e, d)
 	case "procEventoBPe":
-		if d.ProcEventoBPe != nil && onlyProcEventoRoot(d) {
-			type root struct {
-				XMLName           xml.Name           `xml:"procEventoBPe"`
-				XMLNS             string             `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string             `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string            `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string            `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string            `xml:"dhConexao,attr,omitempty"`
-				EventoBPe         *schema.TEvento    `xml:"eventoBPe"`
-				RetEventoBPe      *schema.TRetEvento `xml:"retEventoBPe"`
-			}
-			return e.Encode(root{
-				XMLName:           xml.Name{Local: "procEventoBPe"},
-				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.ProcEventoBPe.VersaoAttr),
-				IpTransmissorAttr: d.ProcEventoBPe.IpTransmissorAttr,
-				NPortaConAttr:     d.ProcEventoBPe.NPortaConAttr,
-				DhConexaoAttr:     d.ProcEventoBPe.DhConexaoAttr,
-				EventoBPe:         d.ProcEventoBPe.EventoBPe,
-				RetEventoBPe:      d.ProcEventoBPe.RetEventoBPe,
-			})
-		}
+		return marshalProcEventRoot(e, d)
 	}
 
 	return errors.New("marshal bpe: document must contain exactly one supported root")
@@ -338,41 +303,58 @@ func Parse(data []byte) (*Document, error) {
 		}
 		return doc, nil
 	case "eventoBPe":
-		var parsed schema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe: %w", err)
+		tpEvento, err := eventTypeFromXML(data)
+		if err != nil {
+			return nil, fmt.Errorf("parse bpe: decode eventoBPe head: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoBPe: &parsed, rootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
+		if tpEvento == "" {
+			return nil, errors.New("parse bpe: missing infEvento")
 		}
-		return doc, nil
+		return parseEventDocument(data, rootName, tpEvento)
 	case "retEventoBPe":
-		var parsed schema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe: %w", err)
+		tpEvento, err := eventTypeFromXML(data)
+		if err != nil {
+			return nil, fmt.Errorf("parse bpe: decode retEventoBPe head: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoBPe: &parsed, rootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
+		if tpEvento == "" {
+			return nil, errors.New("parse bpe: missing infEvento")
 		}
-		return doc, nil
+		return parseRetEventDocument(data, rootName, tpEvento)
 	case "procEventoBPe":
-		var parsed schema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe: %w", err)
+		tpEvento, err := eventTypeFromXML(data)
+		if err != nil {
+			return nil, fmt.Errorf("parse bpe: decode procEventoBPe head: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoBPe: &parsed, rootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
+		if tpEvento == "" {
+			return nil, errors.New("parse bpe: missing infEvento")
 		}
-		return doc, nil
+		return parseProcEventDocument(data, rootName, tpEvento)
 	default:
 		if rootErr != nil {
 			return nil, fmt.Errorf("parse bpe: read root: %w", rootErr)
 		}
 		return nil, fmt.Errorf("parse bpe: unsupported root element %q", rootName)
 	}
+}
+
+func eventTypeFromXML(data []byte) (string, error) {
+	var head struct {
+		InfEvento struct {
+			TpEvento string `xml:"tpEvento"`
+		} `xml:"infEvento"`
+		EventoBPe struct {
+			InfEvento struct {
+				TpEvento string `xml:"tpEvento"`
+			} `xml:"infEvento"`
+		} `xml:"eventoBPe"`
+	}
+	if err := xml.Unmarshal(data, &head); err != nil {
+		return "", err
+	}
+	if head.InfEvento.TpEvento != "" {
+		return head.InfEvento.TpEvento, nil
+	}
+	return head.EventoBPe.InfEvento.TpEvento, nil
 }
 
 func parseRootName(data []byte) (string, error) {
@@ -398,22 +380,21 @@ func parseRootName(data []byte) (string, error) {
 }
 
 func validateDocument(doc *Document) error {
-	count := 0
+	if activeRootCount(doc) != 1 {
+		return errors.New("parse bpe: document must contain exactly one supported root")
+	}
 
 	if doc.BPe != nil {
-		count++
 		if err := validateInfBPe(doc.BPe.InfBPe); err != nil {
 			return err
 		}
 	}
 	if doc.BPeTM != nil {
-		count++
 		if err := validateInfBPeTM(doc.BPeTM.InfBPe); err != nil {
 			return err
 		}
 	}
 	if doc.BPeProc != nil {
-		count++
 		if doc.BPeProc.BPe == nil {
 			return errors.New("parse bpe: missing BPe")
 		}
@@ -422,7 +403,6 @@ func validateDocument(doc *Document) error {
 		}
 	}
 	if doc.BPeTMProc != nil {
-		count++
 		if doc.BPeTMProc.BPeTM == nil {
 			return errors.New("parse bpe: missing BPeTM")
 		}
@@ -431,7 +411,6 @@ func validateDocument(doc *Document) error {
 		}
 	}
 	if doc.RetBPe != nil {
-		count++
 		if doc.RetBPe.TpAmb == "" {
 			return errors.New("parse bpe: missing tpAmb")
 		}
@@ -443,7 +422,6 @@ func validateDocument(doc *Document) error {
 		}
 	}
 	if doc.ConsSitBPe != nil {
-		count++
 		if doc.ConsSitBPe.TpAmb == "" {
 			return errors.New("parse bpe: missing tpAmb")
 		}
@@ -452,7 +430,6 @@ func validateDocument(doc *Document) error {
 		}
 	}
 	if doc.RetConsSitBPe != nil {
-		count++
 		if doc.RetConsSitBPe.TpAmb == "" {
 			return errors.New("parse bpe: missing tpAmb")
 		}
@@ -464,13 +441,11 @@ func validateDocument(doc *Document) error {
 		}
 	}
 	if doc.ConsStatServBPe != nil {
-		count++
 		if doc.ConsStatServBPe.TpAmb == "" {
 			return errors.New("parse bpe: missing tpAmb")
 		}
 	}
 	if doc.RetConsStatServBPe != nil {
-		count++
 		if doc.RetConsStatServBPe.TpAmb == "" {
 			return errors.New("parse bpe: missing tpAmb")
 		}
@@ -484,36 +459,8 @@ func validateDocument(doc *Document) error {
 			return errors.New("parse bpe: missing dhRecbto")
 		}
 	}
-	if doc.EventoBPe != nil {
-		count++
-		if err := validateEvento(doc.EventoBPe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.RetEventoBPe != nil {
-		count++
-		if doc.RetEventoBPe.InfEvento == nil {
-			return errors.New("parse bpe: missing infEvento")
-		}
-		if doc.RetEventoBPe.InfEvento.TpAmb == "" {
-			return errors.New("parse bpe: missing tpAmb")
-		}
-		if doc.RetEventoBPe.InfEvento.CStat == "" {
-			return errors.New("parse bpe: missing cStat")
-		}
-	}
-	if doc.ProcEventoBPe != nil {
-		count++
-		if doc.ProcEventoBPe.EventoBPe == nil {
-			return errors.New("parse bpe: missing eventoBPe")
-		}
-		if doc.ProcEventoBPe.RetEventoBPe == nil {
-			return errors.New("parse bpe: missing retEventoBPe")
-		}
-	}
-
-	if count != 1 {
-		return errors.New("parse bpe: document must contain exactly one supported root")
+	if err := validateEventRoots(doc); err != nil {
+		return err
 	}
 	return nil
 }
@@ -556,17 +503,393 @@ func validateInfBPeTM(inf *schema.TAnonComplexInfBPe1) error {
 	return nil
 }
 
-func validateEvento(inf *schema.TAnonComplexInfEvento1) error {
-	if inf == nil {
+func validateEventRoots(doc *Document) error {
+	switch {
+	case doc.EventoBPe != nil:
+		return validateEvento(doc.EventoBPe.InfEvento)
+	case doc.EventoCancBPe != nil:
+		return validateEvento(doc.EventoCancBPe.InfEvento)
+	case doc.EventoAlteracaoPoltrona != nil:
+		return validateEvento(doc.EventoAlteracaoPoltrona.InfEvento)
+	case doc.EventoExcessoBagagem != nil:
+		return validateEvento(doc.EventoExcessoBagagem.InfEvento)
+	case doc.EventoNaoEmbBPe != nil:
+		return validateEvento(doc.EventoNaoEmbBPe.InfEvento)
+	case doc.RetEventoBPe != nil:
+		return validateRetEvento(doc.RetEventoBPe.InfEvento)
+	case doc.RetEventoCancBPe != nil:
+		return validateRetEvento(doc.RetEventoCancBPe.InfEvento)
+	case doc.RetEventoAlteracaoPoltrona != nil:
+		return validateRetEvento(doc.RetEventoAlteracaoPoltrona.InfEvento)
+	case doc.RetEventoExcessoBagagem != nil:
+		return validateRetEvento(doc.RetEventoExcessoBagagem.InfEvento)
+	case doc.RetEventoNaoEmbBPe != nil:
+		return validateRetEvento(doc.RetEventoNaoEmbBPe.InfEvento)
+	case doc.ProcEventoBPe != nil:
+		return validateProcEvento(doc.ProcEventoBPe.EventoBPe, doc.ProcEventoBPe.RetEventoBPe)
+	case doc.ProcEventoCancBPe != nil:
+		return validateProcEvento(doc.ProcEventoCancBPe.EventoBPe, doc.ProcEventoCancBPe.RetEventoBPe)
+	case doc.ProcEventoAlteracaoPoltrona != nil:
+		return validateProcEvento(doc.ProcEventoAlteracaoPoltrona.EventoBPe, doc.ProcEventoAlteracaoPoltrona.RetEventoBPe)
+	case doc.ProcEventoExcessoBagagem != nil:
+		return validateProcEvento(doc.ProcEventoExcessoBagagem.EventoBPe, doc.ProcEventoExcessoBagagem.RetEventoBPe)
+	case doc.ProcEventoNaoEmbBPe != nil:
+		return validateProcEvento(doc.ProcEventoNaoEmbBPe.EventoBPe, doc.ProcEventoNaoEmbBPe.RetEventoBPe)
+	default:
+		return nil
+	}
+}
+
+func validateEvento(inf any) error {
+	switch inf := inf.(type) {
+	case *schema.TAnonComplexInfEvento1:
+		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
+	case *cancelEventSchema.TAnonComplexInfEvento1:
+		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
+	case *alteracaoPoltronaEventSchema.TAnonComplexInfEvento1:
+		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
+	case *excessoBagagemEventSchema.TAnonComplexInfEvento1:
+		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
+	case *naoEmbEventSchema.TAnonComplexInfEvento1:
+		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
+	default:
 		return errors.New("parse bpe: missing infEvento")
 	}
-	if inf.ChBPe == "" {
+}
+
+func validateEventoFields(isNil bool, chBPe string, missingDetEvento bool) error {
+	if isNil {
+		return errors.New("parse bpe: missing infEvento")
+	}
+	if chBPe == "" {
 		return errors.New("parse bpe: missing chBPe")
 	}
-	if inf.DetEvento == nil {
+	if missingDetEvento {
 		return errors.New("parse bpe: missing detEvento")
 	}
 	return nil
+}
+
+func validateRetEvento(inf any) error {
+	switch inf := inf.(type) {
+	case *schema.TAnonComplexInfEvento2:
+		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
+	case *cancelEventSchema.TAnonComplexInfEvento2:
+		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
+	case *alteracaoPoltronaEventSchema.TAnonComplexInfEvento2:
+		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
+	case *excessoBagagemEventSchema.TAnonComplexInfEvento2:
+		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
+	case *naoEmbEventSchema.TAnonComplexInfEvento2:
+		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
+	default:
+		return errors.New("parse bpe: missing infEvento")
+	}
+}
+
+func validateRetEventoFields(isNil bool, tpAmb, cStat string) error {
+	if isNil {
+		return errors.New("parse bpe: missing infEvento")
+	}
+	if tpAmb == "" {
+		return errors.New("parse bpe: missing tpAmb")
+	}
+	if cStat == "" {
+		return errors.New("parse bpe: missing cStat")
+	}
+	return nil
+}
+
+func validateProcEvento(evento any, retEvento any) error {
+	if evento == nil {
+		return errors.New("parse bpe: missing eventoBPe")
+	}
+	if retEvento == nil {
+		return errors.New("parse bpe: missing retEventoBPe")
+	}
+	return nil
+}
+
+func marshalEventRoot(e *xml.Encoder, d *Document) error {
+	if activeRootCount(d) != 1 {
+		return errors.New("marshal bpe: document must contain exactly one supported root")
+	}
+
+	switch {
+	case d.EventoBPe != nil:
+		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoBPe.VersaoAttr), d.EventoBPe.InfEvento, d.EventoBPe.DsSignature)
+	case d.EventoCancBPe != nil:
+		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCancBPe.VersaoAttr), d.EventoCancBPe.InfEvento, d.EventoCancBPe.DsSignature)
+	case d.EventoAlteracaoPoltrona != nil:
+		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPoltrona.VersaoAttr), d.EventoAlteracaoPoltrona.InfEvento, d.EventoAlteracaoPoltrona.DsSignature)
+	case d.EventoExcessoBagagem != nil:
+		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoExcessoBagagem.VersaoAttr), d.EventoExcessoBagagem.InfEvento, d.EventoExcessoBagagem.DsSignature)
+	case d.EventoNaoEmbBPe != nil:
+		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoNaoEmbBPe.VersaoAttr), d.EventoNaoEmbBPe.InfEvento, d.EventoNaoEmbBPe.DsSignature)
+	default:
+		return errors.New("marshal bpe: document must contain exactly one supported root")
+	}
+}
+
+func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
+	if activeRootCount(d) != 1 {
+		return errors.New("marshal bpe: document must contain exactly one supported root")
+	}
+
+	switch {
+	case d.RetEventoBPe != nil:
+		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoBPe.VersaoAttr), d.RetEventoBPe.InfEvento, d.RetEventoBPe.DsSignature)
+	case d.RetEventoCancBPe != nil:
+		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoCancBPe.VersaoAttr), d.RetEventoCancBPe.InfEvento, d.RetEventoCancBPe.DsSignature)
+	case d.RetEventoAlteracaoPoltrona != nil:
+		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPoltrona.VersaoAttr), d.RetEventoAlteracaoPoltrona.InfEvento, d.RetEventoAlteracaoPoltrona.DsSignature)
+	case d.RetEventoExcessoBagagem != nil:
+		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoExcessoBagagem.VersaoAttr), d.RetEventoExcessoBagagem.InfEvento, d.RetEventoExcessoBagagem.DsSignature)
+	case d.RetEventoNaoEmbBPe != nil:
+		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoNaoEmbBPe.VersaoAttr), d.RetEventoNaoEmbBPe.InfEvento, d.RetEventoNaoEmbBPe.DsSignature)
+	default:
+		return errors.New("marshal bpe: document must contain exactly one supported root")
+	}
+}
+
+func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
+	if activeRootCount(d) != 1 {
+		return errors.New("marshal bpe: document must contain exactly one supported root")
+	}
+
+	switch {
+	case d.ProcEventoBPe != nil:
+		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoBPe.VersaoAttr), d.ProcEventoBPe.IpTransmissorAttr, d.ProcEventoBPe.NPortaConAttr, d.ProcEventoBPe.DhConexaoAttr, d.ProcEventoBPe.EventoBPe, d.ProcEventoBPe.RetEventoBPe)
+	case d.ProcEventoCancBPe != nil:
+		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoCancBPe.VersaoAttr), d.ProcEventoCancBPe.IpTransmissorAttr, d.ProcEventoCancBPe.NPortaConAttr, d.ProcEventoCancBPe.DhConexaoAttr, d.ProcEventoCancBPe.EventoBPe, d.ProcEventoCancBPe.RetEventoBPe)
+	case d.ProcEventoAlteracaoPoltrona != nil:
+		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPoltrona.VersaoAttr), d.ProcEventoAlteracaoPoltrona.IpTransmissorAttr, d.ProcEventoAlteracaoPoltrona.NPortaConAttr, d.ProcEventoAlteracaoPoltrona.DhConexaoAttr, d.ProcEventoAlteracaoPoltrona.EventoBPe, d.ProcEventoAlteracaoPoltrona.RetEventoBPe)
+	case d.ProcEventoExcessoBagagem != nil:
+		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoExcessoBagagem.VersaoAttr), d.ProcEventoExcessoBagagem.IpTransmissorAttr, d.ProcEventoExcessoBagagem.NPortaConAttr, d.ProcEventoExcessoBagagem.DhConexaoAttr, d.ProcEventoExcessoBagagem.EventoBPe, d.ProcEventoExcessoBagagem.RetEventoBPe)
+	case d.ProcEventoNaoEmbBPe != nil:
+		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoNaoEmbBPe.VersaoAttr), d.ProcEventoNaoEmbBPe.IpTransmissorAttr, d.ProcEventoNaoEmbBPe.NPortaConAttr, d.ProcEventoNaoEmbBPe.DhConexaoAttr, d.ProcEventoNaoEmbBPe.EventoBPe, d.ProcEventoNaoEmbBPe.RetEventoBPe)
+	default:
+		return errors.New("marshal bpe: document must contain exactly one supported root")
+	}
+}
+
+func encodeEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
+	return e.Encode(struct {
+		XMLName     xml.Name `xml:"eventoBPe"`
+		XMLNS       string   `xml:"xmlns,attr,omitempty"`
+		VersaoAttr  string   `xml:"versao,attr,omitempty"`
+		InfEvento   any      `xml:"infEvento"`
+		DsSignature any      `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}{
+		XMLName:     xml.Name{Local: "eventoBPe"},
+		XMLNS:       namespace,
+		VersaoAttr:  versao,
+		InfEvento:   infEvento,
+		DsSignature: signature,
+	})
+}
+
+func encodeRetEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
+	return e.Encode(struct {
+		XMLName     xml.Name `xml:"retEventoBPe"`
+		XMLNS       string   `xml:"xmlns,attr,omitempty"`
+		VersaoAttr  string   `xml:"versao,attr,omitempty"`
+		InfEvento   any      `xml:"infEvento"`
+		DsSignature any      `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}{
+		XMLName:     xml.Name{Local: "retEventoBPe"},
+		XMLNS:       namespace,
+		VersaoAttr:  versao,
+		InfEvento:   infEvento,
+		DsSignature: signature,
+	})
+}
+
+func encodeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon, dhConexao *string, evento any, retEvento any) error {
+	return e.Encode(struct {
+		XMLName           xml.Name `xml:"procEventoBPe"`
+		XMLNS             string   `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string   `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string  `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string  `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string  `xml:"dhConexao,attr,omitempty"`
+		EventoBPe         any      `xml:"eventoBPe"`
+		RetEventoBPe      any      `xml:"retEventoBPe"`
+	}{
+		XMLName:           xml.Name{Local: "procEventoBPe"},
+		XMLNS:             namespace,
+		VersaoAttr:        versao,
+		IpTransmissorAttr: ipTransmissor,
+		NPortaConAttr:     nPortaCon,
+		DhConexaoAttr:     dhConexao,
+		EventoBPe:         evento,
+		RetEventoBPe:      retEvento,
+	})
+}
+
+func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+	switch tpEvento {
+	case "110111":
+		var parsed cancelEventSchema.TEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode eventoBPe cancelamento: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoCancBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110115":
+		var parsed naoEmbEventSchema.TEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode eventoBPe nao embarque: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoNaoEmbBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110116":
+		var parsed alteracaoPoltronaEventSchema.TEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode eventoBPe alteracao poltrona: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoAlteracaoPoltrona: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110117":
+		var parsed excessoBagagemEventSchema.TEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode eventoBPe excesso bagagem: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoExcessoBagagem: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	default:
+		var parsed schema.TEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode eventoBPe: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	}
+}
+
+func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+	switch tpEvento {
+	case "110111":
+		var parsed cancelEventSchema.TRetEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode retEventoBPe cancelamento: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110115":
+		var parsed naoEmbEventSchema.TRetEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode retEventoBPe nao embarque: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoNaoEmbBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110116":
+		var parsed alteracaoPoltronaEventSchema.TRetEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode retEventoBPe alteracao poltrona: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoAlteracaoPoltrona: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110117":
+		var parsed excessoBagagemEventSchema.TRetEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode retEventoBPe excesso bagagem: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoExcessoBagagem: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	default:
+		var parsed schema.TRetEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode retEventoBPe: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	}
+}
+
+func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+	switch tpEvento {
+	case "110111":
+		var parsed cancelEventSchema.TProcEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode procEventoBPe cancelamento: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110115":
+		var parsed naoEmbEventSchema.TProcEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode procEventoBPe nao embarque: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoNaoEmbBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110116":
+		var parsed alteracaoPoltronaEventSchema.TProcEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode procEventoBPe alteracao poltrona: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoAlteracaoPoltrona: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "110117":
+		var parsed excessoBagagemEventSchema.TProcEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode procEventoBPe excesso bagagem: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoExcessoBagagem: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	default:
+		var parsed schema.TProcEvento
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse bpe: decode procEventoBPe: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoBPe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	}
 }
 
 func versionFromBPe(inf *schema.TAnonComplexInfBPe2) string {
@@ -583,52 +906,81 @@ func versionFromBPeTM(inf *schema.TAnonComplexInfBPe1) string {
 	return inf.VersaoAttr
 }
 
-func onlyBPeRoot(d *Document) bool {
-	return d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyBPeTMRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyBPeProcRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyBPeTMProcRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyRetBPeRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyConsSitRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyRetConsSitRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyConsStatRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyRetConsStatRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyEventoRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.RetEventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyRetEventoRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.ProcEventoBPe == nil
-}
-
-func onlyProcEventoRoot(d *Document) bool {
-	return d.BPe == nil && d.BPeTM == nil && d.BPeProc == nil && d.BPeTMProc == nil && d.RetBPe == nil && d.ConsSitBPe == nil && d.RetConsSitBPe == nil && d.ConsStatServBPe == nil && d.RetConsStatServBPe == nil && d.EventoBPe == nil && d.RetEventoBPe == nil
+func activeRootCount(doc *Document) int {
+	count := 0
+	if doc.BPe != nil {
+		count++
+	}
+	if doc.BPeTM != nil {
+		count++
+	}
+	if doc.BPeProc != nil {
+		count++
+	}
+	if doc.BPeTMProc != nil {
+		count++
+	}
+	if doc.RetBPe != nil {
+		count++
+	}
+	if doc.ConsSitBPe != nil {
+		count++
+	}
+	if doc.RetConsSitBPe != nil {
+		count++
+	}
+	if doc.ConsStatServBPe != nil {
+		count++
+	}
+	if doc.RetConsStatServBPe != nil {
+		count++
+	}
+	if doc.EventoBPe != nil {
+		count++
+	}
+	if doc.RetEventoBPe != nil {
+		count++
+	}
+	if doc.ProcEventoBPe != nil {
+		count++
+	}
+	if doc.EventoCancBPe != nil {
+		count++
+	}
+	if doc.RetEventoCancBPe != nil {
+		count++
+	}
+	if doc.ProcEventoCancBPe != nil {
+		count++
+	}
+	if doc.EventoAlteracaoPoltrona != nil {
+		count++
+	}
+	if doc.RetEventoAlteracaoPoltrona != nil {
+		count++
+	}
+	if doc.ProcEventoAlteracaoPoltrona != nil {
+		count++
+	}
+	if doc.EventoExcessoBagagem != nil {
+		count++
+	}
+	if doc.RetEventoExcessoBagagem != nil {
+		count++
+	}
+	if doc.ProcEventoExcessoBagagem != nil {
+		count++
+	}
+	if doc.EventoNaoEmbBPe != nil {
+		count++
+	}
+	if doc.RetEventoNaoEmbBPe != nil {
+		count++
+	}
+	if doc.ProcEventoNaoEmbBPe != nil {
+		count++
+	}
+	return count
 }
 
 func firstNonEmpty(values ...string) string {

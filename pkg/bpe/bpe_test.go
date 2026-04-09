@@ -11,6 +11,9 @@ import (
 	"strings"
 	"testing"
 
+	alteracaoPoltronaSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
+	excessoBagagemSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
+	naoEmbSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
 	schema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/core"
 	"github.com/awa/nota-fiscal/pkg/bpe"
 	"github.com/stretchr/testify/require"
@@ -27,6 +30,31 @@ type bpeCancEvento struct {
 		NProt      string `xml:"nProt"`
 		XJust      string `xml:"xJust"`
 	} `xml:"evCancBPe"`
+}
+
+type bpeAlteracaoPoltronaEvento struct {
+	EvAlteracaoPoltrona struct {
+		DescEvento string `xml:"descEvento"`
+		NProt      string `xml:"nProt"`
+		Poltrona   string `xml:"poltrona"`
+	} `xml:"evAlteracaoPoltrona"`
+}
+
+type bpeExcessoBagagemEvento struct {
+	EvExcessoBagagem struct {
+		DescEvento string `xml:"descEvento"`
+		NProt      string `xml:"nProt"`
+		QBagagem   string `xml:"qBagagem"`
+		VTotBag    string `xml:"vTotBag"`
+	} `xml:"evExcessoBagagem"`
+}
+
+type bpeNaoEmbEvento struct {
+	EvNaoEmbBPe struct {
+		DescEvento string `xml:"descEvento"`
+		NProt      string `xml:"nProt"`
+		XJust      string `xml:"xJust"`
+	} `xml:"evNaoEmbBPe"`
 }
 
 func TestParse_Fixtures(t *testing.T) {
@@ -179,8 +207,8 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfEvento:  minimalEventoInf(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
-				require.NotNil(t, doc.EventoBPe)
-				evento := decodeInnerXML[bpeCancEvento](t, doc.EventoBPe.InfEvento.DetEvento.InnerXML)
+				require.NotNil(t, doc.EventoCancBPe)
+				evento := decodeInnerXML[bpeCancEvento](t, doc.EventoCancBPe.InfEvento.DetEvento.InnerXML)
 				require.Equal(t, "Cancelamento", evento.EvCancBPe.DescEvento)
 				require.Equal(t, "123456789012345", evento.EvCancBPe.NProt)
 				require.Equal(t, "Justificativa de cancelamento", evento.EvCancBPe.XJust)
@@ -202,9 +230,68 @@ func TestParse_SupportedRoots(t *testing.T) {
 				RetEventoBPe: &schema.TRetEvento{VersaoAttr: "1.00", InfEvento: &schema.TAnonComplexInfEvento2{TpAmb: "2", CStat: "135"}},
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
-				require.NotNil(t, doc.ProcEventoBPe)
-				require.NotNil(t, doc.ProcEventoBPe.EventoBPe)
-				require.NotNil(t, doc.ProcEventoBPe.RetEventoBPe)
+				require.NotNil(t, doc.ProcEventoCancBPe)
+				require.NotNil(t, doc.ProcEventoCancBPe.EventoBPe)
+				require.NotNil(t, doc.ProcEventoCancBPe.RetEventoBPe)
+			},
+		},
+		{
+			name: "eventoBPe alteracao poltrona",
+			value: struct {
+				XMLName    xml.Name                                           `xml:"eventoBPe"`
+				XMLNS      string                                             `xml:"xmlns,attr"`
+				VersaoAttr string                                             `xml:"versao,attr"`
+				InfEvento  *alteracaoPoltronaSchema.TAnonComplexInfEvento1    `xml:"infEvento"`
+			}{
+				XMLName:    xml.Name{Local: "eventoBPe"},
+				XMLNS:      bpeNamespace,
+				VersaoAttr: "1.00",
+				InfEvento:  minimalAlteracaoPoltronaEventoInf(),
+			},
+			assert: func(t *testing.T, doc *bpe.Document) {
+				require.NotNil(t, doc.EventoAlteracaoPoltrona)
+				evento := decodeInnerXML[bpeAlteracaoPoltronaEvento](t, doc.EventoAlteracaoPoltrona.InfEvento.DetEvento.InnerXML)
+				require.Equal(t, "110116", doc.EventoAlteracaoPoltrona.InfEvento.TpEvento)
+				require.Equal(t, "42A", evento.EvAlteracaoPoltrona.Poltrona)
+			},
+		},
+		{
+			name: "eventoBPe excesso bagagem",
+			value: struct {
+				XMLName    xml.Name                                        `xml:"eventoBPe"`
+				XMLNS      string                                          `xml:"xmlns,attr"`
+				VersaoAttr string                                          `xml:"versao,attr"`
+				InfEvento  *excessoBagagemSchema.TAnonComplexInfEvento1    `xml:"infEvento"`
+			}{
+				XMLName:    xml.Name{Local: "eventoBPe"},
+				XMLNS:      bpeNamespace,
+				VersaoAttr: "1.00",
+				InfEvento:  minimalExcessoBagagemEventoInf(),
+			},
+			assert: func(t *testing.T, doc *bpe.Document) {
+				require.NotNil(t, doc.EventoExcessoBagagem)
+				evento := decodeInnerXML[bpeExcessoBagagemEvento](t, doc.EventoExcessoBagagem.InfEvento.DetEvento.InnerXML)
+				require.Equal(t, "2", evento.EvExcessoBagagem.QBagagem)
+				require.Equal(t, "120.00", evento.EvExcessoBagagem.VTotBag)
+			},
+		},
+		{
+			name: "eventoBPe nao embarque",
+			value: struct {
+				XMLName    xml.Name                               `xml:"eventoBPe"`
+				XMLNS      string                                 `xml:"xmlns,attr"`
+				VersaoAttr string                                 `xml:"versao,attr"`
+				InfEvento  *naoEmbSchema.TAnonComplexInfEvento1   `xml:"infEvento"`
+			}{
+				XMLName:    xml.Name{Local: "eventoBPe"},
+				XMLNS:      bpeNamespace,
+				VersaoAttr: "1.00",
+				InfEvento:  minimalNaoEmbEventoInf(),
+			},
+			assert: func(t *testing.T, doc *bpe.Document) {
+				require.NotNil(t, doc.EventoNaoEmbBPe)
+				evento := decodeInnerXML[bpeNaoEmbEvento](t, doc.EventoNaoEmbBPe.InfEvento.DetEvento.InnerXML)
+				require.Equal(t, "Passageiro ausente", evento.EvNaoEmbBPe.XJust)
 			},
 		},
 	}
@@ -280,10 +367,10 @@ func assertFixtureShape(t *testing.T, fixture string, doc *bpe.Document) {
 		require.Equal(t, "43190812345678000195630010000000011000000011", doc.BPeProc.ProtBPe.InfProt.ChBPe)
 		require.Equal(t, "100", doc.BPeProc.ProtBPe.InfProt.CStat)
 	case "1101114319081234567800019563001000000001100000001101-eventoBPe.xml":
-		require.NotNil(t, doc.EventoBPe)
-		require.Equal(t, "110111", doc.EventoBPe.InfEvento.TpEvento)
-		require.Equal(t, "43190812345678000195630010000000011000000011", doc.EventoBPe.InfEvento.ChBPe)
-		evento := decodeInnerXML[bpeCancEvento](t, doc.EventoBPe.InfEvento.DetEvento.InnerXML)
+		require.NotNil(t, doc.EventoCancBPe)
+		require.Equal(t, "110111", doc.EventoCancBPe.InfEvento.TpEvento)
+		require.Equal(t, "43190812345678000195630010000000011000000011", doc.EventoCancBPe.InfEvento.ChBPe)
+		evento := decodeInnerXML[bpeCancEvento](t, doc.EventoCancBPe.InfEvento.DetEvento.InnerXML)
 		require.Equal(t, "Cancelamento", evento.EvCancBPe.DescEvento)
 		require.Equal(t, "123456789012345", evento.EvCancBPe.NProt)
 		require.Equal(t, "Justificativa de cancelamento", evento.EvCancBPe.XJust)
@@ -373,6 +460,57 @@ func minimalEventoInf() *schema.TAnonComplexInfEvento1 {
 		DetEvento: &schema.TAnonComplexDetEvento1{
 			VersaoEventoAttr: "1.00",
 			InnerXML:         `<evCancBPe xmlns="http://www.portalfiscal.inf.br/bpe"><descEvento>Cancelamento</descEvento><nProt>123456789012345</nProt><xJust>Justificativa de cancelamento</xJust></evCancBPe>`,
+		},
+	}
+}
+
+func minimalAlteracaoPoltronaEventoInf() *alteracaoPoltronaSchema.TAnonComplexInfEvento1 {
+	return &alteracaoPoltronaSchema.TAnonComplexInfEvento1{
+		IdAttr:     "ID110116" + documentKey + "01",
+		COrgao:     "43",
+		TpAmb:      "2",
+		CNPJ:       "12345678000195",
+		ChBPe:      documentKey,
+		DhEvento:   "2024-01-02T03:04:05-03:00",
+		TpEvento:   "110116",
+		NSeqEvento: "1",
+		DetEvento: &alteracaoPoltronaSchema.TAnonComplexDetEvento1{
+			VersaoEventoAttr: "1.00",
+			InnerXML:         `<evAlteracaoPoltrona xmlns="http://www.portalfiscal.inf.br/bpe"><descEvento>Alteracao Poltrona</descEvento><nProt>123456789012345</nProt><poltrona>42A</poltrona></evAlteracaoPoltrona>`,
+		},
+	}
+}
+
+func minimalExcessoBagagemEventoInf() *excessoBagagemSchema.TAnonComplexInfEvento1 {
+	return &excessoBagagemSchema.TAnonComplexInfEvento1{
+		IdAttr:     "ID110117" + documentKey + "01",
+		COrgao:     "43",
+		TpAmb:      "2",
+		CNPJ:       "12345678000195",
+		ChBPe:      documentKey,
+		DhEvento:   "2024-01-02T03:04:05-03:00",
+		TpEvento:   "110117",
+		NSeqEvento: "1",
+		DetEvento: &excessoBagagemSchema.TAnonComplexDetEvento1{
+			VersaoEventoAttr: "1.00",
+			InnerXML:         `<evExcessoBagagem xmlns="http://www.portalfiscal.inf.br/bpe"><descEvento>Excesso Bagagem</descEvento><nProt>123456789012345</nProt><qBagagem>2</qBagagem><vTotBag>120.00</vTotBag></evExcessoBagagem>`,
+		},
+	}
+}
+
+func minimalNaoEmbEventoInf() *naoEmbSchema.TAnonComplexInfEvento1 {
+	return &naoEmbSchema.TAnonComplexInfEvento1{
+		IdAttr:     "ID110115" + documentKey + "01",
+		COrgao:     "43",
+		TpAmb:      "2",
+		CNPJ:       "12345678000195",
+		ChBPe:      documentKey,
+		DhEvento:   "2024-01-02T03:04:05-03:00",
+		TpEvento:   "110115",
+		NSeqEvento: "1",
+		DetEvento: &naoEmbSchema.TAnonComplexDetEvento1{
+			VersaoEventoAttr: "1.00",
+			InnerXML:         `<evNaoEmbBPe xmlns="http://www.portalfiscal.inf.br/bpe"><descEvento>Nao Embarque</descEvento><nProt>123456789012345</nProt><xJust>Passageiro ausente</xJust></evNaoEmbBPe>`,
 		},
 	}
 }

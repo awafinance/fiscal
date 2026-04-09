@@ -322,6 +322,7 @@ type TAnonComplexAgencia1 struct {
 
 // TAnonComplexInfBPeSub1 is 1 - Remarcação
 //
+//
 // 2 - Transferência
 //
 // 3 - Transferência e Remarcação
@@ -836,6 +837,7 @@ type TImp struct {
 }
 
 // TRespTec is O hashCSRT é o resultado das funções SHA-1 e base64 do token CSRT fornecido pelo fisco + chave de acesso do DF-e. (Implementação em futura NT)
+//
 //
 // Observação: 28 caracteres são representados no schema como 20 bytes do tipo base64Binary
 type TRespTec struct {

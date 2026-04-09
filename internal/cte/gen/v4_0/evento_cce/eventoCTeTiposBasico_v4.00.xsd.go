@@ -15,9 +15,9 @@ type TAnonNSeqEvento1 string
 // TAnonComplexDetEvento1 is XML do evento
 // Insira neste local o XML específico do tipo de evento (cancelamento, encerramento, registro de passagem).
 type TAnonComplexDetEvento1 struct {
-	XMLName          xml.Name                `xml:"detEvento"`
-	VersaoEventoAttr string                  `xml:"versaoEvento,attr"`
-	EvCCeCTe         *TAnonComplexEvCCeCTe1  `xml:"evCCeCTe"`
+	XMLName          xml.Name `xml:"detEvento"`
+	VersaoEventoAttr string   `xml:"versaoEvento,attr"`
+	EvCCeCTe         *TAnonComplexEvCCeCTe1 `xml:"evCCeCTe"`
 }
 
 // TAnonXSolic1 ...

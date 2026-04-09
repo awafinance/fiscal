@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
-  <include xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposDistDFe_v1.00.xsd"></include>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_distNSU_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="ultNSU" type="TNSU">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Último NSU recebido pelo ator. Caso seja informado com zero, ou com um NSU muito antigo, a consulta retornará unicamente as informações resumidas e documentos fiscais eletrônicos que tenham sido recepcionados pelo Ambiente Nacional nos últimos 3 meses.</documentation>
+<schema xmlns="http://www.portalfiscal.inf.br/mdfe" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:_xmlns="xmlns" _xmlns:_xmlns="xmlns" _xmlns:ds="http://www.w3.org/2000/09/xmldsig#" _xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.portalfiscal.inf.br/mdfe" targetNamespace="http://www.portalfiscal.inf.br/mdfe" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" schemaLocation="tiposDistDFe_v1.00.xsd"></include>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_distNSU_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="ultNSU" type="TNSU">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Último NSU recebido pelo ator. Caso seja informado com zero, ou com um NSU muito antigo, a consulta retornará unicamente as informações resumidas e documentos fiscais eletrônicos que tenham sido recepcionados pelo Ambiente Nacional nos últimos 3 meses.</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_consNSU_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="NSU" type="TNSU">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Número Sequencial Único. Geralmente esta consulta será utilizada quando identificado pelo interessado um NSU faltante. O Web Service retornará o documento ou informará que o NSU não existe no Ambiente Nacional. Assim, esta consulta fechará a lacuna do NSU identificado como faltante.</documentation>
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_consNSU_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="NSU" type="TNSU">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Número Sequencial Único. Geralmente esta consulta será utilizada quando identificado pelo interessado um NSU faltante. O Web Service retornará o documento ou informará que o NSU não existe no Ambiente Nacional. Assim, esta consulta fechará a lacuna do NSU identificado como faltante.</documentation>
         </annotation>
       </element>
     </sequence>
   </complexType>
-  <complexType xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_distDFeInt_1">
-    <sequence xmlns="http://www.w3.org/2001/XMLSchema">
-      <element xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
-        <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-          <documentation xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
+  <complexType xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="TAnonComplex_distDFeInt_1">
+    <sequence xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="tpAmb" type="TAmb">
+        <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+          <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Identificação do Ambiente:
 1 - Produção  
 2 - Homologação            </documentation>
         </annotation>
       </element>
-      <choice xmlns="http://www.w3.org/2001/XMLSchema">
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CNPJ do interessado no DF-e</documentation>
+      <choice xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+        <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="CNPJ" type="TCnpj">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">CNPJ do interessado no DF-e</documentation>
           </annotation>
         </element>
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">CPF do interessado no DF-e</documentation>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="CPF" type="TCpf">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">CPF do interessado no DF-e</documentation>
           </annotation>
         </element>
       </choice>
-      <choice xmlns="http://www.w3.org/2001/XMLSchema">
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="distNSU" type="TAnonComplex_distNSU_1">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo para distribuir DF-e de interesse</documentation>
+      <choice xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+        <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="distNSU" type="TAnonComplex_distNSU_1">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Grupo para distribuir DF-e de interesse</documentation>
           </annotation>
         </element>
-        <element xmlns="http://www.w3.org/2001/XMLSchema" name="consNSU" type="TAnonComplex_consNSU_1">
-          <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-            <documentation xmlns="http://www.w3.org/2001/XMLSchema">Grupo para consultar um DF-e a partir de um NSU específico</documentation>
+        <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="consNSU" type="TAnonComplex_consNSU_1">
+          <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+            <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Grupo para consultar um DF-e a partir de um NSU específico</documentation>
           </annotation>
         </element>
       </choice>
     </sequence>
-    <attribute xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerDistDFe" use="required"></attribute>
+    <attribute xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="versao" type="TVerDistDFe" use="required"></attribute>
   </complexType>
-  <element xmlns="http://www.w3.org/2001/XMLSchema" name="distDFeInt" type="TAnonComplex_distDFeInt_1">
-    <annotation xmlns="http://www.w3.org/2001/XMLSchema">
-      <documentation xmlns="http://www.w3.org/2001/XMLSchema">Schema de pedido de distribuição de DF-e de interesse</documentation>
+  <element xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" name="distDFeInt" type="TAnonComplex_distDFeInt_1">
+    <annotation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">
+      <documentation xmlns="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema">Schema de pedido de distribuição de DF-e de interesse</documentation>
     </annotation>
   </element>
 </schema>
