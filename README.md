@@ -109,6 +109,27 @@ out, err := xml.MarshalIndent(doc, "", "  ")
 
 The library implements custom `MarshalXML` logic so the original supported root is preserved.
 
+## CLI
+
+The repository also includes a small CLI for parsing fiscal XML documents and writing the parsed document as JSON.
+
+Run it from the repository root with:
+
+```bash
+go run ./cmd --help
+go run ./cmd nfe <xml>
+go run ./cmd nfse <xml>
+go run ./cmd cte <xml>
+go run ./cmd mdfe <xml>
+go run ./cmd bpe <xml>
+```
+
+Each document command takes one XML file path. For example:
+
+```bash
+go run ./cmd nfe testdata/nfe/35180834128745000152550010000476121675985748-nfe.xml
+```
+
 ## Project structure
 
 - `pkg/<family>` contains the public parsing API
