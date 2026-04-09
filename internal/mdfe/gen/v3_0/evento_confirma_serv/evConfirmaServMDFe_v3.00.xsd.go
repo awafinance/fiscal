@@ -16,7 +16,7 @@ type TAnonDescEvento1 string
 type TAnonComplexEvConfirmaServMDFe1 struct {
 	XMLName		xml.Name	`xml:"evConfirmaServMDFe" json:"-"`
 	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	NProt		*TProt		`xml:"nProt" json:"nProt,omitempty"`
 }
 
 // EvConfirmaServMDFe is Schema XML de validação do evento de confirmação do serviço de transporte 110117

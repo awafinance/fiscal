@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	distSchema "github.com/awa/nota-fiscal/internal/cte/gen/v1_0/dist_dfe"
-	"github.com/awa/nota-fiscal/pkg/cte"
+	distSchema "github.com/awa/fiscal/internal/cte/gen/v1_0/dist_dfe"
+	"github.com/awa/fiscal/pkg/cte"
 	"github.com/stretchr/testify/require"
 )
 

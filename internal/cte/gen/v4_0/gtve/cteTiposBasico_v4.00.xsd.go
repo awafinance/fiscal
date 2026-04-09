@@ -5,13 +5,13 @@ package schema
 import (
 	"encoding/xml"
 
-	modalaereo "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_aereo"
-	modalaquaviario "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_aquaviario"
-	modaldutoviario "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_dutoviario"
-	modalferroviario "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_ferroviario"
-	modalmultimodal "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_multimodal"
-	modalrodoviario "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario"
-	modalrodoviarioos "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario_os"
+	modalaereo "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_aereo"
+	modalaquaviario "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_aquaviario"
+	modaldutoviario "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_dutoviario"
+	modalferroviario "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_ferroviario"
+	modalmultimodal "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_multimodal"
+	modalrodoviario "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_rodoviario"
+	modalrodoviarioos "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os"
 )
 
 // TModTranspGTVe is Tipo Modal transporte GTVe

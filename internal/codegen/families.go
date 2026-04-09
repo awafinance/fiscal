@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/awa/nota-fiscal/internal/codegen/postprocess"
+	"github.com/awa/fiscal/internal/codegen/postprocess"
 )
 
 const (
@@ -31,8 +31,8 @@ const (
 	cteAnonInfModalStruct2     = "type TAnonComplexInfModal2 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
 	cteAnonInfModalStruct3     = "type TAnonComplexInfModal3 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
 	xmlOnlyImportBlock         = "import (\n\t\"encoding/xml\"\n)"
-	typedInfModalImportBlock   = "import (\n\t\"encoding/xml\"\n\n\tmodalaereo \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_aereo\"\n\tmodalaquaviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_aquaviario\"\n\tmodaldutoviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_dutoviario\"\n\tmodalferroviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_ferroviario\"\n\tmodalmultimodal \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_multimodal\"\n\tmodalrodoviario \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario\"\n\tmodalrodoviarioos \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
-	typedInfModalImportBlockOS = "import (\n\t\"encoding/xml\"\n\n\tmodalrodoviarioos \"github.com/awa/nota-fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
+	typedInfModalImportBlock   = "import (\n\t\"encoding/xml\"\n\n\tmodalaereo \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_aereo\"\n\tmodalaquaviario \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_aquaviario\"\n\tmodaldutoviario \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_dutoviario\"\n\tmodalferroviario \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_ferroviario\"\n\tmodalmultimodal \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_multimodal\"\n\tmodalrodoviario \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_rodoviario\"\n\tmodalrodoviarioos \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
+	typedInfModalImportBlockOS = "import (\n\t\"encoding/xml\"\n\n\tmodalrodoviarioos \"github.com/awa/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
 
 	xDescInterfaceField = "interface{} `xml:\"xDesc\"`"
 	xDescStringField    = "string `xml:\"xDesc\"`"

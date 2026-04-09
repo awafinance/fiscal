@@ -1,4 +1,4 @@
-module github.com/awa/nota-fiscal
+module github.com/awa/fiscal
 
 go 1.22
 

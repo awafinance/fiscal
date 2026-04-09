@@ -1,6 +1,6 @@
-# nota-fiscal
+# fiscal
 
-`nota-fiscal` is a Go library for parsing and marshaling Brazilian fiscal XML documents with strongly typed structs generated from the official schemas.
+`fiscal` is a Go library for parsing and marshaling Brazilian fiscal XML documents with strongly typed structs generated from the official schemas.
 
 It currently covers:
 
@@ -23,7 +23,7 @@ The library supports primary documents, processed wrappers, distribution respons
 ## Install
 
 ```bash
-go get github.com/awa/nota-fiscal
+go get github.com/awa/fiscal
 ```
 
 ## Packages
@@ -31,11 +31,11 @@ go get github.com/awa/nota-fiscal
 Each document family is exposed through its own package:
 
 ```go
-import "github.com/awa/nota-fiscal/pkg/nfe"
-import "github.com/awa/nota-fiscal/pkg/nfse"
-import "github.com/awa/nota-fiscal/pkg/cte"
-import "github.com/awa/nota-fiscal/pkg/mdfe"
-import "github.com/awa/nota-fiscal/pkg/bpe"
+import "github.com/awa/fiscal/pkg/nfe"
+import "github.com/awa/fiscal/pkg/nfse"
+import "github.com/awa/fiscal/pkg/cte"
+import "github.com/awa/fiscal/pkg/mdfe"
+import "github.com/awa/fiscal/pkg/bpe"
 ```
 
 Each package exposes the same core entrypoint:
@@ -56,7 +56,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/awa/nota-fiscal/pkg/nfe"
+	"github.com/awa/fiscal/pkg/nfe"
 )
 
 func main() {
