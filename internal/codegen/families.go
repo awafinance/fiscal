@@ -267,7 +267,12 @@ func postprocessBPe(verbose bool) error {
 			),
 			postprocess.IfPath(
 				func(path string) bool {
-					return strings.HasSuffix(path, string(filepath.Separator)+"evNaoEmbBPe_v1.00.xsd.go")
+					return hasAnySuffix(path,
+						string(filepath.Separator)+"evAlteracaoPoltrona_v1.00.xsd.go",
+						string(filepath.Separator)+"evCancBPe_v1.00.xsd.go",
+						string(filepath.Separator)+"evExcessoBagagem_v1.00.xsd.go",
+						string(filepath.Separator)+"evNaoEmbBPe_v1.00.xsd.go",
+					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
 			),
@@ -298,8 +303,10 @@ func postprocessCTe(verbose bool) error {
 				func(path string) bool {
 					return hasAnySuffix(path,
 						string(filepath.Separator)+"evCancCTe_v4.00.xsd.go",
+						string(filepath.Separator)+"evCECTe_v4.00.xsd.go",
 						string(filepath.Separator)+"evCancCECTe_v4.00.xsd.go",
 						string(filepath.Separator)+"evCancIECTe_v4.00.xsd.go",
+						string(filepath.Separator)+"evIECTe_v4.00.xsd.go",
 					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
@@ -332,9 +339,12 @@ func postprocessMDFe(verbose bool) error {
 			postprocess.IfPath(
 				func(path string) bool {
 					return hasAnySuffix(path,
+						string(filepath.Separator)+"evAlteracaoPagtoServMDFe_v3.00.xsd.go",
 						string(filepath.Separator)+"evCancMDFe_v3.00.xsd.go",
 						string(filepath.Separator)+"evConfirmaServMDFe_v3.00.xsd.go",
 						string(filepath.Separator)+"evEncMDFe_v3.00.xsd.go",
+						string(filepath.Separator)+"evInclusaoDFeMDFe_v3.00.xsd.go",
+						string(filepath.Separator)+"evPagtoOperMDFe_v3.00.xsd.go",
 					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
@@ -366,6 +376,12 @@ func postprocessNFe(verbose bool) error {
 		Replacements: []postprocess.Replacement{
 			postprocess.ReplaceAll("*interface{}", "*string"),
 			postprocess.ReplaceAll("interface{}", "string"),
+			postprocess.IfPath(
+				func(path string) bool {
+					return strings.HasSuffix(path, string(filepath.Separator)+"leiauteEventoCancNFe_v1.00.xsd.go")
+				},
+				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
+			),
 			postprocess.IfPath(
 				postprocess.PathContains("internal", "nfe", "gen", "v1_0", "evento_cce"),
 				postprocess.ReplaceAll("*TCOrgaoIBGE", "*string"),
