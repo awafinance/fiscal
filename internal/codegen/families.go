@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -44,6 +45,8 @@ var (
 	optionalFieldCRT    = regexp.MustCompile(`\n\tCRT\s+string\s+` + "`xml:\"CRT\"`")
 	nProtTProtField     = regexp.MustCompile(`\n\tNProt\s+\*TProt\s+` + "`xml:\"nProt\"`")
 	nProtPrestDesField  = regexp.MustCompile(`\n\tNProtEvPrestDes\s+\*TProt\s+` + "`xml:\"nProtEvPrestDes\"`")
+	rootAliasStringType = regexp.MustCompile(`(?m)^type\s+([A-Z][A-Za-z0-9_]*)\s+string$`)
+	schemaRootType      = regexp.MustCompile(`<element\s+name="[^"]+"\s+type="(T[A-Z][A-Za-z0-9_]*)"`)
 
 	cteEventPayloads = map[string]string{
 		"evento_cce":                    "evCCeCTe",
@@ -258,6 +261,7 @@ func postprocessBPe(verbose bool) error {
 		Replacements: []postprocess.Replacement{
 			postprocess.ReplaceAll("*interface{}", "*string"),
 			postprocess.ReplaceAll("interface{}", "string"),
+			fixTypedRootAliasFromSchema,
 			postprocess.ReplaceAll(infBPeCompField, infBPeCompFieldFixed),
 			postprocess.IfPath(
 				func(path string) bool {
@@ -296,6 +300,7 @@ func postprocessCTe(verbose bool) error {
 		Replacements: []postprocess.Replacement{
 			postprocess.ReplaceAll("*interface{}", "*string"),
 			postprocess.ReplaceAll("interface{}", "string"),
+			fixTypedRootAliasFromSchema,
 			postprocess.RegexReplaceAll(optionalFieldDhCont, "\n\tDhCont         *string `xml:\"dhCont\"`"),
 			postprocess.RegexReplaceAll(optionalFieldXJust, "\n\tXJust          *string `xml:\"xJust\"`"),
 			postprocess.RegexReplaceAll(optionalFieldCRT, "\n\tCRT       *string   `xml:\"CRT\"`"),
@@ -334,6 +339,7 @@ func postprocessMDFe(verbose bool) error {
 		},
 		Replacements: []postprocess.Replacement{
 			postprocess.ReplaceAll("*TpAmb", "*string"),
+			fixTypedRootAliasFromSchema,
 			postprocess.Replace(mdfeInfModalStruct, mdfeInfModalStructInnerXML, 1),
 			postprocess.Replace(mdfeAnonInfModalStruct, mdfeAnonInfModalInnerXML, 1),
 			postprocess.IfPath(
@@ -376,6 +382,7 @@ func postprocessNFe(verbose bool) error {
 		Replacements: []postprocess.Replacement{
 			postprocess.ReplaceAll("*interface{}", "*string"),
 			postprocess.ReplaceAll("interface{}", "string"),
+			fixTypedRootAliasFromSchema,
 			postprocess.IfPath(
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"leiauteEventoCancNFe_v1.00.xsd.go")
@@ -402,6 +409,7 @@ func postprocessNFSe(verbose bool) error {
 			pathPattern("internal", "nfse", "gen", "v1_0", "schemas"),
 		},
 		Replacements: []postprocess.Replacement{
+			fixTypedRootAliasFromSchema,
 			postprocess.ReplaceAll(xDescInterfaceField, xDescStringField),
 		},
 		AddJSONTags: true,
@@ -435,6 +443,46 @@ func replaceTypedCTeEventPayloads(path, updated string) string {
 		}
 	}
 	return updated
+}
+
+func fixTypedRootAliasFromSchema(path, updated string) string {
+	matches := rootAliasStringType.FindAllStringSubmatch(updated, -1)
+	if len(matches) != 1 {
+		return updated
+	}
+
+	schemaPath, ok := schemaPathForGenerated(path)
+	if !ok {
+		return updated
+	}
+
+	schemaText, err := os.ReadFile(schemaPath)
+	if err != nil {
+		return updated
+	}
+
+	rootType := schemaRootType.FindSubmatch(schemaText)
+	if len(rootType) != 2 {
+		return updated
+	}
+
+	replacement := fmt.Sprintf("type %s *%s", matches[0][1], rootType[1])
+	return rootAliasStringType.ReplaceAllString(updated, replacement)
+}
+
+func schemaPathForGenerated(path string) (string, bool) {
+	clean := filepath.Clean(path)
+	needle := string(filepath.Separator) + "gen" + string(filepath.Separator)
+	idx := strings.Index(clean, needle)
+	if idx == -1 {
+		return "", false
+	}
+
+	schemaPath := clean[:idx] + string(filepath.Separator) + "schemas" + string(filepath.Separator) + clean[idx+len(needle):]
+	if _, err := os.Stat(schemaPath); err != nil {
+		return "", false
+	}
+	return schemaPath, true
 }
 
 func isDiscardedCTeModalSupportFile(path string) bool {
