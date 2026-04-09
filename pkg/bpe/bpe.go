@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"io"
 
+	schema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/core"
 	alteracaoPoltronaEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
 	cancelEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_cancel"
 	excessoBagagemEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
 	naoEmbEventSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
-	schema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/core"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/bpe"

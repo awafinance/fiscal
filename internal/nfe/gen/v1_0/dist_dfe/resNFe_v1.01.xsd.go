@@ -16,23 +16,24 @@ type TAnonTpNF1 string
 type TAnonCSitNFe1 string
 
 // TAnonComplexResNFe1 is Situação da NF-e
-//             1-Uso autorizado no momento da consulta;
-//             2-Uso denegado;
+//
+//	1-Uso autorizado no momento da consulta;
+//	2-Uso denegado;
 type TAnonComplexResNFe1 struct {
-	XMLName    xml.Name `xml:"resNFe"`
-	VersaoAttr string   `xml:"versao,attr"`
-	ChNFe      string   `xml:"chNFe"`
-	CNPJ       *string  `xml:"CNPJ"`
-	CPF        *string  `xml:"CPF"`
-	XNome      string   `xml:"xNome"`
-	IE         string   `xml:"IE"`
-	DhEmi      string   `xml:"dhEmi"`
-	TpNF       string   `xml:"tpNF"`
-	VNF        string   `xml:"vNF"`
-	DigVal     *string  `xml:"digVal"`
-	DhRecbto   string   `xml:"dhRecbto"`
-	NProt      string   `xml:"nProt"`
-	CSitNFe    string   `xml:"cSitNFe"`
+	XMLName    xml.Name `xml:"resNFe" json:"-"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
+	ChNFe      string   `xml:"chNFe" json:"chNFe,omitempty"`
+	CNPJ       *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF        *string  `xml:"CPF" json:"CPF,omitempty"`
+	XNome      string   `xml:"xNome" json:"xNome,omitempty"`
+	IE         string   `xml:"IE" json:"IE,omitempty"`
+	DhEmi      string   `xml:"dhEmi" json:"dhEmi,omitempty"`
+	TpNF       string   `xml:"tpNF" json:"tpNF,omitempty"`
+	VNF        string   `xml:"vNF" json:"vNF,omitempty"`
+	DigVal     *string  `xml:"digVal" json:"digVal,omitempty"`
+	DhRecbto   string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt      string   `xml:"nProt" json:"nProt,omitempty"`
+	CSitNFe    string   `xml:"cSitNFe" json:"cSitNFe,omitempty"`
 }
 
 // ResNFe is Schema da estrutura XML gerada pelo Ambiente Nacional com o conjunto de informações resumidas de uma NF-e

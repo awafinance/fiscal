@@ -8,20 +8,20 @@ import (
 
 // TAnonComplexCanonicalizationMethod1 ...
 type TAnonComplexCanonicalizationMethod1 struct {
-	XMLName       xml.Name `xml:"CanonicalizationMethod"`
-	AlgorithmAttr string   `xml:"Algorithm,attr"`
+	XMLName       xml.Name `xml:"CanonicalizationMethod" json:"-"`
+	AlgorithmAttr string   `xml:"Algorithm,attr" json:"Algorithm,omitempty"`
 }
 
 // TAnonComplexSignatureMethod1 ...
 type TAnonComplexSignatureMethod1 struct {
-	XMLName       xml.Name `xml:"SignatureMethod"`
-	AlgorithmAttr string   `xml:"Algorithm,attr"`
+	XMLName       xml.Name `xml:"SignatureMethod" json:"-"`
+	AlgorithmAttr string   `xml:"Algorithm,attr" json:"Algorithm,omitempty"`
 }
 
 // TAnonComplexDigestMethod1 ...
 type TAnonComplexDigestMethod1 struct {
-	XMLName       xml.Name `xml:"DigestMethod"`
-	AlgorithmAttr string   `xml:"Algorithm,attr"`
+	XMLName       xml.Name `xml:"DigestMethod" json:"-"`
+	AlgorithmAttr string   `xml:"Algorithm,attr" json:"Algorithm,omitempty"`
 }
 
 // Signature ...
@@ -29,56 +29,56 @@ type Signature *SignatureType
 
 // SignatureType ...
 type SignatureType struct {
-	IdAttr         *string             `xml:"Id,attr"`
-	SignedInfo     *SignedInfoType     `xml:"SignedInfo"`
-	SignatureValue *SignatureValueType `xml:"SignatureValue"`
-	KeyInfo        *KeyInfoType        `xml:"KeyInfo"`
+	IdAttr         *string             `xml:"Id,attr" json:"Id,omitempty"`
+	SignedInfo     *SignedInfoType     `xml:"SignedInfo" json:"SignedInfo,omitempty"`
+	SignatureValue *SignatureValueType `xml:"SignatureValue" json:"SignatureValue,omitempty"`
+	KeyInfo        *KeyInfoType        `xml:"KeyInfo" json:"KeyInfo,omitempty"`
 }
 
 // SignatureValueType ...
 type SignatureValueType struct {
-	IdAttr *string `xml:"Id,attr"`
-	Value  string  `xml:",chardata"`
+	IdAttr *string `xml:"Id,attr" json:"Id,omitempty"`
+	Value  string  `xml:",chardata" json:"value,omitempty"`
 }
 
 // SignedInfoType ...
 type SignedInfoType struct {
-	IdAttr                 *string                              `xml:"Id,attr"`
-	CanonicalizationMethod *TAnonComplexCanonicalizationMethod1 `xml:"CanonicalizationMethod"`
-	SignatureMethod        *TAnonComplexSignatureMethod1        `xml:"SignatureMethod"`
-	Reference              *ReferenceType                       `xml:"Reference"`
+	IdAttr                 *string                              `xml:"Id,attr" json:"Id,omitempty"`
+	CanonicalizationMethod *TAnonComplexCanonicalizationMethod1 `xml:"CanonicalizationMethod" json:"CanonicalizationMethod,omitempty"`
+	SignatureMethod        *TAnonComplexSignatureMethod1        `xml:"SignatureMethod" json:"SignatureMethod,omitempty"`
+	Reference              *ReferenceType                       `xml:"Reference" json:"Reference,omitempty"`
 }
 
 // ReferenceType ...
 type ReferenceType struct {
-	IdAttr       *string                    `xml:"Id,attr"`
-	URIAttr      string                     `xml:"URI,attr"`
-	TypeAttr     *string                    `xml:"Type,attr"`
-	Transforms   *TransformsType            `xml:"Transforms"`
-	DigestMethod *TAnonComplexDigestMethod1 `xml:"DigestMethod"`
-	DigestValue  string                     `xml:"DigestValue"`
+	IdAttr       *string                    `xml:"Id,attr" json:"Id,omitempty"`
+	URIAttr      string                     `xml:"URI,attr" json:"URI,omitempty"`
+	TypeAttr     *string                    `xml:"Type,attr" json:"Type,omitempty"`
+	Transforms   *TransformsType            `xml:"Transforms" json:"Transforms,omitempty"`
+	DigestMethod *TAnonComplexDigestMethod1 `xml:"DigestMethod" json:"DigestMethod,omitempty"`
+	DigestValue  string                     `xml:"DigestValue" json:"DigestValue,omitempty"`
 }
 
 // TransformsType ...
 type TransformsType struct {
-	Transform []*TransformType `xml:"Transform"`
+	Transform []*TransformType `xml:"Transform" json:"Transform,omitempty"`
 }
 
 // TransformType ...
 type TransformType struct {
-	AlgorithmAttr string  `xml:"Algorithm,attr"`
-	XPath         *string `xml:"XPath"`
+	AlgorithmAttr string  `xml:"Algorithm,attr" json:"Algorithm,omitempty"`
+	XPath         *string `xml:"XPath" json:"XPath,omitempty"`
 }
 
 // KeyInfoType ...
 type KeyInfoType struct {
-	IdAttr   *string       `xml:"Id,attr"`
-	X509Data *X509DataType `xml:"X509Data"`
+	IdAttr   *string       `xml:"Id,attr" json:"Id,omitempty"`
+	X509Data *X509DataType `xml:"X509Data" json:"X509Data,omitempty"`
 }
 
 // X509DataType ...
 type X509DataType struct {
-	X509Certificate string `xml:"X509Certificate"`
+	X509Certificate string `xml:"X509Certificate" json:"X509Certificate,omitempty"`
 }
 
 // DigestValueType ...

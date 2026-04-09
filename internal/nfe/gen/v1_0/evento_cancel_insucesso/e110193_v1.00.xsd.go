@@ -11,12 +11,12 @@ type TAnonDescEvento1 string
 
 // TAnonComplexDetEvento1 is Número do Protocolo de Autorização do Evento da NF-e a que se refere este cancelamento.
 type TAnonComplexDetEvento1 struct {
-	XMLName     xml.Name `xml:"detEvento"`
-	VersaoAttr  string   `xml:"versao,attr"`
-	DescEvento  string   `xml:"descEvento"`
-	COrgaoAutor string   `xml:"cOrgaoAutor"`
-	VerAplic    *TString `xml:"verAplic"`
-	NProtEvento string   `xml:"nProtEvento"`
+	XMLName     xml.Name `xml:"detEvento" json:"-"`
+	VersaoAttr  string   `xml:"versao,attr" json:"versao,omitempty"`
+	DescEvento  string   `xml:"descEvento" json:"descEvento,omitempty"`
+	COrgaoAutor string   `xml:"cOrgaoAutor" json:"cOrgaoAutor,omitempty"`
+	VerAplic    *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	NProtEvento string   `xml:"nProtEvento" json:"nProtEvento,omitempty"`
 }
 
 // DetEvento is Schema XML de validação do evento de Cancelamento do Comprovante de Entrega da NF-e

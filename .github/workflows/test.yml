@@ -1,0 +1,40 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup mise
+        uses: jdx/mise-action@v2
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: go-mod-${{ hashFiles('go.sum') }}
+          restore-keys: go-mod-
+
+      - name: Create .env
+        run: |
+          printf 'OPENROUTER_API_KEY=test\nRESEND_API_KEY=test\n' > .env
+
+      - name: Run tests
+        run: mise run test
+
+      - name: Verify clean git tree
+        run: git diff --exit-code

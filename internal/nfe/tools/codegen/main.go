@@ -4,10 +4,17 @@ import (
 	"bytes"
 	"encoding/xml"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/printer"
+	"go/token"
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
+	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -69,6 +76,11 @@ func postprocessGenerated() error {
 			updated = strings.ReplaceAll(updated, "*TCOrgaoIBGE", "*string")
 			updated = strings.ReplaceAll(updated, "*TVerEvento", "*string")
 		}
+		updatedBytes, changedTags, err := addJSONTags(path, []byte(updated))
+		if err != nil {
+			return err
+		}
+		updated = string(updatedBytes)
 		if updated == string(text) {
 			return nil
 		}
@@ -77,9 +89,109 @@ func postprocessGenerated() error {
 			return err
 		}
 
-		fmt.Printf("postprocessed generated xml tags in %s\n", path)
+		if changedTags {
+			fmt.Printf("postprocessed generated xml/json tags in %s\n", path)
+		} else {
+			fmt.Printf("postprocessed generated xml tags in %s\n", path)
+		}
 		return nil
 	})
+}
+
+func addJSONTags(path string, src []byte) ([]byte, bool, error) {
+	fset := token.NewFileSet()
+	file, err := parser.ParseFile(fset, path, src, parser.ParseComments)
+	if err != nil {
+		return nil, false, err
+	}
+
+	changed := false
+	ast.Inspect(file, func(node ast.Node) bool {
+		structType, ok := node.(*ast.StructType)
+		if !ok {
+			return true
+		}
+
+		for _, field := range structType.Fields.List {
+			if field.Tag == nil {
+				continue
+			}
+
+			rawTag, err := strconv.Unquote(field.Tag.Value)
+			if err != nil {
+				continue
+			}
+
+			updatedTag, ok := addJSONTag(rawTag, field)
+			if !ok {
+				continue
+			}
+
+			field.Tag.Value = "`" + updatedTag + "`"
+			changed = true
+		}
+
+		return false
+	})
+
+	if !changed {
+		return src, false, nil
+	}
+
+	var buf bytes.Buffer
+	if err := printer.Fprint(&buf, fset, file); err != nil {
+		return nil, false, err
+	}
+
+	return buf.Bytes(), true, nil
+}
+
+func addJSONTag(rawTag string, field *ast.Field) (string, bool) {
+	tag := reflect.StructTag(rawTag)
+	if tag.Get("json") != "" {
+		return rawTag, false
+	}
+
+	xmlTag := tag.Get("xml")
+	if xmlTag == "" {
+		return rawTag, false
+	}
+
+	jsonName := jsonNameFromXMLTag(xmlTag, field)
+	if jsonName == "" {
+		return rawTag, false
+	}
+	if jsonName != "-" {
+		jsonName += ",omitempty"
+	}
+
+	return rawTag + ` json:"` + jsonName + `"`, true
+}
+
+func jsonNameFromXMLTag(xmlTag string, field *ast.Field) string {
+	if xmlTag == "-" || fieldHasName(field, "XMLName") {
+		return "-"
+	}
+
+	name, options, _ := strings.Cut(xmlTag, ",")
+	if name == "" && slices.Contains(strings.Split(options, ","), "chardata") {
+		return "value"
+	}
+
+	if idx := strings.LastIndexByte(name, ' '); idx >= 0 {
+		name = name[idx+1:]
+	}
+
+	return name
+}
+
+func fieldHasName(field *ast.Field, name string) bool {
+	for _, fieldName := range field.Names {
+		if fieldName.Name == name {
+			return true
+		}
+	}
+	return false
 }
 
 func isNestedImportedSchema(path string) bool {

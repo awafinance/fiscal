@@ -10,39 +10,39 @@ import (
 // 1 - Produção
 // 2 - Homologação
 type InfInut struct {
-	XMLName xml.Name    `xml:"infInut"`
-	IdAttr  string      `xml:"Id,attr"`
-	TpAmb   string      `xml:"tpAmb"`
-	XServ   string `xml:"xServ"`
-	CUF     string      `xml:"cUF"`
-	Ano     string      `xml:"ano"`
-	CNPJ    string      `xml:"CNPJ"`
-	Mod     string      `xml:"mod"`
-	Serie   string      `xml:"serie"`
-	NNFIni  string      `xml:"nNFIni"`
-	NNFFin  string      `xml:"nNFFin"`
-	XJust   *TString    `xml:"xJust"`
+	XMLName xml.Name `xml:"infInut" json:"-"`
+	IdAttr  string   `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb   string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ   string   `xml:"xServ" json:"xServ,omitempty"`
+	CUF     string   `xml:"cUF" json:"cUF,omitempty"`
+	Ano     string   `xml:"ano" json:"ano,omitempty"`
+	CNPJ    string   `xml:"CNPJ" json:"CNPJ,omitempty"`
+	Mod     string   `xml:"mod" json:"mod,omitempty"`
+	Serie   string   `xml:"serie" json:"serie,omitempty"`
+	NNFIni  string   `xml:"nNFIni" json:"nNFIni,omitempty"`
+	NNFFin  string   `xml:"nNFFin" json:"nNFFin,omitempty"`
+	XJust   *TString `xml:"xJust" json:"xJust,omitempty"`
 }
 
 // TInutNFe is Tipo Pedido de Inutilização de Numeração da Nota Fiscal Eletrônica
 type TInutNFe struct {
-	VersaoAttr  string         `xml:"versao,attr"`
-	InfInut     *InfInut       `xml:"infInut"`
-	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfInut     *InfInut       `xml:"infInut" json:"infInut,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TRetInutNFe is Tipo retorno do Pedido de Inutilização de Numeração da Nota Fiscal Eletrônica
 type TRetInutNFe struct {
-	VersaoAttr  string         `xml:"versao,attr"`
-	InfInut     *InfInut       `xml:"infInut"`
-	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfInut     *InfInut       `xml:"infInut" json:"infInut,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProcInutNFe is Tipo Pedido de inutilzação de númeração de  NF-e processado
 type TProcInutNFe struct {
-	VersaoAttr string       `xml:"versao,attr"`
-	InutNFe    *TInutNFe    `xml:"inutNFe"`
-	RetInutNFe *TRetInutNFe `xml:"retInutNFe"`
+	VersaoAttr string       `xml:"versao,attr" json:"versao,omitempty"`
+	InutNFe    *TInutNFe    `xml:"inutNFe" json:"inutNFe,omitempty"`
+	RetInutNFe *TRetInutNFe `xml:"retInutNFe" json:"retInutNFe,omitempty"`
 }
 
 // TVerInutNFe is Tipo Versão do leiaute de Inutilização 4.00

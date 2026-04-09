@@ -12,10 +12,10 @@ import (
 	"strings"
 	"testing"
 
+	schema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/core"
 	alteracaoPoltronaSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
 	excessoBagagemSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
 	naoEmbSchema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
-	schema "github.com/awa/nota-fiscal/internal/bpe/gen/v1_0/core"
 	"github.com/awa/nota-fiscal/pkg/bpe"
 	"github.com/stretchr/testify/require"
 )
@@ -239,10 +239,10 @@ func TestParse_SupportedRoots(t *testing.T) {
 		{
 			name: "eventoBPe alteracao poltrona",
 			value: struct {
-				XMLName    xml.Name                                           `xml:"eventoBPe"`
-				XMLNS      string                                             `xml:"xmlns,attr"`
-				VersaoAttr string                                             `xml:"versao,attr"`
-				InfEvento  *alteracaoPoltronaSchema.TAnonComplexInfEvento1    `xml:"infEvento"`
+				XMLName    xml.Name                                        `xml:"eventoBPe"`
+				XMLNS      string                                          `xml:"xmlns,attr"`
+				VersaoAttr string                                          `xml:"versao,attr"`
+				InfEvento  *alteracaoPoltronaSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
 			}{
 				XMLName:    xml.Name{Local: "eventoBPe"},
 				XMLNS:      bpeNamespace,
@@ -259,10 +259,10 @@ func TestParse_SupportedRoots(t *testing.T) {
 		{
 			name: "eventoBPe excesso bagagem",
 			value: struct {
-				XMLName    xml.Name                                        `xml:"eventoBPe"`
-				XMLNS      string                                          `xml:"xmlns,attr"`
-				VersaoAttr string                                          `xml:"versao,attr"`
-				InfEvento  *excessoBagagemSchema.TAnonComplexInfEvento1    `xml:"infEvento"`
+				XMLName    xml.Name                                     `xml:"eventoBPe"`
+				XMLNS      string                                       `xml:"xmlns,attr"`
+				VersaoAttr string                                       `xml:"versao,attr"`
+				InfEvento  *excessoBagagemSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
 			}{
 				XMLName:    xml.Name{Local: "eventoBPe"},
 				XMLNS:      bpeNamespace,
@@ -279,10 +279,10 @@ func TestParse_SupportedRoots(t *testing.T) {
 		{
 			name: "eventoBPe nao embarque",
 			value: struct {
-				XMLName    xml.Name                               `xml:"eventoBPe"`
-				XMLNS      string                                 `xml:"xmlns,attr"`
-				VersaoAttr string                                 `xml:"versao,attr"`
-				InfEvento  *naoEmbSchema.TAnonComplexInfEvento1   `xml:"infEvento"`
+				XMLName    xml.Name                             `xml:"eventoBPe"`
+				XMLNS      string                               `xml:"xmlns,attr"`
+				VersaoAttr string                               `xml:"versao,attr"`
+				InfEvento  *naoEmbSchema.TAnonComplexInfEvento1 `xml:"infEvento"`
 			}{
 				XMLName:    xml.Name{Local: "eventoBPe"},
 				XMLNS:      bpeNamespace,

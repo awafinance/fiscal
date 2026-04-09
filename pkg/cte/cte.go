@@ -12,7 +12,6 @@ import (
 	cteSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/cte"
 	cteOSSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/cte_os"
 	cteSimpSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/cte_simp"
-	statusSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/status_servico"
 	cancelEventSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/evento_cancel"
 	cancelCEEventSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/evento_cancel_ce"
 	cancelIEEventSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/evento_cancel_ie"
@@ -25,64 +24,65 @@ import (
 	prestDesacordoEventSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/evento_prest_desacordo"
 	regMultimodalEventSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/evento_reg_multimodal"
 	gtveSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/gtve"
+	statusSchema "github.com/awa/nota-fiscal/internal/cte/gen/v4_0/status_servico"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/cte"
 
 type Document struct {
-	VersaoAttr                     string
-	CTe                            *cteSchema.TCTe
-	CTeProc                        *cteSchema.TAnonComplexCteProc1
-	RetCTe                         *cteSchema.TRetCTe
-	CTeOS                          *cteOSSchema.TCTeOS
-	CTeOSProc                      *cteOSSchema.TAnonComplexCteOSProc1
-	RetCTeOS                       *cteOSSchema.TRetCTeOS
-	CTeSimp                        *cteSimpSchema.TCTeSimp
-	CTeSimpProc                    *cteSimpSchema.TAnonComplexCteSimpProc1
-	RetCTeSimp                     *cteSimpSchema.TRetCTeSimp
-	GTVe                           *gtveSchema.TGTVe
-	GTVeProc                       *gtveSchema.TAnonComplexGTVeProc1
-	RetGTVe                        *gtveSchema.TRetGTVe
-	ConsSitCTe                     *consSitSchema.TConsSitCTe
-	RetConsSitCTe                  *consSitSchema.TRetConsSitCTe
-	ConsStatServCTe                *statusSchema.TConsStatServ
-	RetConsStatServCTe             *statusSchema.TRetConsStatServ
-	EventoCTe                      *eventSchema.TEvento
-	RetEventoCTe                   *eventSchema.TRetEvento
-	ProcEventoCTe                  *eventSchema.TProcEvento
-	EventoCancCTe                  *cancelEventSchema.TEvento
-	RetEventoCancCTe               *cancelEventSchema.TRetEvento
-	ProcEventoCancCTe              *cancelEventSchema.TProcEvento
-	EventoCECTe                    *ceEventSchema.TEvento
-	RetEventoCECTe                 *ceEventSchema.TRetEvento
-	ProcEventoCECTe                *ceEventSchema.TProcEvento
-	EventoCancCECTe                *cancelCEEventSchema.TEvento
-	RetEventoCancCECTe             *cancelCEEventSchema.TRetEvento
-	ProcEventoCancCECTe            *cancelCEEventSchema.TProcEvento
-	EventoEPECCTe                  *epecEventSchema.TEvento
-	RetEventoEPECCTe               *epecEventSchema.TRetEvento
-	ProcEventoEPECCTe              *epecEventSchema.TProcEvento
-	EventoRegMultimodal            *regMultimodalEventSchema.TEvento
-	RetEventoRegMultimodal         *regMultimodalEventSchema.TRetEvento
-	ProcEventoRegMultimodal        *regMultimodalEventSchema.TProcEvento
-	EventoGTV                      *gtvEventSchema.TEvento
-	RetEventoGTV                   *gtvEventSchema.TRetEvento
-	ProcEventoGTV                  *gtvEventSchema.TProcEvento
-	EventoIECTe                    *ieEventSchema.TEvento
-	RetEventoIECTe                 *ieEventSchema.TRetEvento
-	ProcEventoIECTe                *ieEventSchema.TProcEvento
-	EventoCancIECTe                *cancelIEEventSchema.TEvento
-	RetEventoCancIECTe             *cancelIEEventSchema.TRetEvento
-	ProcEventoCancIECTe            *cancelIEEventSchema.TProcEvento
-	EventoPrestDesacordo           *prestDesacordoEventSchema.TEvento
-	RetEventoPrestDesacordo        *prestDesacordoEventSchema.TRetEvento
-	ProcEventoPrestDesacordo       *prestDesacordoEventSchema.TProcEvento
-	EventoCancPrestDesacordo       *cancelPrestDesacordoEventSchema.TEvento
-	RetEventoCancPrestDesacordo    *cancelPrestDesacordoEventSchema.TRetEvento
-	ProcEventoCancPrestDesacordo   *cancelPrestDesacordoEventSchema.TProcEvento
-	DistDFeInt                     *distSchema.TAnonComplexDistDFeInt1
-	RetDistDFeInt                  *distSchema.TAnonComplexRetDistDFeInt1
-	rootName                       string
+	VersaoAttr                   string
+	CTe                          *cteSchema.TCTe
+	CTeProc                      *cteSchema.TAnonComplexCteProc1
+	RetCTe                       *cteSchema.TRetCTe
+	CTeOS                        *cteOSSchema.TCTeOS
+	CTeOSProc                    *cteOSSchema.TAnonComplexCteOSProc1
+	RetCTeOS                     *cteOSSchema.TRetCTeOS
+	CTeSimp                      *cteSimpSchema.TCTeSimp
+	CTeSimpProc                  *cteSimpSchema.TAnonComplexCteSimpProc1
+	RetCTeSimp                   *cteSimpSchema.TRetCTeSimp
+	GTVe                         *gtveSchema.TGTVe
+	GTVeProc                     *gtveSchema.TAnonComplexGTVeProc1
+	RetGTVe                      *gtveSchema.TRetGTVe
+	ConsSitCTe                   *consSitSchema.TConsSitCTe
+	RetConsSitCTe                *consSitSchema.TRetConsSitCTe
+	ConsStatServCTe              *statusSchema.TConsStatServ
+	RetConsStatServCTe           *statusSchema.TRetConsStatServ
+	EventoCTe                    *eventSchema.TEvento
+	RetEventoCTe                 *eventSchema.TRetEvento
+	ProcEventoCTe                *eventSchema.TProcEvento
+	EventoCancCTe                *cancelEventSchema.TEvento
+	RetEventoCancCTe             *cancelEventSchema.TRetEvento
+	ProcEventoCancCTe            *cancelEventSchema.TProcEvento
+	EventoCECTe                  *ceEventSchema.TEvento
+	RetEventoCECTe               *ceEventSchema.TRetEvento
+	ProcEventoCECTe              *ceEventSchema.TProcEvento
+	EventoCancCECTe              *cancelCEEventSchema.TEvento
+	RetEventoCancCECTe           *cancelCEEventSchema.TRetEvento
+	ProcEventoCancCECTe          *cancelCEEventSchema.TProcEvento
+	EventoEPECCTe                *epecEventSchema.TEvento
+	RetEventoEPECCTe             *epecEventSchema.TRetEvento
+	ProcEventoEPECCTe            *epecEventSchema.TProcEvento
+	EventoRegMultimodal          *regMultimodalEventSchema.TEvento
+	RetEventoRegMultimodal       *regMultimodalEventSchema.TRetEvento
+	ProcEventoRegMultimodal      *regMultimodalEventSchema.TProcEvento
+	EventoGTV                    *gtvEventSchema.TEvento
+	RetEventoGTV                 *gtvEventSchema.TRetEvento
+	ProcEventoGTV                *gtvEventSchema.TProcEvento
+	EventoIECTe                  *ieEventSchema.TEvento
+	RetEventoIECTe               *ieEventSchema.TRetEvento
+	ProcEventoIECTe              *ieEventSchema.TProcEvento
+	EventoCancIECTe              *cancelIEEventSchema.TEvento
+	RetEventoCancIECTe           *cancelIEEventSchema.TRetEvento
+	ProcEventoCancIECTe          *cancelIEEventSchema.TProcEvento
+	EventoPrestDesacordo         *prestDesacordoEventSchema.TEvento
+	RetEventoPrestDesacordo      *prestDesacordoEventSchema.TRetEvento
+	ProcEventoPrestDesacordo     *prestDesacordoEventSchema.TProcEvento
+	EventoCancPrestDesacordo     *cancelPrestDesacordoEventSchema.TEvento
+	RetEventoCancPrestDesacordo  *cancelPrestDesacordoEventSchema.TRetEvento
+	ProcEventoCancPrestDesacordo *cancelPrestDesacordoEventSchema.TProcEvento
+	DistDFeInt                   *distSchema.TAnonComplexDistDFeInt1
+	RetDistDFeInt                *distSchema.TAnonComplexRetDistDFeInt1
+	rootName                     string
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -112,13 +112,13 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	case "cteProc":
 		if d.CTeProc != nil && activeRootCount(d) == 1 {
 			type root struct {
-				XMLName           xml.Name         `xml:"cteProc"`
-				XMLNS             string           `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string           `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string          `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string          `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string          `xml:"dhConexao,attr,omitempty"`
-				CTe               *cteSchema.TCTe  `xml:"CTe"`
+				XMLName           xml.Name            `xml:"cteProc"`
+				XMLNS             string              `xml:"xmlns,attr,omitempty"`
+				VersaoAttr        string              `xml:"versao,attr,omitempty"`
+				IpTransmissorAttr *string             `xml:"ipTransmissor,attr,omitempty"`
+				NPortaConAttr     *string             `xml:"nPortaCon,attr,omitempty"`
+				DhConexaoAttr     *string             `xml:"dhConexao,attr,omitempty"`
+				CTe               *cteSchema.TCTe     `xml:"CTe"`
 				ProtCTe           *cteSchema.TProtCTe `xml:"protCTe"`
 			}
 			return e.Encode(root{
@@ -139,9 +139,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*cteSchema.TRetCTe
 			}{
-				XMLName:  xml.Name{Local: "retCTe"},
-				XMLNS:    namespace,
-				TRetCTe:  d.RetCTe,
+				XMLName: xml.Name{Local: "retCTe"},
+				XMLNS:   namespace,
+				TRetCTe: d.RetCTe,
 			})
 		}
 	case "CTeOS":
@@ -167,13 +167,13 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	case "cteOSProc":
 		if d.CTeOSProc != nil && activeRootCount(d) == 1 {
 			type root struct {
-				XMLName           xml.Name            `xml:"cteOSProc"`
-				XMLNS             string              `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string              `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string             `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string             `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string             `xml:"dhConexao,attr,omitempty"`
-				CTeOS             *cteOSSchema.TCTeOS `xml:"CTeOS"`
+				XMLName           xml.Name                `xml:"cteOSProc"`
+				XMLNS             string                  `xml:"xmlns,attr,omitempty"`
+				VersaoAttr        string                  `xml:"versao,attr,omitempty"`
+				IpTransmissorAttr *string                 `xml:"ipTransmissor,attr,omitempty"`
+				NPortaConAttr     *string                 `xml:"nPortaCon,attr,omitempty"`
+				DhConexaoAttr     *string                 `xml:"dhConexao,attr,omitempty"`
+				CTeOS             *cteOSSchema.TCTeOS     `xml:"CTeOS"`
 				ProtCTe           *cteOSSchema.TProtCTeOS `xml:"protCTe"`
 			}
 			return e.Encode(root{
@@ -194,9 +194,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*cteOSSchema.TRetCTeOS
 			}{
-				XMLName:    xml.Name{Local: "retCTeOS"},
-				XMLNS:      namespace,
-				TRetCTeOS:  d.RetCTeOS,
+				XMLName:   xml.Name{Local: "retCTeOS"},
+				XMLNS:     namespace,
+				TRetCTeOS: d.RetCTeOS,
 			})
 		}
 	case "CTeSimp":
@@ -219,12 +219,12 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	case "cteSimpProc":
 		if d.CTeSimpProc != nil && activeRootCount(d) == 1 {
 			type root struct {
-				XMLName           xml.Name            `xml:"cteSimpProc"`
-				XMLNS             string              `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string              `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string             `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string             `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string             `xml:"dhConexao,attr,omitempty"`
+				XMLName           xml.Name                `xml:"cteSimpProc"`
+				XMLNS             string                  `xml:"xmlns,attr,omitempty"`
+				VersaoAttr        string                  `xml:"versao,attr,omitempty"`
+				IpTransmissorAttr *string                 `xml:"ipTransmissor,attr,omitempty"`
+				NPortaConAttr     *string                 `xml:"nPortaCon,attr,omitempty"`
+				DhConexaoAttr     *string                 `xml:"dhConexao,attr,omitempty"`
 				CTeSimp           *cteSimpSchema.TCTeSimp `xml:"CTeSimp"`
 				ProtCTe           *cteSimpSchema.TProtCTe `xml:"protCTe"`
 			}
@@ -246,20 +246,20 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*cteSimpSchema.TRetCTeSimp
 			}{
-				XMLName:      xml.Name{Local: "retCTeSimp"},
-				XMLNS:        namespace,
-				TRetCTeSimp:  d.RetCTeSimp,
+				XMLName:     xml.Name{Local: "retCTeSimp"},
+				XMLNS:       namespace,
+				TRetCTeSimp: d.RetCTeSimp,
 			})
 		}
 	case "GTVe":
 		if d.GTVe != nil && activeRootCount(d) == 1 {
 			type root struct {
-				XMLName     xml.Name                           `xml:"GTVe"`
-				XMLNS       string                             `xml:"xmlns,attr,omitempty"`
-				VersaoAttr  string                             `xml:"versao,attr,omitempty"`
-				InfCte      *gtveSchema.TAnonComplexInfCte1    `xml:"infCte"`
+				XMLName     xml.Name                            `xml:"GTVe"`
+				XMLNS       string                              `xml:"xmlns,attr,omitempty"`
+				VersaoAttr  string                              `xml:"versao,attr,omitempty"`
+				InfCte      *gtveSchema.TAnonComplexInfCte1     `xml:"infCte"`
 				InfCTeSupl  *gtveSchema.TAnonComplexInfCTeSupl1 `xml:"infCTeSupl,omitempty"`
-				DsSignature *gtveSchema.SignatureType          `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+				DsSignature *gtveSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 			return e.Encode(root{
 				XMLName:     xml.Name{Local: "GTVe"},
@@ -273,13 +273,13 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	case "GTVeProc":
 		if d.GTVeProc != nil && activeRootCount(d) == 1 {
 			type root struct {
-				XMLName           xml.Name            `xml:"GTVeProc"`
-				XMLNS             string              `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string              `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string             `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string             `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string             `xml:"dhConexao,attr,omitempty"`
-				GTVe              *gtveSchema.TGTVe   `xml:"GTVe"`
+				XMLName           xml.Name              `xml:"GTVeProc"`
+				XMLNS             string                `xml:"xmlns,attr,omitempty"`
+				VersaoAttr        string                `xml:"versao,attr,omitempty"`
+				IpTransmissorAttr *string               `xml:"ipTransmissor,attr,omitempty"`
+				NPortaConAttr     *string               `xml:"nPortaCon,attr,omitempty"`
+				DhConexaoAttr     *string               `xml:"dhConexao,attr,omitempty"`
+				GTVe              *gtveSchema.TGTVe     `xml:"GTVe"`
 				ProtCTe           *gtveSchema.TProtGTVe `xml:"protCTe"`
 			}
 			return e.Encode(root{
@@ -300,9 +300,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*gtveSchema.TRetGTVe
 			}{
-				XMLName:   xml.Name{Local: "retGTVe"},
-				XMLNS:     namespace,
-				TRetGTVe:  d.RetGTVe,
+				XMLName:  xml.Name{Local: "retGTVe"},
+				XMLNS:    namespace,
+				TRetGTVe: d.RetGTVe,
 			})
 		}
 	case "consSitCTe":
@@ -312,9 +312,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TConsSitCTe
 			}{
-				XMLName:       xml.Name{Local: "consSitCTe"},
-				XMLNS:         namespace,
-				TConsSitCTe:   d.ConsSitCTe,
+				XMLName:     xml.Name{Local: "consSitCTe"},
+				XMLNS:       namespace,
+				TConsSitCTe: d.ConsSitCTe,
 			})
 		}
 	case "retConsSitCTe":
@@ -324,9 +324,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TRetConsSitCTe
 			}{
-				XMLName:          xml.Name{Local: "retConsSitCTe"},
-				XMLNS:            namespace,
-				TRetConsSitCTe:   d.RetConsSitCTe,
+				XMLName:        xml.Name{Local: "retConsSitCTe"},
+				XMLNS:          namespace,
+				TRetConsSitCTe: d.RetConsSitCTe,
 			})
 		}
 	case "consStatServCTe":
@@ -336,9 +336,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TConsStatServ
 			}{
-				XMLName:         xml.Name{Local: "consStatServCTe"},
-				XMLNS:           namespace,
-				TConsStatServ:   d.ConsStatServCTe,
+				XMLName:       xml.Name{Local: "consStatServCTe"},
+				XMLNS:         namespace,
+				TConsStatServ: d.ConsStatServCTe,
 			})
 		}
 	case "retConsStatServCTe":
@@ -348,9 +348,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TRetConsStatServ
 			}{
-				XMLName:            xml.Name{Local: "retConsStatServCTe"},
-				XMLNS:              namespace,
-				TRetConsStatServ:   d.RetConsStatServCTe,
+				XMLName:          xml.Name{Local: "retConsStatServCTe"},
+				XMLNS:            namespace,
+				TRetConsStatServ: d.RetConsStatServCTe,
 			})
 		}
 	case "eventoCTe":

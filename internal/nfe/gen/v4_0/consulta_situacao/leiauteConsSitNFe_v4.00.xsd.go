@@ -10,109 +10,109 @@ import (
 // 1 - Produção
 // 2 - Homologação
 type TConsSitNFe struct {
-	VersaoAttr string      `xml:"versao,attr"`
-	TpAmb      string      `xml:"tpAmb"`
-	XServ      string `xml:"xServ"`
-	ChNFe      string      `xml:"chNFe"`
+	VersaoAttr string `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ      string `xml:"xServ" json:"xServ,omitempty"`
+	ChNFe      string `xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TRetConsSitNFe is Protocolo de registro de evento da NF-e
 type TRetConsSitNFe struct {
-	VersaoAttr    string         `xml:"versao,attr"`
-	TpAmb         string         `xml:"tpAmb"`
-	VerAplic      *TString       `xml:"verAplic"`
-	CStat         string         `xml:"cStat"`
-	XMotivo       *TString       `xml:"xMotivo"`
-	CUF           string         `xml:"cUF"`
-	DhRecbto      string         `xml:"dhRecbto"`
-	ChNFe         string         `xml:"chNFe"`
-	ProtNFe       *TProtNFe      `xml:"protNFe"`
-	RetCancNFe    *TRetCancNFe   `xml:"retCancNFe"`
-	ProcEventoNFe []*TProcEvento `xml:"procEventoNFe"`
+	VersaoAttr    string         `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb         string         `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic      *TString       `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat         string         `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo       *TString       `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF           string         `xml:"cUF" json:"cUF,omitempty"`
+	DhRecbto      string         `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	ChNFe         string         `xml:"chNFe" json:"chNFe,omitempty"`
+	ProtNFe       *TProtNFe      `xml:"protNFe" json:"protNFe,omitempty"`
+	RetCancNFe    *TRetCancNFe   `xml:"retCancNFe" json:"retCancNFe,omitempty"`
+	ProcEventoNFe []*TProcEvento `xml:"procEventoNFe" json:"procEventoNFe,omitempty"`
 }
 
 // InfProt is Descrição literal do status do serviço solicitado.
 type InfProt struct {
-	XMLName  xml.Name `xml:"infProt"`
-	IdAttr   *string  `xml:"Id,attr"`
-	TpAmb    string   `xml:"tpAmb"`
-	VerAplic *TString `xml:"verAplic"`
-	ChNFe    string   `xml:"chNFe"`
-	DhRecbto string   `xml:"dhRecbto"`
-	NProt    *string  `xml:"nProt"`
-	DigVal   *string  `xml:"digVal"`
-	CStat    string   `xml:"cStat"`
-	XMotivo  *TString `xml:"xMotivo"`
+	XMLName  xml.Name `xml:"infProt" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	ChNFe    string   `xml:"chNFe" json:"chNFe,omitempty"`
+	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
+	DigVal   *string  `xml:"digVal" json:"digVal,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TProtNFe is Tipo Protocolo de status resultado do processamento da NF-e
 type TProtNFe struct {
-	VersaoAttr  string         `xml:"versao,attr"`
-	InfProt     *InfProt       `xml:"infProt"`
-	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfProt     *InfProt       `xml:"infProt" json:"infProt,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // InfCanc is Número do Protocolo de Status da NF-e. 1 posição (1 – Secretaria de Fazenda Estadual 2 – Receita Federal); 2 - código da UF - 2 posições ano; 10 seqüencial no ano.
 type InfCanc struct {
-	XMLName  xml.Name `xml:"infCanc"`
-	IdAttr   *string  `xml:"Id,attr"`
-	TpAmb    string   `xml:"tpAmb"`
-	VerAplic *TString `xml:"verAplic"`
-	CStat    string   `xml:"cStat"`
-	XMotivo  *TString `xml:"xMotivo"`
-	CUF      string   `xml:"cUF"`
-	ChNFe    *string  `xml:"chNFe"`
-	DhRecbto *string  `xml:"dhRecbto"`
-	NProt    *string  `xml:"nProt"`
+	XMLName  xml.Name `xml:"infCanc" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF      string   `xml:"cUF" json:"cUF,omitempty"`
+	ChNFe    *string  `xml:"chNFe" json:"chNFe,omitempty"`
+	DhRecbto *string  `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
 }
 
 // TRetCancNFe is Tipo retorno Pedido de Cancelamento da Nota Fiscal Eletrônica
 type TRetCancNFe struct {
-	VersaoAttr  string         `xml:"versao,attr"`
-	InfCanc     *InfCanc       `xml:"infCanc"`
-	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfCanc     *InfCanc       `xml:"infCanc" json:"infCanc,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // DetEvento is Detalhe Específico do Evento
 type DetEvento struct {
-	XMLName xml.Name `xml:"detEvento"`
+	XMLName xml.Name `xml:"detEvento" json:"-"`
 }
 
 // InfEvento is Data e Hora do Evento, formato UTC (AAAA-MM-DDThh:mm:ssTZD, onde TZD = +hh:mm ou -hh:mm)
 type InfEvento struct {
-	XMLName    xml.Name    `xml:"infEvento"`
-	IdAttr     string      `xml:"Id,attr"`
-	COrgao     string      `xml:"cOrgao"`
-	TpAmb      string      `xml:"tpAmb"`
-	CNPJ       *string     `xml:"CNPJ"`
-	CPF        *string     `xml:"CPF"`
-	ChNFe      string      `xml:"chNFe"`
-	DhEvento   string      `xml:"dhEvento"`
-	TpEvento   string `xml:"tpEvento"`
-	NSeqEvento string `xml:"nSeqEvento"`
-	VerEvento  string `xml:"verEvento"`
-	DetEvento  *DetEvento  `xml:"detEvento"`
+	XMLName    xml.Name   `xml:"infEvento" json:"-"`
+	IdAttr     string     `xml:"Id,attr" json:"Id,omitempty"`
+	COrgao     string     `xml:"cOrgao" json:"cOrgao,omitempty"`
+	TpAmb      string     `xml:"tpAmb" json:"tpAmb,omitempty"`
+	CNPJ       *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF        *string    `xml:"CPF" json:"CPF,omitempty"`
+	ChNFe      string     `xml:"chNFe" json:"chNFe,omitempty"`
+	DhEvento   string     `xml:"dhEvento" json:"dhEvento,omitempty"`
+	TpEvento   string     `xml:"tpEvento" json:"tpEvento,omitempty"`
+	NSeqEvento string     `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	VerEvento  string     `xml:"verEvento" json:"verEvento,omitempty"`
+	DetEvento  *DetEvento `xml:"detEvento" json:"detEvento,omitempty"`
 }
 
 // TEvento is Tipo Evento
 type TEvento struct {
-	VersaoAttr  string         `xml:"versao,attr"`
-	InfEvento   *InfEvento     `xml:"infEvento"`
-	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento   *InfEvento     `xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TRetEvento is Tipo retorno do Evento
 type TRetEvento struct {
-	VersaoAttr  string         `xml:"versao,attr"`
-	InfEvento   *InfEvento     `xml:"infEvento"`
-	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento   *InfEvento     `xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProcEvento is Tipo procEvento
 type TProcEvento struct {
-	VersaoAttr string      `xml:"versao,attr"`
-	Evento     *TEvento    `xml:"evento"`
-	RetEvento  *TRetEvento `xml:"retEvento"`
+	VersaoAttr string      `xml:"versao,attr" json:"versao,omitempty"`
+	Evento     *TEvento    `xml:"evento" json:"evento,omitempty"`
+	RetEvento  *TRetEvento `xml:"retEvento" json:"retEvento,omitempty"`
 }
 
 // TVerNFe is Tipo Versão da NF-e

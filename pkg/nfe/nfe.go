@@ -25,38 +25,38 @@ import (
 )
 
 type Document struct {
-	VersaoAttr            string
-	NFe                   *schema.TNFe
-	ProtNFe               *schema.TProtNFe
-	EnviNFe               *schema.TEnviNFe
-	RetEnviNFe            *schema.TRetEnviNFe
-	ConsReciNFe           *schema.TConsReciNFe
-	RetConsReciNFe        *schema.TRetConsReciNFe
-	EventoCancel          *cancelSchema.TEvento
-	EventoEntrega         *entregaSchema.TEvento
-	EventoCancEntrega     *cancelEntregaSchema.TEvento
-	EventoCCe             *cceSchema.TEvento
-	EventoEPEC            *epecSchema.TEvento
-	EventoAtorInteressado *atorSchema.TEvento
-	EventoMDE             *mdeSchema.TEvento
-	EventoInsucesso       *insucessoSchema.TEvento
-	EventoCancInsucesso   *insucessoCancelSchema.TEvento
-	EventoGenerico        *genericSchema.TEvento
-	EnvEvento             *genericSchema.TEnvEvento
-	RetEnvEvento          *genericSchema.TRetEnvEvento
-	ProcEventoNFe         *genericSchema.TProcEvento
-	ConsSitNFe            *consSchema.TConsSitNFe
-	RetConsSitNFe         *consSchema.TRetConsSitNFe
-	ConsStatServ          *statusSchema.TConsStatServ
-	RetConsStatServ       *statusSchema.TRetConsStatServ
-	InutNFe               *inutSchema.TInutNFe
-	RetInutNFe            *inutSchema.TRetInutNFe
-	ProcInutNFe           *inutSchema.TProcInutNFe
-	DistDFeInt            *distSchema.TAnonComplexDistDFeInt1
-	RetDistDFeInt         *distSchema.TAnonComplexRetDistDFeInt1
-	ResNFe                *distSchema.TAnonComplexResNFe1
-	ResEvento             *distSchema.TAnonComplexResEvento1
-	rootName              string
+	VersaoAttr            string                                 `json:"versao,omitempty"`
+	NFe                   *schema.TNFe                           `json:"NFe,omitempty"`
+	ProtNFe               *schema.TProtNFe                       `json:"protNFe,omitempty"`
+	EnviNFe               *schema.TEnviNFe                       `json:"enviNFe,omitempty"`
+	RetEnviNFe            *schema.TRetEnviNFe                    `json:"retEnviNFe,omitempty"`
+	ConsReciNFe           *schema.TConsReciNFe                   `json:"consReciNFe,omitempty"`
+	RetConsReciNFe        *schema.TRetConsReciNFe                `json:"retConsReciNFe,omitempty"`
+	EventoCancel          *cancelSchema.TEvento                  `json:"eventoCancel,omitempty"`
+	EventoEntrega         *entregaSchema.TEvento                 `json:"eventoEntrega,omitempty"`
+	EventoCancEntrega     *cancelEntregaSchema.TEvento           `json:"eventoCancEntrega,omitempty"`
+	EventoCCe             *cceSchema.TEvento                     `json:"eventoCCe,omitempty"`
+	EventoEPEC            *epecSchema.TEvento                    `json:"eventoEPEC,omitempty"`
+	EventoAtorInteressado *atorSchema.TEvento                    `json:"eventoAtorInteressado,omitempty"`
+	EventoMDE             *mdeSchema.TEvento                     `json:"eventoMDE,omitempty"`
+	EventoInsucesso       *insucessoSchema.TEvento               `json:"eventoInsucesso,omitempty"`
+	EventoCancInsucesso   *insucessoCancelSchema.TEvento         `json:"eventoCancInsucesso,omitempty"`
+	EventoGenerico        *genericSchema.TEvento                 `json:"eventoGenerico,omitempty"`
+	EnvEvento             *genericSchema.TEnvEvento              `json:"envEvento,omitempty"`
+	RetEnvEvento          *genericSchema.TRetEnvEvento           `json:"retEnvEvento,omitempty"`
+	ProcEventoNFe         *genericSchema.TProcEvento             `json:"procEventoNFe,omitempty"`
+	ConsSitNFe            *consSchema.TConsSitNFe                `json:"consSitNFe,omitempty"`
+	RetConsSitNFe         *consSchema.TRetConsSitNFe             `json:"retConsSitNFe,omitempty"`
+	ConsStatServ          *statusSchema.TConsStatServ            `json:"consStatServ,omitempty"`
+	RetConsStatServ       *statusSchema.TRetConsStatServ         `json:"retConsStatServ,omitempty"`
+	InutNFe               *inutSchema.TInutNFe                   `json:"inutNFe,omitempty"`
+	RetInutNFe            *inutSchema.TRetInutNFe                `json:"retInutNFe,omitempty"`
+	ProcInutNFe           *inutSchema.TProcInutNFe               `json:"procInutNFe,omitempty"`
+	DistDFeInt            *distSchema.TAnonComplexDistDFeInt1    `json:"distDFeInt,omitempty"`
+	RetDistDFeInt         *distSchema.TAnonComplexRetDistDFeInt1 `json:"retDistDFeInt,omitempty"`
+	ResNFe                *distSchema.TAnonComplexResNFe1        `json:"resNFe,omitempty"`
+	ResEvento             *distSchema.TAnonComplexResEvento1     `json:"resEvento,omitempty"`
+	rootName              string                                 `json:"-"`
 }
 
 // MarshalXML preserves the parsed root when possible.
