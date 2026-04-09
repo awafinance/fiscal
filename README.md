@@ -23,7 +23,7 @@ The library supports primary documents, processed wrappers, distribution respons
 ## Install
 
 ```bash
-go get github.com/awa/fiscal
+go get github.com/awafinance/fiscal
 ```
 
 ## Packages
@@ -31,11 +31,11 @@ go get github.com/awa/fiscal
 Each document family is exposed through its own package:
 
 ```go
-import "github.com/awa/fiscal/pkg/nfe"
-import "github.com/awa/fiscal/pkg/nfse"
-import "github.com/awa/fiscal/pkg/cte"
-import "github.com/awa/fiscal/pkg/mdfe"
-import "github.com/awa/fiscal/pkg/bpe"
+import "github.com/awafinance/fiscal/pkg/nfe"
+import "github.com/awafinance/fiscal/pkg/nfse"
+import "github.com/awafinance/fiscal/pkg/cte"
+import "github.com/awafinance/fiscal/pkg/mdfe"
+import "github.com/awafinance/fiscal/pkg/bpe"
 ```
 
 Each package exposes the same core entrypoint:
@@ -56,7 +56,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/awa/fiscal/pkg/nfe"
+	"github.com/awafinance/fiscal/pkg/nfe"
 )
 
 func main() {

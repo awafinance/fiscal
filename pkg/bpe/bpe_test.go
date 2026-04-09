@@ -12,11 +12,11 @@ import (
 	"strings"
 	"testing"
 
-	schema "github.com/awa/fiscal/internal/bpe/gen/v1_0/core"
-	alteracaoPoltronaSchema "github.com/awa/fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
-	excessoBagagemSchema "github.com/awa/fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
-	naoEmbSchema "github.com/awa/fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
-	"github.com/awa/fiscal/pkg/bpe"
+	schema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/core"
+	alteracaoPoltronaSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
+	excessoBagagemSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
+	naoEmbSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
+	"github.com/awafinance/fiscal/pkg/bpe"
 	"github.com/stretchr/testify/require"
 )
 

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 
-	schema "github.com/awa/fiscal/internal/nfse/gen/v1_0/core"
+	schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
 )
 
 const namespace = "http://www.sped.fazenda.gov.br/nfse"

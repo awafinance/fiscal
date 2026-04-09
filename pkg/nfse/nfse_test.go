@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/awa/fiscal/pkg/nfse"
+	"github.com/awafinance/fiscal/pkg/nfse"
 	"github.com/stretchr/testify/require"
 )
 

@@ -5,7 +5,7 @@ package schema
 import (
 	"encoding/xml"
 
-	modalrodoviarioos "github.com/awa/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os"
+	modalrodoviarioos "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os"
 )
 
 // TModTranspGTVe is Tipo Modal transporte GTVe

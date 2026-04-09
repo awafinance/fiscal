@@ -1,4 +1,4 @@
-module github.com/awa/fiscal
+module github.com/awafinance/fiscal
 
 go 1.22
 

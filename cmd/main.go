@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/awa/fiscal/pkg/bpe"
-	"github.com/awa/fiscal/pkg/cte"
-	"github.com/awa/fiscal/pkg/mdfe"
-	"github.com/awa/fiscal/pkg/nfe"
-	"github.com/awa/fiscal/pkg/nfse"
+	"github.com/awafinance/fiscal/pkg/bpe"
+	"github.com/awafinance/fiscal/pkg/cte"
+	"github.com/awafinance/fiscal/pkg/mdfe"
+	"github.com/awafinance/fiscal/pkg/nfe"
+	"github.com/awafinance/fiscal/pkg/nfse"
 	"github.com/spf13/cobra"
 )
 
