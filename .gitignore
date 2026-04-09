@@ -12,5 +12,3 @@ go.work
 go.work.sum
 .env
 .DS_Store
-nfelib/
-testdata/hp/
