@@ -37,7 +37,7 @@ run = 'golangci-lint fmt ./...'
 
 [tasks.test]
 description = 'Run automated tests'
-run = ['gotestsum -- -coverprofile=build/coverage.out ./...']
+run = ['mkdir -p build', 'gotestsum -- -coverprofile=build/coverage.out ./...']
 depends = ['gen']
 
 [tasks."coverage:print"]

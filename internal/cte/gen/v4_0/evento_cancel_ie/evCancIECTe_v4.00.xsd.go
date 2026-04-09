@@ -13,7 +13,7 @@ type TAnonDescEvento1 string
 type TAnonComplexEvCancIECTe1 struct {
 	XMLName		xml.Name	`xml:"evCancIECTe" json:"-"`
 	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	NProt		*TProt		`xml:"nProt" json:"nProt,omitempty"`
 	NProtIE		string		`xml:"nProtIE" json:"nProtIE,omitempty"`
 }
 
