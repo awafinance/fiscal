@@ -13,6 +13,8 @@ import (
 	"testing"
 
 	distSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v1_0/dist_dfe"
+	consNaoEncSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/cons_nao_enc"
+	consReciSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/cons_reci"
 	consultaDFESchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/consulta_dfe"
 	consSitSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/consulta_situacao"
 	distMDFeSchema "github.com/awa/nota-fiscal/internal/mdfe/gen/v3_0/dist_mdfe"
@@ -23,8 +25,8 @@ import (
 )
 
 const (
-	mdfeNamespace = "http://www.portalfiscal.inf.br/mdfe"
-	dsNamespace   = "http://www.w3.org/2000/09/xmldsig#"
+	mdfeNamespace   = "http://www.portalfiscal.inf.br/mdfe"
+	dsNamespace     = "http://www.w3.org/2000/09/xmldsig#"
 	mdfeDocumentKey = "41240112345678000195580010000000011000000011"
 )
 
@@ -277,11 +279,11 @@ func TestParse_SupportedRoots(t *testing.T) {
 		{
 			name: "mdfeProc",
 			value: struct {
-				XMLName    xml.Name                    `xml:"mdfeProc"`
-				XMLNS      string                      `xml:"xmlns,attr"`
-				VersaoAttr string                      `xml:"versao,attr"`
-				MDFe       *mdfeSchema.TMDFe           `xml:"MDFe"`
-				ProtMDFe   *mdfeSchema.TProtMDFe       `xml:"protMDFe"`
+				XMLName    xml.Name              `xml:"mdfeProc"`
+				XMLNS      string                `xml:"xmlns,attr"`
+				VersaoAttr string                `xml:"versao,attr"`
+				MDFe       *mdfeSchema.TMDFe     `xml:"MDFe"`
+				ProtMDFe   *mdfeSchema.TProtMDFe `xml:"protMDFe"`
 			}{
 				XMLName:    xml.Name{Local: "mdfeProc"},
 				XMLNS:      mdfeNamespace,
@@ -355,6 +357,49 @@ func TestParse_SupportedRoots(t *testing.T) {
 			assert: func(t *testing.T, doc *mdfe.Document) {
 				require.NotNil(t, doc.RetMDFe)
 				require.Equal(t, "100", doc.RetMDFe.CStat)
+			},
+		},
+		{
+			name: "retConsMDFeNaoEnc",
+			value: struct {
+				XMLName xml.Name `xml:"retConsMDFeNaoEnc"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consNaoEncSchema.TRetConsMDFeNaoEnc
+			}{
+				XMLName: xml.Name{Local: "retConsMDFeNaoEnc"},
+				XMLNS:   mdfeNamespace,
+				TRetConsMDFeNaoEnc: &consNaoEncSchema.TRetConsMDFeNaoEnc{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					CUF:        "41",
+					CStat:      "111",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetConsNaoEnc)
+				require.Equal(t, "111", doc.RetConsNaoEnc.CStat)
+			},
+		},
+		{
+			name: "retConsReciMDFe",
+			value: struct {
+				XMLName xml.Name `xml:"retConsReciMDFe"`
+				XMLNS   string   `xml:"xmlns,attr"`
+				*consReciSchema.TRetConsReciMDFe
+			}{
+				XMLName: xml.Name{Local: "retConsReciMDFe"},
+				XMLNS:   mdfeNamespace,
+				TRetConsReciMDFe: &consReciSchema.TRetConsReciMDFe{
+					VersaoAttr: "3.00",
+					TpAmb:      "2",
+					NRec:       "410000000000001",
+					CUF:        "41",
+					CStat:      "104",
+				},
+			},
+			assert: func(t *testing.T, doc *mdfe.Document) {
+				require.NotNil(t, doc.RetConsReciMDFe)
+				require.Equal(t, "104", doc.RetConsReciMDFe.CStat)
 			},
 		},
 		{
@@ -701,7 +746,9 @@ func assertSameRoot(t *testing.T, expected, actual *mdfe.Document) {
 	require.Equal(t, expected.RetEnviMDFe != nil, actual.RetEnviMDFe != nil)
 	require.Equal(t, expected.RetMDFe != nil, actual.RetMDFe != nil)
 	require.Equal(t, expected.ConsNaoEnc != nil, actual.ConsNaoEnc != nil)
+	require.Equal(t, expected.RetConsNaoEnc != nil, actual.RetConsNaoEnc != nil)
 	require.Equal(t, expected.ConsReciMDFe != nil, actual.ConsReciMDFe != nil)
+	require.Equal(t, expected.RetConsReciMDFe != nil, actual.RetConsReciMDFe != nil)
 	require.Equal(t, expected.EventoMDFe != nil, actual.EventoMDFe != nil)
 	require.Equal(t, expected.EventoCancMDFe != nil, actual.EventoCancMDFe != nil)
 	require.Equal(t, expected.EventoEncMDFe != nil, actual.EventoEncMDFe != nil)
@@ -882,27 +929,27 @@ func minimalMDFe() *mdfeSchema.TMDFe {
 			VersaoAttr: "3.00",
 			IdAttr:     "MDFe" + mdfeDocumentKey,
 			Ide: &mdfeSchema.TAnonComplexIde1{
-				CUF:  "41",
-				TpAmb: "2",
-				Mod:  "58",
-				Serie: "1",
-				NMDF: "1",
-				CMDF: "12345678",
-				CDV:  "1",
-				Modal: "1",
-				DhEmi: "2024-01-02T03:04:05-03:00",
-				TpEmis: "1",
+				CUF:     "41",
+				TpAmb:   "2",
+				Mod:     "58",
+				Serie:   "1",
+				NMDF:    "1",
+				CMDF:    "12345678",
+				CDV:     "1",
+				Modal:   "1",
+				DhEmi:   "2024-01-02T03:04:05-03:00",
+				TpEmis:  "1",
 				ProcEmi: "0",
 				VerProc: "test",
-				UFIni: "PR",
-				UFFim: "SP",
+				UFIni:   "PR",
+				UFFim:   "SP",
 				InfMunCarrega: []*mdfeSchema.TAnonComplexInfMunCarrega1{{
 					CMunCarrega: "4106902",
 					XMunCarrega: "CURITIBA",
 				}},
 			},
 			Emit: &mdfeSchema.TAnonComplexEmit1{
-				CNPJ: stringPtr("12345678000195"),
+				CNPJ:  stringPtr("12345678000195"),
 				XNome: "Emitente",
 			},
 			InfModal: &mdfeSchema.TAnonComplexInfModal1{VersaoModalAttr: "3.00", InnerXML: "<rodo></rodo>"},
@@ -913,10 +960,10 @@ func minimalMDFe() *mdfeSchema.TMDFe {
 func minimalProtMDFe() *mdfeSchema.TProtMDFe {
 	return &mdfeSchema.TProtMDFe{
 		InfProt: &mdfeSchema.TAnonComplexInfProt1{
-			TpAmb: "2",
-			ChMDFe: mdfeDocumentKey,
+			TpAmb:    "2",
+			ChMDFe:   mdfeDocumentKey,
 			DhRecbto: "2024-01-02T03:04:05-03:00",
-			CStat: "100",
+			CStat:    "100",
 		},
 	}
 }

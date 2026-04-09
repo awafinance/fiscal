@@ -28,49 +28,51 @@ import (
 const namespace = "http://www.portalfiscal.inf.br/mdfe"
 
 type Document struct {
-	VersaoAttr                    string
-	MDFe                          *mdfeSchema.TMDFe
-	MDFeProc                      *mdfeSchema.TAnonComplexMdfeProc1
-	EnviMDFe                      *mdfeSchema.TEnviMDFe
-	RetEnviMDFe                   *mdfeSchema.TRetEnviMDFe
-	RetMDFe                       *mdfeSchema.TRetMDFe
-	ConsNaoEnc                    *consNaoEncSchema.TConsMDFeNaoEnc
-	ConsReciMDFe                  *consReciSchema.TConsReciMDFe
-	ConsSitMDFe                   *consSitSchema.TConsSitMDFe
-	RetConsSitMDFe                *consSitSchema.TRetConsSitMDFe
-	ConsStatServMDFe              *statusSchema.TConsStatServ
-	RetConsStatServMDFe           *statusSchema.TRetConsStatServ
-	EventoMDFe                    *eventSchema.TEvento
-	RetEventoMDFe                 *eventSchema.TRetEvento
-	ProcEventoMDFe                *eventSchema.TProcEvento
-	EventoCancMDFe                *cancelEventSchema.TEvento
-	RetEventoCancMDFe             *cancelEventSchema.TRetEvento
-	ProcEventoCancMDFe            *cancelEventSchema.TProcEvento
-	EventoEncMDFe                 *encEventSchema.TEvento
-	RetEventoEncMDFe              *encEventSchema.TRetEvento
-	ProcEventoEncMDFe             *encEventSchema.TProcEvento
-	EventoIncCondutorMDFe         *incCondutorEventSchema.TEvento
-	RetEventoIncCondutorMDFe      *incCondutorEventSchema.TRetEvento
-	ProcEventoIncCondutorMDFe     *incCondutorEventSchema.TProcEvento
-	EventoInclusaoDFeMDFe         *inclusaoDFeEventSchema.TEvento
-	RetEventoInclusaoDFeMDFe      *inclusaoDFeEventSchema.TRetEvento
-	ProcEventoInclusaoDFeMDFe     *inclusaoDFeEventSchema.TProcEvento
-	EventoPagtoOperMDFe           *pagtoOperEventSchema.TEvento
-	RetEventoPagtoOperMDFe        *pagtoOperEventSchema.TRetEvento
-	ProcEventoPagtoOperMDFe       *pagtoOperEventSchema.TProcEvento
-	EventoAlteracaoPagtoServMDFe  *alteracaoPagtoServEventSchema.TEvento
-	RetEventoAlteracaoPagtoServMDFe *alteracaoPagtoServEventSchema.TRetEvento
+	VersaoAttr                       string
+	MDFe                             *mdfeSchema.TMDFe
+	MDFeProc                         *mdfeSchema.TAnonComplexMdfeProc1
+	EnviMDFe                         *mdfeSchema.TEnviMDFe
+	RetEnviMDFe                      *mdfeSchema.TRetEnviMDFe
+	RetMDFe                          *mdfeSchema.TRetMDFe
+	ConsNaoEnc                       *consNaoEncSchema.TConsMDFeNaoEnc
+	RetConsNaoEnc                    *consNaoEncSchema.TRetConsMDFeNaoEnc
+	ConsReciMDFe                     *consReciSchema.TConsReciMDFe
+	RetConsReciMDFe                  *consReciSchema.TRetConsReciMDFe
+	ConsSitMDFe                      *consSitSchema.TConsSitMDFe
+	RetConsSitMDFe                   *consSitSchema.TRetConsSitMDFe
+	ConsStatServMDFe                 *statusSchema.TConsStatServ
+	RetConsStatServMDFe              *statusSchema.TRetConsStatServ
+	EventoMDFe                       *eventSchema.TEvento
+	RetEventoMDFe                    *eventSchema.TRetEvento
+	ProcEventoMDFe                   *eventSchema.TProcEvento
+	EventoCancMDFe                   *cancelEventSchema.TEvento
+	RetEventoCancMDFe                *cancelEventSchema.TRetEvento
+	ProcEventoCancMDFe               *cancelEventSchema.TProcEvento
+	EventoEncMDFe                    *encEventSchema.TEvento
+	RetEventoEncMDFe                 *encEventSchema.TRetEvento
+	ProcEventoEncMDFe                *encEventSchema.TProcEvento
+	EventoIncCondutorMDFe            *incCondutorEventSchema.TEvento
+	RetEventoIncCondutorMDFe         *incCondutorEventSchema.TRetEvento
+	ProcEventoIncCondutorMDFe        *incCondutorEventSchema.TProcEvento
+	EventoInclusaoDFeMDFe            *inclusaoDFeEventSchema.TEvento
+	RetEventoInclusaoDFeMDFe         *inclusaoDFeEventSchema.TRetEvento
+	ProcEventoInclusaoDFeMDFe        *inclusaoDFeEventSchema.TProcEvento
+	EventoPagtoOperMDFe              *pagtoOperEventSchema.TEvento
+	RetEventoPagtoOperMDFe           *pagtoOperEventSchema.TRetEvento
+	ProcEventoPagtoOperMDFe          *pagtoOperEventSchema.TProcEvento
+	EventoAlteracaoPagtoServMDFe     *alteracaoPagtoServEventSchema.TEvento
+	RetEventoAlteracaoPagtoServMDFe  *alteracaoPagtoServEventSchema.TRetEvento
 	ProcEventoAlteracaoPagtoServMDFe *alteracaoPagtoServEventSchema.TProcEvento
-	EventoConfirmaServMDFe        *confirmaServEventSchema.TEvento
-	RetEventoConfirmaServMDFe     *confirmaServEventSchema.TRetEvento
-	ProcEventoConfirmaServMDFe    *confirmaServEventSchema.TProcEvento
-	DistDFeInt                    *distSchema.TAnonComplexDistDFeInt1
-	RetDistDFeInt                 *distSchema.TAnonComplexRetDistDFeInt1
-	DistMDFe                      *distMDFeSchema.TDistDFe
-	RetDistMDFe                   *distMDFeSchema.TRetDistDFe
-	MDFeConsultaDFe               *consultaDFESchema.TMDFeConsultaDFe
-	RetMDFeConsultaDFe            *consultaDFESchema.TRetMDFeConsultaDFe
-	rootName                      string
+	EventoConfirmaServMDFe           *confirmaServEventSchema.TEvento
+	RetEventoConfirmaServMDFe        *confirmaServEventSchema.TRetEvento
+	ProcEventoConfirmaServMDFe       *confirmaServEventSchema.TProcEvento
+	DistDFeInt                       *distSchema.TAnonComplexDistDFeInt1
+	RetDistDFeInt                    *distSchema.TAnonComplexRetDistDFeInt1
+	DistMDFe                         *distMDFeSchema.TDistDFe
+	RetDistMDFe                      *distMDFeSchema.TRetDistDFe
+	MDFeConsultaDFe                  *consultaDFESchema.TMDFeConsultaDFe
+	RetMDFeConsultaDFe               *consultaDFESchema.TRetMDFeConsultaDFe
+	rootName                         string
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -127,9 +129,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*mdfeSchema.TEnviMDFe
 			}{
-				XMLName:    xml.Name{Local: "enviMDFe"},
-				XMLNS:      namespace,
-				TEnviMDFe:  d.EnviMDFe,
+				XMLName:   xml.Name{Local: "enviMDFe"},
+				XMLNS:     namespace,
+				TEnviMDFe: d.EnviMDFe,
 			})
 		}
 	case "retEnviMDFe":
@@ -139,9 +141,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*mdfeSchema.TRetEnviMDFe
 			}{
-				XMLName:       xml.Name{Local: "retEnviMDFe"},
-				XMLNS:         namespace,
-				TRetEnviMDFe:  d.RetEnviMDFe,
+				XMLName:      xml.Name{Local: "retEnviMDFe"},
+				XMLNS:        namespace,
+				TRetEnviMDFe: d.RetEnviMDFe,
 			})
 		}
 	case "retMDFe":
@@ -151,9 +153,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*mdfeSchema.TRetMDFe
 			}{
-				XMLName:    xml.Name{Local: "retMDFe"},
-				XMLNS:      namespace,
-				TRetMDFe:   d.RetMDFe,
+				XMLName:  xml.Name{Local: "retMDFe"},
+				XMLNS:    namespace,
+				TRetMDFe: d.RetMDFe,
 			})
 		}
 	case "consMDFeNaoEnc":
@@ -178,6 +180,18 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				CPF:        d.ConsNaoEnc.CPF,
 			})
 		}
+	case "retConsMDFeNaoEnc":
+		if d.RetConsNaoEnc != nil && activeRootCount(d) == 1 {
+			return e.Encode(struct {
+				XMLName xml.Name `xml:"retConsMDFeNaoEnc"`
+				XMLNS   string   `xml:"xmlns,attr,omitempty"`
+				*consNaoEncSchema.TRetConsMDFeNaoEnc
+			}{
+				XMLName:            xml.Name{Local: "retConsMDFeNaoEnc"},
+				XMLNS:              namespace,
+				TRetConsMDFeNaoEnc: d.RetConsNaoEnc,
+			})
+		}
 	case "consReciMDFe":
 		if d.ConsReciMDFe != nil && activeRootCount(d) == 1 {
 			type root struct {
@@ -196,6 +210,18 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				NRec:       d.ConsReciMDFe.NRec,
 			})
 		}
+	case "retConsReciMDFe":
+		if d.RetConsReciMDFe != nil && activeRootCount(d) == 1 {
+			return e.Encode(struct {
+				XMLName xml.Name `xml:"retConsReciMDFe"`
+				XMLNS   string   `xml:"xmlns,attr,omitempty"`
+				*consReciSchema.TRetConsReciMDFe
+			}{
+				XMLName:          xml.Name{Local: "retConsReciMDFe"},
+				XMLNS:            namespace,
+				TRetConsReciMDFe: d.RetConsReciMDFe,
+			})
+		}
 	case "consSitMDFe":
 		if d.ConsSitMDFe != nil && activeRootCount(d) == 1 {
 			return e.Encode(struct {
@@ -203,9 +229,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TConsSitMDFe
 			}{
-				XMLName:        xml.Name{Local: "consSitMDFe"},
-				XMLNS:          namespace,
-				TConsSitMDFe:   d.ConsSitMDFe,
+				XMLName:      xml.Name{Local: "consSitMDFe"},
+				XMLNS:        namespace,
+				TConsSitMDFe: d.ConsSitMDFe,
 			})
 		}
 	case "retConsSitMDFe":
@@ -215,9 +241,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TRetConsSitMDFe
 			}{
-				XMLName:           xml.Name{Local: "retConsSitMDFe"},
-				XMLNS:             namespace,
-				TRetConsSitMDFe:   d.RetConsSitMDFe,
+				XMLName:         xml.Name{Local: "retConsSitMDFe"},
+				XMLNS:           namespace,
+				TRetConsSitMDFe: d.RetConsSitMDFe,
 			})
 		}
 	case "consStatServMDFe":
@@ -227,9 +253,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TConsStatServ
 			}{
-				XMLName:          xml.Name{Local: "consStatServMDFe"},
-				XMLNS:            namespace,
-				TConsStatServ:    d.ConsStatServMDFe,
+				XMLName:       xml.Name{Local: "consStatServMDFe"},
+				XMLNS:         namespace,
+				TConsStatServ: d.ConsStatServMDFe,
 			})
 		}
 	case "retConsStatServMDFe":
@@ -239,9 +265,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TRetConsStatServ
 			}{
-				XMLName:             xml.Name{Local: "retConsStatServMDFe"},
-				XMLNS:               namespace,
-				TRetConsStatServ:    d.RetConsStatServMDFe,
+				XMLName:          xml.Name{Local: "retConsStatServMDFe"},
+				XMLNS:            namespace,
+				TRetConsStatServ: d.RetConsStatServMDFe,
 			})
 		}
 	case "eventoMDFe":
@@ -309,9 +335,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*distMDFeSchema.TDistDFe
 			}{
-				XMLName:    xml.Name{Local: "distMDFe"},
-				XMLNS:      namespace,
-				TDistDFe:   d.DistMDFe,
+				XMLName:  xml.Name{Local: "distMDFe"},
+				XMLNS:    namespace,
+				TDistDFe: d.DistMDFe,
 			})
 		}
 	case "retDistMDFe":
@@ -321,9 +347,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*distMDFeSchema.TRetDistDFe
 			}{
-				XMLName:       xml.Name{Local: "retDistMDFe"},
-				XMLNS:         namespace,
-				TRetDistDFe:   d.RetDistMDFe,
+				XMLName:     xml.Name{Local: "retDistMDFe"},
+				XMLNS:       namespace,
+				TRetDistDFe: d.RetDistMDFe,
 			})
 		}
 	case "mdfeConsultaDFe":
@@ -333,9 +359,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consultaDFESchema.TMDFeConsultaDFe
 			}{
-				XMLName:             xml.Name{Local: "mdfeConsultaDFe"},
-				XMLNS:               namespace,
-				TMDFeConsultaDFe:    d.MDFeConsultaDFe,
+				XMLName:          xml.Name{Local: "mdfeConsultaDFe"},
+				XMLNS:            namespace,
+				TMDFeConsultaDFe: d.MDFeConsultaDFe,
 			})
 		}
 	case "retMDFeConsultaDFe":
@@ -345,9 +371,9 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consultaDFESchema.TRetMDFeConsultaDFe
 			}{
-				XMLName:                xml.Name{Local: "retMDFeConsultaDFe"},
-				XMLNS:                  namespace,
-				TRetMDFeConsultaDFe:    d.RetMDFeConsultaDFe,
+				XMLName:             xml.Name{Local: "retMDFeConsultaDFe"},
+				XMLNS:               namespace,
+				TRetMDFeConsultaDFe: d.RetMDFeConsultaDFe,
 			})
 		}
 	}
@@ -427,12 +453,32 @@ func Parse(data []byte) (*Document, error) {
 			return nil, err
 		}
 		return doc, nil
+	case "retConsMDFeNaoEnc":
+		var parsed consNaoEncSchema.TRetConsMDFeNaoEnc
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse mdfe: decode retConsMDFeNaoEnc: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsNaoEnc: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
 	case "consReciMDFe":
 		var parsed consReciSchema.TConsReciMDFe
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode consReciMDFe: %w", err)
 		}
 		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsReciMDFe: &parsed, rootName: rootName}
+		if err := validateDocument(doc); err != nil {
+			return nil, err
+		}
+		return doc, nil
+	case "retConsReciMDFe":
+		var parsed consReciSchema.TRetConsReciMDFe
+		if err := xml.Unmarshal(data, &parsed); err != nil {
+			return nil, fmt.Errorf("parse mdfe: decode retConsReciMDFe: %w", err)
+		}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsReciMDFe: &parsed, rootName: rootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -670,12 +716,37 @@ func validateDocument(doc *Document) error {
 			return errors.New("parse mdfe: missing consult document")
 		}
 	}
+	if doc.RetConsNaoEnc != nil {
+		if doc.RetConsNaoEnc.TpAmb == "" {
+			return errors.New("parse mdfe: missing tpAmb")
+		}
+		if doc.RetConsNaoEnc.CUF == "" {
+			return errors.New("parse mdfe: missing cUF")
+		}
+		if doc.RetConsNaoEnc.CStat == "" {
+			return errors.New("parse mdfe: missing cStat")
+		}
+	}
 	if doc.ConsReciMDFe != nil {
 		if doc.ConsReciMDFe.TpAmb == "" {
 			return errors.New("parse mdfe: missing tpAmb")
 		}
 		if doc.ConsReciMDFe.NRec == "" {
 			return errors.New("parse mdfe: missing nRec")
+		}
+	}
+	if doc.RetConsReciMDFe != nil {
+		if doc.RetConsReciMDFe.TpAmb == "" {
+			return errors.New("parse mdfe: missing tpAmb")
+		}
+		if doc.RetConsReciMDFe.NRec == "" {
+			return errors.New("parse mdfe: missing nRec")
+		}
+		if doc.RetConsReciMDFe.CUF == "" {
+			return errors.New("parse mdfe: missing cUF")
+		}
+		if doc.RetConsReciMDFe.CStat == "" {
+			return errors.New("parse mdfe: missing cStat")
 		}
 	}
 	if doc.ConsSitMDFe != nil {
@@ -1344,7 +1415,13 @@ func activeRootCount(doc *Document) int {
 	if doc.ConsNaoEnc != nil {
 		count++
 	}
+	if doc.RetConsNaoEnc != nil {
+		count++
+	}
 	if doc.ConsReciMDFe != nil {
+		count++
+	}
+	if doc.RetConsReciMDFe != nil {
 		count++
 	}
 	if doc.ConsSitMDFe != nil {

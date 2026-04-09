@@ -1110,6 +1110,32 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			},
 		},
 		{
+			name: "envEvento",
+			data: `<envEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><idLote>1</idLote><evento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento></detEvento></infEvento></evento></envEvento>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EnvEvento)
+				require.Equal(t, "1", doc.EnvEvento.IdLote)
+				require.Len(t, doc.EnvEvento.Evento, 1)
+			},
+		},
+		{
+			name: "retEnvEvento",
+			data: `<retEnvEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><idLote>1</idLote><tpAmb>1</tpAmb><verAplic>SVRS202401</verAplic><cOrgao>91</cOrgao><cStat>128</cStat><xMotivo>Lote de Evento Processado</xMotivo><retEvento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><tpAmb>1</tpAmb><verAplic>SVRS202401</verAplic><cOrgao>91</cOrgao><cStat>135</cStat><xMotivo>Evento registrado</xMotivo><chNFe>35180803102452000172550010000476051695511860</chNFe><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento></infEvento></retEvento></retEnvEvento>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetEnvEvento)
+				require.Equal(t, "128", doc.RetEnvEvento.CStat)
+			},
+		},
+		{
+			name: "procEventoNFe",
+			data: `<procEventoNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><evento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento></detEvento></infEvento></evento><retEvento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><tpAmb>1</tpAmb><verAplic>SVRS202401</verAplic><cOrgao>91</cOrgao><cStat>135</cStat><xMotivo>Evento registrado</xMotivo><chNFe>35180803102452000172550010000476051695511860</chNFe><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento></infEvento></retEvento></procEventoNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ProcEventoNFe)
+				require.NotNil(t, doc.ProcEventoNFe.Evento)
+				require.NotNil(t, doc.ProcEventoNFe.RetEvento)
+			},
+		},
+		{
 			name: "consStatServ",
 			data: `<consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
@@ -1123,6 +1149,39 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			assert: func(t *testing.T, doc *nfe.Document) {
 				require.NotNil(t, doc.RetConsStatServ)
 				require.Equal(t, "107", doc.RetConsStatServ.CStat)
+			},
+		},
+		{
+			name: "enviNFe",
+			data: `<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><idLote>1</idLote><indSinc>1</indSinc><NFe></NFe></enviNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EnviNFe)
+				require.Equal(t, "1", doc.EnviNFe.IdLote)
+				require.Len(t, doc.EnviNFe.NFe, 1)
+			},
+		},
+		{
+			name: "retEnviNFe",
+			data: `<retEnviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><verAplic>SVRS202401</verAplic><cStat>103</cStat><xMotivo>Lote recebido com sucesso</xMotivo><cUF>35</cUF><dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto></retEnviNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetEnviNFe)
+				require.Equal(t, "103", doc.RetEnviNFe.CStat)
+			},
+		},
+		{
+			name: "consReciNFe",
+			data: `<consReciNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><nRec>351000000000001</nRec></consReciNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ConsReciNFe)
+				require.Equal(t, "351000000000001", doc.ConsReciNFe.NRec)
+			},
+		},
+		{
+			name: "retConsReciNFe",
+			data: `<retConsReciNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><verAplic>SVRS202401</verAplic><nRec>351000000000001</nRec><cStat>104</cStat><xMotivo>Lote processado</xMotivo><cUF>35</cUF><dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto></retConsReciNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetConsReciNFe)
+				require.Equal(t, "104", doc.RetConsReciNFe.CStat)
 			},
 		},
 		{
