@@ -146,6 +146,12 @@ Check all commands available:
 mise tasks
 ```
 
+## Acknowledgements
+
+This project was inspired by [nfelib](https://github.com/akretion/nfelib).
+Thanks to the `nfelib` maintainers for the reference implementation and
+for the test files that helped shape and validate this library.
+
 ## License
 
 [Apache-2.0](LICENSE)
