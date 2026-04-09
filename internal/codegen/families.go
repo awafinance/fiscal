@@ -43,6 +43,7 @@ var (
 	optionalFieldXJust  = regexp.MustCompile(`\n\tXJust\s+string\s+` + "`xml:\"xJust\"`")
 	optionalFieldCRT    = regexp.MustCompile(`\n\tCRT\s+string\s+` + "`xml:\"CRT\"`")
 	nProtTProtField     = regexp.MustCompile(`\n\tNProt\s+\*TProt\s+` + "`xml:\"nProt\"`")
+	nProtPrestDesField  = regexp.MustCompile(`\n\tNProtEvPrestDes\s+\*TProt\s+` + "`xml:\"nProtEvPrestDes\"`")
 
 	cteEventPayloads = map[string]string{
 		"evento_cce":                    "evCCeCTe",
@@ -295,9 +296,19 @@ func postprocessCTe(verbose bool) error {
 			postprocess.RegexReplaceAll(optionalFieldCRT, "\n\tCRT       *string   `xml:\"CRT\"`"),
 			postprocess.IfPath(
 				func(path string) bool {
-					return strings.HasSuffix(path, string(filepath.Separator)+"evCancCTe_v4.00.xsd.go")
+					return hasAnySuffix(path,
+						string(filepath.Separator)+"evCancCTe_v4.00.xsd.go",
+						string(filepath.Separator)+"evCancCECTe_v4.00.xsd.go",
+						string(filepath.Separator)+"evCancIECTe_v4.00.xsd.go",
+					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
+			),
+			postprocess.IfPath(
+				func(path string) bool {
+					return strings.HasSuffix(path, string(filepath.Separator)+"evCancPrestDesacordo_v4.00.xsd.go")
+				},
+				postprocess.RegexReplaceAll(nProtPrestDesField, "\n\tNProtEvPrestDes string `xml:\"nProtEvPrestDes\"`"),
 			),
 			replaceTypedCTeEventPayloads,
 		},
@@ -318,6 +329,16 @@ func postprocessMDFe(verbose bool) error {
 			postprocess.ReplaceAll("*TpAmb", "*string"),
 			postprocess.Replace(mdfeInfModalStruct, mdfeInfModalStructInnerXML, 1),
 			postprocess.Replace(mdfeAnonInfModalStruct, mdfeAnonInfModalInnerXML, 1),
+			postprocess.IfPath(
+				func(path string) bool {
+					return hasAnySuffix(path,
+						string(filepath.Separator)+"evCancMDFe_v3.00.xsd.go",
+						string(filepath.Separator)+"evConfirmaServMDFe_v3.00.xsd.go",
+						string(filepath.Separator)+"evEncMDFe_v3.00.xsd.go",
+					)
+				},
+				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
+			),
 			postprocess.IfPath(
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"eventoMDFeTiposBasico_v3.00.xsd.go")
@@ -478,4 +499,13 @@ func isDuplicateGeneratedNFeFragment(path string) bool {
 
 func pathPattern(elem ...string) string {
 	return string(filepath.Separator) + filepath.Join(elem...) + string(filepath.Separator)
+}
+
+func hasAnySuffix(path string, suffixes ...string) bool {
+	for _, suffix := range suffixes {
+		if strings.HasSuffix(path, suffix) {
+			return true
+		}
+	}
+	return false
 }
