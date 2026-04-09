@@ -1085,6 +1085,91 @@ func normalizeXML(t *testing.T, data []byte) string {
 	return b.String()
 }
 
+func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		data   string
+		assert func(t *testing.T, doc *nfe.Document)
+	}{
+		{
+			name: "evento entrega",
+			data: `<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><infEvento Id="ID1101303518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>110130</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento versao="1.00"></detEvento></infEvento></evento>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoEntrega)
+				require.Equal(t, "110130", doc.EventoEntrega.InfEvento.TpEvento)
+			},
+		},
+		{
+			name: "evento cancel entrega",
+			data: `<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><infEvento Id="ID1101313518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>110131</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento versao="1.00"></detEvento></infEvento></evento>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.EventoCancEntrega)
+				require.Equal(t, "110131", doc.EventoCancEntrega.InfEvento.TpEvento)
+			},
+		},
+		{
+			name: "consStatServ",
+			data: `<consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ConsStatServ)
+				require.Equal(t, "STATUS", doc.ConsStatServ.XServ)
+			},
+		},
+		{
+			name: "retConsStatServ",
+			data: `<retConsStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><verAplic>SVRS202401</verAplic><cStat>107</cStat><xMotivo>Servico em Operacao</xMotivo><cUF>35</cUF><dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto></retConsStatServ>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetConsStatServ)
+				require.Equal(t, "107", doc.RetConsStatServ.CStat)
+			},
+		},
+		{
+			name: "inutNFe",
+			data: `<inutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa nao utilizada</xJust></infInut></inutNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.InutNFe)
+				require.Equal(t, "12345678000195", doc.InutNFe.InfInut.CNPJ)
+			},
+		},
+		{
+			name: "retInutNFe",
+			data: `<retInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa inutilizada</xJust></infInut></retInutNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.RetInutNFe)
+				require.Equal(t, "12345678000195", doc.RetInutNFe.InfInut.CNPJ)
+			},
+		},
+		{
+			name: "procInutNFe",
+			data: `<procInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><inutNFe versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa nao utilizada</xJust></infInut></inutNFe><retInutNFe versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa inutilizada</xJust></infInut></retInutNFe></procInutNFe>`,
+			assert: func(t *testing.T, doc *nfe.Document) {
+				require.NotNil(t, doc.ProcInutNFe)
+				require.NotNil(t, doc.ProcInutNFe.InutNFe)
+				require.NotNil(t, doc.ProcInutNFe.RetInutNFe)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := nfe.Parse([]byte(tt.data))
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+
+			reparsed, err := nfe.Parse(roundTripped)
+			require.NoError(t, err)
+			tt.assert(t, reparsed)
+		})
+	}
+}
+
 func qualifiedName(name xml.Name) string {
 	switch name.Space {
 	case "", nfeNamespace:

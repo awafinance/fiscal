@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmp"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -340,6 +341,44 @@ func TestParse_InvalidInputs(t *testing.T) {
 	}
 }
 
+func TestParse_EventReturnAndProcRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		data   string
+		assert func(t *testing.T, doc *bpe.Document)
+	}{
+		{name: "ret generico", data: minimalBPERetEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoBPe) }},
+		{name: "ret cancelamento", data: minimalBPERetEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoCancBPe) }},
+		{name: "ret nao embarque", data: minimalBPERetEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoNaoEmbBPe) }},
+		{name: "ret alteracao poltrona", data: minimalBPERetEventXML("110116"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoAlteracaoPoltrona) }},
+		{name: "ret excesso bagagem", data: minimalBPERetEventXML("110117"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoExcessoBagagem) }},
+		{name: "proc generico", data: minimalBPEProcEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoBPe) }},
+		{name: "proc cancelamento", data: minimalBPEProcEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoCancBPe) }},
+		{name: "proc nao embarque", data: minimalBPEProcEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoNaoEmbBPe) }},
+		{name: "proc alteracao poltrona", data: minimalBPEProcEventXML("110116"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoAlteracaoPoltrona) }},
+		{name: "proc excesso bagagem", data: minimalBPEProcEventXML("110117"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoExcessoBagagem) }},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := bpe.Parse([]byte(tt.data))
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+
+			reparsed, err := bpe.Parse(roundTripped)
+			require.NoError(t, err)
+			tt.assert(t, reparsed)
+		})
+	}
+}
+
 func TestMarshalXML_NilReceiver(t *testing.T) {
 	t.Parallel()
 
@@ -513,6 +552,14 @@ func minimalNaoEmbEventoInf() *naoEmbSchema.TAnonComplexInfEvento1 {
 			InnerXML:         `<evNaoEmbBPe xmlns="http://www.portalfiscal.inf.br/bpe"><descEvento>Nao Embarque</descEvento><nProt>123456789012345</nProt><xJust>Passageiro ausente</xJust></evNaoEmbBPe>`,
 		},
 	}
+}
+
+func minimalBPERetEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<retEventoBPe xmlns="%s" versao="1.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoBPe>`, bpeNamespace, tpEvento)
+}
+
+func minimalBPEProcEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<procEventoBPe xmlns="%s" versao="1.00"><eventoBPe versao="1.00"><infEvento Id="ID%s%s01"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chBPe>%s</chBPe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoBPe><retEventoBPe versao="1.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoBPe></procEventoBPe>`, bpeNamespace, tpEvento, documentKey, documentKey, tpEvento, tpEvento)
 }
 
 func normalizeXML(t *testing.T, data []byte) string {

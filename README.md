@@ -10,7 +10,7 @@ It currently covers:
 - MDF-e
 - BP-e
 
-The library supports primary documents, processed wrappers, service and status queries, distribution responses, and typed event documents where applicable.
+The library supports primary documents, processed wrappers, distribution responses, service/status and consultation roots where implemented, and typed event documents where applicable.
 
 ## Why this library
 
@@ -73,8 +73,8 @@ func main() {
 	switch {
 	case doc.NFe != nil:
 		fmt.Println(doc.NFe.InfNFe.Emit.XNome)
-	case doc.ProcNFe != nil:
-		fmt.Println(doc.ProcNFe.ProtNFe.InfProt.CStat)
+	case doc.ProtNFe != nil:
+		fmt.Println(doc.ProtNFe.InfProt.CStat)
 	}
 
 	out, err := xml.MarshalIndent(doc, "", "  ")
@@ -94,7 +94,7 @@ For families that use generic event envelopes, parsing also dispatches by `tpEve
 
 Examples of supported dispatch patterns:
 
-- NF-e: invoice, processed invoice, queries, distribution, concrete events
+- NF-e: invoice, processed invoice, consultation/status/inutilizacao roots, distribution, concrete events
 - CT-e: document variants, processed wrappers, modal/event variants, distribution
 - MDF-e: consultation roots, processed roots, distribution roots, concrete events
 - BP-e: base documents and concrete event variants

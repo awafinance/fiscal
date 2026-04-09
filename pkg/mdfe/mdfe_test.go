@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmp"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -538,6 +539,50 @@ func TestParse_SupportedRoots(t *testing.T) {
 	}
 }
 
+func TestParse_EventReturnAndProcRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		data   string
+		assert func(t *testing.T, doc *mdfe.Document)
+	}{
+		{name: "ret generico", data: minimalMDFERetEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoMDFe) }},
+		{name: "ret cancelamento", data: minimalMDFERetEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoCancMDFe) }},
+		{name: "ret encerramento", data: minimalMDFERetEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoEncMDFe) }},
+		{name: "ret inclusao condutor", data: minimalMDFERetEventXML("110114"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoIncCondutorMDFe) }},
+		{name: "ret inclusao dfe", data: minimalMDFERetEventXML("110115"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoInclusaoDFeMDFe) }},
+		{name: "ret pagamento operacao", data: minimalMDFERetEventXML("110116"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoPagtoOperMDFe) }},
+		{name: "ret confirma servico", data: minimalMDFERetEventXML("110117"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoConfirmaServMDFe) }},
+		{name: "ret alteracao pagamento servico", data: minimalMDFERetEventXML("110118"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoAlteracaoPagtoServMDFe) }},
+		{name: "proc generico", data: minimalMDFEProcEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoMDFe) }},
+		{name: "proc cancelamento", data: minimalMDFEProcEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoCancMDFe) }},
+		{name: "proc encerramento", data: minimalMDFEProcEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoEncMDFe) }},
+		{name: "proc inclusao condutor", data: minimalMDFEProcEventXML("110114"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoIncCondutorMDFe) }},
+		{name: "proc inclusao dfe", data: minimalMDFEProcEventXML("110115"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoInclusaoDFeMDFe) }},
+		{name: "proc pagamento operacao", data: minimalMDFEProcEventXML("110116"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoPagtoOperMDFe) }},
+		{name: "proc confirma servico", data: minimalMDFEProcEventXML("110117"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoConfirmaServMDFe) }},
+		{name: "proc alteracao pagamento servico", data: minimalMDFEProcEventXML("110118"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoAlteracaoPagtoServMDFe) }},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := mdfe.Parse([]byte(tt.data))
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+
+			reparsed, err := mdfe.Parse(roundTripped)
+			require.NoError(t, err)
+			tt.assert(t, reparsed)
+		})
+	}
+}
+
 func TestMarshalXML_NilReceiver(t *testing.T) {
 	t.Parallel()
 
@@ -699,6 +744,14 @@ func readFixture(t *testing.T, name string) []byte {
 	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "mdfe", "v3_0", name))
 	require.NoError(t, err)
 	return data
+}
+
+func minimalMDFERetEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<retEventoMDFe xmlns="%s" versao="3.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoMDFe>`, mdfeNamespace, tpEvento)
+}
+
+func minimalMDFEProcEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<procEventoMDFe xmlns="%s" versao="3.00"><eventoMDFe versao="3.00"><infEvento Id="ID%s4124011234567800019558001000000001100000001101"><cOrgao>41</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chMDFe>%s</chMDFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoMDFe><retEventoMDFe versao="3.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoMDFe></procEventoMDFe>`, mdfeNamespace, tpEvento, mdfeDocumentKey, tpEvento, tpEvento)
 }
 
 func normalizeXML(t *testing.T, data []byte) string {

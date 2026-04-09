@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmp"
 	"encoding/xml"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -151,6 +152,56 @@ func TestParse_DistDFeRoots(t *testing.T) {
 	}
 }
 
+func TestParse_EventReturnAndProcRoots(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name   string
+		data   string
+		assert func(t *testing.T, doc *cte.Document)
+	}{
+		{name: "ret cce", data: minimalCTeRetEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCTe) }},
+		{name: "ret cancel", data: minimalCTeRetEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancCTe) }},
+		{name: "ret epec", data: minimalCTeRetEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoEPECCTe) }},
+		{name: "ret reg multimodal", data: minimalCTeRetEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoRegMultimodal) }},
+		{name: "ret gtv", data: minimalCTeRetEventXML("110170"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoGTV) }},
+		{name: "ret ce", data: minimalCTeRetEventXML("110180"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCECTe) }},
+		{name: "ret cancel ce", data: minimalCTeRetEventXML("110181"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancCECTe) }},
+		{name: "ret ie", data: minimalCTeRetEventXML("110190"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoIECTe) }},
+		{name: "ret cancel ie", data: minimalCTeRetEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancIECTe) }},
+		{name: "ret prest desacordo", data: minimalCTeRetEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoPrestDesacordo) }},
+		{name: "ret cancel prest desacordo", data: minimalCTeRetEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancPrestDesacordo) }},
+		{name: "proc cce", data: minimalCTeProcEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCTe) }},
+		{name: "proc cancel", data: minimalCTeProcEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancCTe) }},
+		{name: "proc epec", data: minimalCTeProcEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoEPECCTe) }},
+		{name: "proc reg multimodal", data: minimalCTeProcEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoRegMultimodal) }},
+		{name: "proc gtv", data: minimalCTeProcEventXML("110170"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoGTV) }},
+		{name: "proc ce", data: minimalCTeProcEventXML("110180"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCECTe) }},
+		{name: "proc cancel ce", data: minimalCTeProcEventXML("110181"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancCECTe) }},
+		{name: "proc ie", data: minimalCTeProcEventXML("110190"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoIECTe) }},
+		{name: "proc cancel ie", data: minimalCTeProcEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancIECTe) }},
+		{name: "proc prest desacordo", data: minimalCTeProcEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoPrestDesacordo) }},
+		{name: "proc cancel prest desacordo", data: minimalCTeProcEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancPrestDesacordo) }},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := cte.Parse([]byte(tt.data))
+			require.NoError(t, err)
+			tt.assert(t, doc)
+
+			roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+			require.NoError(t, err)
+
+			reparsed, err := cte.Parse(roundTripped)
+			require.NoError(t, err)
+			tt.assert(t, reparsed)
+		})
+	}
+}
+
 func TestMarshalXML_NilReceiver(t *testing.T) {
 	t.Parallel()
 
@@ -240,6 +291,14 @@ func readFixture(t *testing.T, name string) []byte {
 	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "cte", "v4_0", name))
 	require.NoError(t, err)
 	return data
+}
+
+func minimalCTeRetEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<retEventoCTe xmlns="%s" versao="4.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoCTe>`, cteNamespace, tpEvento)
+}
+
+func minimalCTeProcEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<procEventoCTe xmlns="%s" versao="4.00"><eventoCTe versao="4.00"><infEvento Id="ID%s4319081234567800019557001000000001100000001101"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chCTe>43190812345678000195570010000000011000000011</chCTe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoCTe><retEventoCTe versao="4.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoCTe></procEventoCTe>`, cteNamespace, tpEvento, tpEvento, tpEvento)
 }
 
 func normalizeXML(t *testing.T, data []byte) string {
