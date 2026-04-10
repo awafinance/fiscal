@@ -175,3 +175,50 @@ type DetEvento struct {
 		t.Fatalf("expected InnerXML field to be inserted once, got:\n%s", updatedAgain)
 	}
 }
+
+func TestSetStructFieldsAndEnsureNamedImports(t *testing.T) {
+	src := `package schema
+
+import (
+	"encoding/xml"
+)
+
+type TAnonComplexInfModal1 struct {
+	XMLName         xml.Name ` + "`xml:\"infModal\"`" + `
+	VersaoModalAttr string   ` + "`xml:\"versaoModal,attr\"`" + `
+}
+`
+
+	updated := EnsureNamedImports(map[string]string{
+		"modalrodoviario": "github.com/example/modal_rodoviario",
+	})("doc.go", src)
+	updated = SetStructFields(TypeNamed("TAnonComplexInfModal1"), []StructFieldSpec{
+		{Name: "XMLName", Type: "xml.Name", Tag: `xml:"infModal"`},
+		{Name: "VersaoModalAttr", Type: "string", Tag: `xml:"versaoModal,attr"`},
+		{Name: "Rodo", Type: "modalrodoviario.Rodo", Tag: `xml:"rodo,omitempty"`},
+	})("doc.go", updated)
+
+	wantSnippets := []string{
+		`modalrodoviario "github.com/example/modal_rodoviario"`,
+		"Rodo",
+		"modalrodoviario.",
+		"`xml:\"rodo,omitempty\"`",
+	}
+	for _, snippet := range wantSnippets {
+		if !strings.Contains(updated, snippet) {
+			t.Fatalf("updated source missing snippet %q:\n%s", snippet, updated)
+		}
+	}
+}
+
+func TestSetTypeExpr(t *testing.T) {
+	src := `package schema
+
+type Doc string
+`
+
+	updated := SetTypeExpr(TypeNamed("Doc"), "*TDoc")("doc.go", src)
+	if !strings.Contains(updated, "type Doc *TDoc") {
+		t.Fatalf("updated source missing rewritten alias:\n%s", updated)
+	}
+}

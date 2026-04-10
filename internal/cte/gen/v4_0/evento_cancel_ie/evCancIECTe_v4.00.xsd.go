@@ -11,10 +11,10 @@ type TAnonDescEvento1 string
 
 // TAnonComplexEvCancIECTe1 is Número do Protocolo de autorização do evento a ser cancelado
 type TAnonComplexEvCancIECTe1 struct {
-	XMLName    xml.Name `xml:"evCancIECTe" json:"-"`
-	DescEvento string   `xml:"descEvento" json:"descEvento,omitempty"`
-	NProt      string   `xml:"nProt" json:"nProt,omitempty"`
-	NProtIE    string   `xml:"nProtIE" json:"nProtIE,omitempty"`
+	XMLName		xml.Name	`xml:"evCancIECTe" json:"-"`
+	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
+	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	NProtIE		string		`xml:"nProtIE" json:"nProtIE,omitempty"`
 }
 
 // EvCancIECTe is Schema XML de validação do evento cancelamento do insucesso de entrega eletrônico do CT-e

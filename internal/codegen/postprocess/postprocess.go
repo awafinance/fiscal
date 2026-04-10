@@ -29,6 +29,12 @@ type (
 	TypeMatcher  func(path string, typeSpec *ast.TypeSpec) bool
 )
 
+type StructFieldSpec struct {
+	Name string
+	Type string
+	Tag  string
+}
+
 type Options struct {
 	GenDir               string
 	NestedImportPatterns []string
@@ -215,27 +221,7 @@ func AddStructField(match TypeMatcher, fieldName, fieldType, fieldTag string) Re
 
 		changed := false
 		for _, decl := range file.Decls {
-			genDecl, ok := decl.(*ast.GenDecl)
-			if !ok || genDecl.Tok != token.TYPE {
-				continue
-			}
-
-			for _, spec := range genDecl.Specs {
-				typeSpec, ok := spec.(*ast.TypeSpec)
-				if !ok || !match(path, typeSpec) {
-					continue
-				}
-
-				structType, ok := typeSpec.Type.(*ast.StructType)
-				if !ok || structHasField(structType, fieldName) {
-					continue
-				}
-
-				structType.Fields.List = append(structType.Fields.List, &ast.Field{
-					Names: []*ast.Ident{ast.NewIdent(fieldName)},
-					Type:  cloneExpr(fieldTypeExpr),
-					Tag:   &ast.BasicLit{Kind: token.STRING, Value: "`" + fieldTag + "`"},
-				})
+			if addFieldToDecl(decl, path, match, fieldName, fieldTypeExpr, fieldTag) {
 				changed = true
 			}
 		}
@@ -250,6 +236,186 @@ func AddStructField(match TypeMatcher, fieldName, fieldType, fieldTag string) Re
 		}
 		return buf.String()
 	}
+}
+
+func SetStructFields(match TypeMatcher, fields []StructFieldSpec) Replacement {
+	return func(path string, text string) string {
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, text, parser.ParseComments)
+		if err != nil {
+			return text
+		}
+
+		resolved, err := resolveStructFields(fields)
+		if err != nil {
+			return text
+		}
+
+		changed := false
+		for _, decl := range file.Decls {
+			if setFieldsInDecl(decl, path, match, resolved) {
+				changed = true
+			}
+		}
+
+		if !changed {
+			return text
+		}
+
+		var buf bytes.Buffer
+		if err := printer.Fprint(&buf, fset, file); err != nil {
+			return text
+		}
+		return buf.String()
+	}
+}
+
+func SetTypeExpr(match TypeMatcher, replacementType string) Replacement {
+	return func(path string, text string) string {
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, text, parser.ParseComments)
+		if err != nil {
+			return text
+		}
+
+		replacementExpr, err := parser.ParseExpr(replacementType)
+		if err != nil {
+			return text
+		}
+
+		changed := false
+		for _, decl := range file.Decls {
+			if setTypeExprInDecl(decl, path, match, replacementExpr) {
+				changed = true
+			}
+		}
+
+		if !changed {
+			return text
+		}
+
+		var buf bytes.Buffer
+		if err := printer.Fprint(&buf, fset, file); err != nil {
+			return text
+		}
+		return buf.String()
+	}
+}
+
+func EnsureNamedImports(imports map[string]string) Replacement {
+	return func(path string, text string) string {
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, text, parser.ParseComments)
+		if err != nil {
+			return text
+		}
+
+		changed := false
+		for alias, importPath := range imports {
+			if ensureNamedImport(file, alias, importPath) {
+				changed = true
+			}
+		}
+
+		if !changed {
+			return text
+		}
+
+		var buf bytes.Buffer
+		if err := printer.Fprint(&buf, fset, file); err != nil {
+			return text
+		}
+		return buf.String()
+	}
+}
+
+func addFieldToDecl(decl ast.Decl, path string, match TypeMatcher, fieldName string, fieldTypeExpr ast.Expr, fieldTag string) bool {
+	genDecl, ok := decl.(*ast.GenDecl)
+	if !ok || genDecl.Tok != token.TYPE {
+		return false
+	}
+
+	changed := false
+	for _, spec := range genDecl.Specs {
+		if addFieldToSpec(spec, path, match, fieldName, fieldTypeExpr, fieldTag) {
+			changed = true
+		}
+	}
+	return changed
+}
+
+func addFieldToSpec(spec ast.Spec, path string, match TypeMatcher, fieldName string, fieldTypeExpr ast.Expr, fieldTag string) bool {
+	typeSpec, ok := spec.(*ast.TypeSpec)
+	if !ok || !match(path, typeSpec) {
+		return false
+	}
+
+	structType, ok := typeSpec.Type.(*ast.StructType)
+	if !ok || structHasField(structType, fieldName) {
+		return false
+	}
+
+	structType.Fields.List = append(structType.Fields.List, &ast.Field{
+		Names: []*ast.Ident{ast.NewIdent(fieldName)},
+		Type:  cloneExpr(fieldTypeExpr),
+		Tag:   &ast.BasicLit{Kind: token.STRING, Value: "`" + fieldTag + "`"},
+	})
+	return true
+}
+
+func setFieldsInDecl(decl ast.Decl, path string, match TypeMatcher, fields []*ast.Field) bool {
+	genDecl, ok := decl.(*ast.GenDecl)
+	if !ok || genDecl.Tok != token.TYPE {
+		return false
+	}
+
+	changed := false
+	for _, spec := range genDecl.Specs {
+		if setFieldsInSpec(spec, path, match, fields) {
+			changed = true
+		}
+	}
+	return changed
+}
+
+func setFieldsInSpec(spec ast.Spec, path string, match TypeMatcher, fields []*ast.Field) bool {
+	typeSpec, ok := spec.(*ast.TypeSpec)
+	if !ok || !match(path, typeSpec) {
+		return false
+	}
+
+	structType, ok := typeSpec.Type.(*ast.StructType)
+	if !ok {
+		return false
+	}
+
+	structType.Fields.List = cloneFields(fields)
+	return true
+}
+
+func setTypeExprInDecl(decl ast.Decl, path string, match TypeMatcher, replacementExpr ast.Expr) bool {
+	genDecl, ok := decl.(*ast.GenDecl)
+	if !ok || genDecl.Tok != token.TYPE {
+		return false
+	}
+
+	changed := false
+	for _, spec := range genDecl.Specs {
+		if setTypeExprInSpec(spec, path, match, replacementExpr) {
+			changed = true
+		}
+	}
+	return changed
+}
+
+func setTypeExprInSpec(spec ast.Spec, path string, match TypeMatcher, replacementExpr ast.Expr) bool {
+	typeSpec, ok := spec.(*ast.TypeSpec)
+	if !ok || !match(path, typeSpec) {
+		return false
+	}
+
+	typeSpec.Type = cloneExpr(replacementExpr)
+	return true
 }
 
 func FieldNamed(names ...string) FieldMatcher {
@@ -284,6 +450,17 @@ func TypeNamed(names ...string) TypeMatcher {
 	return func(_ string, typeSpec *ast.TypeSpec) bool {
 		for _, name := range names {
 			if typeSpec.Name != nil && typeSpec.Name.Name == name {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+func AnyType(matchers ...TypeMatcher) TypeMatcher {
+	return func(path string, typeSpec *ast.TypeSpec) bool {
+		for _, matcher := range matchers {
+			if matcher(path, typeSpec) {
 				return true
 			}
 		}
@@ -471,4 +648,79 @@ func cloneExpr(expr ast.Expr) ast.Expr {
 		return expr
 	}
 	return cloned
+}
+
+func resolveStructFields(fields []StructFieldSpec) ([]*ast.Field, error) {
+	resolved := make([]*ast.Field, 0, len(fields))
+	for _, field := range fields {
+		typeExpr, err := parser.ParseExpr(field.Type)
+		if err != nil {
+			return nil, err
+		}
+		resolved = append(resolved, &ast.Field{
+			Names: []*ast.Ident{ast.NewIdent(field.Name)},
+			Type:  typeExpr,
+			Tag:   &ast.BasicLit{Kind: token.STRING, Value: "`" + field.Tag + "`"},
+		})
+	}
+	return resolved, nil
+}
+
+func cloneFields(fields []*ast.Field) []*ast.Field {
+	cloned := make([]*ast.Field, 0, len(fields))
+	for _, field := range fields {
+		fieldCopy := &ast.Field{
+			Type: cloneExpr(field.Type),
+		}
+		for _, name := range field.Names {
+			fieldCopy.Names = append(fieldCopy.Names, ast.NewIdent(name.Name))
+		}
+		if field.Tag != nil {
+			fieldCopy.Tag = &ast.BasicLit{Kind: field.Tag.Kind, Value: field.Tag.Value}
+		}
+		cloned = append(cloned, fieldCopy)
+	}
+	return cloned
+}
+
+func ensureNamedImport(file *ast.File, alias, importPath string) bool {
+	quotedPath := strconv.Quote(importPath)
+	for _, existing := range file.Imports {
+		if existing.Path.Value != quotedPath {
+			continue
+		}
+		if existing.Name == nil && alias == "" {
+			return false
+		}
+		if existing.Name != nil && existing.Name.Name == alias {
+			return false
+		}
+	}
+
+	spec := &ast.ImportSpec{
+		Path: &ast.BasicLit{Kind: token.STRING, Value: quotedPath},
+	}
+	if alias != "" {
+		spec.Name = ast.NewIdent(alias)
+	}
+
+	for _, decl := range file.Decls {
+		genDecl, ok := decl.(*ast.GenDecl)
+		if !ok || genDecl.Tok != token.IMPORT {
+			continue
+		}
+		genDecl.Lparen = 1
+		genDecl.Specs = append(genDecl.Specs, spec)
+		file.Imports = append(file.Imports, spec)
+		return true
+	}
+
+	importDecl := &ast.GenDecl{
+		Tok:    token.IMPORT,
+		Lparen: 1,
+		Specs:  []ast.Spec{spec},
+	}
+	file.Decls = append([]ast.Decl{importDecl}, file.Decls...)
+	file.Imports = append(file.Imports, spec)
+	return true
 }

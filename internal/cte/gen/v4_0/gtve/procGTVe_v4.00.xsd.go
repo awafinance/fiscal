@@ -8,13 +8,13 @@ import (
 
 // TAnonComplexGTVeProc1 ...
 type TAnonComplexGTVeProc1 struct {
-	XMLName           xml.Name   `xml:"GTVeProc" json:"-"`
-	VersaoAttr        string     `xml:"versao,attr" json:"versao,omitempty"`
-	IpTransmissorAttr *string    `xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
-	NPortaConAttr     *string    `xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
-	DhConexaoAttr     *string    `xml:"dhConexao,attr" json:"dhConexao,omitempty"`
-	GTVe              *TGTVe     `xml:"GTVe" json:"GTVe,omitempty"`
-	ProtCTe           *TProtGTVe `xml:"protCTe" json:"protCTe,omitempty"`
+	XMLName			xml.Name	`xml:"GTVeProc" json:"-"`
+	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
+	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	NPortaConAttr		*string		`xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
+	DhConexaoAttr		*string		`xml:"dhConexao,attr" json:"dhConexao,omitempty"`
+	GTVe			*TGTVe		`xml:"GTVe" json:"GTVe,omitempty"`
+	ProtCTe			*TProtGTVe	`xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // GTVeProc is GTV-e processada

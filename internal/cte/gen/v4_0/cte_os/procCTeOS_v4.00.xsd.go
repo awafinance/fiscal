@@ -8,13 +8,13 @@ import (
 
 // TAnonComplexCteOSProc1 ...
 type TAnonComplexCteOSProc1 struct {
-	XMLName           xml.Name    `xml:"cteOSProc" json:"-"`
-	VersaoAttr        string      `xml:"versao,attr" json:"versao,omitempty"`
-	IpTransmissorAttr *string     `xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
-	NPortaConAttr     *string     `xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
-	DhConexaoAttr     *string     `xml:"dhConexao,attr" json:"dhConexao,omitempty"`
-	CTeOS             *TCTeOS     `xml:"CTeOS" json:"CTeOS,omitempty"`
-	ProtCTe           *TProtCTeOS `xml:"protCTe" json:"protCTe,omitempty"`
+	XMLName			xml.Name	`xml:"cteOSProc" json:"-"`
+	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
+	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	NPortaConAttr		*string		`xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
+	DhConexaoAttr		*string		`xml:"dhConexao,attr" json:"dhConexao,omitempty"`
+	CTeOS			*TCTeOS		`xml:"CTeOS" json:"CTeOS,omitempty"`
+	ProtCTe			*TProtCTeOS	`xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // CteOSProc is CT-e OS processado

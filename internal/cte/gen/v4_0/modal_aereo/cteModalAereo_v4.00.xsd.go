@@ -51,9 +51,9 @@ type TAnonCInfManu1 string
 // 99 - outro (especificar no campo observações)
 // .
 type TAnonComplexNatCarga1 struct {
-	XMLName  xml.Name `xml:"natCarga" json:"-"`
-	XDime    *string  `xml:"xDime" json:"xDime,omitempty"`
-	CInfManu []string `xml:"cInfManu" json:"cInfManu,omitempty"`
+	XMLName		xml.Name	`xml:"natCarga" json:"-"`
+	XDime		*string		`xml:"xDime" json:"xDime,omitempty"`
+	CInfManu	[]string	`xml:"cInfManu" json:"cInfManu,omitempty"`
 }
 
 // TAnonCL1 ...
@@ -64,10 +64,10 @@ type TAnonCTar1 string
 
 // TAnonComplexTarifa1 is Valor da tarifa por kg quando for o caso.
 type TAnonComplexTarifa1 struct {
-	XMLName xml.Name `xml:"tarifa" json:"-"`
-	CL      string   `xml:"CL" json:"CL,omitempty"`
-	CTar    *string  `xml:"cTar" json:"cTar,omitempty"`
-	VTar    string   `xml:"vTar" json:"vTar,omitempty"`
+	XMLName	xml.Name	`xml:"tarifa" json:"-"`
+	CL	string		`xml:"CL" json:"CL,omitempty"`
+	CTar	*string		`xml:"cTar" json:"cTar,omitempty"`
+	VTar	string		`xml:"vTar" json:"vTar,omitempty"`
 }
 
 // TAnonNONU1 ...
@@ -84,28 +84,28 @@ type TAnonUniAP1 string
 // 3 – LITROS;
 // 4 – TI (índice de transporte para radioativos); 5- Unidades (apenas para artigos perigosos medidos em unidades que não se enquadram nos itens acima. Exemplo: baterias, celulares, equipamentos, veículos, dentre outros)
 type TAnonComplexInfTotAP1 struct {
-	XMLName  xml.Name `xml:"infTotAP" json:"-"`
-	QTotProd string   `xml:"qTotProd" json:"qTotProd,omitempty"`
-	UniAP    string   `xml:"uniAP" json:"uniAP,omitempty"`
+	XMLName		xml.Name	`xml:"infTotAP" json:"-"`
+	QTotProd	string		`xml:"qTotProd" json:"qTotProd,omitempty"`
+	UniAP		string		`xml:"uniAP" json:"uniAP,omitempty"`
 }
 
 // TAnonComplexPeri1 is Preencher conforme a legislação de transporte de produtos perigosos aplicada ao modal
 type TAnonComplexPeri1 struct {
-	XMLName  xml.Name               `xml:"peri" json:"-"`
-	NONU     string                 `xml:"nONU" json:"nONU,omitempty"`
-	QTotEmb  string                 `xml:"qTotEmb" json:"qTotEmb,omitempty"`
-	InfTotAP *TAnonComplexInfTotAP1 `xml:"infTotAP" json:"infTotAP,omitempty"`
+	XMLName		xml.Name		`xml:"peri" json:"-"`
+	NONU		string			`xml:"nONU" json:"nONU,omitempty"`
+	QTotEmb		string			`xml:"qTotEmb" json:"qTotEmb,omitempty"`
+	InfTotAP	*TAnonComplexInfTotAP1	`xml:"infTotAP" json:"infTotAP,omitempty"`
 }
 
 // TAnonComplexAereo1 is O preenchimento desses campos não desobriga a empresa aérea de emitir os demais documentos que constam na legislação vigente.
 type TAnonComplexAereo1 struct {
-	XMLName    xml.Name               `xml:"aereo" json:"-"`
-	NMinu      *string                `xml:"nMinu" json:"nMinu,omitempty"`
-	NOCA       *string                `xml:"nOCA" json:"nOCA,omitempty"`
-	DPrevAereo string                 `xml:"dPrevAereo" json:"dPrevAereo,omitempty"`
-	NatCarga   *TAnonComplexNatCarga1 `xml:"natCarga" json:"natCarga,omitempty"`
-	Tarifa     *TAnonComplexTarifa1   `xml:"tarifa" json:"tarifa,omitempty"`
-	Peri       []*TAnonComplexPeri1   `xml:"peri" json:"peri,omitempty"`
+	XMLName		xml.Name		`xml:"aereo" json:"-"`
+	NMinu		*string			`xml:"nMinu" json:"nMinu,omitempty"`
+	NOCA		*string			`xml:"nOCA" json:"nOCA,omitempty"`
+	DPrevAereo	string			`xml:"dPrevAereo" json:"dPrevAereo,omitempty"`
+	NatCarga	*TAnonComplexNatCarga1	`xml:"natCarga" json:"natCarga,omitempty"`
+	Tarifa		*TAnonComplexTarifa1	`xml:"tarifa" json:"tarifa,omitempty"`
+	Peri		[]*TAnonComplexPeri1	`xml:"peri" json:"peri,omitempty"`
 }
 
 // Aereo is Informações do modal Aéreo

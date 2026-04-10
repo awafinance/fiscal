@@ -14,12 +14,12 @@ type TAnonToma1 string
 
 // TAnonComplexToma41 is Informar a IE do tomador ou ISENTO se tomador é contribuinte do ICMS isento de inscrição no cadastro de contribuintes do ICMS. Caso o tomador não seja contribuinte do ICMS não informar o conteúdo.
 type TAnonComplexToma41 struct {
-	XMLName xml.Name `xml:"toma4" json:"-"`
-	Toma    string   `xml:"toma" json:"toma,omitempty"`
-	UF      string   `xml:"UF" json:"UF,omitempty"`
-	CNPJ    *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF     *string  `xml:"CPF" json:"CPF,omitempty"`
-	IE      *string  `xml:"IE" json:"IE,omitempty"`
+	XMLName	xml.Name	`xml:"toma4" json:"-"`
+	Toma	string		`xml:"toma" json:"toma,omitempty"`
+	UF	string		`xml:"UF" json:"UF,omitempty"`
+	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	IE	*string		`xml:"IE" json:"IE,omitempty"`
 }
 
 // TAnonTpCTe1 ...
@@ -30,19 +30,19 @@ type TAnonDhEmi1 string
 
 // TAnonComplexEvEPECCTe1 is Formato AAAA-MM-DDTHH:MM:DD TZD
 type TAnonComplexEvEPECCTe1 struct {
-	XMLName    xml.Name            `xml:"evEPECCTe" json:"-"`
-	DescEvento string              `xml:"descEvento" json:"descEvento,omitempty"`
-	XJust      *TString            `xml:"xJust" json:"xJust,omitempty"`
-	VICMS      string              `xml:"vICMS" json:"vICMS,omitempty"`
-	VICMSST    *string             `xml:"vICMSST" json:"vICMSST,omitempty"`
-	VTPrest    string              `xml:"vTPrest" json:"vTPrest,omitempty"`
-	VCarga     string              `xml:"vCarga" json:"vCarga,omitempty"`
-	Toma4      *TAnonComplexToma41 `xml:"toma4" json:"toma4,omitempty"`
-	Modal      string              `xml:"modal" json:"modal,omitempty"`
-	UFIni      string              `xml:"UFIni" json:"UFIni,omitempty"`
-	UFFim      string              `xml:"UFFim" json:"UFFim,omitempty"`
-	TpCTe      string              `xml:"tpCTe" json:"tpCTe,omitempty"`
-	DhEmi      string              `xml:"dhEmi" json:"dhEmi,omitempty"`
+	XMLName		xml.Name		`xml:"evEPECCTe" json:"-"`
+	DescEvento	string			`xml:"descEvento" json:"descEvento,omitempty"`
+	XJust		*TString		`xml:"xJust" json:"xJust,omitempty"`
+	VICMS		string			`xml:"vICMS" json:"vICMS,omitempty"`
+	VICMSST		*string			`xml:"vICMSST" json:"vICMSST,omitempty"`
+	VTPrest		string			`xml:"vTPrest" json:"vTPrest,omitempty"`
+	VCarga		string			`xml:"vCarga" json:"vCarga,omitempty"`
+	Toma4		*TAnonComplexToma41	`xml:"toma4" json:"toma4,omitempty"`
+	Modal		string			`xml:"modal" json:"modal,omitempty"`
+	UFIni		string			`xml:"UFIni" json:"UFIni,omitempty"`
+	UFFim		string			`xml:"UFFim" json:"UFFim,omitempty"`
+	TpCTe		string			`xml:"tpCTe" json:"tpCTe,omitempty"`
+	DhEmi		string			`xml:"dhEmi" json:"dhEmi,omitempty"`
 }
 
 // EvEPECCTe is Schema XML de validação do evento de emissão prévia de emissão em contingência

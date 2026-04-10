@@ -62,3 +62,47 @@ func TestSchemaPathForGenerated(t *testing.T) {
 		t.Fatalf("expected schema path %q, got %q", schemaPath, got)
 	}
 }
+
+func TestReplaceTypedCTeEventPayloads(t *testing.T) {
+	input := `package schema
+
+import (
+	"encoding/xml"
+)
+
+type TAnonComplexInfModal1 struct {
+	XMLName         xml.Name ` + "`xml:\"infModal\"`" + `
+	VersaoModalAttr string   ` + "`xml:\"versaoModal,attr\"`" + `
+}
+
+type TAnonComplexInfModal2 struct {
+	XMLName         xml.Name ` + "`xml:\"infModal\"`" + `
+	VersaoModalAttr string   ` + "`xml:\"versaoModal,attr\"`" + `
+}
+
+type TAnonComplexInfModal3 struct {
+	XMLName         xml.Name ` + "`xml:\"infModal\"`" + `
+	VersaoModalAttr string   ` + "`xml:\"versaoModal,attr\"`" + `
+}
+`
+
+	path := filepath.Join("internal", "cte", "gen", "v4_0", "cte", "cteTiposBasico_v4.00.xsd.go")
+	updated := replaceTypedCTeEventPayloads(path, input)
+
+	wantSnippets := []string{
+		`modalaereo "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aereo"`,
+		`modalrodoviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario"`,
+		`modalmultimodal "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_multimodal"`,
+		"Rodo",
+		"modalrodoviario.",
+		"`xml:\"rodo,omitempty\"`",
+		"Multimodal",
+		"modalmultimodal.",
+		"`xml:\"multimodal,omitempty\"`",
+	}
+	for _, snippet := range wantSnippets {
+		if !strings.Contains(updated, snippet) {
+			t.Fatalf("updated source missing snippet %q:\n%s", snippet, updated)
+		}
+	}
+}
