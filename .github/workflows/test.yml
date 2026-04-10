@@ -33,6 +33,9 @@ jobs:
         run: |
           printf 'OPENROUTER_API_KEY=test\nRESEND_API_KEY=test\n' > .env
 
+      - name: Run linter
+        run: mise run lint
+
       - name: Run tests
         run: mise run test
 
