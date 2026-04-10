@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	xmlns = "xmlns"
+	xmlElement = "element"
+	xmlns      = "xmlns"
 )
 
 type normalizeStats struct {
@@ -145,7 +146,7 @@ func collectInlineTypes(node *element, simpleCounters, complexCounters map[strin
 		collectInlineTypes(child, simpleCounters, complexCounters, generated)
 	}
 
-	if node.XMLName.Local != "element" {
+	if node.XMLName.Local != xmlElement {
 		return
 	}
 
@@ -309,7 +310,7 @@ func sequenceHasOnlyDirectElements(node *element) bool {
 	}
 
 	for _, child := range node.Children {
-		if child.XMLName.Local != "element" {
+		if child.XMLName.Local != xmlElement {
 			return false
 		}
 	}
