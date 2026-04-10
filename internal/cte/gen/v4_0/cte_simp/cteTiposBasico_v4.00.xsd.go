@@ -5,30 +5,30 @@ package schema
 import (
 	"encoding/xml"
 
-	modalmultimodal "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_multimodal"
+	modaldutoviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_dutoviario"
 
 	// TModTranspGTVe is Tipo Modal transporte GTVe
 
 	// TFinGTVe is Tipo Finalidade da GTV-e
-	modalrodoviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario"
+	modalferroviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_ferroviario"
 
 	// TAnonCCT1 ...
-	modalaereo "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aereo"
+	modalmultimodal "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_multimodal"
 
 	// TAnonNatOp1 ...
 
 	// TAnonSerie1 ...
-	modalaquaviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aquaviario"
+	modalrodoviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario"
 
 	// TAnonDhEmi1 ...
 
 	// TAnonTpImp1 ...
-	modaldutoviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_dutoviario"
+	modalaereo "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aereo"
 
 	// TAnonTpEmis1 ...
 
 	// TAnonCDV1 ...
-	modalferroviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_ferroviario"
+	modalaquaviario "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aquaviario"
 )
 
 type TModTranspGTVe string
