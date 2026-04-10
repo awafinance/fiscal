@@ -1,0 +1,32 @@
+amends "package://github.com/jdx/hk/releases/download/v1.32.0/hk@1.32.0#/Config.pkl"
+
+hooks {
+    ["pre-push"] {
+        steps {
+            ["lint"] {
+                check = "mise run lint"
+            }
+            ["test"] {
+                depends = List("lint")
+                check = "mise run test"
+            }
+
+        }
+    }
+    ["commit-msg"] {
+        steps {
+            ["conventional"] {
+                check = #"""
+                    MSG=$(head -1 "$(git rev-parse --git-dir)/COMMIT_EDITMSG")
+                    if ! echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,50}"; then
+                        echo "Commit message must follow Conventional Commits format:"
+                        echo "  <type>(<scope>): <description>"
+                        echo ""
+                        echo "Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+                        exit 1
+                    fi
+                    """#
+            }
+        }
+    }
+}
