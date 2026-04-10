@@ -16,7 +16,7 @@ type TAnonToma1 string
 type TAnonComplexToma41 struct {
 	XMLName xml.Name `xml:"toma4" json:"-"`
 	Toma    string   `xml:"toma" json:"toma,omitempty"`
-	UF      *TUf     `xml:"UF" json:"UF,omitempty"`
+	UF      string   `xml:"UF" json:"UF,omitempty"`
 	CNPJ    *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
 	CPF     *string  `xml:"CPF" json:"CPF,omitempty"`
 	IE      *string  `xml:"IE" json:"IE,omitempty"`

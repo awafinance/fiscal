@@ -3,4 +3,4 @@
 package schema
 
 // RetConsStatServCTe is Schema XML de validação do Resultado da Consulta do Status do Serviço de CT-e
-type RetConsStatServCTe *TRetConsStatServ
+type RetConsStatServCTe interface{}
