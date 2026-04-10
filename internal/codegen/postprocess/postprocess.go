@@ -311,7 +311,14 @@ func EnsureNamedImports(imports map[string]string) Replacement {
 		}
 
 		changed := false
-		for alias, importPath := range imports {
+		aliases := make([]string, 0, len(imports))
+		for alias := range imports {
+			aliases = append(aliases, alias)
+		}
+		slices.Sort(aliases)
+
+		for _, alias := range aliases {
+			importPath := imports[alias]
 			if ensureNamedImport(file, alias, importPath) {
 				changed = true
 			}

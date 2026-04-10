@@ -3,4 +3,4 @@
 package schema
 
 // RetEnvEvento is Schema XML de Retorno da envio do evento de Insucesso na Entrega da NFe
-type RetEnvEvento interface{}
+type RetEnvEvento *TRetEnvEvento

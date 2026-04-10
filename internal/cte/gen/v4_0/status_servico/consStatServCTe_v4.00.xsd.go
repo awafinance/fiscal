@@ -3,4 +3,4 @@
 package schema
 
 // ConsStatServCTe is Schema XML de validação do Pedido de Consulta do Status do Serviço CT-e
-type ConsStatServCTe interface{}
+type ConsStatServCTe *TConsStatServ

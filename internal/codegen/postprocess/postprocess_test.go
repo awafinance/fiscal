@@ -190,6 +190,8 @@ type TAnonComplexInfModal1 struct {
 `
 
 	updated := EnsureNamedImports(map[string]string{
+		"modalmultimodal": "github.com/example/modal_multimodal",
+		"modalaereo":      "github.com/example/modal_aereo",
 		"modalrodoviario": "github.com/example/modal_rodoviario",
 	})("doc.go", src)
 	updated = SetStructFields(TypeNamed("TAnonComplexInfModal1"), []StructFieldSpec{
@@ -199,6 +201,8 @@ type TAnonComplexInfModal1 struct {
 	})("doc.go", updated)
 
 	wantSnippets := []string{
+		`modalaereo "github.com/example/modal_aereo"`,
+		`modalmultimodal "github.com/example/modal_multimodal"`,
 		`modalrodoviario "github.com/example/modal_rodoviario"`,
 		"Rodo",
 		"modalrodoviario.",
@@ -208,6 +212,20 @@ type TAnonComplexInfModal1 struct {
 		if !strings.Contains(updated, snippet) {
 			t.Fatalf("updated source missing snippet %q:\n%s", snippet, updated)
 		}
+	}
+
+	wantOrder := []string{
+		`modalaereo "github.com/example/modal_aereo"`,
+		`modalmultimodal "github.com/example/modal_multimodal"`,
+		`modalrodoviario "github.com/example/modal_rodoviario"`,
+	}
+	last := -1
+	for _, snippet := range wantOrder {
+		idx := strings.Index(updated, snippet)
+		if idx <= last {
+			t.Fatalf("imports are not sorted by alias:\n%s", updated)
+		}
+		last = idx
 	}
 }
 
