@@ -25,7 +25,10 @@ import (
 	"github.com/awafinance/fiscal/internal/xmlutil"
 )
 
-const namespace = "http://www.portalfiscal.inf.br/nfe"
+const (
+	namespace = "http://www.portalfiscal.inf.br/nfe"
+	nfeProc   = "nfeProc"
+)
 
 var errUnsupportedRoot = errors.New("marshal nfe: document must contain exactly one supported root")
 
@@ -71,7 +74,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return nil
 	}
 
-	if d.RootName != "nfeProc" && d.ProtNFe == nil {
+	if d.RootName != nfeProc && d.ProtNFe == nil {
 		if d.NFe != nil || activeRootCount(d) == 0 {
 			return encodeBareNFe(e, d.NFe)
 		}
@@ -188,7 +191,7 @@ func encodeNFeProc(e *xml.Encoder, d *Document) error {
 		ProtNFe    *schema.TProtNFe `xml:"protNFe"`
 	}
 	return xmlutil.EncodeCanonical(e, procNFe{
-		XMLName:    xml.Name{Local: "nfeProc"},
+		XMLName:    xml.Name{Local: nfeProc},
 		XMLNS:      namespace,
 		VersaoAttr: d.VersaoAttr,
 		NFe:        d.NFe,
@@ -480,7 +483,7 @@ func Parse(data []byte) (*Document, error) {
 	}
 
 	switch rootName {
-	case "nfeProc":
+	case nfeProc:
 		var parsed struct {
 			VersaoAttr string           `xml:"versao,attr"`
 			NFe        *schema.TNFe     `xml:"NFe"`
@@ -493,7 +496,7 @@ func Parse(data []byte) (*Document, error) {
 			VersaoAttr: parsed.VersaoAttr,
 			NFe:        parsed.NFe,
 			ProtNFe:    parsed.ProtNFe,
-			RootName:   "nfeProc",
+			RootName:   nfeProc,
 		}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
@@ -909,7 +912,7 @@ func versionFromNFe(invoice *schema.TNFe) string {
 func validateDocument(doc *Document) error {
 	count := 0
 
-	if doc.RootName == "NFe" || doc.RootName == "nfeProc" || (doc.RootName == "" && doc.ProtNFe != nil) {
+	if doc.RootName == "NFe" || doc.RootName == nfeProc || (doc.RootName == "" && doc.ProtNFe != nil) {
 		if doc.NFe == nil {
 			return errors.New("parse nfe: missing NFe")
 		}

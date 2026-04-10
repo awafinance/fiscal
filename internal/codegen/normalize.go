@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+const (
+	xmlns = "xmlns"
+)
+
 type normalizeStats struct {
 	files                      int
 	rewritten                  int
@@ -251,7 +255,7 @@ func rootNamespaces(attrs []xml.Attr) []xml.Attr {
 			continue
 		}
 
-		if name.Local == "xmlns" {
+		if name.Local == xmlns {
 			candidate := xml.Attr{Name: name, Value: attr.Value}
 			if defaultNamespace == nil || attr.Value == "http://www.w3.org/2001/XMLSchema" {
 				defaultNamespace = &candidate
@@ -259,7 +263,7 @@ func rootNamespaces(attrs []xml.Attr) []xml.Attr {
 			continue
 		}
 
-		if strings.HasPrefix(name.Local, "xmlns:_") || seen[name.Local] {
+		if strings.HasPrefix(name.Local, xmlns+":_") || seen[name.Local] {
 			continue
 		}
 		seen[name.Local] = true
@@ -279,11 +283,11 @@ func isNamespaceAttr(attr xml.Attr) bool {
 
 func namespaceAttrName(attr xml.Attr) (xml.Name, bool) {
 	switch {
-	case attr.Name.Space == "" && attr.Name.Local == "xmlns":
-		return xml.Name{Local: "xmlns"}, true
-	case attr.Name.Space == "xmlns" && attr.Name.Local != "":
-		return xml.Name{Local: "xmlns:" + attr.Name.Local}, true
-	case strings.HasPrefix(attr.Name.Local, "xmlns:"):
+	case attr.Name.Space == "" && attr.Name.Local == xmlns:
+		return xml.Name{Local: xmlns}, true
+	case attr.Name.Space == xmlns && attr.Name.Local != "":
+		return xml.Name{Local: xmlns + ":" + attr.Name.Local}, true
+	case strings.HasPrefix(attr.Name.Local, xmlns+":"):
 		return xml.Name{Local: attr.Name.Local}, true
 	default:
 		return xml.Name{}, false
@@ -417,8 +421,8 @@ func (e *element) deepCopy() *element {
 	if e == nil {
 		return nil
 	}
-	copy := e.deepCopyValue()
-	return &copy
+	c := e.deepCopyValue()
+	return &c
 }
 
 func (e *element) deepCopyValue() element {

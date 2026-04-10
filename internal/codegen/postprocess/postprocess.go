@@ -16,14 +16,18 @@ import (
 	"strings"
 )
 
-const xmlDSigSignatureTag = "`xml:\"ds:Signature\"`"
-const xmlDSigSignatureNamespaceTag = "`xml:\"http://www.w3.org/2000/09/xmldsig# Signature\"`"
+const (
+	xmlDSigSignatureTag          = "`xml:\"ds:Signature\"`"
+	xmlDSigSignatureNamespaceTag = "`xml:\"http://www.w3.org/2000/09/xmldsig# Signature\"`"
+)
 
 var anonComplexXMLName = regexp.MustCompile("`xml:\"TAnonComplex_([^\"_]+(?:_[^\"_]+)*)_\\d+\"`")
 
-type Replacement func(path, text string) string
-type FieldMatcher func(path string, field *ast.Field) bool
-type TypeMatcher func(path string, typeSpec *ast.TypeSpec) bool
+type (
+	Replacement  func(path, text string) string
+	FieldMatcher func(path string, field *ast.Field) bool
+	TypeMatcher  func(path string, typeSpec *ast.TypeSpec) bool
+)
 
 type Options struct {
 	GenDir               string
@@ -118,15 +122,15 @@ func Generated(opts Options) error {
 	})
 }
 
-func ReplaceAll(old, new string) Replacement {
+func ReplaceAll(o, n string) Replacement {
 	return func(_ string, text string) string {
-		return strings.ReplaceAll(text, old, new)
+		return strings.ReplaceAll(text, o, n)
 	}
 }
 
-func Replace(old, new string, n int) Replacement {
+func Replace(o, n string, c int) Replacement {
 	return func(_ string, text string) string {
-		return strings.Replace(text, old, new, n)
+		return strings.Replace(text, o, n, c)
 	}
 }
 
