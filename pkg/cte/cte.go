@@ -30,6 +30,32 @@ import (
 
 const namespace = "http://www.portalfiscal.inf.br/cte"
 
+var errSingleRoot = errors.New("marshal cte: document must contain exactly one supported root")
+
+var parsersByRoot = map[string]func([]byte, string) (*Document, error){
+	"CTe":                parseCTe,
+	"cteProc":            parseCTeProc,
+	"retCTe":             parseRetCTe,
+	"CTeOS":              parseCTeOS,
+	"cteOSProc":          parseCTeOSProc,
+	"retCTeOS":           parseRetCTeOS,
+	"CTeSimp":            parseCTeSimp,
+	"cteSimpProc":        parseCTeSimpProc,
+	"retCTeSimp":         parseRetCTeSimp,
+	"GTVe":               parseGTVe,
+	"GTVeProc":           parseGTVeProc,
+	"retGTVe":            parseRetGTVe,
+	"consSitCTe":         parseConsSitCTe,
+	"retConsSitCTe":      parseRetConsSitCTe,
+	"consStatServCTe":    parseConsStatServCTe,
+	"retConsStatServCTe": parseRetConsStatServCTe,
+	"eventoCTe":          func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseEventDocument) },
+	"retEventoCTe":       func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseRetEventDocument) },
+	"procEventoCTe":      func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseProcEventDocument) },
+	"distDFeInt":         parseDistDFeInt,
+	"retDistDFeInt":      parseRetDistDFeInt,
+}
+
 type Document struct {
 	VersaoAttr                   string                                       `json:"versao,omitempty"`
 	CTe                          *cteSchema.TCTe                              `json:"CTe,omitempty"`
@@ -86,338 +112,407 @@ type Document struct {
 	RootName                     string                                       `json:"rootName,omitempty"`
 }
 
+var marshalersByRoot = map[string]func(*xml.Encoder, *Document) error{
+	"CTe":                marshalCTe,
+	"":                   marshalCTe,
+	"cteProc":            marshalCTeProc,
+	"retCTe":             marshalRetCTe,
+	"CTeOS":              marshalCTeOS,
+	"cteOSProc":          marshalCTeOSProc,
+	"retCTeOS":           marshalRetCTeOS,
+	"CTeSimp":            marshalCTeSimp,
+	"cteSimpProc":        marshalCTeSimpProc,
+	"retCTeSimp":         marshalRetCTeSimp,
+	"GTVe":               marshalGTVe,
+	"GTVeProc":           marshalGTVeProc,
+	"retGTVe":            marshalRetGTVe,
+	"consSitCTe":         marshalConsSitCTe,
+	"retConsSitCTe":      marshalRetConsSitCTe,
+	"consStatServCTe":    marshalConsStatServCTe,
+	"retConsStatServCTe": marshalRetConsStatServCTe,
+	"eventoCTe":          marshalEventRoot,
+	"retEventoCTe":       marshalRetEventRoot,
+	"procEventoCTe":      marshalProcEventRoot,
+	"distDFeInt":         marshalDistDFeInt,
+	"retDistDFeInt":      marshalRetDistDFeInt,
+}
+
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
 	}
-	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
-
-	switch d.RootName {
-	case "CTe", "":
-		if d.CTe != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName     xml.Name                           `xml:"CTe"`
-				XMLNS       string                             `xml:"xmlns,attr,omitempty"`
-				InfCte      *cteSchema.TAnonComplexInfCte3     `xml:"infCte"`
-				InfCTeSupl  *cteSchema.TAnonComplexInfCTeSupl3 `xml:"infCTeSupl,omitempty"`
-				DsSignature *cteSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-
-			return encode(root{
-				XMLName:     xml.Name{Local: "CTe"},
-				XMLNS:       namespace,
-				InfCte:      d.CTe.InfCte,
-				InfCTeSupl:  d.CTe.InfCTeSupl,
-				DsSignature: d.CTe.DsSignature,
-			})
-		}
-	case "cteProc":
-		if d.CTeProc != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName           xml.Name            `xml:"cteProc"`
-				XMLNS             string              `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string              `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string             `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string             `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string             `xml:"dhConexao,attr,omitempty"`
-				CTe               *cteSchema.TCTe     `xml:"CTe"`
-				ProtCTe           *cteSchema.TProtCTe `xml:"protCTe"`
-			}
-			return encode(root{
-				XMLName:           xml.Name{Local: "cteProc"},
-				XMLNS:             namespace,
-				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeProc.VersaoAttr),
-				IpTransmissorAttr: d.CTeProc.IpTransmissorAttr,
-				NPortaConAttr:     d.CTeProc.NPortaConAttr,
-				DhConexaoAttr:     d.CTeProc.DhConexaoAttr,
-				CTe:               d.CTeProc.CTe,
-				ProtCTe:           d.CTeProc.ProtCTe,
-			})
-		}
-	case "retCTe":
-		if d.RetCTe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retCTe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*cteSchema.TRetCTe
-			}{
-				XMLName: xml.Name{Local: "retCTe"},
-				XMLNS:   namespace,
-				TRetCTe: d.RetCTe,
-			})
-		}
-	case "CTeOS":
-		if d.CTeOS != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName     xml.Name                             `xml:"CTeOS"`
-				XMLNS       string                               `xml:"xmlns,attr,omitempty"`
-				VersaoAttr  string                               `xml:"versao,attr,omitempty"`
-				InfCte      *cteOSSchema.TAnonComplexInfCte4     `xml:"infCte"`
-				InfCTeSupl  *cteOSSchema.TAnonComplexInfCTeSupl4 `xml:"infCTeSupl,omitempty"`
-				DsSignature *cteOSSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-
-			return encode(root{
-				XMLName:     xml.Name{Local: "CTeOS"},
-				XMLNS:       namespace,
-				VersaoAttr:  xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeOS.VersaoAttr),
-				InfCte:      d.CTeOS.InfCte,
-				InfCTeSupl:  d.CTeOS.InfCTeSupl,
-				DsSignature: d.CTeOS.DsSignature,
-			})
-		}
-	case "cteOSProc":
-		if d.CTeOSProc != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName           xml.Name                `xml:"cteOSProc"`
-				XMLNS             string                  `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string                  `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string                 `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string                 `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string                 `xml:"dhConexao,attr,omitempty"`
-				CTeOS             *cteOSSchema.TCTeOS     `xml:"CTeOS"`
-				ProtCTe           *cteOSSchema.TProtCTeOS `xml:"protCTe"`
-			}
-			return encode(root{
-				XMLName:           xml.Name{Local: "cteOSProc"},
-				XMLNS:             namespace,
-				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeOSProc.VersaoAttr),
-				IpTransmissorAttr: d.CTeOSProc.IpTransmissorAttr,
-				NPortaConAttr:     d.CTeOSProc.NPortaConAttr,
-				DhConexaoAttr:     d.CTeOSProc.DhConexaoAttr,
-				CTeOS:             d.CTeOSProc.CTeOS,
-				ProtCTe:           d.CTeOSProc.ProtCTe,
-			})
-		}
-	case "retCTeOS":
-		if d.RetCTeOS != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retCTeOS"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*cteOSSchema.TRetCTeOS
-			}{
-				XMLName:   xml.Name{Local: "retCTeOS"},
-				XMLNS:     namespace,
-				TRetCTeOS: d.RetCTeOS,
-			})
-		}
-	case "CTeSimp":
-		if d.CTeSimp != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName     xml.Name                               `xml:"CTeSimp"`
-				XMLNS       string                                 `xml:"xmlns,attr,omitempty"`
-				InfCte      *cteSimpSchema.TAnonComplexInfCte2     `xml:"infCte"`
-				InfCTeSupl  *cteSimpSchema.TAnonComplexInfCTeSupl2 `xml:"infCTeSupl,omitempty"`
-				DsSignature *cteSimpSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-			return encode(root{
-				XMLName:     xml.Name{Local: "CTeSimp"},
-				XMLNS:       namespace,
-				InfCte:      d.CTeSimp.InfCte,
-				InfCTeSupl:  d.CTeSimp.InfCTeSupl,
-				DsSignature: d.CTeSimp.DsSignature,
-			})
-		}
-	case "cteSimpProc":
-		if d.CTeSimpProc != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName           xml.Name                `xml:"cteSimpProc"`
-				XMLNS             string                  `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string                  `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string                 `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string                 `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string                 `xml:"dhConexao,attr,omitempty"`
-				CTeSimp           *cteSimpSchema.TCTeSimp `xml:"CTeSimp"`
-				ProtCTe           *cteSimpSchema.TProtCTe `xml:"protCTe"`
-			}
-			return encode(root{
-				XMLName:           xml.Name{Local: "cteSimpProc"},
-				XMLNS:             namespace,
-				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeSimpProc.VersaoAttr),
-				IpTransmissorAttr: d.CTeSimpProc.IpTransmissorAttr,
-				NPortaConAttr:     d.CTeSimpProc.NPortaConAttr,
-				DhConexaoAttr:     d.CTeSimpProc.DhConexaoAttr,
-				CTeSimp:           d.CTeSimpProc.CTeSimp,
-				ProtCTe:           d.CTeSimpProc.ProtCTe,
-			})
-		}
-	case "retCTeSimp":
-		if d.RetCTeSimp != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retCTeSimp"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*cteSimpSchema.TRetCTeSimp
-			}{
-				XMLName:     xml.Name{Local: "retCTeSimp"},
-				XMLNS:       namespace,
-				TRetCTeSimp: d.RetCTeSimp,
-			})
-		}
-	case "GTVe":
-		if d.GTVe != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName     xml.Name                            `xml:"GTVe"`
-				XMLNS       string                              `xml:"xmlns,attr,omitempty"`
-				VersaoAttr  string                              `xml:"versao,attr,omitempty"`
-				InfCte      *gtveSchema.TAnonComplexInfCte1     `xml:"infCte"`
-				InfCTeSupl  *gtveSchema.TAnonComplexInfCTeSupl1 `xml:"infCTeSupl,omitempty"`
-				DsSignature *gtveSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-			return encode(root{
-				XMLName:     xml.Name{Local: "GTVe"},
-				XMLNS:       namespace,
-				VersaoAttr:  xmlutil.FirstNonEmpty(d.VersaoAttr, d.GTVe.VersaoAttr),
-				InfCte:      d.GTVe.InfCte,
-				InfCTeSupl:  d.GTVe.InfCTeSupl,
-				DsSignature: d.GTVe.DsSignature,
-			})
-		}
-	case "GTVeProc":
-		if d.GTVeProc != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName           xml.Name              `xml:"GTVeProc"`
-				XMLNS             string                `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string                `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string               `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string               `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string               `xml:"dhConexao,attr,omitempty"`
-				GTVe              *gtveSchema.TGTVe     `xml:"GTVe"`
-				ProtCTe           *gtveSchema.TProtGTVe `xml:"protCTe"`
-			}
-			return encode(root{
-				XMLName:           xml.Name{Local: "GTVeProc"},
-				XMLNS:             namespace,
-				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.GTVeProc.VersaoAttr),
-				IpTransmissorAttr: d.GTVeProc.IpTransmissorAttr,
-				NPortaConAttr:     d.GTVeProc.NPortaConAttr,
-				DhConexaoAttr:     d.GTVeProc.DhConexaoAttr,
-				GTVe:              d.GTVeProc.GTVe,
-				ProtCTe:           d.GTVeProc.ProtCTe,
-			})
-		}
-	case "retGTVe":
-		if d.RetGTVe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retGTVe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*gtveSchema.TRetGTVe
-			}{
-				XMLName:  xml.Name{Local: "retGTVe"},
-				XMLNS:    namespace,
-				TRetGTVe: d.RetGTVe,
-			})
-		}
-	case "consSitCTe":
-		if d.ConsSitCTe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"consSitCTe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*consSitSchema.TConsSitCTe
-			}{
-				XMLName:     xml.Name{Local: "consSitCTe"},
-				XMLNS:       namespace,
-				TConsSitCTe: d.ConsSitCTe,
-			})
-		}
-	case "retConsSitCTe":
-		if d.RetConsSitCTe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retConsSitCTe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*consSitSchema.TRetConsSitCTe
-			}{
-				XMLName:        xml.Name{Local: "retConsSitCTe"},
-				XMLNS:          namespace,
-				TRetConsSitCTe: d.RetConsSitCTe,
-			})
-		}
-	case "consStatServCTe":
-		if d.ConsStatServCTe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"consStatServCTe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*statusSchema.TConsStatServ
-			}{
-				XMLName:       xml.Name{Local: "consStatServCTe"},
-				XMLNS:         namespace,
-				TConsStatServ: d.ConsStatServCTe,
-			})
-		}
-	case "retConsStatServCTe":
-		if d.RetConsStatServCTe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retConsStatServCTe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*statusSchema.TRetConsStatServ
-			}{
-				XMLName:          xml.Name{Local: "retConsStatServCTe"},
-				XMLNS:            namespace,
-				TRetConsStatServ: d.RetConsStatServCTe,
-			})
-		}
-	case "eventoCTe":
-		return marshalEventRoot(e, d)
-	case "retEventoCTe":
-		return marshalRetEventRoot(e, d)
-	case "procEventoCTe":
-		return marshalProcEventRoot(e, d)
-	case "distDFeInt":
-		if d.DistDFeInt != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName    xml.Name                         `xml:"distDFeInt"`
-				XMLNS      string                           `xml:"xmlns,attr,omitempty"`
-				VersaoAttr string                           `xml:"versao,attr,omitempty"`
-				TpAmb      string                           `xml:"tpAmb"`
-				CUFAutor   string                           `xml:"cUFAutor"`
-				CNPJ       *string                          `xml:"CNPJ,omitempty"`
-				CPF        *string                          `xml:"CPF,omitempty"`
-				DistNSU    *distSchema.TAnonComplexDistNSU1 `xml:"distNSU,omitempty"`
-				ConsNSU    *distSchema.TAnonComplexConsNSU1 `xml:"consNSU,omitempty"`
-			}
-			return encode(root{
-				XMLName:    xml.Name{Local: "distDFeInt"},
-				XMLNS:      namespace,
-				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
-				TpAmb:      d.DistDFeInt.TpAmb,
-				CUFAutor:   d.DistDFeInt.CUFAutor,
-				CNPJ:       d.DistDFeInt.CNPJ,
-				CPF:        d.DistDFeInt.CPF,
-				DistNSU:    d.DistDFeInt.DistNSU,
-				ConsNSU:    d.DistDFeInt.ConsNSU,
-			})
-		}
-	case "retDistDFeInt":
-		if d.RetDistDFeInt != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName        xml.Name                                `xml:"retDistDFeInt"`
-				XMLNS          string                                  `xml:"xmlns,attr,omitempty"`
-				VersaoAttr     string                                  `xml:"versao,attr,omitempty"`
-				TpAmb          string                                  `xml:"tpAmb"`
-				VerAplic       *distSchema.TString                     `xml:"verAplic,omitempty"`
-				CStat          string                                  `xml:"cStat"`
-				XMotivo        *distSchema.TString                     `xml:"xMotivo,omitempty"`
-				DhResp         string                                  `xml:"dhResp"`
-				UltNSU         string                                  `xml:"ultNSU"`
-				MaxNSU         string                                  `xml:"maxNSU"`
-				LoteDistDFeInt *distSchema.TAnonComplexLoteDistDFeInt1 `xml:"loteDistDFeInt,omitempty"`
-			}
-			return encode(root{
-				XMLName:        xml.Name{Local: "retDistDFeInt"},
-				XMLNS:          namespace,
-				VersaoAttr:     xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
-				TpAmb:          d.RetDistDFeInt.TpAmb,
-				VerAplic:       d.RetDistDFeInt.VerAplic,
-				CStat:          d.RetDistDFeInt.CStat,
-				XMotivo:        d.RetDistDFeInt.XMotivo,
-				DhResp:         d.RetDistDFeInt.DhResp,
-				UltNSU:         d.RetDistDFeInt.UltNSU,
-				MaxNSU:         d.RetDistDFeInt.MaxNSU,
-				LoteDistDFeInt: d.RetDistDFeInt.LoteDistDFeInt,
-			})
-		}
+	if fn, ok := marshalersByRoot[d.RootName]; ok {
+		return fn(e, d)
 	}
+	return errSingleRoot
+}
 
-	return errors.New("marshal cte: document must contain exactly one supported root")
+func marshalCTe(e *xml.Encoder, d *Document) error {
+	if d.CTe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName     xml.Name                           `xml:"CTe"`
+		XMLNS       string                             `xml:"xmlns,attr,omitempty"`
+		InfCte      *cteSchema.TAnonComplexInfCte3     `xml:"infCte"`
+		InfCTeSupl  *cteSchema.TAnonComplexInfCTeSupl3 `xml:"infCTeSupl,omitempty"`
+		DsSignature *cteSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:     xml.Name{Local: "CTe"},
+		XMLNS:       namespace,
+		InfCte:      d.CTe.InfCte,
+		InfCTeSupl:  d.CTe.InfCTeSupl,
+		DsSignature: d.CTe.DsSignature,
+	})
+}
+
+func marshalCTeProc(e *xml.Encoder, d *Document) error {
+	if d.CTeProc == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName           xml.Name            `xml:"cteProc"`
+		XMLNS             string              `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string              `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string             `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string             `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string             `xml:"dhConexao,attr,omitempty"`
+		CTe               *cteSchema.TCTe     `xml:"CTe"`
+		ProtCTe           *cteSchema.TProtCTe `xml:"protCTe"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:           xml.Name{Local: "cteProc"},
+		XMLNS:             namespace,
+		VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeProc.VersaoAttr),
+		IpTransmissorAttr: d.CTeProc.IpTransmissorAttr,
+		NPortaConAttr:     d.CTeProc.NPortaConAttr,
+		DhConexaoAttr:     d.CTeProc.DhConexaoAttr,
+		CTe:               d.CTeProc.CTe,
+		ProtCTe:           d.CTeProc.ProtCTe,
+	})
+}
+
+func marshalRetCTe(e *xml.Encoder, d *Document) error {
+	if d.RetCTe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retCTe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*cteSchema.TRetCTe
+	}{
+		XMLName: xml.Name{Local: "retCTe"},
+		XMLNS:   namespace,
+		TRetCTe: d.RetCTe,
+	})
+}
+
+func marshalCTeOS(e *xml.Encoder, d *Document) error {
+	if d.CTeOS == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName     xml.Name                             `xml:"CTeOS"`
+		XMLNS       string                               `xml:"xmlns,attr,omitempty"`
+		VersaoAttr  string                               `xml:"versao,attr,omitempty"`
+		InfCte      *cteOSSchema.TAnonComplexInfCte4     `xml:"infCte"`
+		InfCTeSupl  *cteOSSchema.TAnonComplexInfCTeSupl4 `xml:"infCTeSupl,omitempty"`
+		DsSignature *cteOSSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:     xml.Name{Local: "CTeOS"},
+		XMLNS:       namespace,
+		VersaoAttr:  xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeOS.VersaoAttr),
+		InfCte:      d.CTeOS.InfCte,
+		InfCTeSupl:  d.CTeOS.InfCTeSupl,
+		DsSignature: d.CTeOS.DsSignature,
+	})
+}
+
+func marshalCTeOSProc(e *xml.Encoder, d *Document) error {
+	if d.CTeOSProc == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName           xml.Name                `xml:"cteOSProc"`
+		XMLNS             string                  `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string                  `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string                 `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string                 `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string                 `xml:"dhConexao,attr,omitempty"`
+		CTeOS             *cteOSSchema.TCTeOS     `xml:"CTeOS"`
+		ProtCTe           *cteOSSchema.TProtCTeOS `xml:"protCTe"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:           xml.Name{Local: "cteOSProc"},
+		XMLNS:             namespace,
+		VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeOSProc.VersaoAttr),
+		IpTransmissorAttr: d.CTeOSProc.IpTransmissorAttr,
+		NPortaConAttr:     d.CTeOSProc.NPortaConAttr,
+		DhConexaoAttr:     d.CTeOSProc.DhConexaoAttr,
+		CTeOS:             d.CTeOSProc.CTeOS,
+		ProtCTe:           d.CTeOSProc.ProtCTe,
+	})
+}
+
+func marshalRetCTeOS(e *xml.Encoder, d *Document) error {
+	if d.RetCTeOS == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retCTeOS"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*cteOSSchema.TRetCTeOS
+	}{
+		XMLName:   xml.Name{Local: "retCTeOS"},
+		XMLNS:     namespace,
+		TRetCTeOS: d.RetCTeOS,
+	})
+}
+
+func marshalCTeSimp(e *xml.Encoder, d *Document) error {
+	if d.CTeSimp == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName     xml.Name                               `xml:"CTeSimp"`
+		XMLNS       string                                 `xml:"xmlns,attr,omitempty"`
+		InfCte      *cteSimpSchema.TAnonComplexInfCte2     `xml:"infCte"`
+		InfCTeSupl  *cteSimpSchema.TAnonComplexInfCTeSupl2 `xml:"infCTeSupl,omitempty"`
+		DsSignature *cteSimpSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:     xml.Name{Local: "CTeSimp"},
+		XMLNS:       namespace,
+		InfCte:      d.CTeSimp.InfCte,
+		InfCTeSupl:  d.CTeSimp.InfCTeSupl,
+		DsSignature: d.CTeSimp.DsSignature,
+	})
+}
+
+func marshalCTeSimpProc(e *xml.Encoder, d *Document) error {
+	if d.CTeSimpProc == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName           xml.Name                `xml:"cteSimpProc"`
+		XMLNS             string                  `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string                  `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string                 `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string                 `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string                 `xml:"dhConexao,attr,omitempty"`
+		CTeSimp           *cteSimpSchema.TCTeSimp `xml:"CTeSimp"`
+		ProtCTe           *cteSimpSchema.TProtCTe `xml:"protCTe"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:           xml.Name{Local: "cteSimpProc"},
+		XMLNS:             namespace,
+		VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeSimpProc.VersaoAttr),
+		IpTransmissorAttr: d.CTeSimpProc.IpTransmissorAttr,
+		NPortaConAttr:     d.CTeSimpProc.NPortaConAttr,
+		DhConexaoAttr:     d.CTeSimpProc.DhConexaoAttr,
+		CTeSimp:           d.CTeSimpProc.CTeSimp,
+		ProtCTe:           d.CTeSimpProc.ProtCTe,
+	})
+}
+
+func marshalRetCTeSimp(e *xml.Encoder, d *Document) error {
+	if d.RetCTeSimp == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retCTeSimp"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*cteSimpSchema.TRetCTeSimp
+	}{
+		XMLName:     xml.Name{Local: "retCTeSimp"},
+		XMLNS:       namespace,
+		TRetCTeSimp: d.RetCTeSimp,
+	})
+}
+
+func marshalGTVe(e *xml.Encoder, d *Document) error {
+	if d.GTVe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName     xml.Name                            `xml:"GTVe"`
+		XMLNS       string                              `xml:"xmlns,attr,omitempty"`
+		VersaoAttr  string                              `xml:"versao,attr,omitempty"`
+		InfCte      *gtveSchema.TAnonComplexInfCte1     `xml:"infCte"`
+		InfCTeSupl  *gtveSchema.TAnonComplexInfCTeSupl1 `xml:"infCTeSupl,omitempty"`
+		DsSignature *gtveSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:     xml.Name{Local: "GTVe"},
+		XMLNS:       namespace,
+		VersaoAttr:  xmlutil.FirstNonEmpty(d.VersaoAttr, d.GTVe.VersaoAttr),
+		InfCte:      d.GTVe.InfCte,
+		InfCTeSupl:  d.GTVe.InfCTeSupl,
+		DsSignature: d.GTVe.DsSignature,
+	})
+}
+
+func marshalGTVeProc(e *xml.Encoder, d *Document) error {
+	if d.GTVeProc == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName           xml.Name              `xml:"GTVeProc"`
+		XMLNS             string                `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string                `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string               `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string               `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string               `xml:"dhConexao,attr,omitempty"`
+		GTVe              *gtveSchema.TGTVe     `xml:"GTVe"`
+		ProtCTe           *gtveSchema.TProtGTVe `xml:"protCTe"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:           xml.Name{Local: "GTVeProc"},
+		XMLNS:             namespace,
+		VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.GTVeProc.VersaoAttr),
+		IpTransmissorAttr: d.GTVeProc.IpTransmissorAttr,
+		NPortaConAttr:     d.GTVeProc.NPortaConAttr,
+		DhConexaoAttr:     d.GTVeProc.DhConexaoAttr,
+		GTVe:              d.GTVeProc.GTVe,
+		ProtCTe:           d.GTVeProc.ProtCTe,
+	})
+}
+
+func marshalRetGTVe(e *xml.Encoder, d *Document) error {
+	if d.RetGTVe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retGTVe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*gtveSchema.TRetGTVe
+	}{
+		XMLName:  xml.Name{Local: "retGTVe"},
+		XMLNS:    namespace,
+		TRetGTVe: d.RetGTVe,
+	})
+}
+
+func marshalConsSitCTe(e *xml.Encoder, d *Document) error {
+	if d.ConsSitCTe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"consSitCTe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*consSitSchema.TConsSitCTe
+	}{
+		XMLName:     xml.Name{Local: "consSitCTe"},
+		XMLNS:       namespace,
+		TConsSitCTe: d.ConsSitCTe,
+	})
+}
+
+func marshalRetConsSitCTe(e *xml.Encoder, d *Document) error {
+	if d.RetConsSitCTe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retConsSitCTe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*consSitSchema.TRetConsSitCTe
+	}{
+		XMLName:        xml.Name{Local: "retConsSitCTe"},
+		XMLNS:          namespace,
+		TRetConsSitCTe: d.RetConsSitCTe,
+	})
+}
+
+func marshalConsStatServCTe(e *xml.Encoder, d *Document) error {
+	if d.ConsStatServCTe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"consStatServCTe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*statusSchema.TConsStatServ
+	}{
+		XMLName:       xml.Name{Local: "consStatServCTe"},
+		XMLNS:         namespace,
+		TConsStatServ: d.ConsStatServCTe,
+	})
+}
+
+func marshalRetConsStatServCTe(e *xml.Encoder, d *Document) error {
+	if d.RetConsStatServCTe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retConsStatServCTe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*statusSchema.TRetConsStatServ
+	}{
+		XMLName:          xml.Name{Local: "retConsStatServCTe"},
+		XMLNS:            namespace,
+		TRetConsStatServ: d.RetConsStatServCTe,
+	})
+}
+
+func marshalDistDFeInt(e *xml.Encoder, d *Document) error {
+	if d.DistDFeInt == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName    xml.Name                         `xml:"distDFeInt"`
+		XMLNS      string                           `xml:"xmlns,attr,omitempty"`
+		VersaoAttr string                           `xml:"versao,attr,omitempty"`
+		TpAmb      string                           `xml:"tpAmb"`
+		CUFAutor   string                           `xml:"cUFAutor"`
+		CNPJ       *string                          `xml:"CNPJ,omitempty"`
+		CPF        *string                          `xml:"CPF,omitempty"`
+		DistNSU    *distSchema.TAnonComplexDistNSU1 `xml:"distNSU,omitempty"`
+		ConsNSU    *distSchema.TAnonComplexConsNSU1 `xml:"consNSU,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:    xml.Name{Local: "distDFeInt"},
+		XMLNS:      namespace,
+		VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
+		TpAmb:      d.DistDFeInt.TpAmb,
+		CUFAutor:   d.DistDFeInt.CUFAutor,
+		CNPJ:       d.DistDFeInt.CNPJ,
+		CPF:        d.DistDFeInt.CPF,
+		DistNSU:    d.DistDFeInt.DistNSU,
+		ConsNSU:    d.DistDFeInt.ConsNSU,
+	})
+}
+
+func marshalRetDistDFeInt(e *xml.Encoder, d *Document) error {
+	if d.RetDistDFeInt == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName        xml.Name                                `xml:"retDistDFeInt"`
+		XMLNS          string                                  `xml:"xmlns,attr,omitempty"`
+		VersaoAttr     string                                  `xml:"versao,attr,omitempty"`
+		TpAmb          string                                  `xml:"tpAmb"`
+		VerAplic       *distSchema.TString                     `xml:"verAplic,omitempty"`
+		CStat          string                                  `xml:"cStat"`
+		XMotivo        *distSchema.TString                     `xml:"xMotivo,omitempty"`
+		DhResp         string                                  `xml:"dhResp"`
+		UltNSU         string                                  `xml:"ultNSU"`
+		MaxNSU         string                                  `xml:"maxNSU"`
+		LoteDistDFeInt *distSchema.TAnonComplexLoteDistDFeInt1 `xml:"loteDistDFeInt,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:        xml.Name{Local: "retDistDFeInt"},
+		XMLNS:          namespace,
+		VersaoAttr:     xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
+		TpAmb:          d.RetDistDFeInt.TpAmb,
+		VerAplic:       d.RetDistDFeInt.VerAplic,
+		CStat:          d.RetDistDFeInt.CStat,
+		XMotivo:        d.RetDistDFeInt.XMotivo,
+		DhResp:         d.RetDistDFeInt.DhResp,
+		UltNSU:         d.RetDistDFeInt.UltNSU,
+		MaxNSU:         d.RetDistDFeInt.MaxNSU,
+		LoteDistDFeInt: d.RetDistDFeInt.LoteDistDFeInt,
+	})
 }
 
 func Parse(data []byte) (*Document, error) {
@@ -431,238 +526,13 @@ func Parse(data []byte) (*Document, error) {
 		return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
 	}
 
-	switch RootName {
-	case "CTe":
-		var parsed cteSchema.TCTe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode CTe: %w", err)
-		}
-		doc := &Document{
-			VersaoAttr: versionFromInfCte(parsed.InfCte),
-			CTe:        &parsed,
-			RootName:   RootName,
-		}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "cteProc":
-		var parsed cteSchema.TAnonComplexCteProc1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode cteProc: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeProc: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retCTe":
-		var parsed cteSchema.TRetCTe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retCTe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "CTeOS":
-		var parsed struct {
-			VersaoAttr string                               `xml:"versao,attr"`
-			InfCte     *cteOSSchema.TAnonComplexInfCte4     `xml:"infCte"`
-			InfCTeSupl *cteOSSchema.TAnonComplexInfCTeSupl4 `xml:"infCTeSupl"`
-			Signature  *cteOSSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
-		}
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode CTeOS: %w", err)
-		}
-		doc := &Document{
-			VersaoAttr: parsed.VersaoAttr,
-			CTeOS: &cteOSSchema.TCTeOS{
-				VersaoAttr:  parsed.VersaoAttr,
-				InfCte:      parsed.InfCte,
-				InfCTeSupl:  parsed.InfCTeSupl,
-				DsSignature: parsed.Signature,
-			},
-			RootName: RootName,
-		}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "cteOSProc":
-		var parsed cteOSSchema.TAnonComplexCteOSProc1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode cteOSProc: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeOSProc: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retCTeOS":
-		var parsed cteOSSchema.TRetCTeOS
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retCTeOS: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTeOS: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "CTeSimp":
-		var parsed cteSimpSchema.TCTeSimp
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode CTeSimp: %w", err)
-		}
-		doc := &Document{VersaoAttr: versionFromInfCteSimp(parsed.InfCte), CTeSimp: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "cteSimpProc":
-		var parsed cteSimpSchema.TAnonComplexCteSimpProc1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode cteSimpProc: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeSimpProc: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retCTeSimp":
-		var parsed cteSimpSchema.TRetCTeSimp
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retCTeSimp: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTeSimp: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "GTVe":
-		var parsed gtveSchema.TGTVe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode GTVe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, GTVe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "GTVeProc":
-		var parsed gtveSchema.TAnonComplexGTVeProc1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode GTVeProc: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, GTVeProc: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retGTVe":
-		var parsed gtveSchema.TRetGTVe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retGTVe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetGTVe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "consSitCTe":
-		var parsed consSitSchema.TConsSitCTe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode consSitCTe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitCTe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retConsSitCTe":
-		var parsed consSitSchema.TRetConsSitCTe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retConsSitCTe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsSitCTe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "consStatServCTe":
-		var parsed statusSchema.TConsStatServ
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode consStatServCTe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServCTe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retConsStatServCTe":
-		var parsed statusSchema.TRetConsStatServ
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retConsStatServCTe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServCTe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "eventoCTe":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe head: %w", err)
-		}
-		if tpEvento == "" {
-			return nil, errors.New("parse cte: missing infEvento")
-		}
-		return parseEventDocument(data, RootName, tpEvento)
-	case "retEventoCTe":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe head: %w", err)
-		}
-		if tpEvento == "" {
-			return nil, errors.New("parse cte: missing infEvento")
-		}
-		return parseRetEventDocument(data, RootName, tpEvento)
-	case "procEventoCTe":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe head: %w", err)
-		}
-		if tpEvento == "" {
-			return nil, errors.New("parse cte: missing infEvento")
-		}
-		return parseProcEventDocument(data, RootName, tpEvento)
-	case "distDFeInt":
-		var parsed distSchema.TAnonComplexDistDFeInt1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode distDFeInt: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retDistDFeInt":
-		var parsed distSchema.TAnonComplexRetDistDFeInt1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retDistDFeInt: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	default:
-		if rootErr != nil {
-			return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
-		}
-		return nil, fmt.Errorf("parse cte: unsupported root element %q", RootName)
+	if fn, ok := parsersByRoot[RootName]; ok {
+		return fn(data, RootName)
 	}
+	if rootErr != nil {
+		return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
+	}
+	return nil, fmt.Errorf("parse cte: unsupported root element %q", RootName)
 }
 
 func ParseReader(r io.Reader) (*Document, error) {
@@ -671,6 +541,182 @@ func ParseReader(r io.Reader) (*Document, error) {
 		return nil, fmt.Errorf("parse cte: read xml: %w", err)
 	}
 	return Parse(data)
+}
+
+func finalizeDoc(doc *Document) (*Document, error) {
+	if err := validateDocument(doc); err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
+func parseCTe(data []byte, rootName string) (*Document, error) {
+	var parsed cteSchema.TCTe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode CTe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: versionFromInfCte(parsed.InfCte), CTe: &parsed, RootName: rootName})
+}
+
+func parseCTeProc(data []byte, rootName string) (*Document, error) {
+	var parsed cteSchema.TAnonComplexCteProc1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode cteProc: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, CTeProc: &parsed, RootName: rootName})
+}
+
+func parseRetCTe(data []byte, rootName string) (*Document, error) {
+	var parsed cteSchema.TRetCTe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retCTe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetCTe: &parsed, RootName: rootName})
+}
+
+func parseCTeOS(data []byte, rootName string) (*Document, error) {
+	var parsed struct {
+		VersaoAttr string                               `xml:"versao,attr"`
+		InfCte     *cteOSSchema.TAnonComplexInfCte4     `xml:"infCte"`
+		InfCTeSupl *cteOSSchema.TAnonComplexInfCTeSupl4 `xml:"infCTeSupl"`
+		Signature  *cteOSSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature"`
+	}
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode CTeOS: %w", err)
+	}
+	return finalizeDoc(&Document{
+		VersaoAttr: parsed.VersaoAttr,
+		CTeOS: &cteOSSchema.TCTeOS{
+			VersaoAttr:  parsed.VersaoAttr,
+			InfCte:      parsed.InfCte,
+			InfCTeSupl:  parsed.InfCTeSupl,
+			DsSignature: parsed.Signature,
+		},
+		RootName: rootName,
+	})
+}
+
+func parseCTeOSProc(data []byte, rootName string) (*Document, error) {
+	var parsed cteOSSchema.TAnonComplexCteOSProc1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode cteOSProc: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, CTeOSProc: &parsed, RootName: rootName})
+}
+
+func parseRetCTeOS(data []byte, rootName string) (*Document, error) {
+	var parsed cteOSSchema.TRetCTeOS
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retCTeOS: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetCTeOS: &parsed, RootName: rootName})
+}
+
+func parseCTeSimp(data []byte, rootName string) (*Document, error) {
+	var parsed cteSimpSchema.TCTeSimp
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode CTeSimp: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: versionFromInfCteSimp(parsed.InfCte), CTeSimp: &parsed, RootName: rootName})
+}
+
+func parseCTeSimpProc(data []byte, rootName string) (*Document, error) {
+	var parsed cteSimpSchema.TAnonComplexCteSimpProc1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode cteSimpProc: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, CTeSimpProc: &parsed, RootName: rootName})
+}
+
+func parseRetCTeSimp(data []byte, rootName string) (*Document, error) {
+	var parsed cteSimpSchema.TRetCTeSimp
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retCTeSimp: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetCTeSimp: &parsed, RootName: rootName})
+}
+
+func parseGTVe(data []byte, rootName string) (*Document, error) {
+	var parsed gtveSchema.TGTVe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode GTVe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, GTVe: &parsed, RootName: rootName})
+}
+
+func parseGTVeProc(data []byte, rootName string) (*Document, error) {
+	var parsed gtveSchema.TAnonComplexGTVeProc1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode GTVeProc: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, GTVeProc: &parsed, RootName: rootName})
+}
+
+func parseRetGTVe(data []byte, rootName string) (*Document, error) {
+	var parsed gtveSchema.TRetGTVe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retGTVe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetGTVe: &parsed, RootName: rootName})
+}
+
+func parseConsSitCTe(data []byte, rootName string) (*Document, error) {
+	var parsed consSitSchema.TConsSitCTe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode consSitCTe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsSitCTe: &parsed, RootName: rootName})
+}
+
+func parseRetConsSitCTe(data []byte, rootName string) (*Document, error) {
+	var parsed consSitSchema.TRetConsSitCTe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retConsSitCTe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetConsSitCTe: &parsed, RootName: rootName})
+}
+
+func parseConsStatServCTe(data []byte, rootName string) (*Document, error) {
+	var parsed statusSchema.TConsStatServ
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode consStatServCTe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsStatServCTe: &parsed, RootName: rootName})
+}
+
+func parseRetConsStatServCTe(data []byte, rootName string) (*Document, error) {
+	var parsed statusSchema.TRetConsStatServ
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retConsStatServCTe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServCTe: &parsed, RootName: rootName})
+}
+
+func parseDistDFeInt(data []byte, rootName string) (*Document, error) {
+	var parsed distSchema.TAnonComplexDistDFeInt1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode distDFeInt: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, RootName: rootName})
+}
+
+func parseRetDistDFeInt(data []byte, rootName string) (*Document, error) {
+	var parsed distSchema.TAnonComplexRetDistDFeInt1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode retDistDFeInt: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, RootName: rootName})
+}
+
+func parseEventRoot(data []byte, rootName string, fn func([]byte, string, string) (*Document, error)) (*Document, error) {
+	tpEvento, err := eventTypeFromXML(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse cte: decode %s head: %w", rootName, err)
+	}
+	if tpEvento == "" {
+		return nil, errors.New("parse cte: missing infEvento")
+	}
+	return fn(data, rootName, tpEvento)
 }
 
 func eventTypeFromXML(data []byte) (string, error) {
@@ -707,233 +753,438 @@ func versionFromInfCteSimp(inf *cteSimpSchema.TAnonComplexInfCte2) string {
 	return inf.VersaoAttr
 }
 
+var rootValidators = []func(*Document) error{
+	validateCTeRoot,
+	validateCTeProcRoot,
+	validateRetCTeRoot,
+	validateCTeOSRoot,
+	validateCTeOSProcRoot,
+	validateRetCTeOSRoot,
+	validateCTeSimpRoot,
+	validateCTeSimpProcRoot,
+	validateRetCTeSimpRoot,
+	validateGTVeRoot,
+	validateGTVeProcRoot,
+	validateRetGTVeRoot,
+	validateConsSitCTeRoot,
+	validateRetConsSitCTeRoot,
+	validateConsStatServCTeRoot,
+	validateRetConsStatServCTeRoot,
+	validateEventoCTeRoot,
+	validateEventoCancCTeRoot,
+	validateEventoCECTeRoot,
+	validateEventoCancCECTeRoot,
+	validateEventoEPECCTeRoot,
+	validateEventoRegMultimodalRoot,
+	validateEventoGTVRoot,
+	validateEventoIECTeRoot,
+	validateEventoCancIECTeRoot,
+	validateEventoPrestDesacordoRoot,
+	validateEventoCancPrestDesacordoRoot,
+	validateRetEventoCTeRoot,
+	validateRetEventoCancCTeRoot,
+	validateRetEventoCECTeRoot,
+	validateRetEventoCancCECTeRoot,
+	validateRetEventoEPECCTeRoot,
+	validateRetEventoRegMultimodalRoot,
+	validateRetEventoGTVRoot,
+	validateRetEventoIECTeRoot,
+	validateRetEventoCancIECTeRoot,
+	validateRetEventoPrestDesacordoRoot,
+	validateRetEventoCancPrestDesacordoRoot,
+	validateProcEventoCTeRoot,
+	validateProcEventoCancCTeRoot,
+	validateProcEventoCECTeRoot,
+	validateProcEventoCancCECTeRoot,
+	validateProcEventoEPECCTeRoot,
+	validateProcEventoRegMultimodalRoot,
+	validateProcEventoGTVRoot,
+	validateProcEventoIECTeRoot,
+	validateProcEventoCancIECTeRoot,
+	validateProcEventoPrestDesacordoRoot,
+	validateProcEventoCancPrestDesacordoRoot,
+	validateDistDFeIntRoot,
+	validateRetDistDFeIntRoot,
+}
+
 func validateDocument(doc *Document) error {
-	count := activeRootCount(doc)
-	if doc.CTe != nil {
-		if err := validateInfCte(doc.CTe.InfCte); err != nil {
+	for _, v := range rootValidators {
+		if err := v(doc); err != nil {
 			return err
 		}
 	}
-	if doc.CTeProc != nil {
-		if doc.CTeProc.CTe == nil {
-			return errors.New("parse cte: missing CTe")
-		}
-		if doc.CTeProc.ProtCTe == nil {
-			return errors.New("parse cte: missing protCTe")
-		}
-	}
-	if doc.RetCTe != nil && doc.RetCTe.CStat == "" {
-		return errors.New("parse cte: missing cStat")
-	}
-	if doc.CTeOS != nil {
-		if err := validateInfCteOS(doc.CTeOS.InfCte); err != nil {
-			return err
-		}
-	}
-	if doc.CTeOSProc != nil {
-		if doc.CTeOSProc.CTeOS == nil {
-			return errors.New("parse cte: missing CTeOS")
-		}
-		if doc.CTeOSProc.ProtCTe == nil {
-			return errors.New("parse cte: missing protCTe")
-		}
-	}
-	if doc.RetCTeOS != nil && doc.RetCTeOS.CStat == "" {
-		return errors.New("parse cte: missing cStat")
-	}
-	if doc.CTeSimp != nil && doc.CTeSimp.InfCte == nil {
-		return errors.New("parse cte: missing infCte")
-	}
-	if doc.CTeSimpProc != nil {
-		if doc.CTeSimpProc.CTeSimp == nil {
-			return errors.New("parse cte: missing CTeSimp")
-		}
-		if doc.CTeSimpProc.ProtCTe == nil {
-			return errors.New("parse cte: missing protCTe")
-		}
-	}
-	if doc.RetCTeSimp != nil && doc.RetCTeSimp.CStat == "" {
-		return errors.New("parse cte: missing cStat")
-	}
-	if doc.GTVe != nil && doc.GTVe.InfCte == nil {
-		return errors.New("parse cte: missing infCte")
-	}
-	if doc.GTVeProc != nil {
-		if doc.GTVeProc.GTVe == nil {
-			return errors.New("parse cte: missing GTVe")
-		}
-		if doc.GTVeProc.ProtCTe == nil {
-			return errors.New("parse cte: missing protCTe")
-		}
-	}
-	if doc.RetGTVe != nil && doc.RetGTVe.CStat == "" {
-		return errors.New("parse cte: missing cStat")
-	}
-	if doc.ConsSitCTe != nil && doc.ConsSitCTe.ChCTe == "" {
-		return errors.New("parse cte: missing chCTe")
-	}
-	if doc.RetConsSitCTe != nil && doc.RetConsSitCTe.CStat == "" {
-		return errors.New("parse cte: missing cStat")
-	}
-	if doc.ConsStatServCTe != nil && doc.ConsStatServCTe.XServ == "" {
-		return errors.New("parse cte: missing xServ")
-	}
-	if doc.RetConsStatServCTe != nil && doc.RetConsStatServCTe.CStat == "" {
-		return errors.New("parse cte: missing cStat")
-	}
-	if doc.EventoCTe != nil {
-		if err := validateCTeEvent(doc.EventoCTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoCancCTe != nil {
-		if err := validateCTeEvent(doc.EventoCancCTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoCECTe != nil {
-		if err := validateCTeEvent(doc.EventoCECTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoCancCECTe != nil {
-		if err := validateCTeEvent(doc.EventoCancCECTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoEPECCTe != nil {
-		if err := validateCTeEvent(doc.EventoEPECCTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoRegMultimodal != nil {
-		if err := validateCTeEvent(doc.EventoRegMultimodal.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoGTV != nil {
-		if err := validateCTeEvent(doc.EventoGTV.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoIECTe != nil {
-		if err := validateCTeEvent(doc.EventoIECTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoCancIECTe != nil {
-		if err := validateCTeEvent(doc.EventoCancIECTe.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoPrestDesacordo != nil {
-		if err := validateCTeEvent(doc.EventoPrestDesacordo.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.EventoCancPrestDesacordo != nil {
-		if err := validateCTeEvent(doc.EventoCancPrestDesacordo.InfEvento); err != nil {
-			return err
-		}
-	}
-	if doc.RetEventoCTe != nil && doc.RetEventoCTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoCTe != nil && doc.ProcEventoCTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoCancCTe != nil && doc.RetEventoCancCTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoCancCTe != nil && doc.ProcEventoCancCTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoCECTe != nil && doc.RetEventoCECTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoCECTe != nil && doc.ProcEventoCECTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoCancCECTe != nil && doc.RetEventoCancCECTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoCancCECTe != nil && doc.ProcEventoCancCECTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoEPECCTe != nil && doc.RetEventoEPECCTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoEPECCTe != nil && doc.ProcEventoEPECCTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoRegMultimodal != nil && doc.RetEventoRegMultimodal.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoRegMultimodal != nil && doc.ProcEventoRegMultimodal.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoGTV != nil && doc.RetEventoGTV.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoGTV != nil && doc.ProcEventoGTV.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoIECTe != nil && doc.RetEventoIECTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoIECTe != nil && doc.ProcEventoIECTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoCancIECTe != nil && doc.RetEventoCancIECTe.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoCancIECTe != nil && doc.ProcEventoCancIECTe.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoPrestDesacordo != nil && doc.RetEventoPrestDesacordo.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoPrestDesacordo != nil && doc.ProcEventoPrestDesacordo.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.RetEventoCancPrestDesacordo != nil && doc.RetEventoCancPrestDesacordo.InfEvento == nil {
-		return errors.New("parse cte: missing infEvento")
-	}
-	if doc.ProcEventoCancPrestDesacordo != nil && doc.ProcEventoCancPrestDesacordo.EventoCTe == nil {
-		return errors.New("parse cte: missing eventoCTe")
-	}
-	if doc.DistDFeInt != nil {
-		if doc.DistDFeInt.TpAmb == "" {
-			return errors.New("parse cte: missing tpAmb")
-		}
-		if doc.DistDFeInt.CUFAutor == "" {
-			return errors.New("parse cte: missing cUFAutor")
-		}
-		if doc.DistDFeInt.CNPJ == nil && doc.DistDFeInt.CPF == nil {
-			return errors.New("parse cte: missing dist document")
-		}
-		if doc.DistDFeInt.DistNSU == nil && doc.DistDFeInt.ConsNSU == nil {
-			return errors.New("parse cte: missing dist query")
-		}
-	}
-	if doc.RetDistDFeInt != nil {
-		if doc.RetDistDFeInt.TpAmb == "" {
-			return errors.New("parse cte: missing tpAmb")
-		}
-		if doc.RetDistDFeInt.CStat == "" {
-			return errors.New("parse cte: missing cStat")
-		}
-		if doc.RetDistDFeInt.UltNSU == "" {
-			return errors.New("parse cte: missing ultNSU")
-		}
-		if doc.RetDistDFeInt.MaxNSU == "" {
-			return errors.New("parse cte: missing maxNSU")
-		}
-	}
-	if count != 1 {
+	if activeRootCount(doc) != 1 {
 		return errors.New("parse cte: document must contain exactly one supported root")
 	}
 	return nil
+}
+
+func missing(field, value string) error {
+	if value == "" {
+		return errors.New("parse cte: missing " + field)
+	}
+	return nil
+}
+
+func firstMissing(errs ...error) error {
+	for _, err := range errs {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateCTeRoot(doc *Document) error {
+	if doc.CTe == nil {
+		return nil
+	}
+	return validateInfCte(doc.CTe.InfCte)
+}
+
+func validateCTeProcRoot(doc *Document) error {
+	if doc.CTeProc == nil {
+		return nil
+	}
+	if doc.CTeProc.CTe == nil {
+		return errors.New("parse cte: missing CTe")
+	}
+	if doc.CTeProc.ProtCTe == nil {
+		return errors.New("parse cte: missing protCTe")
+	}
+	return nil
+}
+
+func validateRetCTeRoot(doc *Document) error {
+	if doc.RetCTe == nil {
+		return nil
+	}
+	return missing("cStat", doc.RetCTe.CStat)
+}
+
+func validateCTeOSRoot(doc *Document) error {
+	if doc.CTeOS == nil {
+		return nil
+	}
+	return validateInfCteOS(doc.CTeOS.InfCte)
+}
+
+func validateCTeOSProcRoot(doc *Document) error {
+	if doc.CTeOSProc == nil {
+		return nil
+	}
+	if doc.CTeOSProc.CTeOS == nil {
+		return errors.New("parse cte: missing CTeOS")
+	}
+	if doc.CTeOSProc.ProtCTe == nil {
+		return errors.New("parse cte: missing protCTe")
+	}
+	return nil
+}
+
+func validateRetCTeOSRoot(doc *Document) error {
+	if doc.RetCTeOS == nil {
+		return nil
+	}
+	return missing("cStat", doc.RetCTeOS.CStat)
+}
+
+func validateCTeSimpRoot(doc *Document) error {
+	if doc.CTeSimp == nil {
+		return nil
+	}
+	if doc.CTeSimp.InfCte == nil {
+		return errors.New("parse cte: missing infCte")
+	}
+	return nil
+}
+
+func validateCTeSimpProcRoot(doc *Document) error {
+	if doc.CTeSimpProc == nil {
+		return nil
+	}
+	if doc.CTeSimpProc.CTeSimp == nil {
+		return errors.New("parse cte: missing CTeSimp")
+	}
+	if doc.CTeSimpProc.ProtCTe == nil {
+		return errors.New("parse cte: missing protCTe")
+	}
+	return nil
+}
+
+func validateRetCTeSimpRoot(doc *Document) error {
+	if doc.RetCTeSimp == nil {
+		return nil
+	}
+	return missing("cStat", doc.RetCTeSimp.CStat)
+}
+
+func validateGTVeRoot(doc *Document) error {
+	if doc.GTVe == nil {
+		return nil
+	}
+	if doc.GTVe.InfCte == nil {
+		return errors.New("parse cte: missing infCte")
+	}
+	return nil
+}
+
+func validateGTVeProcRoot(doc *Document) error {
+	if doc.GTVeProc == nil {
+		return nil
+	}
+	if doc.GTVeProc.GTVe == nil {
+		return errors.New("parse cte: missing GTVe")
+	}
+	if doc.GTVeProc.ProtCTe == nil {
+		return errors.New("parse cte: missing protCTe")
+	}
+	return nil
+}
+
+func validateRetGTVeRoot(doc *Document) error {
+	if doc.RetGTVe == nil {
+		return nil
+	}
+	return missing("cStat", doc.RetGTVe.CStat)
+}
+
+func validateConsSitCTeRoot(doc *Document) error {
+	if doc.ConsSitCTe == nil {
+		return nil
+	}
+	return missing("chCTe", doc.ConsSitCTe.ChCTe)
+}
+
+func validateRetConsSitCTeRoot(doc *Document) error {
+	if doc.RetConsSitCTe == nil {
+		return nil
+	}
+	return missing("cStat", doc.RetConsSitCTe.CStat)
+}
+
+func validateConsStatServCTeRoot(doc *Document) error {
+	if doc.ConsStatServCTe == nil {
+		return nil
+	}
+	return missing("xServ", doc.ConsStatServCTe.XServ)
+}
+
+func validateRetConsStatServCTeRoot(doc *Document) error {
+	if doc.RetConsStatServCTe == nil {
+		return nil
+	}
+	return missing("cStat", doc.RetConsStatServCTe.CStat)
+}
+
+func validateDistDFeIntRoot(doc *Document) error {
+	if doc.DistDFeInt == nil {
+		return nil
+	}
+	if err := firstMissing(
+		missing("tpAmb", doc.DistDFeInt.TpAmb),
+		missing("cUFAutor", doc.DistDFeInt.CUFAutor),
+	); err != nil {
+		return err
+	}
+	if doc.DistDFeInt.CNPJ == nil && doc.DistDFeInt.CPF == nil {
+		return errors.New("parse cte: missing dist document")
+	}
+	if doc.DistDFeInt.DistNSU == nil && doc.DistDFeInt.ConsNSU == nil {
+		return errors.New("parse cte: missing dist query")
+	}
+	return nil
+}
+
+func validateRetDistDFeIntRoot(doc *Document) error {
+	if doc.RetDistDFeInt == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetDistDFeInt.TpAmb),
+		missing("cStat", doc.RetDistDFeInt.CStat),
+		missing("ultNSU", doc.RetDistDFeInt.UltNSU),
+		missing("maxNSU", doc.RetDistDFeInt.MaxNSU),
+	)
+}
+
+func validateEventoCTeRoot(doc *Document) error {
+	if doc.EventoCTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoCTe.InfEvento)
+}
+
+func validateEventoCancCTeRoot(doc *Document) error {
+	if doc.EventoCancCTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoCancCTe.InfEvento)
+}
+
+func validateEventoCECTeRoot(doc *Document) error {
+	if doc.EventoCECTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoCECTe.InfEvento)
+}
+
+func validateEventoCancCECTeRoot(doc *Document) error {
+	if doc.EventoCancCECTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoCancCECTe.InfEvento)
+}
+
+func validateEventoEPECCTeRoot(doc *Document) error {
+	if doc.EventoEPECCTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoEPECCTe.InfEvento)
+}
+
+func validateEventoRegMultimodalRoot(doc *Document) error {
+	if doc.EventoRegMultimodal == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoRegMultimodal.InfEvento)
+}
+
+func validateEventoGTVRoot(doc *Document) error {
+	if doc.EventoGTV == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoGTV.InfEvento)
+}
+
+func validateEventoIECTeRoot(doc *Document) error {
+	if doc.EventoIECTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoIECTe.InfEvento)
+}
+
+func validateEventoCancIECTeRoot(doc *Document) error {
+	if doc.EventoCancIECTe == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoCancIECTe.InfEvento)
+}
+
+func validateEventoPrestDesacordoRoot(doc *Document) error {
+	if doc.EventoPrestDesacordo == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoPrestDesacordo.InfEvento)
+}
+
+func validateEventoCancPrestDesacordoRoot(doc *Document) error {
+	if doc.EventoCancPrestDesacordo == nil {
+		return nil
+	}
+	return validateCTeEvent(doc.EventoCancPrestDesacordo.InfEvento)
+}
+
+func missingInfEventoIfNil(present, infEventoNil bool) error {
+	if present && infEventoNil {
+		return errors.New("parse cte: missing infEvento")
+	}
+	return nil
+}
+
+func missingEventoCTeIfNil(present, eventoNil bool) error {
+	if present && eventoNil {
+		return errors.New("parse cte: missing eventoCTe")
+	}
+	return nil
+}
+
+func validateRetEventoCTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoCTe != nil, doc.RetEventoCTe != nil && doc.RetEventoCTe.InfEvento == nil)
+}
+
+func validateRetEventoCancCTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoCancCTe != nil, doc.RetEventoCancCTe != nil && doc.RetEventoCancCTe.InfEvento == nil)
+}
+
+func validateRetEventoCECTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoCECTe != nil, doc.RetEventoCECTe != nil && doc.RetEventoCECTe.InfEvento == nil)
+}
+
+func validateRetEventoCancCECTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoCancCECTe != nil, doc.RetEventoCancCECTe != nil && doc.RetEventoCancCECTe.InfEvento == nil)
+}
+
+func validateRetEventoEPECCTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoEPECCTe != nil, doc.RetEventoEPECCTe != nil && doc.RetEventoEPECCTe.InfEvento == nil)
+}
+
+func validateRetEventoRegMultimodalRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoRegMultimodal != nil, doc.RetEventoRegMultimodal != nil && doc.RetEventoRegMultimodal.InfEvento == nil)
+}
+
+func validateRetEventoGTVRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoGTV != nil, doc.RetEventoGTV != nil && doc.RetEventoGTV.InfEvento == nil)
+}
+
+func validateRetEventoIECTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoIECTe != nil, doc.RetEventoIECTe != nil && doc.RetEventoIECTe.InfEvento == nil)
+}
+
+func validateRetEventoCancIECTeRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoCancIECTe != nil, doc.RetEventoCancIECTe != nil && doc.RetEventoCancIECTe.InfEvento == nil)
+}
+
+func validateRetEventoPrestDesacordoRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoPrestDesacordo != nil, doc.RetEventoPrestDesacordo != nil && doc.RetEventoPrestDesacordo.InfEvento == nil)
+}
+
+func validateRetEventoCancPrestDesacordoRoot(doc *Document) error {
+	return missingInfEventoIfNil(doc.RetEventoCancPrestDesacordo != nil, doc.RetEventoCancPrestDesacordo != nil && doc.RetEventoCancPrestDesacordo.InfEvento == nil)
+}
+
+func validateProcEventoCTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoCTe != nil, doc.ProcEventoCTe != nil && doc.ProcEventoCTe.EventoCTe == nil)
+}
+
+func validateProcEventoCancCTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoCancCTe != nil, doc.ProcEventoCancCTe != nil && doc.ProcEventoCancCTe.EventoCTe == nil)
+}
+
+func validateProcEventoCECTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoCECTe != nil, doc.ProcEventoCECTe != nil && doc.ProcEventoCECTe.EventoCTe == nil)
+}
+
+func validateProcEventoCancCECTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoCancCECTe != nil, doc.ProcEventoCancCECTe != nil && doc.ProcEventoCancCECTe.EventoCTe == nil)
+}
+
+func validateProcEventoEPECCTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoEPECCTe != nil, doc.ProcEventoEPECCTe != nil && doc.ProcEventoEPECCTe.EventoCTe == nil)
+}
+
+func validateProcEventoRegMultimodalRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoRegMultimodal != nil, doc.ProcEventoRegMultimodal != nil && doc.ProcEventoRegMultimodal.EventoCTe == nil)
+}
+
+func validateProcEventoGTVRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoGTV != nil, doc.ProcEventoGTV != nil && doc.ProcEventoGTV.EventoCTe == nil)
+}
+
+func validateProcEventoIECTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoIECTe != nil, doc.ProcEventoIECTe != nil && doc.ProcEventoIECTe.EventoCTe == nil)
+}
+
+func validateProcEventoCancIECTeRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoCancIECTe != nil, doc.ProcEventoCancIECTe != nil && doc.ProcEventoCancIECTe.EventoCTe == nil)
+}
+
+func validateProcEventoPrestDesacordoRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoPrestDesacordo != nil, doc.ProcEventoPrestDesacordo != nil && doc.ProcEventoPrestDesacordo.EventoCTe == nil)
+}
+
+func validateProcEventoCancPrestDesacordoRoot(doc *Document) error {
+	return missingEventoCTeIfNil(doc.ProcEventoCancPrestDesacordo != nil, doc.ProcEventoCancPrestDesacordo != nil && doc.ProcEventoCancPrestDesacordo.EventoCTe == nil)
 }
 
 func validateInfCte(inf *cteSchema.TAnonComplexInfCte3) error {
@@ -1012,7 +1263,7 @@ func validateInfEvento(ok bool, chCTe string, hasDet bool) error {
 
 func marshalEventRoot(e *xml.Encoder, d *Document) error {
 	if activeRootCount(d) != 1 {
-		return errors.New("marshal cte: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 	switch {
 	case d.EventoCTe != nil:
@@ -1038,13 +1289,13 @@ func marshalEventRoot(e *xml.Encoder, d *Document) error {
 	case d.EventoCancPrestDesacordo != nil:
 		return encodeCTeEvent(e, d.EventoCancPrestDesacordo.VersaoAttr, d.EventoCancPrestDesacordo.InfEvento, d.EventoCancPrestDesacordo.DsSignature)
 	default:
-		return errors.New("marshal cte: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 }
 
 func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
 	if activeRootCount(d) != 1 {
-		return errors.New("marshal cte: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 	switch {
 	case d.RetEventoCTe != nil:
@@ -1070,13 +1321,13 @@ func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
 	case d.RetEventoCancPrestDesacordo != nil:
 		return encodeCTeRetEvent(e, d.RetEventoCancPrestDesacordo.VersaoAttr, d.RetEventoCancPrestDesacordo.InfEvento, d.RetEventoCancPrestDesacordo.DsSignature)
 	default:
-		return errors.New("marshal cte: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 }
 
 func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
 	if activeRootCount(d) != 1 {
-		return errors.New("marshal cte: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 	switch {
 	case d.ProcEventoCTe != nil:
@@ -1102,19 +1353,18 @@ func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
 	case d.ProcEventoCancPrestDesacordo != nil:
 		return encodeCTeProcEvent(e, d.ProcEventoCancPrestDesacordo.VersaoAttr, d.ProcEventoCancPrestDesacordo.IpTransmissorAttr, d.ProcEventoCancPrestDesacordo.NPortaConAttr, d.ProcEventoCancPrestDesacordo.DhConexaoAttr, d.ProcEventoCancPrestDesacordo.EventoCTe, d.ProcEventoCancPrestDesacordo.RetEventoCTe)
 	default:
-		return errors.New("marshal cte: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 }
 
 func encodeCTeEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
-	type root struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName     xml.Name `xml:"eventoCTe"`
 		XMLNS       string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr  string   `xml:"versao,attr,omitempty"`
 		InfEvento   any      `xml:"infEvento"`
 		DsSignature any      `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-	}
-	return xmlutil.EncodeCanonical(e, root{
+	}{
 		XMLName:     xml.Name{Local: "eventoCTe"},
 		XMLNS:       namespace,
 		VersaoAttr:  versao,
@@ -1124,14 +1374,13 @@ func encodeCTeEvent(e *xml.Encoder, versao string, infEvento any, signature any)
 }
 
 func encodeCTeRetEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
-	type root struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName     xml.Name `xml:"retEventoCTe"`
 		XMLNS       string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr  string   `xml:"versao,attr,omitempty"`
 		InfEvento   any      `xml:"infEvento"`
 		DsSignature any      `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-	}
-	return xmlutil.EncodeCanonical(e, root{
+	}{
 		XMLName:     xml.Name{Local: "retEventoCTe"},
 		XMLNS:       namespace,
 		VersaoAttr:  versao,
@@ -1141,7 +1390,7 @@ func encodeCTeRetEvent(e *xml.Encoder, versao string, infEvento any, signature a
 }
 
 func encodeCTeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon, dhConexao *string, evento any, retEvento any) error {
-	type root struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName           xml.Name `xml:"procEventoCTe"`
 		XMLNS             string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr        string   `xml:"versao,attr,omitempty"`
@@ -1150,8 +1399,7 @@ func encodeCTeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon,
 		DhConexaoAttr     *string  `xml:"dhConexao,attr,omitempty"`
 		EventoCTe         any      `xml:"eventoCTe"`
 		RetEventoCTe      any      `xml:"retEventoCTe"`
-	}
-	return xmlutil.EncodeCanonical(e, root{
+	}{
 		XMLName:           xml.Name{Local: "procEventoCTe"},
 		XMLNS:             namespace,
 		VersaoAttr:        versao,
@@ -1163,230 +1411,165 @@ func encodeCTeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon,
 	})
 }
 
-func parseEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
+func decodeEvent[T any](data []byte, context string, assign func(*T) *Document) (*Document, error) {
+	var parsed T
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse cte: decode %s: %w", context, err)
+	}
+	return finalizeDoc(assign(&parsed))
+}
+
+func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110110":
-		var parsed eventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe cce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe cce", func(p *eventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCTe: p, RootName: rootName}
+		})
 	case "110111":
-		var parsed cancelEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe cancel", func(p *cancelEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancCTe: p, RootName: rootName}
+		})
 	case "110113":
-		var parsed epecEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe epec: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoEPECCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe epec", func(p *epecEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoEPECCTe: p, RootName: rootName}
+		})
 	case "110160":
-		var parsed regMultimodalEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe reg multimodal: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoRegMultimodal: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe reg multimodal", func(p *regMultimodalEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoRegMultimodal: p, RootName: rootName}
+		})
 	case "110170":
-		var parsed gtvEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe gtv: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoGTV: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe gtv", func(p *gtvEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoGTV: p, RootName: rootName}
+		})
 	case "110180":
-		var parsed ceEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe ce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe ce", func(p *ceEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCECTe: p, RootName: rootName}
+		})
 	case "110181":
-		var parsed cancelCEEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel ce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancCECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe cancel ce", func(p *cancelCEEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancCECTe: p, RootName: rootName}
+		})
 	case "110190":
-		var parsed ieEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe ie: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoIECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe ie", func(p *ieEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoIECTe: p, RootName: rootName}
+		})
 	case "110191":
-		var parsed cancelIEEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel ie: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancIECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe cancel ie", func(p *cancelIEEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancIECTe: p, RootName: rootName}
+		})
 	case "610110":
-		var parsed prestDesacordoEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe prest desacordo: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoPrestDesacordo: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe prest desacordo", func(p *prestDesacordoEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoPrestDesacordo: p, RootName: rootName}
+		})
 	case "610111":
-		var parsed cancelPrestDesacordoEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel prest desacordo: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancPrestDesacordo: &parsed, RootName: RootName})
+		return decodeEvent(data, "eventoCTe cancel prest desacordo", func(p *cancelPrestDesacordoEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancPrestDesacordo: p, RootName: rootName}
+		})
 	default:
 		return nil, fmt.Errorf("parse cte: unsupported tpEvento %q", tpEvento)
 	}
 }
 
-func parseRetEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
+func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110110":
-		var parsed eventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe cce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe cce", func(p *eventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCTe: p, RootName: rootName}
+		})
 	case "110111":
-		var parsed cancelEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe cancel", func(p *cancelEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancCTe: p, RootName: rootName}
+		})
 	case "110113":
-		var parsed epecEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe epec: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoEPECCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe epec", func(p *epecEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoEPECCTe: p, RootName: rootName}
+		})
 	case "110160":
-		var parsed regMultimodalEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe reg multimodal: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoRegMultimodal: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe reg multimodal", func(p *regMultimodalEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoRegMultimodal: p, RootName: rootName}
+		})
 	case "110170":
-		var parsed gtvEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe gtv: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoGTV: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe gtv", func(p *gtvEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoGTV: p, RootName: rootName}
+		})
 	case "110180":
-		var parsed ceEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe ce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe ce", func(p *ceEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCECTe: p, RootName: rootName}
+		})
 	case "110181":
-		var parsed cancelCEEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel ce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancCECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe cancel ce", func(p *cancelCEEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancCECTe: p, RootName: rootName}
+		})
 	case "110190":
-		var parsed ieEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe ie: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoIECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe ie", func(p *ieEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoIECTe: p, RootName: rootName}
+		})
 	case "110191":
-		var parsed cancelIEEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel ie: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancIECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe cancel ie", func(p *cancelIEEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancIECTe: p, RootName: rootName}
+		})
 	case "610110":
-		var parsed prestDesacordoEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe prest desacordo: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoPrestDesacordo: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe prest desacordo", func(p *prestDesacordoEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoPrestDesacordo: p, RootName: rootName}
+		})
 	case "610111":
-		var parsed cancelPrestDesacordoEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel prest desacordo: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancPrestDesacordo: &parsed, RootName: RootName})
+		return decodeEvent(data, "retEventoCTe cancel prest desacordo", func(p *cancelPrestDesacordoEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancPrestDesacordo: p, RootName: rootName}
+		})
 	default:
 		return nil, fmt.Errorf("parse cte: unsupported tpEvento %q", tpEvento)
 	}
 }
 
-func parseProcEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
+func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110110":
-		var parsed eventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe cce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe cce", func(p *eventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCTe: p, RootName: rootName}
+		})
 	case "110111":
-		var parsed cancelEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe cancel", func(p *cancelEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancCTe: p, RootName: rootName}
+		})
 	case "110113":
-		var parsed epecEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe epec: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoEPECCTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe epec", func(p *epecEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoEPECCTe: p, RootName: rootName}
+		})
 	case "110160":
-		var parsed regMultimodalEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe reg multimodal: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoRegMultimodal: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe reg multimodal", func(p *regMultimodalEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoRegMultimodal: p, RootName: rootName}
+		})
 	case "110170":
-		var parsed gtvEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe gtv: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoGTV: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe gtv", func(p *gtvEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoGTV: p, RootName: rootName}
+		})
 	case "110180":
-		var parsed ceEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe ce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe ce", func(p *ceEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCECTe: p, RootName: rootName}
+		})
 	case "110181":
-		var parsed cancelCEEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel ce: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancCECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe cancel ce", func(p *cancelCEEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancCECTe: p, RootName: rootName}
+		})
 	case "110190":
-		var parsed ieEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe ie: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoIECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe ie", func(p *ieEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoIECTe: p, RootName: rootName}
+		})
 	case "110191":
-		var parsed cancelIEEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel ie: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancIECTe: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe cancel ie", func(p *cancelIEEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancIECTe: p, RootName: rootName}
+		})
 	case "610110":
-		var parsed prestDesacordoEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe prest desacordo: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoPrestDesacordo: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe prest desacordo", func(p *prestDesacordoEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoPrestDesacordo: p, RootName: rootName}
+		})
 	case "610111":
-		var parsed cancelPrestDesacordoEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel prest desacordo: %w", err)
-		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancPrestDesacordo: &parsed, RootName: RootName})
+		return decodeEvent(data, "procEventoCTe cancel prest desacordo", func(p *cancelPrestDesacordoEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancPrestDesacordo: p, RootName: rootName}
+		})
 	default:
 		return nil, fmt.Errorf("parse cte: unsupported tpEvento %q", tpEvento)
 	}
-}
-
-func validatedCTeDoc(doc *Document) (*Document, error) {
-	if err := validateDocument(doc); err != nil {
-		return nil, err
-	}
-	return doc, nil
 }
 
 func activeRootCount(doc *Document) int {

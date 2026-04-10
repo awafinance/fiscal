@@ -8,7 +8,7 @@ import (
 
 // TAnonComplexProcEventoCTe1 ...
 type TAnonComplexProcEventoCTe1 struct {
-	XMLName	xml.Name	`xml:"procEventoCTe" json:"-"`
+	XMLName xml.Name `xml:"procEventoCTe" json:"-"`
 	*TProcEvento
 }
 

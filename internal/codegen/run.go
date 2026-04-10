@@ -191,32 +191,41 @@ func runXGenJobs(ctx context.Context, repoRoot string, family family, parallelis
 	workers := min(parallelism, len(family.xgenJobs))
 	for range workers {
 		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for job := range jobCh {
-				if err := runXGenJob(ctx, repoRoot, family.name, job, xgenSlots, verbose); err != nil {
-					select {
-					case errCh <- err:
-						cancel()
-					default:
-					}
-					return
-				}
-			}
-		}()
+		go xgenWorker(ctx, repoRoot, family.name, jobCh, errCh, xgenSlots, verbose, &wg, cancel)
 	}
 
-dispatch:
-	for _, job := range family.xgenJobs {
-		select {
-		case <-ctx.Done():
-			break dispatch
-		case jobCh <- job:
-		}
-	}
+	dispatchXGenJobs(ctx, family.xgenJobs, jobCh)
 	close(jobCh)
 	wg.Wait()
 
+	return collectXGenError(ctx, errCh)
+}
+
+func xgenWorker(ctx context.Context, repoRoot, familyName string, jobCh <-chan xgenJob, errCh chan<- error, xgenSlots chan struct{}, verbose bool, wg *sync.WaitGroup, cancel context.CancelFunc) {
+	defer wg.Done()
+	for job := range jobCh {
+		if err := runXGenJob(ctx, repoRoot, familyName, job, xgenSlots, verbose); err != nil {
+			select {
+			case errCh <- err:
+				cancel()
+			default:
+			}
+			return
+		}
+	}
+}
+
+func dispatchXGenJobs(ctx context.Context, jobs []xgenJob, jobCh chan<- xgenJob) {
+	for _, job := range jobs {
+		select {
+		case <-ctx.Done():
+			return
+		case jobCh <- job:
+		}
+	}
+}
+
+func collectXGenError(ctx context.Context, errCh <-chan error) error {
 	select {
 	case err := <-errCh:
 		return err

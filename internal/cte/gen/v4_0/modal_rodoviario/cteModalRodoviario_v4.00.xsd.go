@@ -20,28 +20,28 @@ type TAnonCInt1 string
 
 // TAnonComplexEmiOcc1 is Telefone
 type TAnonComplexEmiOcc1 struct {
-	XMLName	xml.Name	`xml:"emiOcc" json:"-"`
-	CNPJ	string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CInt	*string		`xml:"cInt" json:"cInt,omitempty"`
-	IE	string		`xml:"IE" json:"IE,omitempty"`
-	UF	string		`xml:"UF" json:"UF,omitempty"`
-	Fone	*string		`xml:"fone" json:"fone,omitempty"`
+	XMLName xml.Name `xml:"emiOcc" json:"-"`
+	CNPJ    string   `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CInt    *string  `xml:"cInt" json:"cInt,omitempty"`
+	IE      string   `xml:"IE" json:"IE,omitempty"`
+	UF      string   `xml:"UF" json:"UF,omitempty"`
+	Fone    *string  `xml:"fone" json:"fone,omitempty"`
 }
 
 // TAnonComplexOcc1 is Formato AAAA-MM-DD
 type TAnonComplexOcc1 struct {
-	XMLName	xml.Name		`xml:"occ" json:"-"`
-	Serie	*string			`xml:"serie" json:"serie,omitempty"`
-	NOcc	string			`xml:"nOcc" json:"nOcc,omitempty"`
-	DEmi	string			`xml:"dEmi" json:"dEmi,omitempty"`
-	EmiOcc	*TAnonComplexEmiOcc1	`xml:"emiOcc" json:"emiOcc,omitempty"`
+	XMLName xml.Name             `xml:"occ" json:"-"`
+	Serie   *string              `xml:"serie" json:"serie,omitempty"`
+	NOcc    string               `xml:"nOcc" json:"nOcc,omitempty"`
+	DEmi    string               `xml:"dEmi" json:"dEmi,omitempty"`
+	EmiOcc  *TAnonComplexEmiOcc1 `xml:"emiOcc" json:"emiOcc,omitempty"`
 }
 
 // TAnonComplexRodo1 is Ordens de Coleta associados
 type TAnonComplexRodo1 struct {
-	XMLName	xml.Name		`xml:"rodo" json:"-"`
-	RNTRC	string			`xml:"RNTRC" json:"RNTRC,omitempty"`
-	Occ	[]*TAnonComplexOcc1	`xml:"occ" json:"occ,omitempty"`
+	XMLName xml.Name            `xml:"rodo" json:"-"`
+	RNTRC   string              `xml:"RNTRC" json:"RNTRC,omitempty"`
+	Occ     []*TAnonComplexOcc1 `xml:"occ" json:"occ,omitempty"`
 }
 
 // Rodo is Informações do modal Rodoviário

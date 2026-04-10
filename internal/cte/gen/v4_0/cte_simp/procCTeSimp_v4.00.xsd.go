@@ -8,13 +8,13 @@ import (
 
 // TAnonComplexCteSimpProc1 ...
 type TAnonComplexCteSimpProc1 struct {
-	XMLName			xml.Name	`xml:"cteSimpProc" json:"-"`
-	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
-	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
-	NPortaConAttr		*string		`xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
-	DhConexaoAttr		*string		`xml:"dhConexao,attr" json:"dhConexao,omitempty"`
-	CTeSimp			*TCTeSimp	`xml:"CTeSimp" json:"CTeSimp,omitempty"`
-	ProtCTe			*TProtCTe	`xml:"protCTe" json:"protCTe,omitempty"`
+	XMLName           xml.Name  `xml:"cteSimpProc" json:"-"`
+	VersaoAttr        string    `xml:"versao,attr" json:"versao,omitempty"`
+	IpTransmissorAttr *string   `xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	NPortaConAttr     *string   `xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
+	DhConexaoAttr     *string   `xml:"dhConexao,attr" json:"dhConexao,omitempty"`
+	CTeSimp           *TCTeSimp `xml:"CTeSimp" json:"CTeSimp,omitempty"`
+	ProtCTe           *TProtCTe `xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // CteSimpProc is CT-e Simplificado processado

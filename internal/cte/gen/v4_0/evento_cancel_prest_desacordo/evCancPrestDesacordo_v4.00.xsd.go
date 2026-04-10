@@ -11,9 +11,9 @@ type TAnonDescEvento1 string
 
 // TAnonComplexEvCancPrestDesacordo1 is Informar o número do protocolo de autorização do evento de prestação de serviço em desacordo que será cancelado
 type TAnonComplexEvCancPrestDesacordo1 struct {
-	XMLName		xml.Name	`xml:"evCancPrestDesacordo" json:"-"`
-	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
-	NProtEvPrestDes	string		`xml:"nProtEvPrestDes" json:"nProtEvPrestDes,omitempty"`
+	XMLName         xml.Name `xml:"evCancPrestDesacordo" json:"-"`
+	DescEvento      string   `xml:"descEvento" json:"descEvento,omitempty"`
+	NProtEvPrestDes string   `xml:"nProtEvPrestDes" json:"nProtEvPrestDes,omitempty"`
 }
 
 // EvCancPrestDesacordo is Schema XML de validação do evento Cancelamento Prestação do Serviço em Desacordo 610111

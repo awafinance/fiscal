@@ -370,28 +370,44 @@ func (e *element) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			return err
 		}
 
-		switch tok := tok.(type) {
-		case xml.StartElement:
-			child := &element{}
-			if err := child.UnmarshalXML(d, tok); err != nil {
-				return err
-			}
-			e.Children = append(e.Children, child)
-		case xml.EndElement:
-			if tok.Name == start.Name {
-				return nil
-			}
-		case xml.CharData:
-			text := strings.TrimSpace(string(tok))
-			if text != "" {
-				if e.Content == "" {
-					e.Content = text
-				} else {
-					e.Content += text
-				}
-			}
+		done, err := e.consumeToken(d, start, tok)
+		if err != nil {
+			return err
+		}
+		if done {
+			return nil
 		}
 	}
+}
+
+func (e *element) consumeToken(d *xml.Decoder, start xml.StartElement, tok xml.Token) (bool, error) {
+	switch tok := tok.(type) {
+	case xml.StartElement:
+		child := &element{}
+		if err := child.UnmarshalXML(d, tok); err != nil {
+			return false, err
+		}
+		e.Children = append(e.Children, child)
+	case xml.EndElement:
+		if tok.Name == start.Name {
+			return true, nil
+		}
+	case xml.CharData:
+		e.appendContent(string(tok))
+	}
+	return false, nil
+}
+
+func (e *element) appendContent(raw string) {
+	text := strings.TrimSpace(raw)
+	if text == "" {
+		return
+	}
+	if e.Content == "" {
+		e.Content = text
+		return
+	}
+	e.Content += text
 }
 
 func (e *element) MarshalXML(enc *xml.Encoder, start xml.StartElement) error {

@@ -471,6 +471,30 @@ func encodeResEvento(e *xml.Encoder, d *Document) error {
 	})
 }
 
+var parsersByRoot = map[string]func([]byte, string) (*Document, error){
+	nfeProc:           parseNFeProc,
+	"NFe":             parseNFe,
+	"enviNFe":         parseEnviNFe,
+	"retEnviNFe":      parseRetEnviNFe,
+	"consReciNFe":     parseConsReciNFe,
+	"retConsReciNFe":  parseRetConsReciNFe,
+	"evento":          parseEventRoot,
+	"envEvento":       parseEnvEvento,
+	"retEnvEvento":    parseRetEnvEvento,
+	"procEventoNFe":   parseProcEventoNFe,
+	"consSitNFe":      parseConsSitNFe,
+	"retConsSitNFe":   parseRetConsSitNFe,
+	"consStatServ":    parseConsStatServ,
+	"retConsStatServ": parseRetConsStatServ,
+	"inutNFe":         parseInutNFe,
+	"retInutNFe":      parseRetInutNFe,
+	"procInutNFe":     parseProcInutNFe,
+	"distDFeInt":      parseDistDFeInt,
+	"retDistDFeInt":   parseRetDistDFeInt,
+	"resNFe":          parseResNFe,
+	"resEvento":       parseResEvento,
+}
+
 func Parse(data []byte) (*Document, error) {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
@@ -482,403 +506,274 @@ func Parse(data []byte) (*Document, error) {
 		return nil, fmt.Errorf("parse nfe: read root: %w", rootErr)
 	}
 
-	switch rootName {
-	case nfeProc:
-		var parsed struct {
-			VersaoAttr string           `xml:"versao,attr"`
-			NFe        *schema.TNFe     `xml:"NFe"`
-			ProtNFe    *schema.TProtNFe `xml:"protNFe"`
-		}
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode nfeProc: %w", err)
-		}
-		doc := &Document{
-			VersaoAttr: parsed.VersaoAttr,
-			NFe:        parsed.NFe,
-			ProtNFe:    parsed.ProtNFe,
-			RootName:   nfeProc,
-		}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-
-	case "NFe":
-		var invoice schema.TNFe
-		if err := xml.Unmarshal(data, &invoice); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode NFe: %w", err)
-		}
-		doc := &Document{
-			VersaoAttr: versionFromNFe(&invoice),
-			NFe:        &invoice,
-			RootName:   "NFe",
-		}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-
-	case "enviNFe":
-		var parsed schema.TEnviNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode enviNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EnviNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-
-	case "retEnviNFe":
-		var parsed schema.TRetEnviNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retEnviNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEnviNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-
-	case "consReciNFe":
-		var parsed schema.TConsReciNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode consReciNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsReciNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-
-	case "retConsReciNFe":
-		var parsed schema.TRetConsReciNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retConsReciNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsReciNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-
-	case "evento":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse nfe: decode evento head: %w", err)
-		}
-		switch tpEvento {
-		case "110111":
-			var event cancelSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode cancel event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:   event.VersaoAttr,
-				EventoCancel: &event,
-				RootName:     rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110130":
-			var event entregaSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode entrega event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:    event.VersaoAttr,
-				EventoEntrega: &event,
-				RootName:      rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110131":
-			var event cancelEntregaSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode cancel entrega event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:        event.VersaoAttr,
-				EventoCancEntrega: &event,
-				RootName:          rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110110":
-			var event cceSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode cce event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr: event.VersaoAttr,
-				EventoCCe:  &event,
-				RootName:   rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110140":
-			var event epecSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode epec event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr: event.VersaoAttr,
-				EventoEPEC: &event,
-				RootName:   rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110150":
-			var event atorSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode ator interessado event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:            event.VersaoAttr,
-				EventoAtorInteressado: &event,
-				RootName:              rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110192":
-			var event insucessoSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode insucesso event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:      event.VersaoAttr,
-				EventoInsucesso: &event,
-				RootName:        rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "110193":
-			var event insucessoCancelSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode cancel insucesso event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:          event.VersaoAttr,
-				EventoCancInsucesso: &event,
-				RootName:            rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		case "210200", "210210", "210220", "210240":
-			var event mdeSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode mde event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr: event.VersaoAttr,
-				EventoMDE:  &event,
-				RootName:   rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		default:
-			var event genericSchema.TEvento
-			if err := xml.Unmarshal(data, &event); err != nil {
-				return nil, fmt.Errorf("parse nfe: decode generic event: %w", err)
-			}
-			doc := &Document{
-				VersaoAttr:     event.VersaoAttr,
-				EventoGenerico: &event,
-				RootName:       rootName,
-			}
-			if err := validateDocument(doc); err != nil {
-				return nil, err
-			}
-			return doc, nil
-		}
-	case "envEvento":
-		var parsed genericSchema.TEnvEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode envEvento: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EnvEvento: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retEnvEvento":
-		var parsed genericSchema.TRetEnvEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retEnvEvento: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEnvEvento: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "procEventoNFe":
-		var parsed genericSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode procEventoNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "consSitNFe":
-		var parsed consSchema.TConsSitNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode consSitNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retConsSitNFe":
-		var parsed struct {
-			VersaoAttr    string                    `xml:"versao,attr"`
-			TpAmb         string                    `xml:"tpAmb"`
-			VerAplic      *consSchema.TString       `xml:"verAplic"`
-			CStat         string                    `xml:"cStat"`
-			XMotivo       *consSchema.TString       `xml:"xMotivo"`
-			CUF           string                    `xml:"cUF"`
-			ChNFe         string                    `xml:"chNFe"`
-			ProtNFe       *consSchema.TProtNFe      `xml:"protNFe"`
-			ProcEventoNFe []*consSchema.TProcEvento `xml:"procEventoNFe"`
-		}
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retConsSitNFe: %w", err)
-		}
-		doc := &Document{
-			VersaoAttr: parsed.VersaoAttr,
-			RetConsSitNFe: &consSchema.TRetConsSitNFe{
-				VersaoAttr:    parsed.VersaoAttr,
-				TpAmb:         parsed.TpAmb,
-				VerAplic:      parsed.VerAplic,
-				CStat:         parsed.CStat,
-				XMotivo:       parsed.XMotivo,
-				CUF:           parsed.CUF,
-				ChNFe:         parsed.ChNFe,
-				ProtNFe:       parsed.ProtNFe,
-				ProcEventoNFe: parsed.ProcEventoNFe,
-			},
-			RootName: rootName,
-		}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "consStatServ":
-		var parsed statusSchema.TConsStatServ
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode consStatServ: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServ: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retConsStatServ":
-		var parsed statusSchema.TRetConsStatServ
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retConsStatServ: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServ: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "inutNFe":
-		var parsed inutSchema.TInutNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode inutNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, InutNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retInutNFe":
-		var parsed inutSchema.TRetInutNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retInutNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetInutNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "procInutNFe":
-		var parsed inutSchema.TProcInutNFe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode procInutNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcInutNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "distDFeInt":
-		var parsed distSchema.TAnonComplexDistDFeInt1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode distDFeInt: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retDistDFeInt":
-		var parsed distSchema.TAnonComplexRetDistDFeInt1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode retDistDFeInt: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "resNFe":
-		var parsed distSchema.TAnonComplexResNFe1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode resNFe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ResNFe: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "resEvento":
-		var parsed distSchema.TAnonComplexResEvento1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse nfe: decode resEvento: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ResEvento: &parsed, RootName: rootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	default:
-		if rootErr != nil {
-			return nil, fmt.Errorf("parse nfe: read root: %w", rootErr)
-		}
-		return nil, fmt.Errorf("parse nfe: unsupported root element %q", rootName)
+	if fn, ok := parsersByRoot[rootName]; ok {
+		return fn(data, rootName)
 	}
+	if rootErr != nil {
+		return nil, fmt.Errorf("parse nfe: read root: %w", rootErr)
+	}
+	return nil, fmt.Errorf("parse nfe: unsupported root element %q", rootName)
+}
+
+func finalizeDoc(doc *Document) (*Document, error) {
+	if err := validateDocument(doc); err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
+func parseNFeProc(data []byte, _ string) (*Document, error) {
+	var parsed struct {
+		VersaoAttr string           `xml:"versao,attr"`
+		NFe        *schema.TNFe     `xml:"NFe"`
+		ProtNFe    *schema.TProtNFe `xml:"protNFe"`
+	}
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode nfeProc: %w", err)
+	}
+	return finalizeDoc(&Document{
+		VersaoAttr: parsed.VersaoAttr,
+		NFe:        parsed.NFe,
+		ProtNFe:    parsed.ProtNFe,
+		RootName:   nfeProc,
+	})
+}
+
+func parseNFe(data []byte, rootName string) (*Document, error) {
+	var invoice schema.TNFe
+	if err := xml.Unmarshal(data, &invoice); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode NFe: %w", err)
+	}
+	return finalizeDoc(&Document{
+		VersaoAttr: versionFromNFe(&invoice),
+		NFe:        &invoice,
+		RootName:   rootName,
+	})
+}
+
+func parseEnviNFe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TEnviNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode enviNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EnviNFe: &parsed, RootName: rootName})
+}
+
+func parseRetEnviNFe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TRetEnviNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retEnviNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEnviNFe: &parsed, RootName: rootName})
+}
+
+func parseConsReciNFe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TConsReciNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode consReciNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsReciNFe: &parsed, RootName: rootName})
+}
+
+func parseRetConsReciNFe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TRetConsReciNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retConsReciNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetConsReciNFe: &parsed, RootName: rootName})
+}
+
+func decodeEvent[T any](data []byte, context string, assign func(*T) *Document) (*Document, error) {
+	var parsed T
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode %s: %w", context, err)
+	}
+	return finalizeDoc(assign(&parsed))
+}
+
+func parseEventRoot(data []byte, rootName string) (*Document, error) {
+	tpEvento, err := eventTypeFromXML(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse nfe: decode evento head: %w", err)
+	}
+	switch tpEvento {
+	case "110111":
+		return decodeEvent(data, "cancel event", func(p *cancelSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancel: p, RootName: rootName}
+		})
+	case "110130":
+		return decodeEvent(data, "entrega event", func(p *entregaSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoEntrega: p, RootName: rootName}
+		})
+	case "110131":
+		return decodeEvent(data, "cancel entrega event", func(p *cancelEntregaSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancEntrega: p, RootName: rootName}
+		})
+	case "110110":
+		return decodeEvent(data, "cce event", func(p *cceSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCCe: p, RootName: rootName}
+		})
+	case "110140":
+		return decodeEvent(data, "epec event", func(p *epecSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoEPEC: p, RootName: rootName}
+		})
+	case "110150":
+		return decodeEvent(data, "ator interessado event", func(p *atorSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoAtorInteressado: p, RootName: rootName}
+		})
+	case "110192":
+		return decodeEvent(data, "insucesso event", func(p *insucessoSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoInsucesso: p, RootName: rootName}
+		})
+	case "110193":
+		return decodeEvent(data, "cancel insucesso event", func(p *insucessoCancelSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancInsucesso: p, RootName: rootName}
+		})
+	case "210200", "210210", "210220", "210240":
+		return decodeEvent(data, "mde event", func(p *mdeSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoMDE: p, RootName: rootName}
+		})
+	default:
+		return decodeEvent(data, "generic event", func(p *genericSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoGenerico: p, RootName: rootName}
+		})
+	}
+}
+
+func parseEnvEvento(data []byte, rootName string) (*Document, error) {
+	var parsed genericSchema.TEnvEvento
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode envEvento: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EnvEvento: &parsed, RootName: rootName})
+}
+
+func parseRetEnvEvento(data []byte, rootName string) (*Document, error) {
+	var parsed genericSchema.TRetEnvEvento
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retEnvEvento: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEnvEvento: &parsed, RootName: rootName})
+}
+
+func parseProcEventoNFe(data []byte, rootName string) (*Document, error) {
+	var parsed genericSchema.TProcEvento
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode procEventoNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoNFe: &parsed, RootName: rootName})
+}
+
+func parseConsSitNFe(data []byte, rootName string) (*Document, error) {
+	var parsed consSchema.TConsSitNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode consSitNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsSitNFe: &parsed, RootName: rootName})
+}
+
+func parseRetConsSitNFe(data []byte, rootName string) (*Document, error) {
+	var parsed struct {
+		VersaoAttr    string                    `xml:"versao,attr"`
+		TpAmb         string                    `xml:"tpAmb"`
+		VerAplic      *consSchema.TString       `xml:"verAplic"`
+		CStat         string                    `xml:"cStat"`
+		XMotivo       *consSchema.TString       `xml:"xMotivo"`
+		CUF           string                    `xml:"cUF"`
+		ChNFe         string                    `xml:"chNFe"`
+		ProtNFe       *consSchema.TProtNFe      `xml:"protNFe"`
+		ProcEventoNFe []*consSchema.TProcEvento `xml:"procEventoNFe"`
+	}
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retConsSitNFe: %w", err)
+	}
+	return finalizeDoc(&Document{
+		VersaoAttr: parsed.VersaoAttr,
+		RetConsSitNFe: &consSchema.TRetConsSitNFe{
+			VersaoAttr:    parsed.VersaoAttr,
+			TpAmb:         parsed.TpAmb,
+			VerAplic:      parsed.VerAplic,
+			CStat:         parsed.CStat,
+			XMotivo:       parsed.XMotivo,
+			CUF:           parsed.CUF,
+			ChNFe:         parsed.ChNFe,
+			ProtNFe:       parsed.ProtNFe,
+			ProcEventoNFe: parsed.ProcEventoNFe,
+		},
+		RootName: rootName,
+	})
+}
+
+func parseConsStatServ(data []byte, rootName string) (*Document, error) {
+	var parsed statusSchema.TConsStatServ
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode consStatServ: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsStatServ: &parsed, RootName: rootName})
+}
+
+func parseRetConsStatServ(data []byte, rootName string) (*Document, error) {
+	var parsed statusSchema.TRetConsStatServ
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retConsStatServ: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServ: &parsed, RootName: rootName})
+}
+
+func parseInutNFe(data []byte, rootName string) (*Document, error) {
+	var parsed inutSchema.TInutNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode inutNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, InutNFe: &parsed, RootName: rootName})
+}
+
+func parseRetInutNFe(data []byte, rootName string) (*Document, error) {
+	var parsed inutSchema.TRetInutNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retInutNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetInutNFe: &parsed, RootName: rootName})
+}
+
+func parseProcInutNFe(data []byte, rootName string) (*Document, error) {
+	var parsed inutSchema.TProcInutNFe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode procInutNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcInutNFe: &parsed, RootName: rootName})
+}
+
+func parseDistDFeInt(data []byte, rootName string) (*Document, error) {
+	var parsed distSchema.TAnonComplexDistDFeInt1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode distDFeInt: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, RootName: rootName})
+}
+
+func parseRetDistDFeInt(data []byte, rootName string) (*Document, error) {
+	var parsed distSchema.TAnonComplexRetDistDFeInt1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode retDistDFeInt: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, RootName: rootName})
+}
+
+func parseResNFe(data []byte, rootName string) (*Document, error) {
+	var parsed distSchema.TAnonComplexResNFe1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode resNFe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ResNFe: &parsed, RootName: rootName})
+}
+
+func parseResEvento(data []byte, rootName string) (*Document, error) {
+	var parsed distSchema.TAnonComplexResEvento1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse nfe: decode resEvento: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ResEvento: &parsed, RootName: rootName})
 }
 
 func ParseReader(r io.Reader) (*Document, error) {
@@ -909,387 +804,436 @@ func versionFromNFe(invoice *schema.TNFe) string {
 	return invoice.InfNFe.VersaoAttr
 }
 
-func validateDocument(doc *Document) error {
-	count := 0
+var rootValidators = []func(*Document) error{
+	validateNFeRoot,
+	validateEnviNFeRoot,
+	validateRetEnviNFeRoot,
+	validateConsReciNFeRoot,
+	validateRetConsReciNFeRoot,
+	validateEventoCancelRoot,
+	validateEventoEntregaRoot,
+	validateEventoCancEntregaRoot,
+	validateEventoCCeRoot,
+	validateEventoEPECRoot,
+	validateEventoAtorInteressadoRoot,
+	validateEventoMDERoot,
+	validateEventoInsucessoRoot,
+	validateEventoCancInsucessoRoot,
+	validateEventoGenericoRoot,
+	validateEnvEventoRoot,
+	validateRetEnvEventoRoot,
+	validateProcEventoNFeRoot,
+	validateConsSitNFeRoot,
+	validateRetConsSitNFeRoot,
+	validateConsStatServRoot,
+	validateRetConsStatServRoot,
+	validateInutNFeRoot,
+	validateRetInutNFeRoot,
+	validateProcInutNFeRoot,
+	validateDistDFeIntRoot,
+	validateRetDistDFeIntRoot,
+	validateResNFeRoot,
+	validateResEventoRoot,
+}
 
+func validateDocument(doc *Document) error {
 	if doc.RootName == "NFe" || doc.RootName == nfeProc || (doc.RootName == "" && doc.ProtNFe != nil) {
 		if doc.NFe == nil {
 			return errors.New("parse nfe: missing NFe")
 		}
 	}
 
-	if doc.NFe != nil {
-		count++
-		if doc.NFe.InfNFe == nil {
-			return errors.New("parse nfe: missing infNFe")
-		}
-		if doc.NFe.InfNFe.Ide == nil {
-			return errors.New("parse nfe: missing ide")
-		}
-		if doc.NFe.InfNFe.Emit == nil {
-			return errors.New("parse nfe: missing emit")
-		}
-		if doc.NFe.InfNFe.Emit.CNPJ == nil && doc.NFe.InfNFe.Emit.CPF == nil {
-			return errors.New("parse nfe: missing emit document")
-		}
-		if len(doc.NFe.InfNFe.Det) == 0 {
-			return errors.New("parse nfe: missing det")
+	for _, v := range rootValidators {
+		if err := v(doc); err != nil {
+			return err
 		}
 	}
 
-	if doc.EnviNFe != nil {
-		count++
-		if doc.EnviNFe.IdLote == "" {
-			return errors.New("parse nfe: missing idLote")
-		}
-		if len(doc.EnviNFe.NFe) == 0 {
-			return errors.New("parse nfe: missing NFe")
-		}
-	}
-
-	if doc.RetEnviNFe != nil {
-		count++
-		if doc.RetEnviNFe.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetEnviNFe.CStat == "" {
-			return errors.New("parse nfe: missing cStat")
-		}
-		if doc.RetEnviNFe.CUF == "" {
-			return errors.New("parse nfe: missing cUF")
-		}
-	}
-
-	if doc.ConsReciNFe != nil {
-		count++
-		if doc.ConsReciNFe.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.ConsReciNFe.NRec == "" {
-			return errors.New("parse nfe: missing nRec")
-		}
-	}
-
-	if doc.RetConsReciNFe != nil {
-		count++
-		if doc.RetConsReciNFe.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetConsReciNFe.CStat == "" {
-			return errors.New("parse nfe: missing cStat")
-		}
-		if doc.RetConsReciNFe.CUF == "" {
-			return errors.New("parse nfe: missing cUF")
-		}
-	}
-
-	if doc.EventoCancel != nil {
-		count++
-		if doc.EventoCancel.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoCancel.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoCancel.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoEntrega != nil {
-		count++
-		if doc.EventoEntrega.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoEntrega.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoEntrega.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoCancEntrega != nil {
-		count++
-		if doc.EventoCancEntrega.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoCancEntrega.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoCancEntrega.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoCCe != nil {
-		count++
-		if doc.EventoCCe.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoCCe.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoCCe.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoEPEC != nil {
-		count++
-		if doc.EventoEPEC.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoEPEC.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoEPEC.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoAtorInteressado != nil {
-		count++
-		if doc.EventoAtorInteressado.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoAtorInteressado.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoAtorInteressado.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoMDE != nil {
-		count++
-		if doc.EventoMDE.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoMDE.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoMDE.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoInsucesso != nil {
-		count++
-		if doc.EventoInsucesso.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoInsucesso.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoInsucesso.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoCancInsucesso != nil {
-		count++
-		if doc.EventoCancInsucesso.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoCancInsucesso.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoCancInsucesso.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EventoGenerico != nil {
-		count++
-		if doc.EventoGenerico.InfEvento == nil {
-			return errors.New("parse nfe: missing infEvento")
-		}
-		if doc.EventoGenerico.InfEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.EventoGenerico.InfEvento.DetEvento == nil {
-			return errors.New("parse nfe: missing detEvento")
-		}
-	}
-
-	if doc.EnvEvento != nil {
-		count++
-		if doc.EnvEvento.IdLote == "" {
-			return errors.New("parse nfe: missing idLote")
-		}
-		if len(doc.EnvEvento.Evento) == 0 {
-			return errors.New("parse nfe: missing evento")
-		}
-	}
-
-	if doc.RetEnvEvento != nil {
-		count++
-		if doc.RetEnvEvento.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetEnvEvento.CStat == "" {
-			return errors.New("parse nfe: missing cStat")
-		}
-	}
-
-	if doc.ProcEventoNFe != nil {
-		count++
-		if doc.ProcEventoNFe.Evento == nil {
-			return errors.New("parse nfe: missing evento")
-		}
-		if doc.ProcEventoNFe.RetEvento == nil {
-			return errors.New("parse nfe: missing retEvento")
-		}
-	}
-
-	if doc.ConsSitNFe != nil {
-		count++
-		if doc.ConsSitNFe.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.ConsSitNFe.XServ == "" {
-			return errors.New("parse nfe: missing xServ")
-		}
-		if doc.ConsSitNFe.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-	}
-
-	if doc.RetConsSitNFe != nil {
-		count++
-		if doc.RetConsSitNFe.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetConsSitNFe.CStat == "" {
-			return errors.New("parse nfe: missing cStat")
-		}
-		if doc.RetConsSitNFe.CUF == "" {
-			return errors.New("parse nfe: missing cUF")
-		}
-		if doc.RetConsSitNFe.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-	}
-
-	if doc.ConsStatServ != nil {
-		count++
-		if doc.ConsStatServ.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.ConsStatServ.CUF == "" {
-			return errors.New("parse nfe: missing cUF")
-		}
-		if doc.ConsStatServ.XServ == "" {
-			return errors.New("parse nfe: missing xServ")
-		}
-	}
-
-	if doc.RetConsStatServ != nil {
-		count++
-		if doc.RetConsStatServ.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetConsStatServ.CStat == "" {
-			return errors.New("parse nfe: missing cStat")
-		}
-		if doc.RetConsStatServ.CUF == "" {
-			return errors.New("parse nfe: missing cUF")
-		}
-		if doc.RetConsStatServ.DhRecbto == "" {
-			return errors.New("parse nfe: missing dhRecbto")
-		}
-	}
-
-	if doc.InutNFe != nil {
-		count++
-		if doc.InutNFe.InfInut == nil {
-			return errors.New("parse nfe: missing infInut")
-		}
-		if doc.InutNFe.InfInut.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.InutNFe.InfInut.CNPJ == "" {
-			return errors.New("parse nfe: missing CNPJ")
-		}
-	}
-
-	if doc.RetInutNFe != nil {
-		count++
-		if doc.RetInutNFe.InfInut == nil {
-			return errors.New("parse nfe: missing infInut")
-		}
-		if doc.RetInutNFe.InfInut.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetInutNFe.InfInut.CNPJ == nil || *doc.RetInutNFe.InfInut.CNPJ == "" {
-			return errors.New("parse nfe: missing CNPJ")
-		}
-	}
-
-	if doc.ProcInutNFe != nil {
-		count++
-		if doc.ProcInutNFe.InutNFe == nil {
-			return errors.New("parse nfe: missing inutNFe")
-		}
-		if doc.ProcInutNFe.RetInutNFe == nil {
-			return errors.New("parse nfe: missing retInutNFe")
-		}
-	}
-
-	if doc.DistDFeInt != nil {
-		count++
-		if doc.DistDFeInt.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.DistDFeInt.CNPJ == nil && doc.DistDFeInt.CPF == nil {
-			return errors.New("parse nfe: missing dist document")
-		}
-		if doc.DistDFeInt.DistNSU == nil && doc.DistDFeInt.ConsNSU == nil && doc.DistDFeInt.ConsChNFe == nil {
-			return errors.New("parse nfe: missing dist query")
-		}
-	}
-
-	if doc.RetDistDFeInt != nil {
-		count++
-		if doc.RetDistDFeInt.TpAmb == "" {
-			return errors.New("parse nfe: missing tpAmb")
-		}
-		if doc.RetDistDFeInt.CStat == "" {
-			return errors.New("parse nfe: missing cStat")
-		}
-		if doc.RetDistDFeInt.UltNSU == "" {
-			return errors.New("parse nfe: missing ultNSU")
-		}
-		if doc.RetDistDFeInt.MaxNSU == "" {
-			return errors.New("parse nfe: missing maxNSU")
-		}
-	}
-
-	if doc.ResNFe != nil {
-		count++
-		if doc.ResNFe.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.ResNFe.XNome == "" {
-			return errors.New("parse nfe: missing xNome")
-		}
-	}
-
-	if doc.ResEvento != nil {
-		count++
-		if doc.ResEvento.ChNFe == "" {
-			return errors.New("parse nfe: missing chNFe")
-		}
-		if doc.ResEvento.TpEvento == "" {
-			return errors.New("parse nfe: missing tpEvento")
-		}
-	}
-
-	if count != 1 {
+	if activeRootCount(doc) != 1 {
 		return errors.New("parse nfe: document must contain exactly one supported root")
 	}
 	return nil
+}
+
+func missing(field, value string) error {
+	if value == "" {
+		return errors.New("parse nfe: missing " + field)
+	}
+	return nil
+}
+
+func firstMissing(errs ...error) error {
+	for _, err := range errs {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateNFeRoot(doc *Document) error {
+	if doc.NFe == nil {
+		return nil
+	}
+	if doc.NFe.InfNFe == nil {
+		return errors.New("parse nfe: missing infNFe")
+	}
+	if doc.NFe.InfNFe.Ide == nil {
+		return errors.New("parse nfe: missing ide")
+	}
+	if doc.NFe.InfNFe.Emit == nil {
+		return errors.New("parse nfe: missing emit")
+	}
+	if doc.NFe.InfNFe.Emit.CNPJ == nil && doc.NFe.InfNFe.Emit.CPF == nil {
+		return errors.New("parse nfe: missing emit document")
+	}
+	if len(doc.NFe.InfNFe.Det) == 0 {
+		return errors.New("parse nfe: missing det")
+	}
+	return nil
+}
+
+func validateEnviNFeRoot(doc *Document) error {
+	if doc.EnviNFe == nil {
+		return nil
+	}
+	if doc.EnviNFe.IdLote == "" {
+		return errors.New("parse nfe: missing idLote")
+	}
+	if len(doc.EnviNFe.NFe) == 0 {
+		return errors.New("parse nfe: missing NFe")
+	}
+	return nil
+}
+
+func validateRetEnviNFeRoot(doc *Document) error {
+	if doc.RetEnviNFe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetEnviNFe.TpAmb),
+		missing("cStat", doc.RetEnviNFe.CStat),
+		missing("cUF", doc.RetEnviNFe.CUF),
+	)
+}
+
+func validateConsReciNFeRoot(doc *Document) error {
+	if doc.ConsReciNFe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.ConsReciNFe.TpAmb),
+		missing("nRec", doc.ConsReciNFe.NRec),
+	)
+}
+
+func validateRetConsReciNFeRoot(doc *Document) error {
+	if doc.RetConsReciNFe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetConsReciNFe.TpAmb),
+		missing("cStat", doc.RetConsReciNFe.CStat),
+		missing("cUF", doc.RetConsReciNFe.CUF),
+	)
+}
+
+func validateEventoFields(isNil bool, chNFe string, missingDetEvento bool) error {
+	if isNil {
+		return errors.New("parse nfe: missing infEvento")
+	}
+	if chNFe == "" {
+		return errors.New("parse nfe: missing chNFe")
+	}
+	if missingDetEvento {
+		return errors.New("parse nfe: missing detEvento")
+	}
+	return nil
+}
+
+func validateEventoCancelRoot(doc *Document) error {
+	if doc.EventoCancel == nil {
+		return nil
+	}
+	inf := doc.EventoCancel.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoEntregaRoot(doc *Document) error {
+	if doc.EventoEntrega == nil {
+		return nil
+	}
+	inf := doc.EventoEntrega.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoCancEntregaRoot(doc *Document) error {
+	if doc.EventoCancEntrega == nil {
+		return nil
+	}
+	inf := doc.EventoCancEntrega.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoCCeRoot(doc *Document) error {
+	if doc.EventoCCe == nil {
+		return nil
+	}
+	inf := doc.EventoCCe.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoEPECRoot(doc *Document) error {
+	if doc.EventoEPEC == nil {
+		return nil
+	}
+	inf := doc.EventoEPEC.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoAtorInteressadoRoot(doc *Document) error {
+	if doc.EventoAtorInteressado == nil {
+		return nil
+	}
+	inf := doc.EventoAtorInteressado.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoMDERoot(doc *Document) error {
+	if doc.EventoMDE == nil {
+		return nil
+	}
+	inf := doc.EventoMDE.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoInsucessoRoot(doc *Document) error {
+	if doc.EventoInsucesso == nil {
+		return nil
+	}
+	inf := doc.EventoInsucesso.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoCancInsucessoRoot(doc *Document) error {
+	if doc.EventoCancInsucesso == nil {
+		return nil
+	}
+	inf := doc.EventoCancInsucesso.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEventoGenericoRoot(doc *Document) error {
+	if doc.EventoGenerico == nil {
+		return nil
+	}
+	inf := doc.EventoGenerico.InfEvento
+	if inf == nil {
+		return validateEventoFields(true, "", true)
+	}
+	return validateEventoFields(false, inf.ChNFe, inf.DetEvento == nil)
+}
+
+func validateEnvEventoRoot(doc *Document) error {
+	if doc.EnvEvento == nil {
+		return nil
+	}
+	if doc.EnvEvento.IdLote == "" {
+		return errors.New("parse nfe: missing idLote")
+	}
+	if len(doc.EnvEvento.Evento) == 0 {
+		return errors.New("parse nfe: missing evento")
+	}
+	return nil
+}
+
+func validateRetEnvEventoRoot(doc *Document) error {
+	if doc.RetEnvEvento == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetEnvEvento.TpAmb),
+		missing("cStat", doc.RetEnvEvento.CStat),
+	)
+}
+
+func validateProcEventoNFeRoot(doc *Document) error {
+	if doc.ProcEventoNFe == nil {
+		return nil
+	}
+	if doc.ProcEventoNFe.Evento == nil {
+		return errors.New("parse nfe: missing evento")
+	}
+	if doc.ProcEventoNFe.RetEvento == nil {
+		return errors.New("parse nfe: missing retEvento")
+	}
+	return nil
+}
+
+func validateConsSitNFeRoot(doc *Document) error {
+	if doc.ConsSitNFe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.ConsSitNFe.TpAmb),
+		missing("xServ", doc.ConsSitNFe.XServ),
+		missing("chNFe", doc.ConsSitNFe.ChNFe),
+	)
+}
+
+func validateRetConsSitNFeRoot(doc *Document) error {
+	if doc.RetConsSitNFe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetConsSitNFe.TpAmb),
+		missing("cStat", doc.RetConsSitNFe.CStat),
+		missing("cUF", doc.RetConsSitNFe.CUF),
+		missing("chNFe", doc.RetConsSitNFe.ChNFe),
+	)
+}
+
+func validateConsStatServRoot(doc *Document) error {
+	if doc.ConsStatServ == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.ConsStatServ.TpAmb),
+		missing("cUF", doc.ConsStatServ.CUF),
+		missing("xServ", doc.ConsStatServ.XServ),
+	)
+}
+
+func validateRetConsStatServRoot(doc *Document) error {
+	if doc.RetConsStatServ == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetConsStatServ.TpAmb),
+		missing("cStat", doc.RetConsStatServ.CStat),
+		missing("cUF", doc.RetConsStatServ.CUF),
+		missing("dhRecbto", doc.RetConsStatServ.DhRecbto),
+	)
+}
+
+func validateInutNFeRoot(doc *Document) error {
+	if doc.InutNFe == nil {
+		return nil
+	}
+	if doc.InutNFe.InfInut == nil {
+		return errors.New("parse nfe: missing infInut")
+	}
+	if doc.InutNFe.InfInut.TpAmb == "" {
+		return errors.New("parse nfe: missing tpAmb")
+	}
+	if doc.InutNFe.InfInut.CNPJ == "" {
+		return errors.New("parse nfe: missing CNPJ")
+	}
+	return nil
+}
+
+func validateRetInutNFeRoot(doc *Document) error {
+	if doc.RetInutNFe == nil {
+		return nil
+	}
+	if doc.RetInutNFe.InfInut == nil {
+		return errors.New("parse nfe: missing infInut")
+	}
+	if doc.RetInutNFe.InfInut.TpAmb == "" {
+		return errors.New("parse nfe: missing tpAmb")
+	}
+	if doc.RetInutNFe.InfInut.CNPJ == nil || *doc.RetInutNFe.InfInut.CNPJ == "" {
+		return errors.New("parse nfe: missing CNPJ")
+	}
+	return nil
+}
+
+func validateProcInutNFeRoot(doc *Document) error {
+	if doc.ProcInutNFe == nil {
+		return nil
+	}
+	if doc.ProcInutNFe.InutNFe == nil {
+		return errors.New("parse nfe: missing inutNFe")
+	}
+	if doc.ProcInutNFe.RetInutNFe == nil {
+		return errors.New("parse nfe: missing retInutNFe")
+	}
+	return nil
+}
+
+func validateDistDFeIntRoot(doc *Document) error {
+	if doc.DistDFeInt == nil {
+		return nil
+	}
+	if doc.DistDFeInt.TpAmb == "" {
+		return errors.New("parse nfe: missing tpAmb")
+	}
+	if doc.DistDFeInt.CNPJ == nil && doc.DistDFeInt.CPF == nil {
+		return errors.New("parse nfe: missing dist document")
+	}
+	if doc.DistDFeInt.DistNSU == nil && doc.DistDFeInt.ConsNSU == nil && doc.DistDFeInt.ConsChNFe == nil {
+		return errors.New("parse nfe: missing dist query")
+	}
+	return nil
+}
+
+func validateRetDistDFeIntRoot(doc *Document) error {
+	if doc.RetDistDFeInt == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetDistDFeInt.TpAmb),
+		missing("cStat", doc.RetDistDFeInt.CStat),
+		missing("ultNSU", doc.RetDistDFeInt.UltNSU),
+		missing("maxNSU", doc.RetDistDFeInt.MaxNSU),
+	)
+}
+
+func validateResNFeRoot(doc *Document) error {
+	if doc.ResNFe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("chNFe", doc.ResNFe.ChNFe),
+		missing("xNome", doc.ResNFe.XNome),
+	)
+}
+
+func validateResEventoRoot(doc *Document) error {
+	if doc.ResEvento == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("chNFe", doc.ResEvento.ChNFe),
+		missing("tpEvento", doc.ResEvento.TpEvento),
+	)
 }
 
 func activeRootCount(doc *Document) int {

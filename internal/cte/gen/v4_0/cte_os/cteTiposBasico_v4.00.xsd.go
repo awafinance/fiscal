@@ -4,6 +4,7 @@ package schema
 
 import (
 	"encoding/xml"
+
 	modalrodoviarioos "github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os"
 )
 
@@ -65,8 +66,8 @@ type TAnonToma1 string
 // 0-Remetente;
 // 1-Destinatário
 type TAnonComplexToma1 struct {
-	XMLName	xml.Name	`xml:"toma" json:"-"`
-	Toma	string		`xml:"toma" json:"toma,omitempty"`
+	XMLName xml.Name `xml:"toma" json:"-"`
+	Toma    string   `xml:"toma" json:"toma,omitempty"`
 }
 
 // TAnonToma2 ...
@@ -83,16 +84,16 @@ type TAnonXFant1 string
 
 // TAnonComplexTomaTerceiro1 is Endereço de email
 type TAnonComplexTomaTerceiro1 struct {
-	XMLName		xml.Name	`xml:"tomaTerceiro" json:"-"`
-	Toma		string		`xml:"toma" json:"toma,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderToma	*TEndereco	`xml:"enderToma" json:"enderToma,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"tomaTerceiro" json:"-"`
+	Toma      string     `xml:"toma" json:"toma,omitempty"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string    `xml:"xFant" json:"xFant,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	EnderToma *TEndereco `xml:"enderToma" json:"enderToma,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonXJust1 ...
@@ -100,33 +101,33 @@ type TAnonXJust1 string
 
 // TAnonComplexIde1 is Justificativa da entrada em contingência
 type TAnonComplexIde1 struct {
-	XMLName		xml.Name			`xml:"ide" json:"-"`
-	CUF		string				`xml:"cUF" json:"cUF,omitempty"`
-	CCT		string				`xml:"cCT" json:"cCT,omitempty"`
-	CFOP		string				`xml:"CFOP" json:"CFOP,omitempty"`
-	NatOp		string				`xml:"natOp" json:"natOp,omitempty"`
-	Mod		string				`xml:"mod" json:"mod,omitempty"`
-	Serie		string				`xml:"serie" json:"serie,omitempty"`
-	NCT		string				`xml:"nCT" json:"nCT,omitempty"`
-	DhEmi		string				`xml:"dhEmi" json:"dhEmi,omitempty"`
-	TpImp		string				`xml:"tpImp" json:"tpImp,omitempty"`
-	TpEmis		string				`xml:"tpEmis" json:"tpEmis,omitempty"`
-	CDV		string				`xml:"cDV" json:"cDV,omitempty"`
-	TpAmb		string				`xml:"tpAmb" json:"tpAmb,omitempty"`
-	TpCTe		string				`xml:"tpCTe" json:"tpCTe,omitempty"`
-	VerProc		string				`xml:"verProc" json:"verProc,omitempty"`
-	CMunEnv		string				`xml:"cMunEnv" json:"cMunEnv,omitempty"`
-	XMunEnv		string				`xml:"xMunEnv" json:"xMunEnv,omitempty"`
-	UFEnv		string				`xml:"UFEnv" json:"UFEnv,omitempty"`
-	Modal		string				`xml:"modal" json:"modal,omitempty"`
-	TpServ		string				`xml:"tpServ" json:"tpServ,omitempty"`
-	IndIEToma	string				`xml:"indIEToma" json:"indIEToma,omitempty"`
-	DhSaidaOrig	string				`xml:"dhSaidaOrig" json:"dhSaidaOrig,omitempty"`
-	DhChegadaDest	string				`xml:"dhChegadaDest" json:"dhChegadaDest,omitempty"`
-	Toma		*TAnonComplexToma1		`xml:"toma" json:"toma,omitempty"`
-	TomaTerceiro	*TAnonComplexTomaTerceiro1	`xml:"tomaTerceiro" json:"tomaTerceiro,omitempty"`
-	DhCont		*string				`xml:"dhCont" json:"dhCont,omitempty"`
-	XJust		*string				`xml:"xJust" json:"xJust,omitempty"`
+	XMLName       xml.Name                   `xml:"ide" json:"-"`
+	CUF           string                     `xml:"cUF" json:"cUF,omitempty"`
+	CCT           string                     `xml:"cCT" json:"cCT,omitempty"`
+	CFOP          string                     `xml:"CFOP" json:"CFOP,omitempty"`
+	NatOp         string                     `xml:"natOp" json:"natOp,omitempty"`
+	Mod           string                     `xml:"mod" json:"mod,omitempty"`
+	Serie         string                     `xml:"serie" json:"serie,omitempty"`
+	NCT           string                     `xml:"nCT" json:"nCT,omitempty"`
+	DhEmi         string                     `xml:"dhEmi" json:"dhEmi,omitempty"`
+	TpImp         string                     `xml:"tpImp" json:"tpImp,omitempty"`
+	TpEmis        string                     `xml:"tpEmis" json:"tpEmis,omitempty"`
+	CDV           string                     `xml:"cDV" json:"cDV,omitempty"`
+	TpAmb         string                     `xml:"tpAmb" json:"tpAmb,omitempty"`
+	TpCTe         string                     `xml:"tpCTe" json:"tpCTe,omitempty"`
+	VerProc       string                     `xml:"verProc" json:"verProc,omitempty"`
+	CMunEnv       string                     `xml:"cMunEnv" json:"cMunEnv,omitempty"`
+	XMunEnv       string                     `xml:"xMunEnv" json:"xMunEnv,omitempty"`
+	UFEnv         string                     `xml:"UFEnv" json:"UFEnv,omitempty"`
+	Modal         string                     `xml:"modal" json:"modal,omitempty"`
+	TpServ        string                     `xml:"tpServ" json:"tpServ,omitempty"`
+	IndIEToma     string                     `xml:"indIEToma" json:"indIEToma,omitempty"`
+	DhSaidaOrig   string                     `xml:"dhSaidaOrig" json:"dhSaidaOrig,omitempty"`
+	DhChegadaDest string                     `xml:"dhChegadaDest" json:"dhChegadaDest,omitempty"`
+	Toma          *TAnonComplexToma1         `xml:"toma" json:"toma,omitempty"`
+	TomaTerceiro  *TAnonComplexTomaTerceiro1 `xml:"tomaTerceiro" json:"tomaTerceiro,omitempty"`
+	DhCont        *string                    `xml:"dhCont" json:"dhCont,omitempty"`
+	XJust         *string                    `xml:"xJust" json:"xJust,omitempty"`
 }
 
 // TAnonXCaracAd1 ...
@@ -146,9 +147,9 @@ type TAnonXTexto1 string
 
 // TAnonComplexObsCont1 is Conteúdo do campo
 type TAnonComplexObsCont1 struct {
-	XMLName		xml.Name	`xml:"ObsCont" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsCont" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonXTexto2 ...
@@ -156,20 +157,20 @@ type TAnonXTexto2 string
 
 // TAnonComplexObsFisco1 is Conteúdo do campo
 type TAnonComplexObsFisco1 struct {
-	XMLName		xml.Name	`xml:"ObsFisco" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsFisco" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonComplexCompl1 is Informar o nome do campo no atributo xCampo e o conteúdo do campo no XTexto
 type TAnonComplexCompl1 struct {
-	XMLName		xml.Name			`xml:"compl" json:"-"`
-	XCaracAd	*string				`xml:"xCaracAd" json:"xCaracAd,omitempty"`
-	XCaracSer	*string				`xml:"xCaracSer" json:"xCaracSer,omitempty"`
-	XEmi		*string				`xml:"xEmi" json:"xEmi,omitempty"`
-	XObs		*string				`xml:"xObs" json:"xObs,omitempty"`
-	ObsCont		[]*TAnonComplexObsCont1		`xml:"ObsCont" json:"ObsCont,omitempty"`
-	ObsFisco	[]*TAnonComplexObsFisco1	`xml:"ObsFisco" json:"ObsFisco,omitempty"`
+	XMLName   xml.Name                 `xml:"compl" json:"-"`
+	XCaracAd  *string                  `xml:"xCaracAd" json:"xCaracAd,omitempty"`
+	XCaracSer *string                  `xml:"xCaracSer" json:"xCaracSer,omitempty"`
+	XEmi      *string                  `xml:"xEmi" json:"xEmi,omitempty"`
+	XObs      *string                  `xml:"xObs" json:"xObs,omitempty"`
+	ObsCont   []*TAnonComplexObsCont1  `xml:"ObsCont" json:"ObsCont,omitempty"`
+	ObsFisco  []*TAnonComplexObsFisco1 `xml:"ObsFisco" json:"ObsFisco,omitempty"`
 }
 
 // TAnonIE2 ...
@@ -186,13 +187,13 @@ type TAnonXFant2 string
 
 // TAnonComplexEmit1 is Endereço do emitente
 type TAnonComplexEmit1 struct {
-	XMLName		xml.Name	`xml:"emit" json:"-"`
-	CNPJ		string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	IE		string		`xml:"IE" json:"IE,omitempty"`
-	IEST		*string		`xml:"IEST" json:"IEST,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	EnderEmit	*TEndeEmi	`xml:"enderEmit" json:"enderEmit,omitempty"`
+	XMLName   xml.Name  `xml:"emit" json:"-"`
+	CNPJ      string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	IE        string    `xml:"IE" json:"IE,omitempty"`
+	IEST      *string   `xml:"IEST" json:"IEST,omitempty"`
+	XNome     string    `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string   `xml:"xFant" json:"xFant,omitempty"`
+	EnderEmit *TEndeEmi `xml:"enderEmit" json:"enderEmit,omitempty"`
 }
 
 // TAnonIE3 ...
@@ -209,15 +210,15 @@ type TAnonEmail1 string
 
 // TAnonComplexRem1 is Endereço de email
 type TAnonComplexRem1 struct {
-	XMLName		xml.Name	`xml:"rem" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderReme	*TEndereco	`xml:"enderReme" json:"enderReme,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"rem" json:"-"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string    `xml:"xFant" json:"xFant,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	EnderReme *TEndereco `xml:"enderReme" json:"enderReme,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonIE4 ...
@@ -231,15 +232,15 @@ type TAnonISUF1 string
 
 // TAnonComplexDest1 is Endereço de email
 type TAnonComplexDest1 struct {
-	XMLName		xml.Name	`xml:"dest" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	ISUF		*string		`xml:"ISUF" json:"ISUF,omitempty"`
-	EnderDest	*TEndereco	`xml:"enderDest" json:"enderDest,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"dest" json:"-"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	ISUF      *string    `xml:"ISUF" json:"ISUF,omitempty"`
+	EnderDest *TEndereco `xml:"enderDest" json:"enderDest,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonTpEspecie1 ...
@@ -253,11 +254,11 @@ type TAnonXMoedaEstr1 string
 
 // TAnonComplexInfEspecie1 is Informar somente se tipo de numerário for 2 - Estrangeiro
 type TAnonComplexInfEspecie1 struct {
-	XMLName		xml.Name	`xml:"infEspecie" json:"-"`
-	TpEspecie	string		`xml:"tpEspecie" json:"tpEspecie,omitempty"`
-	VEspecie	string		`xml:"vEspecie" json:"vEspecie,omitempty"`
-	TpNumerario	string		`xml:"tpNumerario" json:"tpNumerario,omitempty"`
-	XMoedaEstr	*string		`xml:"xMoedaEstr" json:"xMoedaEstr,omitempty"`
+	XMLName     xml.Name `xml:"infEspecie" json:"-"`
+	TpEspecie   string   `xml:"tpEspecie" json:"tpEspecie,omitempty"`
+	VEspecie    string   `xml:"vEspecie" json:"vEspecie,omitempty"`
+	TpNumerario string   `xml:"tpNumerario" json:"tpNumerario,omitempty"`
+	XMoedaEstr  *string  `xml:"xMoedaEstr" json:"xMoedaEstr,omitempty"`
 }
 
 // TAnonRNTRC1 ...
@@ -265,42 +266,42 @@ type TAnonRNTRC1 string
 
 // TAnonComplexInfVeiculo1 is RNTRC do transportador
 type TAnonComplexInfVeiculo1 struct {
-	XMLName	xml.Name	`xml:"infVeiculo" json:"-"`
-	Placa	string		`xml:"placa" json:"placa,omitempty"`
-	UF	*string		`xml:"UF" json:"UF,omitempty"`
-	RNTRC	*string		`xml:"RNTRC" json:"RNTRC,omitempty"`
+	XMLName xml.Name `xml:"infVeiculo" json:"-"`
+	Placa   string   `xml:"placa" json:"placa,omitempty"`
+	UF      *string  `xml:"UF" json:"UF,omitempty"`
+	RNTRC   *string  `xml:"RNTRC" json:"RNTRC,omitempty"`
 }
 
 // TAnonComplexDetGTV1 is Grupo de informações dos veículos utilizados no transporte de valores
 type TAnonComplexDetGTV1 struct {
-	XMLName		xml.Name			`xml:"detGTV" json:"-"`
-	InfEspecie	[]*TAnonComplexInfEspecie1	`xml:"infEspecie" json:"infEspecie,omitempty"`
-	QCarga		string				`xml:"qCarga" json:"qCarga,omitempty"`
-	InfVeiculo	[]*TAnonComplexInfVeiculo1	`xml:"infVeiculo" json:"infVeiculo,omitempty"`
+	XMLName    xml.Name                   `xml:"detGTV" json:"-"`
+	InfEspecie []*TAnonComplexInfEspecie1 `xml:"infEspecie" json:"infEspecie,omitempty"`
+	QCarga     string                     `xml:"qCarga" json:"qCarga,omitempty"`
+	InfVeiculo []*TAnonComplexInfVeiculo1 `xml:"infVeiculo" json:"infVeiculo,omitempty"`
 }
 
 // TAnonComplexAutXML1 is Informar zeros não significativos
 type TAnonComplexAutXML1 struct {
-	XMLName	xml.Name	`xml:"autXML" json:"-"`
-	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	XMLName xml.Name `xml:"autXML" json:"-"`
+	CNPJ    *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string  `xml:"CPF" json:"CPF,omitempty"`
 }
 
 // TAnonComplexInfCte1 is Informações do Responsável Técnico pela emissão do DF-e
 type TAnonComplexInfCte1 struct {
-	XMLName		xml.Name		`xml:"infCte" json:"-"`
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	IdAttr		string			`xml:"Id,attr" json:"Id,omitempty"`
-	Ide		*TAnonComplexIde1	`xml:"ide" json:"ide,omitempty"`
-	Compl		*TAnonComplexCompl1	`xml:"compl" json:"compl,omitempty"`
-	Emit		*TAnonComplexEmit1	`xml:"emit" json:"emit,omitempty"`
-	Rem		*TAnonComplexRem1	`xml:"rem" json:"rem,omitempty"`
-	Dest		*TAnonComplexDest1	`xml:"dest" json:"dest,omitempty"`
-	Origem		*TEndeEmi		`xml:"origem" json:"origem,omitempty"`
-	Destino		*TEndeEmi		`xml:"destino" json:"destino,omitempty"`
-	DetGTV		*TAnonComplexDetGTV1	`xml:"detGTV" json:"detGTV,omitempty"`
-	AutXML		[]*TAnonComplexAutXML1	`xml:"autXML" json:"autXML,omitempty"`
-	InfRespTec	*TRespTec		`xml:"infRespTec" json:"infRespTec,omitempty"`
+	XMLName    xml.Name               `xml:"infCte" json:"-"`
+	VersaoAttr string                 `xml:"versao,attr" json:"versao,omitempty"`
+	IdAttr     string                 `xml:"Id,attr" json:"Id,omitempty"`
+	Ide        *TAnonComplexIde1      `xml:"ide" json:"ide,omitempty"`
+	Compl      *TAnonComplexCompl1    `xml:"compl" json:"compl,omitempty"`
+	Emit       *TAnonComplexEmit1     `xml:"emit" json:"emit,omitempty"`
+	Rem        *TAnonComplexRem1      `xml:"rem" json:"rem,omitempty"`
+	Dest       *TAnonComplexDest1     `xml:"dest" json:"dest,omitempty"`
+	Origem     *TEndeEmi              `xml:"origem" json:"origem,omitempty"`
+	Destino    *TEndeEmi              `xml:"destino" json:"destino,omitempty"`
+	DetGTV     *TAnonComplexDetGTV1   `xml:"detGTV" json:"detGTV,omitempty"`
+	AutXML     []*TAnonComplexAutXML1 `xml:"autXML" json:"autXML,omitempty"`
+	InfRespTec *TRespTec              `xml:"infRespTec" json:"infRespTec,omitempty"`
 }
 
 // TAnonQrCodCTe1 ...
@@ -308,8 +309,8 @@ type TAnonQrCodCTe1 string
 
 // TAnonComplexInfCTeSupl1 is Texto com o QR-Code impresso no DACTE
 type TAnonComplexInfCTeSupl1 struct {
-	XMLName		xml.Name	`xml:"infCTeSupl" json:"-"`
-	QrCodCTe	string		`xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
+	XMLName  xml.Name `xml:"infCTeSupl" json:"-"`
+	QrCodCTe string   `xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
 }
 
 // TAnonCStat1 ...
@@ -317,16 +318,16 @@ type TAnonCStat1 string
 
 // TAnonComplexInfProt1 is Descrição literal do status do CT-e.
 type TAnonComplexInfProt1 struct {
-	XMLName		xml.Name	`xml:"infProt" json:"-"`
-	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	ChCTe		string		`xml:"chCTe" json:"chCTe,omitempty"`
-	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
-	DigVal		*string		`xml:"digVal" json:"digVal,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XMLName  xml.Name `xml:"infProt" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic string   `xml:"verAplic" json:"verAplic,omitempty"`
+	ChCTe    string   `xml:"chCTe" json:"chCTe,omitempty"`
+	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
+	DigVal   *string  `xml:"digVal" json:"digVal,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TAnonCMsg1 ...
@@ -334,9 +335,9 @@ type TAnonCMsg1 string
 
 // TAnonComplexInfFisco1 is Mensagem do Fisco
 type TAnonComplexInfFisco1 struct {
-	XMLName	xml.Name	`xml:"infFisco" json:"-"`
-	CMsg	string		`xml:"cMsg" json:"cMsg,omitempty"`
-	XMsg	*TString	`xml:"xMsg" json:"xMsg,omitempty"`
+	XMLName xml.Name `xml:"infFisco" json:"-"`
+	CMsg    string   `xml:"cMsg" json:"cMsg,omitempty"`
+	XMsg    *TString `xml:"xMsg" json:"xMsg,omitempty"`
 }
 
 // TAnonCStat2 ...
@@ -344,16 +345,16 @@ type TAnonCStat2 string
 
 // TAnonComplexInfProt2 is Descrição literal do status do CT-e.
 type TAnonComplexInfProt2 struct {
-	XMLName		xml.Name	`xml:"infProt" json:"-"`
-	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	ChCTe		string		`xml:"chCTe" json:"chCTe,omitempty"`
-	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
-	DigVal		*string		`xml:"digVal" json:"digVal,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XMLName  xml.Name `xml:"infProt" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic string   `xml:"verAplic" json:"verAplic,omitempty"`
+	ChCTe    string   `xml:"chCTe" json:"chCTe,omitempty"`
+	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
+	DigVal   *string  `xml:"digVal" json:"digVal,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TAnonCMsg2 ...
@@ -361,9 +362,9 @@ type TAnonCMsg2 string
 
 // TAnonComplexInfFisco2 is Mensagem do Fisco
 type TAnonComplexInfFisco2 struct {
-	XMLName	xml.Name	`xml:"infFisco" json:"-"`
-	CMsg	string		`xml:"cMsg" json:"cMsg,omitempty"`
-	XMsg	*TString	`xml:"xMsg" json:"xMsg,omitempty"`
+	XMLName xml.Name `xml:"infFisco" json:"-"`
+	CMsg    string   `xml:"cMsg" json:"cMsg,omitempty"`
+	XMsg    *TString `xml:"xMsg" json:"xMsg,omitempty"`
 }
 
 // TAnonCStat3 ...
@@ -371,16 +372,16 @@ type TAnonCStat3 string
 
 // TAnonComplexInfProt3 is Descrição literal do status da GTV-e.
 type TAnonComplexInfProt3 struct {
-	XMLName		xml.Name	`xml:"infProt" json:"-"`
-	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	ChCTe		string		`xml:"chCTe" json:"chCTe,omitempty"`
-	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
-	DigVal		*string		`xml:"digVal" json:"digVal,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XMLName  xml.Name `xml:"infProt" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic string   `xml:"verAplic" json:"verAplic,omitempty"`
+	ChCTe    string   `xml:"chCTe" json:"chCTe,omitempty"`
+	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
+	DigVal   *string  `xml:"digVal" json:"digVal,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TAnonCMsg3 ...
@@ -388,9 +389,9 @@ type TAnonCMsg3 string
 
 // TAnonComplexInfFisco3 is Mensagem do Fisco
 type TAnonComplexInfFisco3 struct {
-	XMLName	xml.Name	`xml:"infFisco" json:"-"`
-	CMsg	string		`xml:"cMsg" json:"cMsg,omitempty"`
-	XMsg	*TString	`xml:"xMsg" json:"xMsg,omitempty"`
+	XMLName xml.Name `xml:"infFisco" json:"-"`
+	CMsg    string   `xml:"cMsg" json:"cMsg,omitempty"`
+	XMsg    *TString `xml:"xMsg" json:"xMsg,omitempty"`
 }
 
 // TAnonCStat4 ...
@@ -437,34 +438,34 @@ type TAnonXJust2 string
 
 // TAnonComplexIde2 is Grupo de Compras Governamentais
 type TAnonComplexIde2 struct {
-	XMLName		xml.Name		`xml:"ide" json:"-"`
-	CUF		string			`xml:"cUF" json:"cUF,omitempty"`
-	CCT		string			`xml:"cCT" json:"cCT,omitempty"`
-	CFOP		string			`xml:"CFOP" json:"CFOP,omitempty"`
-	NatOp		string			`xml:"natOp" json:"natOp,omitempty"`
-	Mod		string			`xml:"mod" json:"mod,omitempty"`
-	Serie		string			`xml:"serie" json:"serie,omitempty"`
-	NCT		string			`xml:"nCT" json:"nCT,omitempty"`
-	DhEmi		string			`xml:"dhEmi" json:"dhEmi,omitempty"`
-	TpImp		string			`xml:"tpImp" json:"tpImp,omitempty"`
-	TpEmis		string			`xml:"tpEmis" json:"tpEmis,omitempty"`
-	CDV		string			`xml:"cDV" json:"cDV,omitempty"`
-	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
-	TpCTe		string			`xml:"tpCTe" json:"tpCTe,omitempty"`
-	ProcEmi		string			`xml:"procEmi" json:"procEmi,omitempty"`
-	VerProc		string			`xml:"verProc" json:"verProc,omitempty"`
-	CMunEnv		string			`xml:"cMunEnv" json:"cMunEnv,omitempty"`
-	XMunEnv		string			`xml:"xMunEnv" json:"xMunEnv,omitempty"`
-	UFEnv		string			`xml:"UFEnv" json:"UFEnv,omitempty"`
-	Modal		string			`xml:"modal" json:"modal,omitempty"`
-	TpServ		string			`xml:"tpServ" json:"tpServ,omitempty"`
-	UFIni		string			`xml:"UFIni" json:"UFIni,omitempty"`
-	UFFim		string			`xml:"UFFim" json:"UFFim,omitempty"`
-	Retira		string			`xml:"retira" json:"retira,omitempty"`
-	XDetRetira	*string			`xml:"xDetRetira" json:"xDetRetira,omitempty"`
-	DhCont		*string			`xml:"dhCont" json:"dhCont,omitempty"`
-	XJust		*string			`xml:"xJust" json:"xJust,omitempty"`
-	GCompraGov	*TCompraGovReduzido	`xml:"gCompraGov" json:"gCompraGov,omitempty"`
+	XMLName    xml.Name            `xml:"ide" json:"-"`
+	CUF        string              `xml:"cUF" json:"cUF,omitempty"`
+	CCT        string              `xml:"cCT" json:"cCT,omitempty"`
+	CFOP       string              `xml:"CFOP" json:"CFOP,omitempty"`
+	NatOp      string              `xml:"natOp" json:"natOp,omitempty"`
+	Mod        string              `xml:"mod" json:"mod,omitempty"`
+	Serie      string              `xml:"serie" json:"serie,omitempty"`
+	NCT        string              `xml:"nCT" json:"nCT,omitempty"`
+	DhEmi      string              `xml:"dhEmi" json:"dhEmi,omitempty"`
+	TpImp      string              `xml:"tpImp" json:"tpImp,omitempty"`
+	TpEmis     string              `xml:"tpEmis" json:"tpEmis,omitempty"`
+	CDV        string              `xml:"cDV" json:"cDV,omitempty"`
+	TpAmb      string              `xml:"tpAmb" json:"tpAmb,omitempty"`
+	TpCTe      string              `xml:"tpCTe" json:"tpCTe,omitempty"`
+	ProcEmi    string              `xml:"procEmi" json:"procEmi,omitempty"`
+	VerProc    string              `xml:"verProc" json:"verProc,omitempty"`
+	CMunEnv    string              `xml:"cMunEnv" json:"cMunEnv,omitempty"`
+	XMunEnv    string              `xml:"xMunEnv" json:"xMunEnv,omitempty"`
+	UFEnv      string              `xml:"UFEnv" json:"UFEnv,omitempty"`
+	Modal      string              `xml:"modal" json:"modal,omitempty"`
+	TpServ     string              `xml:"tpServ" json:"tpServ,omitempty"`
+	UFIni      string              `xml:"UFIni" json:"UFIni,omitempty"`
+	UFFim      string              `xml:"UFFim" json:"UFFim,omitempty"`
+	Retira     string              `xml:"retira" json:"retira,omitempty"`
+	XDetRetira *string             `xml:"xDetRetira" json:"xDetRetira,omitempty"`
+	DhCont     *string             `xml:"dhCont" json:"dhCont,omitempty"`
+	XJust      *string             `xml:"xJust" json:"xJust,omitempty"`
+	GCompraGov *TCompraGovReduzido `xml:"gCompraGov" json:"gCompraGov,omitempty"`
 }
 
 // TAnonXCaracAd2 ...
@@ -482,8 +483,8 @@ type TAnonXPass1 string
 // TAnonComplexPass1 is Observação para o modal aéreo:
 // - O código de três letras IATA, referente ao aeroporto de transferência, deverá ser incluído, quando for o caso. Quando não for possível,  utilizar a sigla OACI. Qualquer solicitação de itinerário deverá ser incluída.
 type TAnonComplexPass1 struct {
-	XMLName	xml.Name	`xml:"pass" json:"-"`
-	XPass	*string		`xml:"xPass" json:"xPass,omitempty"`
+	XMLName xml.Name `xml:"pass" json:"-"`
+	XPass   *string  `xml:"xPass" json:"xPass,omitempty"`
 }
 
 // TAnonXDest1 ...
@@ -494,11 +495,11 @@ type TAnonXRota1 string
 
 // TAnonComplexFluxo1 is Código da Rota de Entrega
 type TAnonComplexFluxo1 struct {
-	XMLName	xml.Name		`xml:"fluxo" json:"-"`
-	XOrig	*string			`xml:"xOrig" json:"xOrig,omitempty"`
-	Pass	[]*TAnonComplexPass1	`xml:"pass" json:"pass,omitempty"`
-	XDest	*string			`xml:"xDest" json:"xDest,omitempty"`
-	XRota	*string			`xml:"xRota" json:"xRota,omitempty"`
+	XMLName xml.Name             `xml:"fluxo" json:"-"`
+	XOrig   *string              `xml:"xOrig" json:"xOrig,omitempty"`
+	Pass    []*TAnonComplexPass1 `xml:"pass" json:"pass,omitempty"`
+	XDest   *string              `xml:"xDest" json:"xDest,omitempty"`
+	XRota   *string              `xml:"xRota" json:"xRota,omitempty"`
 }
 
 // TAnonXObs2 ...
@@ -509,9 +510,9 @@ type TAnonXTexto3 string
 
 // TAnonComplexObsCont2 is Conteúdo do campo
 type TAnonComplexObsCont2 struct {
-	XMLName		xml.Name	`xml:"ObsCont" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsCont" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonXTexto4 ...
@@ -519,20 +520,20 @@ type TAnonXTexto4 string
 
 // TAnonComplexObsFisco2 is Conteúdo do campo
 type TAnonComplexObsFisco2 struct {
-	XMLName		xml.Name	`xml:"ObsFisco" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsFisco" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonComplexCompl2 is Informar o nome do campo no atributo xCampo e o conteúdo do campo no XTexto
 type TAnonComplexCompl2 struct {
-	XMLName		xml.Name			`xml:"compl" json:"-"`
-	XCaracAd	*string				`xml:"xCaracAd" json:"xCaracAd,omitempty"`
-	XCaracSer	*string				`xml:"xCaracSer" json:"xCaracSer,omitempty"`
-	Fluxo		*TAnonComplexFluxo1		`xml:"fluxo" json:"fluxo,omitempty"`
-	XObs		*string				`xml:"xObs" json:"xObs,omitempty"`
-	ObsCont		[]*TAnonComplexObsCont2		`xml:"ObsCont" json:"ObsCont,omitempty"`
-	ObsFisco	[]*TAnonComplexObsFisco2	`xml:"ObsFisco" json:"ObsFisco,omitempty"`
+	XMLName   xml.Name                 `xml:"compl" json:"-"`
+	XCaracAd  *string                  `xml:"xCaracAd" json:"xCaracAd,omitempty"`
+	XCaracSer *string                  `xml:"xCaracSer" json:"xCaracSer,omitempty"`
+	Fluxo     *TAnonComplexFluxo1      `xml:"fluxo" json:"fluxo,omitempty"`
+	XObs      *string                  `xml:"xObs" json:"xObs,omitempty"`
+	ObsCont   []*TAnonComplexObsCont2  `xml:"ObsCont" json:"ObsCont,omitempty"`
+	ObsFisco  []*TAnonComplexObsFisco2 `xml:"ObsFisco" json:"ObsFisco,omitempty"`
 }
 
 // TAnonIE5 ...
@@ -552,15 +553,15 @@ type TAnonXFant4 string
 // 3=Regime Normal.
 // 4=Simples Nacional - Microempreendedor Individual – MEI.
 type TAnonComplexEmit2 struct {
-	XMLName		xml.Name	`xml:"emit" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	IEST		*string		`xml:"IEST" json:"IEST,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	EnderEmit	*TEndeEmi	`xml:"enderEmit" json:"enderEmit,omitempty"`
-	CRT		*string		`xml:"CRT" json:"CRT,omitempty"`
+	XMLName   xml.Name  `xml:"emit" json:"-"`
+	CNPJ      *string   `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string   `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string   `xml:"IE" json:"IE,omitempty"`
+	IEST      *string   `xml:"IEST" json:"IEST,omitempty"`
+	XNome     string    `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string   `xml:"xFant" json:"xFant,omitempty"`
+	EnderEmit *TEndeEmi `xml:"enderEmit" json:"enderEmit,omitempty"`
+	CRT       *string   `xml:"CRT" json:"CRT,omitempty"`
 }
 
 // TAnonToma3 ...
@@ -580,17 +581,17 @@ type TAnonISUF2 string
 
 // TAnonComplexToma2 is Endereço de email
 type TAnonComplexToma2 struct {
-	XMLName		xml.Name	`xml:"toma" json:"-"`
-	Toma		string		`xml:"toma" json:"toma,omitempty"`
-	IndIEToma	string		`xml:"indIEToma" json:"indIEToma,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	ISUF		*string		`xml:"ISUF" json:"ISUF,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderToma	*TEndereco	`xml:"enderToma" json:"enderToma,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"toma" json:"-"`
+	Toma      string     `xml:"toma" json:"toma,omitempty"`
+	IndIEToma string     `xml:"indIEToma" json:"indIEToma,omitempty"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	ISUF      *string    `xml:"ISUF" json:"ISUF,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	EnderToma *TEndereco `xml:"enderToma" json:"enderToma,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonProPred1 ...
@@ -607,20 +608,20 @@ type TAnonTpMed1 string
 
 // TAnonComplexInfQ1 is Quantidade
 type TAnonComplexInfQ1 struct {
-	XMLName	xml.Name	`xml:"infQ" json:"-"`
-	CUnid	string		`xml:"cUnid" json:"cUnid,omitempty"`
-	TpMed	string		`xml:"tpMed" json:"tpMed,omitempty"`
-	QCarga	string		`xml:"qCarga" json:"qCarga,omitempty"`
+	XMLName xml.Name `xml:"infQ" json:"-"`
+	CUnid   string   `xml:"cUnid" json:"cUnid,omitempty"`
+	TpMed   string   `xml:"tpMed" json:"tpMed,omitempty"`
+	QCarga  string   `xml:"qCarga" json:"qCarga,omitempty"`
 }
 
 // TAnonComplexInfCarga1 is Normalmente igual ao valor declarado da mercadoria, diferente por exemplo, quando a mercadoria transportada é isenta de tributos nacionais para exportação, onde é preciso averbar um valor maior, pois no caso de indenização, o valor a ser pago será maior
 type TAnonComplexInfCarga1 struct {
-	XMLName		xml.Name		`xml:"infCarga" json:"-"`
-	VCarga		string			`xml:"vCarga" json:"vCarga,omitempty"`
-	ProPred		string			`xml:"proPred" json:"proPred,omitempty"`
-	XOutCat		*string			`xml:"xOutCat" json:"xOutCat,omitempty"`
-	InfQ		[]*TAnonComplexInfQ1	`xml:"infQ" json:"infQ,omitempty"`
-	VCargaAverb	*string			`xml:"vCargaAverb" json:"vCargaAverb,omitempty"`
+	XMLName     xml.Name             `xml:"infCarga" json:"-"`
+	VCarga      string               `xml:"vCarga" json:"vCarga,omitempty"`
+	ProPred     string               `xml:"proPred" json:"proPred,omitempty"`
+	XOutCat     *string              `xml:"xOutCat" json:"xOutCat,omitempty"`
+	InfQ        []*TAnonComplexInfQ1 `xml:"infQ" json:"infQ,omitempty"`
+	VCargaAverb *string              `xml:"vCargaAverb" json:"vCargaAverb,omitempty"`
 }
 
 // TAnonXMunIni1 ...
@@ -634,9 +635,9 @@ type TAnonXNome7 string
 
 // TAnonComplexComp1 is Valor do componente
 type TAnonComplexComp1 struct {
-	XMLName	xml.Name	`xml:"Comp" json:"-"`
-	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
-	VComp	string		`xml:"vComp" json:"vComp,omitempty"`
+	XMLName xml.Name `xml:"Comp" json:"-"`
+	XNome   string   `xml:"xNome" json:"xNome,omitempty"`
+	VComp   string   `xml:"vComp" json:"vComp,omitempty"`
 }
 
 // TAnonChNFe1 ...
@@ -647,12 +648,12 @@ type TAnonPIN1 string
 
 // TAnonComplexInfNFe1 is Deve ser preenchido com as informações das unidades de transporte utilizadas.
 type TAnonComplexInfNFe1 struct {
-	XMLName		xml.Name		`xml:"infNFe" json:"-"`
-	ChNFe		string			`xml:"chNFe" json:"chNFe,omitempty"`
-	PIN		*string			`xml:"PIN" json:"PIN,omitempty"`
-	DPrev		*string			`xml:"dPrev" json:"dPrev,omitempty"`
-	InfUnidCarga	[]*TUnidCarga		`xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
-	InfUnidTransp	[]*TUnidadeTransp	`xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
+	XMLName       xml.Name          `xml:"infNFe" json:"-"`
+	ChNFe         string            `xml:"chNFe" json:"chNFe,omitempty"`
+	PIN           *string           `xml:"PIN" json:"PIN,omitempty"`
+	DPrev         *string           `xml:"dPrev" json:"dPrev,omitempty"`
+	InfUnidCarga  []*TUnidCarga     `xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
+	InfUnidTransp []*TUnidadeTransp `xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
 }
 
 // TAnonTpPrest1 ...
@@ -660,8 +661,8 @@ type TAnonTpPrest1 string
 
 // TAnonComplexInfNFeTranspParcial1 is Informando o tpPrest com “2 – Parcial” deve-se informar as chaves de acesso das NF-e que acobertam a carga transportada.
 type TAnonComplexInfNFeTranspParcial1 struct {
-	XMLName	xml.Name	`xml:"infNFeTranspParcial" json:"-"`
-	ChNFe	string		`xml:"chNFe" json:"chNFe,omitempty"`
+	XMLName xml.Name `xml:"infNFeTranspParcial" json:"-"`
+	ChNFe   string   `xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TAnonComplexInfDocAnt1 is Preencher com:
@@ -669,25 +670,25 @@ type TAnonComplexInfNFeTranspParcial1 struct {
 // 1 - Total
 // 2 - Parcial
 type TAnonComplexInfDocAnt1 struct {
-	XMLName			xml.Name				`xml:"infDocAnt" json:"-"`
-	ChCTe			string					`xml:"chCTe" json:"chCTe,omitempty"`
-	TpPrest			string					`xml:"tpPrest" json:"tpPrest,omitempty"`
-	InfNFeTranspParcial	[]*TAnonComplexInfNFeTranspParcial1	`xml:"infNFeTranspParcial" json:"infNFeTranspParcial,omitempty"`
+	XMLName             xml.Name                            `xml:"infDocAnt" json:"-"`
+	ChCTe               string                              `xml:"chCTe" json:"chCTe,omitempty"`
+	TpPrest             string                              `xml:"tpPrest" json:"tpPrest,omitempty"`
+	InfNFeTranspParcial []*TAnonComplexInfNFeTranspParcial1 `xml:"infNFeTranspParcial" json:"infNFeTranspParcial,omitempty"`
 }
 
 // TAnonComplexDet1 is Documentos anteriores
 type TAnonComplexDet1 struct {
-	XMLName		xml.Name			`xml:"det" json:"-"`
-	NItemAttr	string				`xml:"nItem,attr" json:"nItem,omitempty"`
-	CMunIni		string				`xml:"cMunIni" json:"cMunIni,omitempty"`
-	XMunIni		string				`xml:"xMunIni" json:"xMunIni,omitempty"`
-	CMunFim		string				`xml:"cMunFim" json:"cMunFim,omitempty"`
-	XMunFim		string				`xml:"xMunFim" json:"xMunFim,omitempty"`
-	VPrest		string				`xml:"vPrest" json:"vPrest,omitempty"`
-	VRec		string				`xml:"vRec" json:"vRec,omitempty"`
-	Comp		[]*TAnonComplexComp1		`xml:"Comp" json:"Comp,omitempty"`
-	InfNFe		[]*TAnonComplexInfNFe1		`xml:"infNFe" json:"infNFe,omitempty"`
-	InfDocAnt	[]*TAnonComplexInfDocAnt1	`xml:"infDocAnt" json:"infDocAnt,omitempty"`
+	XMLName   xml.Name                  `xml:"det" json:"-"`
+	NItemAttr string                    `xml:"nItem,attr" json:"nItem,omitempty"`
+	CMunIni   string                    `xml:"cMunIni" json:"cMunIni,omitempty"`
+	XMunIni   string                    `xml:"xMunIni" json:"xMunIni,omitempty"`
+	CMunFim   string                    `xml:"cMunFim" json:"cMunFim,omitempty"`
+	XMunFim   string                    `xml:"xMunFim" json:"xMunFim,omitempty"`
+	VPrest    string                    `xml:"vPrest" json:"vPrest,omitempty"`
+	VRec      string                    `xml:"vRec" json:"vRec,omitempty"`
+	Comp      []*TAnonComplexComp1      `xml:"Comp" json:"Comp,omitempty"`
+	InfNFe    []*TAnonComplexInfNFe1    `xml:"infNFe" json:"infNFe,omitempty"`
+	InfDocAnt []*TAnonComplexInfDocAnt1 `xml:"infDocAnt" json:"infDocAnt,omitempty"`
 }
 
 // TAnonComplexInfModal1 is O elemento do tipo -any- permite estender o documento XML com elementos não especificados pelo schema.
@@ -700,9 +701,9 @@ type TAnonComplexDet1 struct {
 //
 // Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo, o arquivo para o schema do modal Rodoviário na versão 1.04 será denominado "CTeModalRodoviario_v1.04".
 type TAnonComplexInfModal1 struct {
-	XMLName		xml.Name			`xml:"infModal" json:"-"`
-	VersaoModalAttr	string				`xml:"versaoModal,attr" json:"versaoModal,omitempty"`
-	RodoOS		modalrodoviarioos.RodoOS	`xml:"rodoOS,omitempty" json:"rodoOS,omitempty"`
+	XMLName         xml.Name                 `xml:"infModal" json:"-"`
+	VersaoModalAttr string                   `xml:"versaoModal,attr" json:"versaoModal,omitempty"`
+	RodoOS          modalrodoviarioos.RodoOS `xml:"rodoOS,omitempty" json:"rodoOS,omitempty"`
 }
 
 // TAnonNFat1 ...
@@ -710,11 +711,11 @@ type TAnonNFat1 string
 
 // TAnonComplexFat1 is Valor líquido da fatura
 type TAnonComplexFat1 struct {
-	XMLName	xml.Name	`xml:"fat" json:"-"`
-	NFat	*string		`xml:"nFat" json:"nFat,omitempty"`
-	VOrig	*string		`xml:"vOrig" json:"vOrig,omitempty"`
-	VDesc	*string		`xml:"vDesc" json:"vDesc,omitempty"`
-	VLiq	*string		`xml:"vLiq" json:"vLiq,omitempty"`
+	XMLName xml.Name `xml:"fat" json:"-"`
+	NFat    *string  `xml:"nFat" json:"nFat,omitempty"`
+	VOrig   *string  `xml:"vOrig" json:"vOrig,omitempty"`
+	VDesc   *string  `xml:"vDesc" json:"vDesc,omitempty"`
+	VLiq    *string  `xml:"vLiq" json:"vLiq,omitempty"`
 }
 
 // TAnonNDup1 ...
@@ -722,17 +723,17 @@ type TAnonNDup1 string
 
 // TAnonComplexDup1 is Valor da duplicata
 type TAnonComplexDup1 struct {
-	XMLName	xml.Name	`xml:"dup" json:"-"`
-	NDup	*string		`xml:"nDup" json:"nDup,omitempty"`
-	DVenc	*string		`xml:"dVenc" json:"dVenc,omitempty"`
-	VDup	*string		`xml:"vDup" json:"vDup,omitempty"`
+	XMLName xml.Name `xml:"dup" json:"-"`
+	NDup    *string  `xml:"nDup" json:"nDup,omitempty"`
+	DVenc   *string  `xml:"dVenc" json:"dVenc,omitempty"`
+	VDup    *string  `xml:"vDup" json:"vDup,omitempty"`
 }
 
 // TAnonComplexCobr1 is Dados das duplicatas
 type TAnonComplexCobr1 struct {
-	XMLName	xml.Name		`xml:"cobr" json:"-"`
-	Fat	*TAnonComplexFat1	`xml:"fat" json:"fat,omitempty"`
-	Dup	[]*TAnonComplexDup1	`xml:"dup" json:"dup,omitempty"`
+	XMLName xml.Name            `xml:"cobr" json:"-"`
+	Fat     *TAnonComplexFat1   `xml:"fat" json:"fat,omitempty"`
+	Dup     []*TAnonComplexDup1 `xml:"dup" json:"dup,omitempty"`
 }
 
 // TAnonChCte1 ...
@@ -743,9 +744,9 @@ type TAnonIndAlteraToma1 string
 
 // TAnonComplexInfCteSub1 is Indicador de CT-e Alteração de Tomador
 type TAnonComplexInfCteSub1 struct {
-	XMLName		xml.Name	`xml:"infCteSub" json:"-"`
-	ChCte		string		`xml:"chCte" json:"chCte,omitempty"`
-	IndAlteraToma	*string		`xml:"indAlteraToma" json:"indAlteraToma,omitempty"`
+	XMLName       xml.Name `xml:"infCteSub" json:"-"`
+	ChCte         string   `xml:"chCte" json:"chCte,omitempty"`
+	IndAlteraToma *string  `xml:"indAlteraToma" json:"indAlteraToma,omitempty"`
 }
 
 // TAnonInfAdFisco1 ...
@@ -753,40 +754,40 @@ type TAnonInfAdFisco1 string
 
 // TAnonComplexICMSUFFim1 is Valor do ICMS de partilha para a UF de início da prestação do serviço de transporte
 type TAnonComplexICMSUFFim1 struct {
-	XMLName		xml.Name	`xml:"ICMSUFFim" json:"-"`
-	VBCUFFim	string		`xml:"vBCUFFim" json:"vBCUFFim,omitempty"`
-	PFCPUFFim	string		`xml:"pFCPUFFim" json:"pFCPUFFim,omitempty"`
-	PICMSUFFim	string		`xml:"pICMSUFFim" json:"pICMSUFFim,omitempty"`
-	PICMSInter	string		`xml:"pICMSInter" json:"pICMSInter,omitempty"`
-	VFCPUFFim	string		`xml:"vFCPUFFim" json:"vFCPUFFim,omitempty"`
-	VICMSUFFim	string		`xml:"vICMSUFFim" json:"vICMSUFFim,omitempty"`
-	VICMSUFIni	string		`xml:"vICMSUFIni" json:"vICMSUFIni,omitempty"`
+	XMLName    xml.Name `xml:"ICMSUFFim" json:"-"`
+	VBCUFFim   string   `xml:"vBCUFFim" json:"vBCUFFim,omitempty"`
+	PFCPUFFim  string   `xml:"pFCPUFFim" json:"pFCPUFFim,omitempty"`
+	PICMSUFFim string   `xml:"pICMSUFFim" json:"pICMSUFFim,omitempty"`
+	PICMSInter string   `xml:"pICMSInter" json:"pICMSInter,omitempty"`
+	VFCPUFFim  string   `xml:"vFCPUFFim" json:"vFCPUFFim,omitempty"`
+	VICMSUFFim string   `xml:"vICMSUFFim" json:"vICMSUFFim,omitempty"`
+	VICMSUFIni string   `xml:"vICMSUFIni" json:"vICMSUFIni,omitempty"`
 }
 
 // TAnonComplexImp1 is Grupo de informações do IBS e CBS
 type TAnonComplexImp1 struct {
-	XMLName		xml.Name		`xml:"imp" json:"-"`
-	ICMS		*TImp			`xml:"ICMS" json:"ICMS,omitempty"`
-	VTotTrib	*string			`xml:"vTotTrib" json:"vTotTrib,omitempty"`
-	InfAdFisco	*string			`xml:"infAdFisco" json:"infAdFisco,omitempty"`
-	ICMSUFFim	*TAnonComplexICMSUFFim1	`xml:"ICMSUFFim" json:"ICMSUFFim,omitempty"`
-	IBSCBS		*TTribCTe		`xml:"IBSCBS" json:"IBSCBS,omitempty"`
+	XMLName    xml.Name                `xml:"imp" json:"-"`
+	ICMS       *TImp                   `xml:"ICMS" json:"ICMS,omitempty"`
+	VTotTrib   *string                 `xml:"vTotTrib" json:"vTotTrib,omitempty"`
+	InfAdFisco *string                 `xml:"infAdFisco" json:"infAdFisco,omitempty"`
+	ICMSUFFim  *TAnonComplexICMSUFFim1 `xml:"ICMSUFFim" json:"ICMSUFFim,omitempty"`
+	IBSCBS     *TTribCTe               `xml:"IBSCBS" json:"IBSCBS,omitempty"`
 }
 
 // TAnonComplexTotal1 is Valor total do documento fiscal
 // (vTPrest + total do IBS + total da CBS)
 type TAnonComplexTotal1 struct {
-	XMLName	xml.Name	`xml:"total" json:"-"`
-	VTPrest	string		`xml:"vTPrest" json:"vTPrest,omitempty"`
-	VTRec	string		`xml:"vTRec" json:"vTRec,omitempty"`
-	VTotDFe	*string		`xml:"vTotDFe" json:"vTotDFe,omitempty"`
+	XMLName xml.Name `xml:"total" json:"-"`
+	VTPrest string   `xml:"vTPrest" json:"vTPrest,omitempty"`
+	VTRec   string   `xml:"vTRec" json:"vTRec,omitempty"`
+	VTotDFe *string  `xml:"vTotDFe" json:"vTotDFe,omitempty"`
 }
 
 // TAnonComplexAutXML2 is Informar zeros não significativos
 type TAnonComplexAutXML2 struct {
-	XMLName	xml.Name	`xml:"autXML" json:"-"`
-	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	XMLName xml.Name `xml:"autXML" json:"-"`
+	CNPJ    *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string  `xml:"CPF" json:"CPF,omitempty"`
 }
 
 // TAnonXSolic1 ...
@@ -794,44 +795,44 @@ type TAnonXSolic1 string
 
 // TAnonComplexInfSolicNFF1 is Será preenchido com a totalidade de campos informados no aplicativo emissor serializado.
 type TAnonComplexInfSolicNFF1 struct {
-	XMLName	xml.Name	`xml:"infSolicNFF" json:"-"`
-	XSolic	string		`xml:"xSolic" json:"xSolic,omitempty"`
+	XMLName xml.Name `xml:"infSolicNFF" json:"-"`
+	XSolic  string   `xml:"xSolic" json:"xSolic,omitempty"`
 }
 
 // TAnonComplexPAASignature1 is Chave Publica no padrão XML RSA Key
 type TAnonComplexPAASignature1 struct {
-	XMLName		xml.Name		`xml:"PAASignature" json:"-"`
-	SignatureValue	string			`xml:"SignatureValue" json:"SignatureValue,omitempty"`
-	RSAKeyValue	*TRSAKeyValueType	`xml:"RSAKeyValue" json:"RSAKeyValue,omitempty"`
+	XMLName        xml.Name          `xml:"PAASignature" json:"-"`
+	SignatureValue string            `xml:"SignatureValue" json:"SignatureValue,omitempty"`
+	RSAKeyValue    *TRSAKeyValueType `xml:"RSAKeyValue" json:"RSAKeyValue,omitempty"`
 }
 
 // TAnonComplexInfPAA1 is Assinatura RSA do Emitente para DFe gerados por PAA
 type TAnonComplexInfPAA1 struct {
-	XMLName		xml.Name			`xml:"infPAA" json:"-"`
-	CNPJPAA		string				`xml:"CNPJPAA" json:"CNPJPAA,omitempty"`
-	PAASignature	*TAnonComplexPAASignature1	`xml:"PAASignature" json:"PAASignature,omitempty"`
+	XMLName      xml.Name                   `xml:"infPAA" json:"-"`
+	CNPJPAA      string                     `xml:"CNPJPAA" json:"CNPJPAA,omitempty"`
+	PAASignature *TAnonComplexPAASignature1 `xml:"PAASignature" json:"PAASignature,omitempty"`
 }
 
 // TAnonComplexInfCte2 is Grupo de Informação do Provedor de Assinatura e Autorização
 type TAnonComplexInfCte2 struct {
-	XMLName		xml.Name			`xml:"infCte" json:"-"`
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	IdAttr		string				`xml:"Id,attr" json:"Id,omitempty"`
-	Ide		*TAnonComplexIde2		`xml:"ide" json:"ide,omitempty"`
-	Compl		*TAnonComplexCompl2		`xml:"compl" json:"compl,omitempty"`
-	Emit		*TAnonComplexEmit2		`xml:"emit" json:"emit,omitempty"`
-	Toma		*TAnonComplexToma2		`xml:"toma" json:"toma,omitempty"`
-	InfCarga	*TAnonComplexInfCarga1		`xml:"infCarga" json:"infCarga,omitempty"`
-	Det		[]*TAnonComplexDet1		`xml:"det" json:"det,omitempty"`
-	InfModal	*TAnonComplexInfModal1		`xml:"infModal" json:"infModal,omitempty"`
-	Cobr		*TAnonComplexCobr1		`xml:"cobr" json:"cobr,omitempty"`
-	InfCteSub	*TAnonComplexInfCteSub1		`xml:"infCteSub" json:"infCteSub,omitempty"`
-	Imp		*TAnonComplexImp1		`xml:"imp" json:"imp,omitempty"`
-	Total		*TAnonComplexTotal1		`xml:"total" json:"total,omitempty"`
-	AutXML		[]*TAnonComplexAutXML2		`xml:"autXML" json:"autXML,omitempty"`
-	InfRespTec	*TRespTec			`xml:"infRespTec" json:"infRespTec,omitempty"`
-	InfSolicNFF	*TAnonComplexInfSolicNFF1	`xml:"infSolicNFF" json:"infSolicNFF,omitempty"`
-	InfPAA		*TAnonComplexInfPAA1		`xml:"infPAA" json:"infPAA,omitempty"`
+	XMLName     xml.Name                  `xml:"infCte" json:"-"`
+	VersaoAttr  string                    `xml:"versao,attr" json:"versao,omitempty"`
+	IdAttr      string                    `xml:"Id,attr" json:"Id,omitempty"`
+	Ide         *TAnonComplexIde2         `xml:"ide" json:"ide,omitempty"`
+	Compl       *TAnonComplexCompl2       `xml:"compl" json:"compl,omitempty"`
+	Emit        *TAnonComplexEmit2        `xml:"emit" json:"emit,omitempty"`
+	Toma        *TAnonComplexToma2        `xml:"toma" json:"toma,omitempty"`
+	InfCarga    *TAnonComplexInfCarga1    `xml:"infCarga" json:"infCarga,omitempty"`
+	Det         []*TAnonComplexDet1       `xml:"det" json:"det,omitempty"`
+	InfModal    *TAnonComplexInfModal1    `xml:"infModal" json:"infModal,omitempty"`
+	Cobr        *TAnonComplexCobr1        `xml:"cobr" json:"cobr,omitempty"`
+	InfCteSub   *TAnonComplexInfCteSub1   `xml:"infCteSub" json:"infCteSub,omitempty"`
+	Imp         *TAnonComplexImp1         `xml:"imp" json:"imp,omitempty"`
+	Total       *TAnonComplexTotal1       `xml:"total" json:"total,omitempty"`
+	AutXML      []*TAnonComplexAutXML2    `xml:"autXML" json:"autXML,omitempty"`
+	InfRespTec  *TRespTec                 `xml:"infRespTec" json:"infRespTec,omitempty"`
+	InfSolicNFF *TAnonComplexInfSolicNFF1 `xml:"infSolicNFF" json:"infSolicNFF,omitempty"`
+	InfPAA      *TAnonComplexInfPAA1      `xml:"infPAA" json:"infPAA,omitempty"`
 }
 
 // TAnonQrCodCTe2 ...
@@ -839,8 +840,8 @@ type TAnonQrCodCTe2 string
 
 // TAnonComplexInfCTeSupl2 is Texto com o QR-Code impresso no DACTE
 type TAnonComplexInfCTeSupl2 struct {
-	XMLName		xml.Name	`xml:"infCTeSupl" json:"-"`
-	QrCodCTe	string		`xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
+	XMLName  xml.Name `xml:"infCTeSupl" json:"-"`
+	QrCodCTe string   `xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
 }
 
 // TAnonCCT3 ...
@@ -901,8 +902,8 @@ type TAnonToma4 string
 // 3-Destinatário
 // Serão utilizadas as informações contidas no respectivo grupo, conforme indicado pelo conteúdo deste campo
 type TAnonComplexToma31 struct {
-	XMLName	xml.Name	`xml:"toma3" json:"-"`
-	Toma	string		`xml:"toma" json:"toma,omitempty"`
+	XMLName xml.Name `xml:"toma3" json:"-"`
+	Toma    string   `xml:"toma" json:"toma,omitempty"`
 }
 
 // TAnonToma5 ...
@@ -919,16 +920,16 @@ type TAnonXFant5 string
 
 // TAnonComplexToma41 is Endereço de email
 type TAnonComplexToma41 struct {
-	XMLName		xml.Name	`xml:"toma4" json:"-"`
-	Toma		string		`xml:"toma" json:"toma,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderToma	*TEndereco	`xml:"enderToma" json:"enderToma,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"toma4" json:"-"`
+	Toma      string     `xml:"toma" json:"toma,omitempty"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string    `xml:"xFant" json:"xFant,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	EnderToma *TEndereco `xml:"enderToma" json:"enderToma,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonXJust3 ...
@@ -936,42 +937,42 @@ type TAnonXJust3 string
 
 // TAnonComplexIde3 is Grupo de Compras Governamentais
 type TAnonComplexIde3 struct {
-	XMLName		xml.Name		`xml:"ide" json:"-"`
-	CUF		string			`xml:"cUF" json:"cUF,omitempty"`
-	CCT		string			`xml:"cCT" json:"cCT,omitempty"`
-	CFOP		string			`xml:"CFOP" json:"CFOP,omitempty"`
-	NatOp		string			`xml:"natOp" json:"natOp,omitempty"`
-	Mod		string			`xml:"mod" json:"mod,omitempty"`
-	Serie		string			`xml:"serie" json:"serie,omitempty"`
-	NCT		string			`xml:"nCT" json:"nCT,omitempty"`
-	DhEmi		string			`xml:"dhEmi" json:"dhEmi,omitempty"`
-	TpImp		string			`xml:"tpImp" json:"tpImp,omitempty"`
-	TpEmis		string			`xml:"tpEmis" json:"tpEmis,omitempty"`
-	CDV		string			`xml:"cDV" json:"cDV,omitempty"`
-	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
-	TpCTe		string			`xml:"tpCTe" json:"tpCTe,omitempty"`
-	ProcEmi		string			`xml:"procEmi" json:"procEmi,omitempty"`
-	VerProc		string			`xml:"verProc" json:"verProc,omitempty"`
-	IndGlobalizado	*string			`xml:"indGlobalizado" json:"indGlobalizado,omitempty"`
-	CMunEnv		string			`xml:"cMunEnv" json:"cMunEnv,omitempty"`
-	XMunEnv		string			`xml:"xMunEnv" json:"xMunEnv,omitempty"`
-	UFEnv		string			`xml:"UFEnv" json:"UFEnv,omitempty"`
-	Modal		string			`xml:"modal" json:"modal,omitempty"`
-	TpServ		string			`xml:"tpServ" json:"tpServ,omitempty"`
-	CMunIni		string			`xml:"cMunIni" json:"cMunIni,omitempty"`
-	XMunIni		string			`xml:"xMunIni" json:"xMunIni,omitempty"`
-	UFIni		string			`xml:"UFIni" json:"UFIni,omitempty"`
-	CMunFim		string			`xml:"cMunFim" json:"cMunFim,omitempty"`
-	XMunFim		string			`xml:"xMunFim" json:"xMunFim,omitempty"`
-	UFFim		string			`xml:"UFFim" json:"UFFim,omitempty"`
-	Retira		string			`xml:"retira" json:"retira,omitempty"`
-	XDetRetira	*string			`xml:"xDetRetira" json:"xDetRetira,omitempty"`
-	IndIEToma	string			`xml:"indIEToma" json:"indIEToma,omitempty"`
-	Toma3		*TAnonComplexToma31	`xml:"toma3" json:"toma3,omitempty"`
-	Toma4		*TAnonComplexToma41	`xml:"toma4" json:"toma4,omitempty"`
-	DhCont		*string			`xml:"dhCont" json:"dhCont,omitempty"`
-	XJust		*string			`xml:"xJust" json:"xJust,omitempty"`
-	GCompraGov	*TCompraGovReduzido	`xml:"gCompraGov" json:"gCompraGov,omitempty"`
+	XMLName        xml.Name            `xml:"ide" json:"-"`
+	CUF            string              `xml:"cUF" json:"cUF,omitempty"`
+	CCT            string              `xml:"cCT" json:"cCT,omitempty"`
+	CFOP           string              `xml:"CFOP" json:"CFOP,omitempty"`
+	NatOp          string              `xml:"natOp" json:"natOp,omitempty"`
+	Mod            string              `xml:"mod" json:"mod,omitempty"`
+	Serie          string              `xml:"serie" json:"serie,omitempty"`
+	NCT            string              `xml:"nCT" json:"nCT,omitempty"`
+	DhEmi          string              `xml:"dhEmi" json:"dhEmi,omitempty"`
+	TpImp          string              `xml:"tpImp" json:"tpImp,omitempty"`
+	TpEmis         string              `xml:"tpEmis" json:"tpEmis,omitempty"`
+	CDV            string              `xml:"cDV" json:"cDV,omitempty"`
+	TpAmb          string              `xml:"tpAmb" json:"tpAmb,omitempty"`
+	TpCTe          string              `xml:"tpCTe" json:"tpCTe,omitempty"`
+	ProcEmi        string              `xml:"procEmi" json:"procEmi,omitempty"`
+	VerProc        string              `xml:"verProc" json:"verProc,omitempty"`
+	IndGlobalizado *string             `xml:"indGlobalizado" json:"indGlobalizado,omitempty"`
+	CMunEnv        string              `xml:"cMunEnv" json:"cMunEnv,omitempty"`
+	XMunEnv        string              `xml:"xMunEnv" json:"xMunEnv,omitempty"`
+	UFEnv          string              `xml:"UFEnv" json:"UFEnv,omitempty"`
+	Modal          string              `xml:"modal" json:"modal,omitempty"`
+	TpServ         string              `xml:"tpServ" json:"tpServ,omitempty"`
+	CMunIni        string              `xml:"cMunIni" json:"cMunIni,omitempty"`
+	XMunIni        string              `xml:"xMunIni" json:"xMunIni,omitempty"`
+	UFIni          string              `xml:"UFIni" json:"UFIni,omitempty"`
+	CMunFim        string              `xml:"cMunFim" json:"cMunFim,omitempty"`
+	XMunFim        string              `xml:"xMunFim" json:"xMunFim,omitempty"`
+	UFFim          string              `xml:"UFFim" json:"UFFim,omitempty"`
+	Retira         string              `xml:"retira" json:"retira,omitempty"`
+	XDetRetira     *string             `xml:"xDetRetira" json:"xDetRetira,omitempty"`
+	IndIEToma      string              `xml:"indIEToma" json:"indIEToma,omitempty"`
+	Toma3          *TAnonComplexToma31 `xml:"toma3" json:"toma3,omitempty"`
+	Toma4          *TAnonComplexToma41 `xml:"toma4" json:"toma4,omitempty"`
+	DhCont         *string             `xml:"dhCont" json:"dhCont,omitempty"`
+	XJust          *string             `xml:"xJust" json:"xJust,omitempty"`
+	GCompraGov     *TCompraGovReduzido `xml:"gCompraGov" json:"gCompraGov,omitempty"`
 }
 
 // TAnonXCaracAd3 ...
@@ -992,8 +993,8 @@ type TAnonXPass2 string
 // TAnonComplexPass2 is Observação para o modal aéreo:
 // - O código de três letras IATA, referente ao aeroporto de transferência, deverá ser incluído, quando for o caso. Quando não for possível,  utilizar a sigla OACI. Qualquer solicitação de itinerário deverá ser incluída.
 type TAnonComplexPass2 struct {
-	XMLName	xml.Name	`xml:"pass" json:"-"`
-	XPass	*string		`xml:"xPass" json:"xPass,omitempty"`
+	XMLName xml.Name `xml:"pass" json:"-"`
+	XPass   *string  `xml:"xPass" json:"xPass,omitempty"`
 }
 
 // TAnonXDest2 ...
@@ -1004,11 +1005,11 @@ type TAnonXRota2 string
 
 // TAnonComplexFluxo2 is Código da Rota de Entrega
 type TAnonComplexFluxo2 struct {
-	XMLName	xml.Name		`xml:"fluxo" json:"-"`
-	XOrig	*string			`xml:"xOrig" json:"xOrig,omitempty"`
-	Pass	[]*TAnonComplexPass2	`xml:"pass" json:"pass,omitempty"`
-	XDest	*string			`xml:"xDest" json:"xDest,omitempty"`
-	XRota	*string			`xml:"xRota" json:"xRota,omitempty"`
+	XMLName xml.Name             `xml:"fluxo" json:"-"`
+	XOrig   *string              `xml:"xOrig" json:"xOrig,omitempty"`
+	Pass    []*TAnonComplexPass2 `xml:"pass" json:"pass,omitempty"`
+	XDest   *string              `xml:"xDest" json:"xDest,omitempty"`
+	XRota   *string              `xml:"xRota" json:"xRota,omitempty"`
 }
 
 // TAnonTpPer1 ...
@@ -1016,8 +1017,8 @@ type TAnonTpPer1 string
 
 // TAnonComplexSemData1 is 0- Sem data definida
 type TAnonComplexSemData1 struct {
-	XMLName	xml.Name	`xml:"semData" json:"-"`
-	TpPer	string		`xml:"tpPer" json:"tpPer,omitempty"`
+	XMLName xml.Name `xml:"semData" json:"-"`
+	TpPer   string   `xml:"tpPer" json:"tpPer,omitempty"`
 }
 
 // TAnonTpPer2 ...
@@ -1025,9 +1026,9 @@ type TAnonTpPer2 string
 
 // TAnonComplexComData1 is Formato AAAA-MM-DD
 type TAnonComplexComData1 struct {
-	XMLName	xml.Name	`xml:"comData" json:"-"`
-	TpPer	string		`xml:"tpPer" json:"tpPer,omitempty"`
-	DProg	string		`xml:"dProg" json:"dProg,omitempty"`
+	XMLName xml.Name `xml:"comData" json:"-"`
+	TpPer   string   `xml:"tpPer" json:"tpPer,omitempty"`
+	DProg   string   `xml:"dProg" json:"dProg,omitempty"`
 }
 
 // TAnonTpPer3 ...
@@ -1035,10 +1036,10 @@ type TAnonTpPer3 string
 
 // TAnonComplexNoPeriodo1 is Formato AAAA-MM-DD
 type TAnonComplexNoPeriodo1 struct {
-	XMLName	xml.Name	`xml:"noPeriodo" json:"-"`
-	TpPer	string		`xml:"tpPer" json:"tpPer,omitempty"`
-	DIni	string		`xml:"dIni" json:"dIni,omitempty"`
-	DFim	string		`xml:"dFim" json:"dFim,omitempty"`
+	XMLName xml.Name `xml:"noPeriodo" json:"-"`
+	TpPer   string   `xml:"tpPer" json:"tpPer,omitempty"`
+	DIni    string   `xml:"dIni" json:"dIni,omitempty"`
+	DFim    string   `xml:"dFim" json:"dFim,omitempty"`
 }
 
 // TAnonTpHor1 ...
@@ -1046,8 +1047,8 @@ type TAnonTpHor1 string
 
 // TAnonComplexSemHora1 is 0- Sem hora definida
 type TAnonComplexSemHora1 struct {
-	XMLName	xml.Name	`xml:"semHora" json:"-"`
-	TpHor	string		`xml:"tpHor" json:"tpHor,omitempty"`
+	XMLName xml.Name `xml:"semHora" json:"-"`
+	TpHor   string   `xml:"tpHor" json:"tpHor,omitempty"`
 }
 
 // TAnonTpHor2 ...
@@ -1055,9 +1056,9 @@ type TAnonTpHor2 string
 
 // TAnonComplexComHora1 is Formato HH:MM:SS
 type TAnonComplexComHora1 struct {
-	XMLName	xml.Name	`xml:"comHora" json:"-"`
-	TpHor	string		`xml:"tpHor" json:"tpHor,omitempty"`
-	HProg	string		`xml:"hProg" json:"hProg,omitempty"`
+	XMLName xml.Name `xml:"comHora" json:"-"`
+	TpHor   string   `xml:"tpHor" json:"tpHor,omitempty"`
+	HProg   string   `xml:"hProg" json:"hProg,omitempty"`
 }
 
 // TAnonTpHor3 ...
@@ -1065,21 +1066,21 @@ type TAnonTpHor3 string
 
 // TAnonComplexNoInter1 is Formato HH:MM:SS
 type TAnonComplexNoInter1 struct {
-	XMLName	xml.Name	`xml:"noInter" json:"-"`
-	TpHor	string		`xml:"tpHor" json:"tpHor,omitempty"`
-	HIni	string		`xml:"hIni" json:"hIni,omitempty"`
-	HFim	string		`xml:"hFim" json:"hFim,omitempty"`
+	XMLName xml.Name `xml:"noInter" json:"-"`
+	TpHor   string   `xml:"tpHor" json:"tpHor,omitempty"`
+	HIni    string   `xml:"hIni" json:"hIni,omitempty"`
+	HFim    string   `xml:"hFim" json:"hFim,omitempty"`
 }
 
 // TAnonComplexEntrega1 is Entrega no intervalo de horário definido
 type TAnonComplexEntrega1 struct {
-	XMLName		xml.Name		`xml:"Entrega" json:"-"`
-	SemData		*TAnonComplexSemData1	`xml:"semData" json:"semData,omitempty"`
-	ComData		*TAnonComplexComData1	`xml:"comData" json:"comData,omitempty"`
-	NoPeriodo	*TAnonComplexNoPeriodo1	`xml:"noPeriodo" json:"noPeriodo,omitempty"`
-	SemHora		*TAnonComplexSemHora1	`xml:"semHora" json:"semHora,omitempty"`
-	ComHora		*TAnonComplexComHora1	`xml:"comHora" json:"comHora,omitempty"`
-	NoInter		*TAnonComplexNoInter1	`xml:"noInter" json:"noInter,omitempty"`
+	XMLName   xml.Name                `xml:"Entrega" json:"-"`
+	SemData   *TAnonComplexSemData1   `xml:"semData" json:"semData,omitempty"`
+	ComData   *TAnonComplexComData1   `xml:"comData" json:"comData,omitempty"`
+	NoPeriodo *TAnonComplexNoPeriodo1 `xml:"noPeriodo" json:"noPeriodo,omitempty"`
+	SemHora   *TAnonComplexSemHora1   `xml:"semHora" json:"semHora,omitempty"`
+	ComHora   *TAnonComplexComHora1   `xml:"comHora" json:"comHora,omitempty"`
+	NoInter   *TAnonComplexNoInter1   `xml:"noInter" json:"noInter,omitempty"`
 }
 
 // TAnonOrigCalc1 ...
@@ -1096,9 +1097,9 @@ type TAnonXTexto5 string
 
 // TAnonComplexObsCont3 is Conteúdo do campo
 type TAnonComplexObsCont3 struct {
-	XMLName		xml.Name	`xml:"ObsCont" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsCont" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonXTexto6 ...
@@ -1106,24 +1107,24 @@ type TAnonXTexto6 string
 
 // TAnonComplexObsFisco3 is Conteúdo do campo
 type TAnonComplexObsFisco3 struct {
-	XMLName		xml.Name	`xml:"ObsFisco" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsFisco" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonComplexCompl3 is Informar o nome do campo no atributo xCampo e o conteúdo do campo no XTexto
 type TAnonComplexCompl3 struct {
-	XMLName		xml.Name			`xml:"compl" json:"-"`
-	XCaracAd	*string				`xml:"xCaracAd" json:"xCaracAd,omitempty"`
-	XCaracSer	*string				`xml:"xCaracSer" json:"xCaracSer,omitempty"`
-	XEmi		*string				`xml:"xEmi" json:"xEmi,omitempty"`
-	Fluxo		*TAnonComplexFluxo2		`xml:"fluxo" json:"fluxo,omitempty"`
-	Entrega		*TAnonComplexEntrega1		`xml:"Entrega" json:"Entrega,omitempty"`
-	OrigCalc	*string				`xml:"origCalc" json:"origCalc,omitempty"`
-	DestCalc	*string				`xml:"destCalc" json:"destCalc,omitempty"`
-	XObs		*string				`xml:"xObs" json:"xObs,omitempty"`
-	ObsCont		[]*TAnonComplexObsCont3		`xml:"ObsCont" json:"ObsCont,omitempty"`
-	ObsFisco	[]*TAnonComplexObsFisco3	`xml:"ObsFisco" json:"ObsFisco,omitempty"`
+	XMLName   xml.Name                 `xml:"compl" json:"-"`
+	XCaracAd  *string                  `xml:"xCaracAd" json:"xCaracAd,omitempty"`
+	XCaracSer *string                  `xml:"xCaracSer" json:"xCaracSer,omitempty"`
+	XEmi      *string                  `xml:"xEmi" json:"xEmi,omitempty"`
+	Fluxo     *TAnonComplexFluxo2      `xml:"fluxo" json:"fluxo,omitempty"`
+	Entrega   *TAnonComplexEntrega1    `xml:"Entrega" json:"Entrega,omitempty"`
+	OrigCalc  *string                  `xml:"origCalc" json:"origCalc,omitempty"`
+	DestCalc  *string                  `xml:"destCalc" json:"destCalc,omitempty"`
+	XObs      *string                  `xml:"xObs" json:"xObs,omitempty"`
+	ObsCont   []*TAnonComplexObsCont3  `xml:"ObsCont" json:"ObsCont,omitempty"`
+	ObsFisco  []*TAnonComplexObsFisco3 `xml:"ObsFisco" json:"ObsFisco,omitempty"`
 }
 
 // TAnonIE8 ...
@@ -1143,15 +1144,15 @@ type TAnonXFant6 string
 // 3=Regime Normal.
 // 4=Simples Nacional - Microempreendedor Individual – MEI.
 type TAnonComplexEmit3 struct {
-	XMLName		xml.Name	`xml:"emit" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	IEST		*string		`xml:"IEST" json:"IEST,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	EnderEmit	*TEndeEmi	`xml:"enderEmit" json:"enderEmit,omitempty"`
-	CRT		*string		`xml:"CRT" json:"CRT,omitempty"`
+	XMLName   xml.Name  `xml:"emit" json:"-"`
+	CNPJ      *string   `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string   `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string   `xml:"IE" json:"IE,omitempty"`
+	IEST      *string   `xml:"IEST" json:"IEST,omitempty"`
+	XNome     string    `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string   `xml:"xFant" json:"xFant,omitempty"`
+	EnderEmit *TEndeEmi `xml:"enderEmit" json:"enderEmit,omitempty"`
+	CRT       *string   `xml:"CRT" json:"CRT,omitempty"`
 }
 
 // TAnonIE9 ...
@@ -1168,15 +1169,15 @@ type TAnonEmail2 string
 
 // TAnonComplexRem2 is Endereço de email
 type TAnonComplexRem2 struct {
-	XMLName		xml.Name	`xml:"rem" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderReme	*TEndereco	`xml:"enderReme" json:"enderReme,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"rem" json:"-"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string    `xml:"xFant" json:"xFant,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	EnderReme *TEndereco `xml:"enderReme" json:"enderReme,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonIE10 ...
@@ -1187,14 +1188,14 @@ type TAnonXNome11 string
 
 // TAnonComplexExped1 is Endereço de email
 type TAnonComplexExped1 struct {
-	XMLName		xml.Name	`xml:"exped" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderExped	*TEndereco	`xml:"enderExped" json:"enderExped,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName    xml.Name   `xml:"exped" json:"-"`
+	CNPJ       *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF        *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE         *string    `xml:"IE" json:"IE,omitempty"`
+	XNome      string     `xml:"xNome" json:"xNome,omitempty"`
+	Fone       *string    `xml:"fone" json:"fone,omitempty"`
+	EnderExped *TEndereco `xml:"enderExped" json:"enderExped,omitempty"`
+	Email      *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonIE11 ...
@@ -1205,14 +1206,14 @@ type TAnonXNome12 string
 
 // TAnonComplexReceb1 is Endereço de email
 type TAnonComplexReceb1 struct {
-	XMLName		xml.Name	`xml:"receb" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderReceb	*TEndereco	`xml:"enderReceb" json:"enderReceb,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName    xml.Name   `xml:"receb" json:"-"`
+	CNPJ       *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF        *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE         *string    `xml:"IE" json:"IE,omitempty"`
+	XNome      string     `xml:"xNome" json:"xNome,omitempty"`
+	Fone       *string    `xml:"fone" json:"fone,omitempty"`
+	EnderReceb *TEndereco `xml:"enderReceb" json:"enderReceb,omitempty"`
+	Email      *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonIE12 ...
@@ -1226,15 +1227,15 @@ type TAnonISUF3 string
 
 // TAnonComplexDest2 is Endereço de email
 type TAnonComplexDest2 struct {
-	XMLName		xml.Name	`xml:"dest" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	ISUF		*string		`xml:"ISUF" json:"ISUF,omitempty"`
-	EnderDest	*TEndereco	`xml:"enderDest" json:"enderDest,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"dest" json:"-"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	ISUF      *string    `xml:"ISUF" json:"ISUF,omitempty"`
+	EnderDest *TEndereco `xml:"enderDest" json:"enderDest,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonXNome14 ...
@@ -1242,17 +1243,17 @@ type TAnonXNome14 string
 
 // TAnonComplexComp2 is Valor do componente
 type TAnonComplexComp2 struct {
-	XMLName	xml.Name	`xml:"Comp" json:"-"`
-	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
-	VComp	string		`xml:"vComp" json:"vComp,omitempty"`
+	XMLName xml.Name `xml:"Comp" json:"-"`
+	XNome   string   `xml:"xNome" json:"xNome,omitempty"`
+	VComp   string   `xml:"vComp" json:"vComp,omitempty"`
 }
 
 // TAnonComplexVPrest1 is Componentes do Valor da Prestação
 type TAnonComplexVPrest1 struct {
-	XMLName	xml.Name		`xml:"vPrest" json:"-"`
-	VTPrest	string			`xml:"vTPrest" json:"vTPrest,omitempty"`
-	VRec	string			`xml:"vRec" json:"vRec,omitempty"`
-	Comp	[]*TAnonComplexComp2	`xml:"Comp" json:"Comp,omitempty"`
+	XMLName xml.Name             `xml:"vPrest" json:"-"`
+	VTPrest string               `xml:"vTPrest" json:"vTPrest,omitempty"`
+	VRec    string               `xml:"vRec" json:"vRec,omitempty"`
+	Comp    []*TAnonComplexComp2 `xml:"Comp" json:"Comp,omitempty"`
 }
 
 // TAnonInfAdFisco2 ...
@@ -1260,26 +1261,26 @@ type TAnonInfAdFisco2 string
 
 // TAnonComplexICMSUFFim2 is Valor do ICMS de partilha para a UF de início da prestação do serviço de transporte
 type TAnonComplexICMSUFFim2 struct {
-	XMLName		xml.Name	`xml:"ICMSUFFim" json:"-"`
-	VBCUFFim	string		`xml:"vBCUFFim" json:"vBCUFFim,omitempty"`
-	PFCPUFFim	string		`xml:"pFCPUFFim" json:"pFCPUFFim,omitempty"`
-	PICMSUFFim	string		`xml:"pICMSUFFim" json:"pICMSUFFim,omitempty"`
-	PICMSInter	string		`xml:"pICMSInter" json:"pICMSInter,omitempty"`
-	VFCPUFFim	string		`xml:"vFCPUFFim" json:"vFCPUFFim,omitempty"`
-	VICMSUFFim	string		`xml:"vICMSUFFim" json:"vICMSUFFim,omitempty"`
-	VICMSUFIni	string		`xml:"vICMSUFIni" json:"vICMSUFIni,omitempty"`
+	XMLName    xml.Name `xml:"ICMSUFFim" json:"-"`
+	VBCUFFim   string   `xml:"vBCUFFim" json:"vBCUFFim,omitempty"`
+	PFCPUFFim  string   `xml:"pFCPUFFim" json:"pFCPUFFim,omitempty"`
+	PICMSUFFim string   `xml:"pICMSUFFim" json:"pICMSUFFim,omitempty"`
+	PICMSInter string   `xml:"pICMSInter" json:"pICMSInter,omitempty"`
+	VFCPUFFim  string   `xml:"vFCPUFFim" json:"vFCPUFFim,omitempty"`
+	VICMSUFFim string   `xml:"vICMSUFFim" json:"vICMSUFFim,omitempty"`
+	VICMSUFIni string   `xml:"vICMSUFIni" json:"vICMSUFIni,omitempty"`
 }
 
 // TAnonComplexImp2 is Valor total do documento fiscal
 // (vTPrest + total do IBS + total da CBS)
 type TAnonComplexImp2 struct {
-	XMLName		xml.Name		`xml:"imp" json:"-"`
-	ICMS		*TImp			`xml:"ICMS" json:"ICMS,omitempty"`
-	VTotTrib	*string			`xml:"vTotTrib" json:"vTotTrib,omitempty"`
-	InfAdFisco	*string			`xml:"infAdFisco" json:"infAdFisco,omitempty"`
-	ICMSUFFim	*TAnonComplexICMSUFFim2	`xml:"ICMSUFFim" json:"ICMSUFFim,omitempty"`
-	IBSCBS		*TTribCTe		`xml:"IBSCBS" json:"IBSCBS,omitempty"`
-	VTotDFe		*string			`xml:"vTotDFe" json:"vTotDFe,omitempty"`
+	XMLName    xml.Name                `xml:"imp" json:"-"`
+	ICMS       *TImp                   `xml:"ICMS" json:"ICMS,omitempty"`
+	VTotTrib   *string                 `xml:"vTotTrib" json:"vTotTrib,omitempty"`
+	InfAdFisco *string                 `xml:"infAdFisco" json:"infAdFisco,omitempty"`
+	ICMSUFFim  *TAnonComplexICMSUFFim2 `xml:"ICMSUFFim" json:"ICMSUFFim,omitempty"`
+	IBSCBS     *TTribCTe               `xml:"IBSCBS" json:"IBSCBS,omitempty"`
+	VTotDFe    *string                 `xml:"vTotDFe" json:"vTotDFe,omitempty"`
 }
 
 // TAnonProPred2 ...
@@ -1296,20 +1297,20 @@ type TAnonTpMed2 string
 
 // TAnonComplexInfQ2 is Quantidade
 type TAnonComplexInfQ2 struct {
-	XMLName	xml.Name	`xml:"infQ" json:"-"`
-	CUnid	string		`xml:"cUnid" json:"cUnid,omitempty"`
-	TpMed	string		`xml:"tpMed" json:"tpMed,omitempty"`
-	QCarga	string		`xml:"qCarga" json:"qCarga,omitempty"`
+	XMLName xml.Name `xml:"infQ" json:"-"`
+	CUnid   string   `xml:"cUnid" json:"cUnid,omitempty"`
+	TpMed   string   `xml:"tpMed" json:"tpMed,omitempty"`
+	QCarga  string   `xml:"qCarga" json:"qCarga,omitempty"`
 }
 
 // TAnonComplexInfCarga2 is Normalmente igual ao valor declarado da mercadoria, diferente por exemplo, quando a mercadoria transportada é isenta de tributos nacionais para exportação, onde é preciso averbar um valor maior, pois no caso de indenização, o valor a ser pago será maior
 type TAnonComplexInfCarga2 struct {
-	XMLName		xml.Name		`xml:"infCarga" json:"-"`
-	VCarga		*string			`xml:"vCarga" json:"vCarga,omitempty"`
-	ProPred		string			`xml:"proPred" json:"proPred,omitempty"`
-	XOutCat		*string			`xml:"xOutCat" json:"xOutCat,omitempty"`
-	InfQ		[]*TAnonComplexInfQ2	`xml:"infQ" json:"infQ,omitempty"`
-	VCargaAverb	*string			`xml:"vCargaAverb" json:"vCargaAverb,omitempty"`
+	XMLName     xml.Name             `xml:"infCarga" json:"-"`
+	VCarga      *string              `xml:"vCarga" json:"vCarga,omitempty"`
+	ProPred     string               `xml:"proPred" json:"proPred,omitempty"`
+	XOutCat     *string              `xml:"xOutCat" json:"xOutCat,omitempty"`
+	InfQ        []*TAnonComplexInfQ2 `xml:"infQ" json:"infQ,omitempty"`
+	VCargaAverb *string              `xml:"vCargaAverb" json:"vCargaAverb,omitempty"`
 }
 
 // TAnonNRoma1 ...
@@ -1329,25 +1330,25 @@ type TAnonPIN2 string
 
 // TAnonComplexInfNF1 is Deve ser preenchido com as informações das unidades de transporte utilizadas.
 type TAnonComplexInfNF1 struct {
-	XMLName		xml.Name		`xml:"infNF" json:"-"`
-	NRoma		*string			`xml:"nRoma" json:"nRoma,omitempty"`
-	NPed		*string			`xml:"nPed" json:"nPed,omitempty"`
-	Mod		string			`xml:"mod" json:"mod,omitempty"`
-	Serie		string			`xml:"serie" json:"serie,omitempty"`
-	NDoc		string			`xml:"nDoc" json:"nDoc,omitempty"`
-	DEmi		string			`xml:"dEmi" json:"dEmi,omitempty"`
-	VBC		string			`xml:"vBC" json:"vBC,omitempty"`
-	VICMS		string			`xml:"vICMS" json:"vICMS,omitempty"`
-	VBCST		string			`xml:"vBCST" json:"vBCST,omitempty"`
-	VST		string			`xml:"vST" json:"vST,omitempty"`
-	VProd		string			`xml:"vProd" json:"vProd,omitempty"`
-	VNF		string			`xml:"vNF" json:"vNF,omitempty"`
-	NCFOP		string			`xml:"nCFOP" json:"nCFOP,omitempty"`
-	NPeso		*string			`xml:"nPeso" json:"nPeso,omitempty"`
-	PIN		*string			`xml:"PIN" json:"PIN,omitempty"`
-	DPrev		*string			`xml:"dPrev" json:"dPrev,omitempty"`
-	InfUnidCarga	[]*TUnidCarga		`xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
-	InfUnidTransp	[]*TUnidadeTransp	`xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
+	XMLName       xml.Name          `xml:"infNF" json:"-"`
+	NRoma         *string           `xml:"nRoma" json:"nRoma,omitempty"`
+	NPed          *string           `xml:"nPed" json:"nPed,omitempty"`
+	Mod           string            `xml:"mod" json:"mod,omitempty"`
+	Serie         string            `xml:"serie" json:"serie,omitempty"`
+	NDoc          string            `xml:"nDoc" json:"nDoc,omitempty"`
+	DEmi          string            `xml:"dEmi" json:"dEmi,omitempty"`
+	VBC           string            `xml:"vBC" json:"vBC,omitempty"`
+	VICMS         string            `xml:"vICMS" json:"vICMS,omitempty"`
+	VBCST         string            `xml:"vBCST" json:"vBCST,omitempty"`
+	VST           string            `xml:"vST" json:"vST,omitempty"`
+	VProd         string            `xml:"vProd" json:"vProd,omitempty"`
+	VNF           string            `xml:"vNF" json:"vNF,omitempty"`
+	NCFOP         string            `xml:"nCFOP" json:"nCFOP,omitempty"`
+	NPeso         *string           `xml:"nPeso" json:"nPeso,omitempty"`
+	PIN           *string           `xml:"PIN" json:"PIN,omitempty"`
+	DPrev         *string           `xml:"dPrev" json:"dPrev,omitempty"`
+	InfUnidCarga  []*TUnidCarga     `xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
+	InfUnidTransp []*TUnidadeTransp `xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
 }
 
 // TAnonPIN3 ...
@@ -1355,12 +1356,12 @@ type TAnonPIN3 string
 
 // TAnonComplexInfNFe2 is Deve ser preenchido com as informações das unidades de transporte utilizadas.
 type TAnonComplexInfNFe2 struct {
-	XMLName		xml.Name		`xml:"infNFe" json:"-"`
-	Chave		string			`xml:"chave" json:"chave,omitempty"`
-	PIN		*string			`xml:"PIN" json:"PIN,omitempty"`
-	DPrev		*string			`xml:"dPrev" json:"dPrev,omitempty"`
-	InfUnidCarga	[]*TUnidCarga		`xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
-	InfUnidTransp	[]*TUnidadeTransp	`xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
+	XMLName       xml.Name          `xml:"infNFe" json:"-"`
+	Chave         string            `xml:"chave" json:"chave,omitempty"`
+	PIN           *string           `xml:"PIN" json:"PIN,omitempty"`
+	DPrev         *string           `xml:"dPrev" json:"dPrev,omitempty"`
+	InfUnidCarga  []*TUnidCarga     `xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
+	InfUnidTransp []*TUnidadeTransp `xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
 }
 
 // TAnonTpDoc1 ...
@@ -1374,30 +1375,30 @@ type TAnonNDoc2 string
 
 // TAnonComplexInfOutros1 is Deve ser preenchido com as informações das unidades de transporte utilizadas.
 type TAnonComplexInfOutros1 struct {
-	XMLName		xml.Name		`xml:"infOutros" json:"-"`
-	TpDoc		string			`xml:"tpDoc" json:"tpDoc,omitempty"`
-	DescOutros	*string			`xml:"descOutros" json:"descOutros,omitempty"`
-	NDoc		*string			`xml:"nDoc" json:"nDoc,omitempty"`
-	DEmi		*string			`xml:"dEmi" json:"dEmi,omitempty"`
-	VDocFisc	*string			`xml:"vDocFisc" json:"vDocFisc,omitempty"`
-	DPrev		*string			`xml:"dPrev" json:"dPrev,omitempty"`
-	InfUnidCarga	[]*TUnidCarga		`xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
-	InfUnidTransp	[]*TUnidadeTransp	`xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
+	XMLName       xml.Name          `xml:"infOutros" json:"-"`
+	TpDoc         string            `xml:"tpDoc" json:"tpDoc,omitempty"`
+	DescOutros    *string           `xml:"descOutros" json:"descOutros,omitempty"`
+	NDoc          *string           `xml:"nDoc" json:"nDoc,omitempty"`
+	DEmi          *string           `xml:"dEmi" json:"dEmi,omitempty"`
+	VDocFisc      *string           `xml:"vDocFisc" json:"vDocFisc,omitempty"`
+	DPrev         *string           `xml:"dPrev" json:"dPrev,omitempty"`
+	InfUnidCarga  []*TUnidCarga     `xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
+	InfUnidTransp []*TUnidadeTransp `xml:"infUnidTransp" json:"infUnidTransp,omitempty"`
 }
 
 // TAnonComplexInfDCe1 is Chave de acesso da DCe
 type TAnonComplexInfDCe1 struct {
-	XMLName	xml.Name	`xml:"infDCe" json:"-"`
-	Chave	string		`xml:"chave" json:"chave,omitempty"`
+	XMLName xml.Name `xml:"infDCe" json:"-"`
+	Chave   string   `xml:"chave" json:"chave,omitempty"`
 }
 
 // TAnonComplexInfDoc1 is Informações das DCe
 type TAnonComplexInfDoc1 struct {
-	XMLName		xml.Name			`xml:"infDoc" json:"-"`
-	InfNF		[]*TAnonComplexInfNF1		`xml:"infNF" json:"infNF,omitempty"`
-	InfNFe		[]*TAnonComplexInfNFe2		`xml:"infNFe" json:"infNFe,omitempty"`
-	InfOutros	[]*TAnonComplexInfOutros1	`xml:"infOutros" json:"infOutros,omitempty"`
-	InfDCe		[]*TAnonComplexInfDCe1		`xml:"infDCe" json:"infDCe,omitempty"`
+	XMLName   xml.Name                  `xml:"infDoc" json:"-"`
+	InfNF     []*TAnonComplexInfNF1     `xml:"infNF" json:"infNF,omitempty"`
+	InfNFe    []*TAnonComplexInfNFe2    `xml:"infNFe" json:"infNFe,omitempty"`
+	InfOutros []*TAnonComplexInfOutros1 `xml:"infOutros" json:"infOutros,omitempty"`
+	InfDCe    []*TAnonComplexInfDCe1    `xml:"infDCe" json:"infDCe,omitempty"`
 }
 
 // TAnonXNome15 ...
@@ -1417,42 +1418,42 @@ type TAnonNDoc3 string
 
 // TAnonComplexIdDocAntPap1 is Data de emissão (AAAA-MM-DD)
 type TAnonComplexIdDocAntPap1 struct {
-	XMLName	xml.Name	`xml:"idDocAntPap" json:"-"`
-	TpDoc	string		`xml:"tpDoc" json:"tpDoc,omitempty"`
-	Serie	string		`xml:"serie" json:"serie,omitempty"`
-	Subser	*string		`xml:"subser" json:"subser,omitempty"`
-	NDoc	string		`xml:"nDoc" json:"nDoc,omitempty"`
-	DEmi	string		`xml:"dEmi" json:"dEmi,omitempty"`
+	XMLName xml.Name `xml:"idDocAntPap" json:"-"`
+	TpDoc   string   `xml:"tpDoc" json:"tpDoc,omitempty"`
+	Serie   string   `xml:"serie" json:"serie,omitempty"`
+	Subser  *string  `xml:"subser" json:"subser,omitempty"`
+	NDoc    string   `xml:"nDoc" json:"nDoc,omitempty"`
+	DEmi    string   `xml:"dEmi" json:"dEmi,omitempty"`
 }
 
 // TAnonComplexIdDocAntEle1 is Chave de acesso do CT-e
 type TAnonComplexIdDocAntEle1 struct {
-	XMLName	xml.Name	`xml:"idDocAntEle" json:"-"`
-	ChCTe	string		`xml:"chCTe" json:"chCTe,omitempty"`
+	XMLName xml.Name `xml:"idDocAntEle" json:"-"`
+	ChCTe   string   `xml:"chCTe" json:"chCTe,omitempty"`
 }
 
 // TAnonComplexIdDocAnt1 is Documentos de transporte anterior eletrônicos
 type TAnonComplexIdDocAnt1 struct {
-	XMLName		xml.Name			`xml:"idDocAnt" json:"-"`
-	IdDocAntPap	[]*TAnonComplexIdDocAntPap1	`xml:"idDocAntPap" json:"idDocAntPap,omitempty"`
-	IdDocAntEle	[]*TAnonComplexIdDocAntEle1	`xml:"idDocAntEle" json:"idDocAntEle,omitempty"`
+	XMLName     xml.Name                    `xml:"idDocAnt" json:"-"`
+	IdDocAntPap []*TAnonComplexIdDocAntPap1 `xml:"idDocAntPap" json:"idDocAntPap,omitempty"`
+	IdDocAntEle []*TAnonComplexIdDocAntEle1 `xml:"idDocAntEle" json:"idDocAntEle,omitempty"`
 }
 
 // TAnonComplexEmiDocAnt1 is Informações de identificação dos documentos de Transporte Anterior
 type TAnonComplexEmiDocAnt1 struct {
-	XMLName		xml.Name			`xml:"emiDocAnt" json:"-"`
-	CNPJ		*string				`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string				`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string				`xml:"IE" json:"IE,omitempty"`
-	UF		*string				`xml:"UF" json:"UF,omitempty"`
-	XNome		string				`xml:"xNome" json:"xNome,omitempty"`
-	IdDocAnt	[]*TAnonComplexIdDocAnt1	`xml:"idDocAnt" json:"idDocAnt,omitempty"`
+	XMLName  xml.Name                 `xml:"emiDocAnt" json:"-"`
+	CNPJ     *string                  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF      *string                  `xml:"CPF" json:"CPF,omitempty"`
+	IE       *string                  `xml:"IE" json:"IE,omitempty"`
+	UF       *string                  `xml:"UF" json:"UF,omitempty"`
+	XNome    string                   `xml:"xNome" json:"xNome,omitempty"`
+	IdDocAnt []*TAnonComplexIdDocAnt1 `xml:"idDocAnt" json:"idDocAnt,omitempty"`
 }
 
 // TAnonComplexDocAnt1 is Emissor do documento anterior
 type TAnonComplexDocAnt1 struct {
-	XMLName		xml.Name			`xml:"docAnt" json:"-"`
-	EmiDocAnt	[]*TAnonComplexEmiDocAnt1	`xml:"emiDocAnt" json:"emiDocAnt,omitempty"`
+	XMLName   xml.Name                  `xml:"docAnt" json:"-"`
+	EmiDocAnt []*TAnonComplexEmiDocAnt1 `xml:"emiDocAnt" json:"emiDocAnt,omitempty"`
 }
 
 // TAnonComplexInfModal2 is O elemento do tipo -any- permite estender o documento XML com elementos não especificados pelo schema.
@@ -1465,9 +1466,9 @@ type TAnonComplexDocAnt1 struct {
 //
 // Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo, o arquivo para o schema do modal Rodoviário na versão 1.04 será denominado "CTeModalRodoviario_v1.04".
 type TAnonComplexInfModal2 struct {
-	XMLName		xml.Name			`xml:"infModal" json:"-"`
-	VersaoModalAttr	string				`xml:"versaoModal,attr" json:"versaoModal,omitempty"`
-	RodoOS		modalrodoviarioos.RodoOS	`xml:"rodoOS,omitempty" json:"rodoOS,omitempty"`
+	XMLName         xml.Name                 `xml:"infModal" json:"-"`
+	VersaoModalAttr string                   `xml:"versaoModal,attr" json:"versaoModal,omitempty"`
+	RodoOS          modalrodoviarioos.RodoOS `xml:"rodoOS,omitempty" json:"rodoOS,omitempty"`
 }
 
 // TAnonChassi1 ...
@@ -1484,13 +1485,13 @@ type TAnonCMod1 string
 
 // TAnonComplexVeicNovos1 is Frete Unitário
 type TAnonComplexVeicNovos1 struct {
-	XMLName	xml.Name	`xml:"veicNovos" json:"-"`
-	Chassi	string		`xml:"chassi" json:"chassi,omitempty"`
-	CCor	string		`xml:"cCor" json:"cCor,omitempty"`
-	XCor	string		`xml:"xCor" json:"xCor,omitempty"`
-	CMod	string		`xml:"cMod" json:"cMod,omitempty"`
-	VUnit	string		`xml:"vUnit" json:"vUnit,omitempty"`
-	VFrete	string		`xml:"vFrete" json:"vFrete,omitempty"`
+	XMLName xml.Name `xml:"veicNovos" json:"-"`
+	Chassi  string   `xml:"chassi" json:"chassi,omitempty"`
+	CCor    string   `xml:"cCor" json:"cCor,omitempty"`
+	XCor    string   `xml:"xCor" json:"xCor,omitempty"`
+	CMod    string   `xml:"cMod" json:"cMod,omitempty"`
+	VUnit   string   `xml:"vUnit" json:"vUnit,omitempty"`
+	VFrete  string   `xml:"vFrete" json:"vFrete,omitempty"`
 }
 
 // TAnonNFat2 ...
@@ -1498,11 +1499,11 @@ type TAnonNFat2 string
 
 // TAnonComplexFat2 is Valor líquido da fatura
 type TAnonComplexFat2 struct {
-	XMLName	xml.Name	`xml:"fat" json:"-"`
-	NFat	*string		`xml:"nFat" json:"nFat,omitempty"`
-	VOrig	*string		`xml:"vOrig" json:"vOrig,omitempty"`
-	VDesc	*string		`xml:"vDesc" json:"vDesc,omitempty"`
-	VLiq	*string		`xml:"vLiq" json:"vLiq,omitempty"`
+	XMLName xml.Name `xml:"fat" json:"-"`
+	NFat    *string  `xml:"nFat" json:"nFat,omitempty"`
+	VOrig   *string  `xml:"vOrig" json:"vOrig,omitempty"`
+	VDesc   *string  `xml:"vDesc" json:"vDesc,omitempty"`
+	VLiq    *string  `xml:"vLiq" json:"vLiq,omitempty"`
 }
 
 // TAnonNDup2 ...
@@ -1510,17 +1511,17 @@ type TAnonNDup2 string
 
 // TAnonComplexDup2 is Valor da duplicata
 type TAnonComplexDup2 struct {
-	XMLName	xml.Name	`xml:"dup" json:"-"`
-	NDup	*string		`xml:"nDup" json:"nDup,omitempty"`
-	DVenc	*string		`xml:"dVenc" json:"dVenc,omitempty"`
-	VDup	*string		`xml:"vDup" json:"vDup,omitempty"`
+	XMLName xml.Name `xml:"dup" json:"-"`
+	NDup    *string  `xml:"nDup" json:"nDup,omitempty"`
+	DVenc   *string  `xml:"dVenc" json:"dVenc,omitempty"`
+	VDup    *string  `xml:"vDup" json:"vDup,omitempty"`
 }
 
 // TAnonComplexCobr2 is Dados das duplicatas
 type TAnonComplexCobr2 struct {
-	XMLName	xml.Name		`xml:"cobr" json:"-"`
-	Fat	*TAnonComplexFat2	`xml:"fat" json:"fat,omitempty"`
-	Dup	[]*TAnonComplexDup2	`xml:"dup" json:"dup,omitempty"`
+	XMLName xml.Name            `xml:"cobr" json:"-"`
+	Fat     *TAnonComplexFat2   `xml:"fat" json:"fat,omitempty"`
+	Dup     []*TAnonComplexDup2 `xml:"dup" json:"dup,omitempty"`
 }
 
 // TAnonChCte2 ...
@@ -1531,9 +1532,9 @@ type TAnonIndAlteraToma2 string
 
 // TAnonComplexInfCteSub2 is Indicador de CT-e Alteração de Tomador
 type TAnonComplexInfCteSub2 struct {
-	XMLName		xml.Name	`xml:"infCteSub" json:"-"`
-	ChCte		string		`xml:"chCte" json:"chCte,omitempty"`
-	IndAlteraToma	*string		`xml:"indAlteraToma" json:"indAlteraToma,omitempty"`
+	XMLName       xml.Name `xml:"infCteSub" json:"-"`
+	ChCte         string   `xml:"chCte" json:"chCte,omitempty"`
+	IndAlteraToma *string  `xml:"indAlteraToma" json:"indAlteraToma,omitempty"`
 }
 
 // TAnonXObs4 ...
@@ -1541,47 +1542,47 @@ type TAnonXObs4 string
 
 // TAnonComplexInfGlobalizado1 is Preencher com informações adicionais, legislação do regime especial, etc
 type TAnonComplexInfGlobalizado1 struct {
-	XMLName	xml.Name	`xml:"infGlobalizado" json:"-"`
-	XObs	string		`xml:"xObs" json:"xObs,omitempty"`
+	XMLName xml.Name `xml:"infGlobalizado" json:"-"`
+	XObs    string   `xml:"xObs" json:"xObs,omitempty"`
 }
 
 // TAnonComplexInfCTeMultimodal1 is Chave de acesso do CT-e Multimodal
 type TAnonComplexInfCTeMultimodal1 struct {
-	XMLName		xml.Name	`xml:"infCTeMultimodal" json:"-"`
-	ChCTeMultimodal	string		`xml:"chCTeMultimodal" json:"chCTeMultimodal,omitempty"`
+	XMLName         xml.Name `xml:"infCTeMultimodal" json:"-"`
+	ChCTeMultimodal string   `xml:"chCTeMultimodal" json:"chCTeMultimodal,omitempty"`
 }
 
 // TAnonComplexInfServVinc1 is informações do CT-e multimodal vinculado
 type TAnonComplexInfServVinc1 struct {
-	XMLName			xml.Name				`xml:"infServVinc" json:"-"`
-	InfCTeMultimodal	[]*TAnonComplexInfCTeMultimodal1	`xml:"infCTeMultimodal" json:"infCTeMultimodal,omitempty"`
+	XMLName          xml.Name                         `xml:"infServVinc" json:"-"`
+	InfCTeMultimodal []*TAnonComplexInfCTeMultimodal1 `xml:"infCTeMultimodal" json:"infCTeMultimodal,omitempty"`
 }
 
 // TAnonComplexInfCTeNorm1 is Informações do Serviço Vinculado a Multimodal
 type TAnonComplexInfCTeNorm1 struct {
-	XMLName		xml.Name			`xml:"infCTeNorm" json:"-"`
-	InfCarga	*TAnonComplexInfCarga2		`xml:"infCarga" json:"infCarga,omitempty"`
-	InfDoc		*TAnonComplexInfDoc1		`xml:"infDoc" json:"infDoc,omitempty"`
-	DocAnt		*TAnonComplexDocAnt1		`xml:"docAnt" json:"docAnt,omitempty"`
-	InfModal	*TAnonComplexInfModal2		`xml:"infModal" json:"infModal,omitempty"`
-	VeicNovos	[]*TAnonComplexVeicNovos1	`xml:"veicNovos" json:"veicNovos,omitempty"`
-	Cobr		*TAnonComplexCobr2		`xml:"cobr" json:"cobr,omitempty"`
-	InfCteSub	*TAnonComplexInfCteSub2		`xml:"infCteSub" json:"infCteSub,omitempty"`
-	InfGlobalizado	*TAnonComplexInfGlobalizado1	`xml:"infGlobalizado" json:"infGlobalizado,omitempty"`
-	InfServVinc	*TAnonComplexInfServVinc1	`xml:"infServVinc" json:"infServVinc,omitempty"`
+	XMLName        xml.Name                     `xml:"infCTeNorm" json:"-"`
+	InfCarga       *TAnonComplexInfCarga2       `xml:"infCarga" json:"infCarga,omitempty"`
+	InfDoc         *TAnonComplexInfDoc1         `xml:"infDoc" json:"infDoc,omitempty"`
+	DocAnt         *TAnonComplexDocAnt1         `xml:"docAnt" json:"docAnt,omitempty"`
+	InfModal       *TAnonComplexInfModal2       `xml:"infModal" json:"infModal,omitempty"`
+	VeicNovos      []*TAnonComplexVeicNovos1    `xml:"veicNovos" json:"veicNovos,omitempty"`
+	Cobr           *TAnonComplexCobr2           `xml:"cobr" json:"cobr,omitempty"`
+	InfCteSub      *TAnonComplexInfCteSub2      `xml:"infCteSub" json:"infCteSub,omitempty"`
+	InfGlobalizado *TAnonComplexInfGlobalizado1 `xml:"infGlobalizado" json:"infGlobalizado,omitempty"`
+	InfServVinc    *TAnonComplexInfServVinc1    `xml:"infServVinc" json:"infServVinc,omitempty"`
 }
 
 // TAnonComplexInfCteComp1 is Chave do CT-e complementado
 type TAnonComplexInfCteComp1 struct {
-	XMLName	xml.Name	`xml:"infCteComp" json:"-"`
-	ChCTe	string		`xml:"chCTe" json:"chCTe,omitempty"`
+	XMLName xml.Name `xml:"infCteComp" json:"-"`
+	ChCTe   string   `xml:"chCTe" json:"chCTe,omitempty"`
 }
 
 // TAnonComplexAutXML3 is Informar zeros não significativos
 type TAnonComplexAutXML3 struct {
-	XMLName	xml.Name	`xml:"autXML" json:"-"`
-	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	XMLName xml.Name `xml:"autXML" json:"-"`
+	CNPJ    *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string  `xml:"CPF" json:"CPF,omitempty"`
 }
 
 // TAnonXSolic2 ...
@@ -1589,44 +1590,44 @@ type TAnonXSolic2 string
 
 // TAnonComplexInfSolicNFF2 is Será preenchido com a totalidade de campos informados no aplicativo emissor serializado.
 type TAnonComplexInfSolicNFF2 struct {
-	XMLName	xml.Name	`xml:"infSolicNFF" json:"-"`
-	XSolic	string		`xml:"xSolic" json:"xSolic,omitempty"`
+	XMLName xml.Name `xml:"infSolicNFF" json:"-"`
+	XSolic  string   `xml:"xSolic" json:"xSolic,omitempty"`
 }
 
 // TAnonComplexPAASignature2 is Chave Publica no padrão XML RSA Key
 type TAnonComplexPAASignature2 struct {
-	XMLName		xml.Name		`xml:"PAASignature" json:"-"`
-	SignatureValue	string			`xml:"SignatureValue" json:"SignatureValue,omitempty"`
-	RSAKeyValue	*TRSAKeyValueType	`xml:"RSAKeyValue" json:"RSAKeyValue,omitempty"`
+	XMLName        xml.Name          `xml:"PAASignature" json:"-"`
+	SignatureValue string            `xml:"SignatureValue" json:"SignatureValue,omitempty"`
+	RSAKeyValue    *TRSAKeyValueType `xml:"RSAKeyValue" json:"RSAKeyValue,omitempty"`
 }
 
 // TAnonComplexInfPAA2 is Assinatura RSA do Emitente para DFe gerados por PAA
 type TAnonComplexInfPAA2 struct {
-	XMLName		xml.Name			`xml:"infPAA" json:"-"`
-	CNPJPAA		string				`xml:"CNPJPAA" json:"CNPJPAA,omitempty"`
-	PAASignature	*TAnonComplexPAASignature2	`xml:"PAASignature" json:"PAASignature,omitempty"`
+	XMLName      xml.Name                   `xml:"infPAA" json:"-"`
+	CNPJPAA      string                     `xml:"CNPJPAA" json:"CNPJPAA,omitempty"`
+	PAASignature *TAnonComplexPAASignature2 `xml:"PAASignature" json:"PAASignature,omitempty"`
 }
 
 // TAnonComplexInfCte3 is Grupo de Informação do Provedor de Assinatura e Autorização
 type TAnonComplexInfCte3 struct {
-	XMLName		xml.Name			`xml:"infCte" json:"-"`
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	IdAttr		string				`xml:"Id,attr" json:"Id,omitempty"`
-	Ide		*TAnonComplexIde3		`xml:"ide" json:"ide,omitempty"`
-	Compl		*TAnonComplexCompl3		`xml:"compl" json:"compl,omitempty"`
-	Emit		*TAnonComplexEmit3		`xml:"emit" json:"emit,omitempty"`
-	Rem		*TAnonComplexRem2		`xml:"rem" json:"rem,omitempty"`
-	Exped		*TAnonComplexExped1		`xml:"exped" json:"exped,omitempty"`
-	Receb		*TAnonComplexReceb1		`xml:"receb" json:"receb,omitempty"`
-	Dest		*TAnonComplexDest2		`xml:"dest" json:"dest,omitempty"`
-	VPrest		*TAnonComplexVPrest1		`xml:"vPrest" json:"vPrest,omitempty"`
-	Imp		*TAnonComplexImp2		`xml:"imp" json:"imp,omitempty"`
-	InfCTeNorm	*TAnonComplexInfCTeNorm1	`xml:"infCTeNorm" json:"infCTeNorm,omitempty"`
-	InfCteComp	[]*TAnonComplexInfCteComp1	`xml:"infCteComp" json:"infCteComp,omitempty"`
-	AutXML		[]*TAnonComplexAutXML3		`xml:"autXML" json:"autXML,omitempty"`
-	InfRespTec	*TRespTec			`xml:"infRespTec" json:"infRespTec,omitempty"`
-	InfSolicNFF	*TAnonComplexInfSolicNFF2	`xml:"infSolicNFF" json:"infSolicNFF,omitempty"`
-	InfPAA		*TAnonComplexInfPAA2		`xml:"infPAA" json:"infPAA,omitempty"`
+	XMLName     xml.Name                   `xml:"infCte" json:"-"`
+	VersaoAttr  string                     `xml:"versao,attr" json:"versao,omitempty"`
+	IdAttr      string                     `xml:"Id,attr" json:"Id,omitempty"`
+	Ide         *TAnonComplexIde3          `xml:"ide" json:"ide,omitempty"`
+	Compl       *TAnonComplexCompl3        `xml:"compl" json:"compl,omitempty"`
+	Emit        *TAnonComplexEmit3         `xml:"emit" json:"emit,omitempty"`
+	Rem         *TAnonComplexRem2          `xml:"rem" json:"rem,omitempty"`
+	Exped       *TAnonComplexExped1        `xml:"exped" json:"exped,omitempty"`
+	Receb       *TAnonComplexReceb1        `xml:"receb" json:"receb,omitempty"`
+	Dest        *TAnonComplexDest2         `xml:"dest" json:"dest,omitempty"`
+	VPrest      *TAnonComplexVPrest1       `xml:"vPrest" json:"vPrest,omitempty"`
+	Imp         *TAnonComplexImp2          `xml:"imp" json:"imp,omitempty"`
+	InfCTeNorm  *TAnonComplexInfCTeNorm1   `xml:"infCTeNorm" json:"infCTeNorm,omitempty"`
+	InfCteComp  []*TAnonComplexInfCteComp1 `xml:"infCteComp" json:"infCteComp,omitempty"`
+	AutXML      []*TAnonComplexAutXML3     `xml:"autXML" json:"autXML,omitempty"`
+	InfRespTec  *TRespTec                  `xml:"infRespTec" json:"infRespTec,omitempty"`
+	InfSolicNFF *TAnonComplexInfSolicNFF2  `xml:"infSolicNFF" json:"infSolicNFF,omitempty"`
+	InfPAA      *TAnonComplexInfPAA2       `xml:"infPAA" json:"infPAA,omitempty"`
 }
 
 // TAnonQrCodCTe3 ...
@@ -1634,8 +1635,8 @@ type TAnonQrCodCTe3 string
 
 // TAnonComplexInfCTeSupl3 is Texto com o QR-Code impresso no DACTE
 type TAnonComplexInfCTeSupl3 struct {
-	XMLName		xml.Name	`xml:"infCTeSupl" json:"-"`
-	QrCodCTe	string		`xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
+	XMLName  xml.Name `xml:"infCTeSupl" json:"-"`
+	QrCodCTe string   `xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
 }
 
 // TAnonCCT4 ...
@@ -1679,8 +1680,8 @@ type TAnonXMunFim3 string
 
 // TAnonComplexInfPercurso1 is Não é necessário repetir as UF de Início e Fim
 type TAnonComplexInfPercurso1 struct {
-	XMLName	xml.Name	`xml:"infPercurso" json:"-"`
-	UFPer	string		`xml:"UFPer" json:"UFPer,omitempty"`
+	XMLName xml.Name `xml:"infPercurso" json:"-"`
+	UFPer   string   `xml:"UFPer" json:"UFPer,omitempty"`
 }
 
 // TAnonXJust4 ...
@@ -1688,38 +1689,38 @@ type TAnonXJust4 string
 
 // TAnonComplexIde4 is Grupo de Compras Governamentais
 type TAnonComplexIde4 struct {
-	XMLName		xml.Name			`xml:"ide" json:"-"`
-	CUF		string				`xml:"cUF" json:"cUF,omitempty"`
-	CCT		string				`xml:"cCT" json:"cCT,omitempty"`
-	CFOP		string				`xml:"CFOP" json:"CFOP,omitempty"`
-	NatOp		string				`xml:"natOp" json:"natOp,omitempty"`
-	Mod		string				`xml:"mod" json:"mod,omitempty"`
-	Serie		string				`xml:"serie" json:"serie,omitempty"`
-	NCT		string				`xml:"nCT" json:"nCT,omitempty"`
-	DhEmi		string				`xml:"dhEmi" json:"dhEmi,omitempty"`
-	TpImp		string				`xml:"tpImp" json:"tpImp,omitempty"`
-	TpEmis		string				`xml:"tpEmis" json:"tpEmis,omitempty"`
-	CDV		string				`xml:"cDV" json:"cDV,omitempty"`
-	TpAmb		string				`xml:"tpAmb" json:"tpAmb,omitempty"`
-	TpCTe		string				`xml:"tpCTe" json:"tpCTe,omitempty"`
-	ProcEmi		string				`xml:"procEmi" json:"procEmi,omitempty"`
-	VerProc		string				`xml:"verProc" json:"verProc,omitempty"`
-	CMunEnv		string				`xml:"cMunEnv" json:"cMunEnv,omitempty"`
-	XMunEnv		string				`xml:"xMunEnv" json:"xMunEnv,omitempty"`
-	UFEnv		string				`xml:"UFEnv" json:"UFEnv,omitempty"`
-	Modal		string				`xml:"modal" json:"modal,omitempty"`
-	TpServ		string				`xml:"tpServ" json:"tpServ,omitempty"`
-	IndIEToma	string				`xml:"indIEToma" json:"indIEToma,omitempty"`
-	CMunIni		*string				`xml:"cMunIni" json:"cMunIni,omitempty"`
-	XMunIni		*string				`xml:"xMunIni" json:"xMunIni,omitempty"`
-	UFIni		*string				`xml:"UFIni" json:"UFIni,omitempty"`
-	CMunFim		*string				`xml:"cMunFim" json:"cMunFim,omitempty"`
-	XMunFim		*string				`xml:"xMunFim" json:"xMunFim,omitempty"`
-	UFFim		*string				`xml:"UFFim" json:"UFFim,omitempty"`
-	InfPercurso	[]*TAnonComplexInfPercurso1	`xml:"infPercurso" json:"infPercurso,omitempty"`
-	DhCont		*string				`xml:"dhCont" json:"dhCont,omitempty"`
-	XJust		*string				`xml:"xJust" json:"xJust,omitempty"`
-	GCompraGov	*TCompraGovReduzido		`xml:"gCompraGov" json:"gCompraGov,omitempty"`
+	XMLName     xml.Name                    `xml:"ide" json:"-"`
+	CUF         string                      `xml:"cUF" json:"cUF,omitempty"`
+	CCT         string                      `xml:"cCT" json:"cCT,omitempty"`
+	CFOP        string                      `xml:"CFOP" json:"CFOP,omitempty"`
+	NatOp       string                      `xml:"natOp" json:"natOp,omitempty"`
+	Mod         string                      `xml:"mod" json:"mod,omitempty"`
+	Serie       string                      `xml:"serie" json:"serie,omitempty"`
+	NCT         string                      `xml:"nCT" json:"nCT,omitempty"`
+	DhEmi       string                      `xml:"dhEmi" json:"dhEmi,omitempty"`
+	TpImp       string                      `xml:"tpImp" json:"tpImp,omitempty"`
+	TpEmis      string                      `xml:"tpEmis" json:"tpEmis,omitempty"`
+	CDV         string                      `xml:"cDV" json:"cDV,omitempty"`
+	TpAmb       string                      `xml:"tpAmb" json:"tpAmb,omitempty"`
+	TpCTe       string                      `xml:"tpCTe" json:"tpCTe,omitempty"`
+	ProcEmi     string                      `xml:"procEmi" json:"procEmi,omitempty"`
+	VerProc     string                      `xml:"verProc" json:"verProc,omitempty"`
+	CMunEnv     string                      `xml:"cMunEnv" json:"cMunEnv,omitempty"`
+	XMunEnv     string                      `xml:"xMunEnv" json:"xMunEnv,omitempty"`
+	UFEnv       string                      `xml:"UFEnv" json:"UFEnv,omitempty"`
+	Modal       string                      `xml:"modal" json:"modal,omitempty"`
+	TpServ      string                      `xml:"tpServ" json:"tpServ,omitempty"`
+	IndIEToma   string                      `xml:"indIEToma" json:"indIEToma,omitempty"`
+	CMunIni     *string                     `xml:"cMunIni" json:"cMunIni,omitempty"`
+	XMunIni     *string                     `xml:"xMunIni" json:"xMunIni,omitempty"`
+	UFIni       *string                     `xml:"UFIni" json:"UFIni,omitempty"`
+	CMunFim     *string                     `xml:"cMunFim" json:"cMunFim,omitempty"`
+	XMunFim     *string                     `xml:"xMunFim" json:"xMunFim,omitempty"`
+	UFFim       *string                     `xml:"UFFim" json:"UFFim,omitempty"`
+	InfPercurso []*TAnonComplexInfPercurso1 `xml:"infPercurso" json:"infPercurso,omitempty"`
+	DhCont      *string                     `xml:"dhCont" json:"dhCont,omitempty"`
+	XJust       *string                     `xml:"xJust" json:"xJust,omitempty"`
+	GCompraGov  *TCompraGovReduzido         `xml:"gCompraGov" json:"gCompraGov,omitempty"`
 }
 
 // TAnonXCaracAd4 ...
@@ -1739,9 +1740,9 @@ type TAnonXTexto7 string
 
 // TAnonComplexObsCont4 is Conteúdo do campo
 type TAnonComplexObsCont4 struct {
-	XMLName		xml.Name	`xml:"ObsCont" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsCont" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonXTexto8 ...
@@ -1749,20 +1750,20 @@ type TAnonXTexto8 string
 
 // TAnonComplexObsFisco4 is Conteúdo do campo
 type TAnonComplexObsFisco4 struct {
-	XMLName		xml.Name	`xml:"ObsFisco" json:"-"`
-	XCampoAttr	string		`xml:"xCampo,attr" json:"xCampo,omitempty"`
-	XTexto		string		`xml:"xTexto" json:"xTexto,omitempty"`
+	XMLName    xml.Name `xml:"ObsFisco" json:"-"`
+	XCampoAttr string   `xml:"xCampo,attr" json:"xCampo,omitempty"`
+	XTexto     string   `xml:"xTexto" json:"xTexto,omitempty"`
 }
 
 // TAnonComplexCompl4 is Informar o nome do campo no atributo xCampo e o conteúdo do campo no XTexto
 type TAnonComplexCompl4 struct {
-	XMLName		xml.Name			`xml:"compl" json:"-"`
-	XCaracAd	*string				`xml:"xCaracAd" json:"xCaracAd,omitempty"`
-	XCaracSer	*string				`xml:"xCaracSer" json:"xCaracSer,omitempty"`
-	XEmi		*string				`xml:"xEmi" json:"xEmi,omitempty"`
-	XObs		*string				`xml:"xObs" json:"xObs,omitempty"`
-	ObsCont		[]*TAnonComplexObsCont4		`xml:"ObsCont" json:"ObsCont,omitempty"`
-	ObsFisco	[]*TAnonComplexObsFisco4	`xml:"ObsFisco" json:"ObsFisco,omitempty"`
+	XMLName   xml.Name                 `xml:"compl" json:"-"`
+	XCaracAd  *string                  `xml:"xCaracAd" json:"xCaracAd,omitempty"`
+	XCaracSer *string                  `xml:"xCaracSer" json:"xCaracSer,omitempty"`
+	XEmi      *string                  `xml:"xEmi" json:"xEmi,omitempty"`
+	XObs      *string                  `xml:"xObs" json:"xObs,omitempty"`
+	ObsCont   []*TAnonComplexObsCont4  `xml:"ObsCont" json:"ObsCont,omitempty"`
+	ObsFisco  []*TAnonComplexObsFisco4 `xml:"ObsFisco" json:"ObsFisco,omitempty"`
 }
 
 // TAnonIE13 ...
@@ -1782,14 +1783,14 @@ type TAnonXFant8 string
 // 3=Regime Normal;
 // 4=Simples Nacional - Microempreendedor Individual – MEI.
 type TAnonComplexEmit4 struct {
-	XMLName		xml.Name	`xml:"emit" json:"-"`
-	CNPJ		string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	IE		string		`xml:"IE" json:"IE,omitempty"`
-	IEST		*string		`xml:"IEST" json:"IEST,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	EnderEmit	*TEndeEmi	`xml:"enderEmit" json:"enderEmit,omitempty"`
-	CRT		*string		`xml:"CRT" json:"CRT,omitempty"`
+	XMLName   xml.Name  `xml:"emit" json:"-"`
+	CNPJ      string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	IE        string    `xml:"IE" json:"IE,omitempty"`
+	IEST      *string   `xml:"IEST" json:"IEST,omitempty"`
+	XNome     string    `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string   `xml:"xFant" json:"xFant,omitempty"`
+	EnderEmit *TEndeEmi `xml:"enderEmit" json:"enderEmit,omitempty"`
+	CRT       *string   `xml:"CRT" json:"CRT,omitempty"`
 }
 
 // TAnonIE14 ...
@@ -1806,15 +1807,15 @@ type TAnonEmail3 string
 
 // TAnonComplexToma3 is Endereço de email
 type TAnonComplexToma3 struct {
-	XMLName		xml.Name	`xml:"toma" json:"-"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string		`xml:"xFant" json:"xFant,omitempty"`
-	Fone		*string		`xml:"fone" json:"fone,omitempty"`
-	EnderToma	*TEndereco	`xml:"enderToma" json:"enderToma,omitempty"`
-	Email		*string		`xml:"email" json:"email,omitempty"`
+	XMLName   xml.Name   `xml:"toma" json:"-"`
+	CNPJ      *string    `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF       *string    `xml:"CPF" json:"CPF,omitempty"`
+	IE        *string    `xml:"IE" json:"IE,omitempty"`
+	XNome     string     `xml:"xNome" json:"xNome,omitempty"`
+	XFant     *string    `xml:"xFant" json:"xFant,omitempty"`
+	Fone      *string    `xml:"fone" json:"fone,omitempty"`
+	EnderToma *TEndereco `xml:"enderToma" json:"enderToma,omitempty"`
+	Email     *string    `xml:"email" json:"email,omitempty"`
 }
 
 // TAnonXNome18 ...
@@ -1822,17 +1823,17 @@ type TAnonXNome18 string
 
 // TAnonComplexComp3 is Valor do componente
 type TAnonComplexComp3 struct {
-	XMLName	xml.Name	`xml:"Comp" json:"-"`
-	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
-	VComp	string		`xml:"vComp" json:"vComp,omitempty"`
+	XMLName xml.Name `xml:"Comp" json:"-"`
+	XNome   string   `xml:"xNome" json:"xNome,omitempty"`
+	VComp   string   `xml:"vComp" json:"vComp,omitempty"`
 }
 
 // TAnonComplexVPrest2 is Componentes do Valor da Prestação
 type TAnonComplexVPrest2 struct {
-	XMLName	xml.Name		`xml:"vPrest" json:"-"`
-	VTPrest	string			`xml:"vTPrest" json:"vTPrest,omitempty"`
-	VRec	string			`xml:"vRec" json:"vRec,omitempty"`
-	Comp	[]*TAnonComplexComp3	`xml:"Comp" json:"Comp,omitempty"`
+	XMLName xml.Name             `xml:"vPrest" json:"-"`
+	VTPrest string               `xml:"vTPrest" json:"vTPrest,omitempty"`
+	VRec    string               `xml:"vRec" json:"vRec,omitempty"`
+	Comp    []*TAnonComplexComp3 `xml:"Comp" json:"Comp,omitempty"`
 }
 
 // TAnonInfAdFisco3 ...
@@ -1840,37 +1841,37 @@ type TAnonInfAdFisco3 string
 
 // TAnonComplexICMSUFFim3 is Valor do ICMS de partilha para a UF de início da prestação do serviço de transporte
 type TAnonComplexICMSUFFim3 struct {
-	XMLName		xml.Name	`xml:"ICMSUFFim" json:"-"`
-	VBCUFFim	string		`xml:"vBCUFFim" json:"vBCUFFim,omitempty"`
-	PFCPUFFim	string		`xml:"pFCPUFFim" json:"pFCPUFFim,omitempty"`
-	PICMSUFFim	string		`xml:"pICMSUFFim" json:"pICMSUFFim,omitempty"`
-	PICMSInter	string		`xml:"pICMSInter" json:"pICMSInter,omitempty"`
-	VFCPUFFim	string		`xml:"vFCPUFFim" json:"vFCPUFFim,omitempty"`
-	VICMSUFFim	string		`xml:"vICMSUFFim" json:"vICMSUFFim,omitempty"`
-	VICMSUFIni	string		`xml:"vICMSUFIni" json:"vICMSUFIni,omitempty"`
+	XMLName    xml.Name `xml:"ICMSUFFim" json:"-"`
+	VBCUFFim   string   `xml:"vBCUFFim" json:"vBCUFFim,omitempty"`
+	PFCPUFFim  string   `xml:"pFCPUFFim" json:"pFCPUFFim,omitempty"`
+	PICMSUFFim string   `xml:"pICMSUFFim" json:"pICMSUFFim,omitempty"`
+	PICMSInter string   `xml:"pICMSInter" json:"pICMSInter,omitempty"`
+	VFCPUFFim  string   `xml:"vFCPUFFim" json:"vFCPUFFim,omitempty"`
+	VICMSUFFim string   `xml:"vICMSUFFim" json:"vICMSUFFim,omitempty"`
+	VICMSUFIni string   `xml:"vICMSUFIni" json:"vICMSUFIni,omitempty"`
 }
 
 // TAnonComplexInfTribFed1 is Valor do CSLL
 type TAnonComplexInfTribFed1 struct {
-	XMLName	xml.Name	`xml:"infTribFed" json:"-"`
-	VPIS	*string		`xml:"vPIS" json:"vPIS,omitempty"`
-	VCOFINS	*string		`xml:"vCOFINS" json:"vCOFINS,omitempty"`
-	VIR	*string		`xml:"vIR" json:"vIR,omitempty"`
-	VINSS	*string		`xml:"vINSS" json:"vINSS,omitempty"`
-	VCSLL	*string		`xml:"vCSLL" json:"vCSLL,omitempty"`
+	XMLName xml.Name `xml:"infTribFed" json:"-"`
+	VPIS    *string  `xml:"vPIS" json:"vPIS,omitempty"`
+	VCOFINS *string  `xml:"vCOFINS" json:"vCOFINS,omitempty"`
+	VIR     *string  `xml:"vIR" json:"vIR,omitempty"`
+	VINSS   *string  `xml:"vINSS" json:"vINSS,omitempty"`
+	VCSLL   *string  `xml:"vCSLL" json:"vCSLL,omitempty"`
 }
 
 // TAnonComplexImp3 is Valor total do documento fiscal
 // (vTPrest + total do IBS + total da CBS)
 type TAnonComplexImp3 struct {
-	XMLName		xml.Name			`xml:"imp" json:"-"`
-	ICMS		*TImpOS				`xml:"ICMS" json:"ICMS,omitempty"`
-	VTotTrib	*string				`xml:"vTotTrib" json:"vTotTrib,omitempty"`
-	InfAdFisco	*string				`xml:"infAdFisco" json:"infAdFisco,omitempty"`
-	ICMSUFFim	*TAnonComplexICMSUFFim3		`xml:"ICMSUFFim" json:"ICMSUFFim,omitempty"`
-	InfTribFed	*TAnonComplexInfTribFed1	`xml:"infTribFed" json:"infTribFed,omitempty"`
-	IBSCBS		*TTribCTe			`xml:"IBSCBS" json:"IBSCBS,omitempty"`
-	VTotDFe		*string				`xml:"vTotDFe" json:"vTotDFe,omitempty"`
+	XMLName    xml.Name                 `xml:"imp" json:"-"`
+	ICMS       *TImpOS                  `xml:"ICMS" json:"ICMS,omitempty"`
+	VTotTrib   *string                  `xml:"vTotTrib" json:"vTotTrib,omitempty"`
+	InfAdFisco *string                  `xml:"infAdFisco" json:"infAdFisco,omitempty"`
+	ICMSUFFim  *TAnonComplexICMSUFFim3  `xml:"ICMSUFFim" json:"ICMSUFFim,omitempty"`
+	InfTribFed *TAnonComplexInfTribFed1 `xml:"infTribFed" json:"infTribFed,omitempty"`
+	IBSCBS     *TTribCTe                `xml:"IBSCBS" json:"IBSCBS,omitempty"`
+	VTotDFe    *string                  `xml:"vTotDFe" json:"vTotDFe,omitempty"`
 }
 
 // TAnonXDescServ1 ...
@@ -1878,15 +1879,15 @@ type TAnonXDescServ1 string
 
 // TAnonComplexInfQ3 is Quantidade
 type TAnonComplexInfQ3 struct {
-	XMLName	xml.Name	`xml:"infQ" json:"-"`
-	QCarga	string		`xml:"qCarga" json:"qCarga,omitempty"`
+	XMLName xml.Name `xml:"infQ" json:"-"`
+	QCarga  string   `xml:"qCarga" json:"qCarga,omitempty"`
 }
 
 // TAnonComplexInfServico1 is Para Transporte de Pessoas indicar número de passageiros, para excesso de bagagem e transporte de valores indicar número de Volumes/Malotes
 type TAnonComplexInfServico1 struct {
-	XMLName		xml.Name		`xml:"infServico" json:"-"`
-	XDescServ	string			`xml:"xDescServ" json:"xDescServ,omitempty"`
-	InfQ		*TAnonComplexInfQ3	`xml:"infQ" json:"infQ,omitempty"`
+	XMLName   xml.Name           `xml:"infServico" json:"-"`
+	XDescServ string             `xml:"xDescServ" json:"xDescServ,omitempty"`
+	InfQ      *TAnonComplexInfQ3 `xml:"infQ" json:"infQ,omitempty"`
 }
 
 // TAnonNDoc4 ...
@@ -1903,13 +1904,13 @@ type TAnonChBPe1 string
 
 // TAnonComplexInfDocRef1 is Chave de acesso do BP-e que possui eventos excesso de bagagem
 type TAnonComplexInfDocRef1 struct {
-	XMLName		xml.Name	`xml:"infDocRef" json:"-"`
-	NDoc		*string		`xml:"nDoc" json:"nDoc,omitempty"`
-	Serie		*string		`xml:"serie" json:"serie,omitempty"`
-	Subserie	*string		`xml:"subserie" json:"subserie,omitempty"`
-	DEmi		*string		`xml:"dEmi" json:"dEmi,omitempty"`
-	VDoc		*string		`xml:"vDoc" json:"vDoc,omitempty"`
-	ChBPe		*string		`xml:"chBPe" json:"chBPe,omitempty"`
+	XMLName  xml.Name `xml:"infDocRef" json:"-"`
+	NDoc     *string  `xml:"nDoc" json:"nDoc,omitempty"`
+	Serie    *string  `xml:"serie" json:"serie,omitempty"`
+	Subserie *string  `xml:"subserie" json:"subserie,omitempty"`
+	DEmi     *string  `xml:"dEmi" json:"dEmi,omitempty"`
+	VDoc     *string  `xml:"vDoc" json:"vDoc,omitempty"`
+	ChBPe    *string  `xml:"chBPe" json:"chBPe,omitempty"`
 }
 
 // TAnonRespSeg1 ...
@@ -1923,10 +1924,10 @@ type TAnonNApol1 string
 
 // TAnonComplexSeg1 is Obrigatório pela lei 11.442/07 (RCTRC)
 type TAnonComplexSeg1 struct {
-	XMLName	xml.Name	`xml:"seg" json:"-"`
-	RespSeg	string		`xml:"respSeg" json:"respSeg,omitempty"`
-	XSeg	*string		`xml:"xSeg" json:"xSeg,omitempty"`
-	NApol	*string		`xml:"nApol" json:"nApol,omitempty"`
+	XMLName xml.Name `xml:"seg" json:"-"`
+	RespSeg string   `xml:"respSeg" json:"respSeg,omitempty"`
+	XSeg    *string  `xml:"xSeg" json:"xSeg,omitempty"`
+	NApol   *string  `xml:"nApol" json:"nApol,omitempty"`
 }
 
 // TAnonComplexInfModal3 is O elemento do tipo -any- permite estender o documento XML com elementos não especificados pelo schema.
@@ -1935,9 +1936,9 @@ type TAnonComplexSeg1 struct {
 //
 // Onde v9.99 é a a designação genérica para a versão do arquivo. Por exemplo, o arquivo para o schema do modal Rodoviário na versão 4.00 será denominado "CTeModalRodoviarioOS_v4.00".
 type TAnonComplexInfModal3 struct {
-	XMLName		xml.Name			`xml:"infModal" json:"-"`
-	VersaoModalAttr	string				`xml:"versaoModal,attr" json:"versaoModal,omitempty"`
-	RodoOS		modalrodoviarioos.RodoOS	`xml:"rodoOS,omitempty" json:"rodoOS,omitempty"`
+	XMLName         xml.Name                 `xml:"infModal" json:"-"`
+	VersaoModalAttr string                   `xml:"versaoModal,attr" json:"versaoModal,omitempty"`
+	RodoOS          modalrodoviarioos.RodoOS `xml:"rodoOS,omitempty" json:"rodoOS,omitempty"`
 }
 
 // TAnonChCte3 ...
@@ -1945,8 +1946,8 @@ type TAnonChCte3 string
 
 // TAnonComplexInfCteSub3 is Chave de acesso do CT-e a ser substituído (original)
 type TAnonComplexInfCteSub3 struct {
-	XMLName	xml.Name	`xml:"infCteSub" json:"-"`
-	ChCte	string		`xml:"chCte" json:"chCte,omitempty"`
+	XMLName xml.Name `xml:"infCteSub" json:"-"`
+	ChCte   string   `xml:"chCte" json:"chCte,omitempty"`
 }
 
 // TAnonRefCTeCanc1 ...
@@ -1957,11 +1958,11 @@ type TAnonNFat3 string
 
 // TAnonComplexFat3 is Valor líquido da fatura
 type TAnonComplexFat3 struct {
-	XMLName	xml.Name	`xml:"fat" json:"-"`
-	NFat	*string		`xml:"nFat" json:"nFat,omitempty"`
-	VOrig	*string		`xml:"vOrig" json:"vOrig,omitempty"`
-	VDesc	*string		`xml:"vDesc" json:"vDesc,omitempty"`
-	VLiq	*string		`xml:"vLiq" json:"vLiq,omitempty"`
+	XMLName xml.Name `xml:"fat" json:"-"`
+	NFat    *string  `xml:"nFat" json:"nFat,omitempty"`
+	VOrig   *string  `xml:"vOrig" json:"vOrig,omitempty"`
+	VDesc   *string  `xml:"vDesc" json:"vDesc,omitempty"`
+	VLiq    *string  `xml:"vLiq" json:"vLiq,omitempty"`
 }
 
 // TAnonNDup3 ...
@@ -1969,17 +1970,17 @@ type TAnonNDup3 string
 
 // TAnonComplexDup3 is Valor da duplicata
 type TAnonComplexDup3 struct {
-	XMLName	xml.Name	`xml:"dup" json:"-"`
-	NDup	*string		`xml:"nDup" json:"nDup,omitempty"`
-	DVenc	*string		`xml:"dVenc" json:"dVenc,omitempty"`
-	VDup	*string		`xml:"vDup" json:"vDup,omitempty"`
+	XMLName xml.Name `xml:"dup" json:"-"`
+	NDup    *string  `xml:"nDup" json:"nDup,omitempty"`
+	DVenc   *string  `xml:"dVenc" json:"dVenc,omitempty"`
+	VDup    *string  `xml:"vDup" json:"vDup,omitempty"`
 }
 
 // TAnonComplexCobr3 is Dados das duplicatas
 type TAnonComplexCobr3 struct {
-	XMLName	xml.Name		`xml:"cobr" json:"-"`
-	Fat	*TAnonComplexFat3	`xml:"fat" json:"fat,omitempty"`
-	Dup	[]*TAnonComplexDup3	`xml:"dup" json:"dup,omitempty"`
+	XMLName xml.Name            `xml:"cobr" json:"-"`
+	Fat     *TAnonComplexFat3   `xml:"fat" json:"fat,omitempty"`
+	Dup     []*TAnonComplexDup3 `xml:"dup" json:"dup,omitempty"`
 }
 
 // TAnonChCTe1 ...
@@ -1993,60 +1994,60 @@ type TAnonXComp1 string
 
 // TAnonComplexComp4 is Exemplos: FRETE PESO, FRETE VALOR, SEC/CAT, ADEME, AGENDAMENTO, etc
 type TAnonComplexComp4 struct {
-	XMLName	xml.Name	`xml:"Comp" json:"-"`
-	TpComp	string		`xml:"tpComp" json:"tpComp,omitempty"`
-	VComp	string		`xml:"vComp" json:"vComp,omitempty"`
-	XComp	*string		`xml:"xComp" json:"xComp,omitempty"`
+	XMLName xml.Name `xml:"Comp" json:"-"`
+	TpComp  string   `xml:"tpComp" json:"tpComp,omitempty"`
+	VComp   string   `xml:"vComp" json:"vComp,omitempty"`
+	XComp   *string  `xml:"xComp" json:"xComp,omitempty"`
 }
 
 // TAnonComplexInfGTVe1 is Componentes do Valor da GTVe
 type TAnonComplexInfGTVe1 struct {
-	XMLName	xml.Name		`xml:"infGTVe" json:"-"`
-	ChCTe	string			`xml:"chCTe" json:"chCTe,omitempty"`
-	Comp	[]*TAnonComplexComp4	`xml:"Comp" json:"Comp,omitempty"`
+	XMLName xml.Name             `xml:"infGTVe" json:"-"`
+	ChCTe   string               `xml:"chCTe" json:"chCTe,omitempty"`
+	Comp    []*TAnonComplexComp4 `xml:"Comp" json:"Comp,omitempty"`
 }
 
 // TAnonComplexInfCTeNorm2 is Informações das GTV-e relacionadas ao CT-e OS
 type TAnonComplexInfCTeNorm2 struct {
-	XMLName		xml.Name			`xml:"infCTeNorm" json:"-"`
-	InfServico	*TAnonComplexInfServico1	`xml:"infServico" json:"infServico,omitempty"`
-	InfDocRef	[]*TAnonComplexInfDocRef1	`xml:"infDocRef" json:"infDocRef,omitempty"`
-	Seg		[]*TAnonComplexSeg1		`xml:"seg" json:"seg,omitempty"`
-	InfModal	*TAnonComplexInfModal3		`xml:"infModal" json:"infModal,omitempty"`
-	InfCteSub	*TAnonComplexInfCteSub3		`xml:"infCteSub" json:"infCteSub,omitempty"`
-	RefCTeCanc	*string				`xml:"refCTeCanc" json:"refCTeCanc,omitempty"`
-	Cobr		*TAnonComplexCobr3		`xml:"cobr" json:"cobr,omitempty"`
-	InfGTVe		[]*TAnonComplexInfGTVe1		`xml:"infGTVe" json:"infGTVe,omitempty"`
+	XMLName    xml.Name                  `xml:"infCTeNorm" json:"-"`
+	InfServico *TAnonComplexInfServico1  `xml:"infServico" json:"infServico,omitempty"`
+	InfDocRef  []*TAnonComplexInfDocRef1 `xml:"infDocRef" json:"infDocRef,omitempty"`
+	Seg        []*TAnonComplexSeg1       `xml:"seg" json:"seg,omitempty"`
+	InfModal   *TAnonComplexInfModal3    `xml:"infModal" json:"infModal,omitempty"`
+	InfCteSub  *TAnonComplexInfCteSub3   `xml:"infCteSub" json:"infCteSub,omitempty"`
+	RefCTeCanc *string                   `xml:"refCTeCanc" json:"refCTeCanc,omitempty"`
+	Cobr       *TAnonComplexCobr3        `xml:"cobr" json:"cobr,omitempty"`
+	InfGTVe    []*TAnonComplexInfGTVe1   `xml:"infGTVe" json:"infGTVe,omitempty"`
 }
 
 // TAnonComplexInfCteComp2 is Chave do CT-e complementado
 type TAnonComplexInfCteComp2 struct {
-	XMLName	xml.Name	`xml:"infCteComp" json:"-"`
-	ChCTe	string		`xml:"chCTe" json:"chCTe,omitempty"`
+	XMLName xml.Name `xml:"infCteComp" json:"-"`
+	ChCTe   string   `xml:"chCTe" json:"chCTe,omitempty"`
 }
 
 // TAnonComplexAutXML4 is Informar zeros não significativos
 type TAnonComplexAutXML4 struct {
-	XMLName	xml.Name	`xml:"autXML" json:"-"`
-	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
+	XMLName xml.Name `xml:"autXML" json:"-"`
+	CNPJ    *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string  `xml:"CPF" json:"CPF,omitempty"`
 }
 
 // TAnonComplexInfCte4 is Informações do Responsável Técnico pela emissão do DF-e
 type TAnonComplexInfCte4 struct {
-	XMLName		xml.Name			`xml:"infCte" json:"-"`
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	IdAttr		string				`xml:"Id,attr" json:"Id,omitempty"`
-	Ide		*TAnonComplexIde4		`xml:"ide" json:"ide,omitempty"`
-	Compl		*TAnonComplexCompl4		`xml:"compl" json:"compl,omitempty"`
-	Emit		*TAnonComplexEmit4		`xml:"emit" json:"emit,omitempty"`
-	Toma		*TAnonComplexToma3		`xml:"toma" json:"toma,omitempty"`
-	VPrest		*TAnonComplexVPrest2		`xml:"vPrest" json:"vPrest,omitempty"`
-	Imp		*TAnonComplexImp3		`xml:"imp" json:"imp,omitempty"`
-	InfCTeNorm	*TAnonComplexInfCTeNorm2	`xml:"infCTeNorm" json:"infCTeNorm,omitempty"`
-	InfCteComp	[]*TAnonComplexInfCteComp2	`xml:"infCteComp" json:"infCteComp,omitempty"`
-	AutXML		[]*TAnonComplexAutXML4		`xml:"autXML" json:"autXML,omitempty"`
-	InfRespTec	*TRespTec			`xml:"infRespTec" json:"infRespTec,omitempty"`
+	XMLName    xml.Name                   `xml:"infCte" json:"-"`
+	VersaoAttr string                     `xml:"versao,attr" json:"versao,omitempty"`
+	IdAttr     string                     `xml:"Id,attr" json:"Id,omitempty"`
+	Ide        *TAnonComplexIde4          `xml:"ide" json:"ide,omitempty"`
+	Compl      *TAnonComplexCompl4        `xml:"compl" json:"compl,omitempty"`
+	Emit       *TAnonComplexEmit4         `xml:"emit" json:"emit,omitempty"`
+	Toma       *TAnonComplexToma3         `xml:"toma" json:"toma,omitempty"`
+	VPrest     *TAnonComplexVPrest2       `xml:"vPrest" json:"vPrest,omitempty"`
+	Imp        *TAnonComplexImp3          `xml:"imp" json:"imp,omitempty"`
+	InfCTeNorm *TAnonComplexInfCTeNorm2   `xml:"infCTeNorm" json:"infCTeNorm,omitempty"`
+	InfCteComp []*TAnonComplexInfCteComp2 `xml:"infCteComp" json:"infCteComp,omitempty"`
+	AutXML     []*TAnonComplexAutXML4     `xml:"autXML" json:"autXML,omitempty"`
+	InfRespTec *TRespTec                  `xml:"infRespTec" json:"infRespTec,omitempty"`
 }
 
 // TAnonQrCodCTe4 ...
@@ -2054,8 +2055,8 @@ type TAnonQrCodCTe4 string
 
 // TAnonComplexInfCTeSupl4 is Texto com o QR-Code impresso no DACTE
 type TAnonComplexInfCTeSupl4 struct {
-	XMLName		xml.Name	`xml:"infCTeSupl" json:"-"`
-	QrCodCTe	string		`xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
+	XMLName  xml.Name `xml:"infCTeSupl" json:"-"`
+	QrCodCTe string   `xml:"qrCodCTe" json:"qrCodCTe,omitempty"`
 }
 
 // TAnonXLgr1 ...
@@ -2168,11 +2169,11 @@ type TAnonCST1 string
 
 // TAnonComplexICMS001 is Valor do ICMS
 type TAnonComplexICMS001 struct {
-	XMLName	xml.Name	`xml:"ICMS00" json:"-"`
-	CST	string		`xml:"CST" json:"CST,omitempty"`
-	VBC	string		`xml:"vBC" json:"vBC,omitempty"`
-	PICMS	string		`xml:"pICMS" json:"pICMS,omitempty"`
-	VICMS	string		`xml:"vICMS" json:"vICMS,omitempty"`
+	XMLName xml.Name `xml:"ICMS00" json:"-"`
+	CST     string   `xml:"CST" json:"CST,omitempty"`
+	VBC     string   `xml:"vBC" json:"vBC,omitempty"`
+	PICMS   string   `xml:"pICMS" json:"pICMS,omitempty"`
+	VICMS   string   `xml:"vICMS" json:"vICMS,omitempty"`
 }
 
 // TAnonCST2 ...
@@ -2183,14 +2184,14 @@ type TAnonCBenef1 string
 
 // TAnonComplexICMS201 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS201 struct {
-	XMLName		xml.Name	`xml:"ICMS20" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	PRedBC		string		`xml:"pRedBC" json:"pRedBC,omitempty"`
-	VBC		string		`xml:"vBC" json:"vBC,omitempty"`
-	PICMS		string		`xml:"pICMS" json:"pICMS,omitempty"`
-	VICMS		string		`xml:"vICMS" json:"vICMS,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS20" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	PRedBC     string   `xml:"pRedBC" json:"pRedBC,omitempty"`
+	VBC        string   `xml:"vBC" json:"vBC,omitempty"`
+	PICMS      string   `xml:"pICMS" json:"pICMS,omitempty"`
+	VICMS      string   `xml:"vICMS" json:"vICMS,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST3 ...
@@ -2201,10 +2202,10 @@ type TAnonCBenef2 string
 
 // TAnonComplexICMS451 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS451 struct {
-	XMLName		xml.Name	`xml:"ICMS45" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS45" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST4 ...
@@ -2215,14 +2216,14 @@ type TAnonCBenef3 string
 
 // TAnonComplexICMS601 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS601 struct {
-	XMLName		xml.Name	`xml:"ICMS60" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	VBCSTRet	string		`xml:"vBCSTRet" json:"vBCSTRet,omitempty"`
-	VICMSSTRet	string		`xml:"vICMSSTRet" json:"vICMSSTRet,omitempty"`
-	PICMSSTRet	string		`xml:"pICMSSTRet" json:"pICMSSTRet,omitempty"`
-	VCred		*string		`xml:"vCred" json:"vCred,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS60" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	VBCSTRet   string   `xml:"vBCSTRet" json:"vBCSTRet,omitempty"`
+	VICMSSTRet string   `xml:"vICMSSTRet" json:"vICMSSTRet,omitempty"`
+	PICMSSTRet string   `xml:"pICMSSTRet" json:"pICMSSTRet,omitempty"`
+	VCred      *string  `xml:"vCred" json:"vCred,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST5 ...
@@ -2233,15 +2234,15 @@ type TAnonCBenef4 string
 
 // TAnonComplexICMS901 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS901 struct {
-	XMLName		xml.Name	`xml:"ICMS90" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	PRedBC		*string		`xml:"pRedBC" json:"pRedBC,omitempty"`
-	VBC		string		`xml:"vBC" json:"vBC,omitempty"`
-	PICMS		string		`xml:"pICMS" json:"pICMS,omitempty"`
-	VICMS		string		`xml:"vICMS" json:"vICMS,omitempty"`
-	VCred		*string		`xml:"vCred" json:"vCred,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS90" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	PRedBC     *string  `xml:"pRedBC" json:"pRedBC,omitempty"`
+	VBC        string   `xml:"vBC" json:"vBC,omitempty"`
+	PICMS      string   `xml:"pICMS" json:"pICMS,omitempty"`
+	VICMS      string   `xml:"vICMS" json:"vICMS,omitempty"`
+	VCred      *string  `xml:"vCred" json:"vCred,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST6 ...
@@ -2252,14 +2253,14 @@ type TAnonCBenef5 string
 
 // TAnonComplexICMSOutraUF1 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMSOutraUF1 struct {
-	XMLName		xml.Name	`xml:"ICMSOutraUF" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	PRedBCOutraUF	*string		`xml:"pRedBCOutraUF" json:"pRedBCOutraUF,omitempty"`
-	VBCOutraUF	string		`xml:"vBCOutraUF" json:"vBCOutraUF,omitempty"`
-	PICMSOutraUF	string		`xml:"pICMSOutraUF" json:"pICMSOutraUF,omitempty"`
-	VICMSOutraUF	string		`xml:"vICMSOutraUF" json:"vICMSOutraUF,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName       xml.Name `xml:"ICMSOutraUF" json:"-"`
+	CST           string   `xml:"CST" json:"CST,omitempty"`
+	PRedBCOutraUF *string  `xml:"pRedBCOutraUF" json:"pRedBCOutraUF,omitempty"`
+	VBCOutraUF    string   `xml:"vBCOutraUF" json:"vBCOutraUF,omitempty"`
+	PICMSOutraUF  string   `xml:"pICMSOutraUF" json:"pICMSOutraUF,omitempty"`
+	VICMSOutraUF  string   `xml:"vICMSOutraUF" json:"vICMSOutraUF,omitempty"`
+	VICMSDeson    string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef        string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST7 ...
@@ -2270,9 +2271,9 @@ type TAnonIndSN1 string
 
 // TAnonComplexICMSSN1 is Indica se o contribuinte é Simples Nacional1=Sim
 type TAnonComplexICMSSN1 struct {
-	XMLName	xml.Name	`xml:"ICMSSN" json:"-"`
-	CST	string		`xml:"CST" json:"CST,omitempty"`
-	IndSN	string		`xml:"indSN" json:"indSN,omitempty"`
+	XMLName xml.Name `xml:"ICMSSN" json:"-"`
+	CST     string   `xml:"CST" json:"CST,omitempty"`
+	IndSN   string   `xml:"indSN" json:"indSN,omitempty"`
 }
 
 // TAnonCST8 ...
@@ -2280,11 +2281,11 @@ type TAnonCST8 string
 
 // TAnonComplexICMS002 is Valor do ICMS
 type TAnonComplexICMS002 struct {
-	XMLName	xml.Name	`xml:"ICMS00" json:"-"`
-	CST	string		`xml:"CST" json:"CST,omitempty"`
-	VBC	string		`xml:"vBC" json:"vBC,omitempty"`
-	PICMS	string		`xml:"pICMS" json:"pICMS,omitempty"`
-	VICMS	string		`xml:"vICMS" json:"vICMS,omitempty"`
+	XMLName xml.Name `xml:"ICMS00" json:"-"`
+	CST     string   `xml:"CST" json:"CST,omitempty"`
+	VBC     string   `xml:"vBC" json:"vBC,omitempty"`
+	PICMS   string   `xml:"pICMS" json:"pICMS,omitempty"`
+	VICMS   string   `xml:"vICMS" json:"vICMS,omitempty"`
 }
 
 // TAnonCST9 ...
@@ -2295,14 +2296,14 @@ type TAnonCBenef6 string
 
 // TAnonComplexICMS202 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS202 struct {
-	XMLName		xml.Name	`xml:"ICMS20" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	PRedBC		string		`xml:"pRedBC" json:"pRedBC,omitempty"`
-	VBC		string		`xml:"vBC" json:"vBC,omitempty"`
-	PICMS		string		`xml:"pICMS" json:"pICMS,omitempty"`
-	VICMS		string		`xml:"vICMS" json:"vICMS,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS20" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	PRedBC     string   `xml:"pRedBC" json:"pRedBC,omitempty"`
+	VBC        string   `xml:"vBC" json:"vBC,omitempty"`
+	PICMS      string   `xml:"pICMS" json:"pICMS,omitempty"`
+	VICMS      string   `xml:"vICMS" json:"vICMS,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST10 ...
@@ -2313,10 +2314,10 @@ type TAnonCBenef7 string
 
 // TAnonComplexICMS452 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS452 struct {
-	XMLName		xml.Name	`xml:"ICMS45" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS45" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST11 ...
@@ -2327,15 +2328,15 @@ type TAnonCBenef8 string
 
 // TAnonComplexICMS902 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMS902 struct {
-	XMLName		xml.Name	`xml:"ICMS90" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	PRedBC		*string		`xml:"pRedBC" json:"pRedBC,omitempty"`
-	VBC		string		`xml:"vBC" json:"vBC,omitempty"`
-	PICMS		string		`xml:"pICMS" json:"pICMS,omitempty"`
-	VICMS		string		`xml:"vICMS" json:"vICMS,omitempty"`
-	VCred		*string		`xml:"vCred" json:"vCred,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName    xml.Name `xml:"ICMS90" json:"-"`
+	CST        string   `xml:"CST" json:"CST,omitempty"`
+	PRedBC     *string  `xml:"pRedBC" json:"pRedBC,omitempty"`
+	VBC        string   `xml:"vBC" json:"vBC,omitempty"`
+	PICMS      string   `xml:"pICMS" json:"pICMS,omitempty"`
+	VICMS      string   `xml:"vICMS" json:"vICMS,omitempty"`
+	VCred      *string  `xml:"vCred" json:"vCred,omitempty"`
+	VICMSDeson string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef     string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST12 ...
@@ -2346,14 +2347,14 @@ type TAnonCBenef9 string
 
 // TAnonComplexICMSOutraUF2 is Código de Benefício Fiscal utilizado pela UF
 type TAnonComplexICMSOutraUF2 struct {
-	XMLName		xml.Name	`xml:"ICMSOutraUF" json:"-"`
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	PRedBCOutraUF	*string		`xml:"pRedBCOutraUF" json:"pRedBCOutraUF,omitempty"`
-	VBCOutraUF	string		`xml:"vBCOutraUF" json:"vBCOutraUF,omitempty"`
-	PICMSOutraUF	string		`xml:"pICMSOutraUF" json:"pICMSOutraUF,omitempty"`
-	VICMSOutraUF	string		`xml:"vICMSOutraUF" json:"vICMSOutraUF,omitempty"`
-	VICMSDeson	string		`xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
-	CBenef		string		`xml:"cBenef" json:"cBenef,omitempty"`
+	XMLName       xml.Name `xml:"ICMSOutraUF" json:"-"`
+	CST           string   `xml:"CST" json:"CST,omitempty"`
+	PRedBCOutraUF *string  `xml:"pRedBCOutraUF" json:"pRedBCOutraUF,omitempty"`
+	VBCOutraUF    string   `xml:"vBCOutraUF" json:"vBCOutraUF,omitempty"`
+	PICMSOutraUF  string   `xml:"pICMSOutraUF" json:"pICMSOutraUF,omitempty"`
+	VICMSOutraUF  string   `xml:"vICMSOutraUF" json:"vICMSOutraUF,omitempty"`
+	VICMSDeson    string   `xml:"vICMSDeson" json:"vICMSDeson,omitempty"`
+	CBenef        string   `xml:"cBenef" json:"cBenef,omitempty"`
 }
 
 // TAnonCST13 ...
@@ -2364,9 +2365,9 @@ type TAnonIndSN2 string
 
 // TAnonComplexICMSSN2 is Indica se o contribuinte é Simples Nacional1=Sim
 type TAnonComplexICMSSN2 struct {
-	XMLName	xml.Name	`xml:"ICMSSN" json:"-"`
-	CST	string		`xml:"CST" json:"CST,omitempty"`
-	IndSN	string		`xml:"indSN" json:"indSN,omitempty"`
+	XMLName xml.Name `xml:"ICMSSN" json:"-"`
+	CST     string   `xml:"CST" json:"CST,omitempty"`
+	IndSN   string   `xml:"indSN" json:"indSN,omitempty"`
 }
 
 // TAnonNLacre1 ...
@@ -2374,8 +2375,8 @@ type TAnonNLacre1 string
 
 // TAnonComplexLacUnidTransp1 is Número do lacre
 type TAnonComplexLacUnidTransp1 struct {
-	XMLName	xml.Name	`xml:"lacUnidTransp" json:"-"`
-	NLacre	string		`xml:"nLacre" json:"nLacre,omitempty"`
+	XMLName xml.Name `xml:"lacUnidTransp" json:"-"`
+	NLacre  string   `xml:"nLacre" json:"nLacre,omitempty"`
 }
 
 // TAnonNLacre2 ...
@@ -2383,8 +2384,8 @@ type TAnonNLacre2 string
 
 // TAnonComplexLacUnidCarga1 is Número do lacre
 type TAnonComplexLacUnidCarga1 struct {
-	XMLName	xml.Name	`xml:"lacUnidCarga" json:"-"`
-	NLacre	string		`xml:"nLacre" json:"nLacre,omitempty"`
+	XMLName xml.Name `xml:"lacUnidCarga" json:"-"`
+	NLacre  string   `xml:"nLacre" json:"nLacre,omitempty"`
 }
 
 // TAnonXContato1 ...
@@ -2401,225 +2402,225 @@ type TAnonHashCSRT1 string
 
 // TGTVe is Informações suplementares da GTV-e
 type TGTVe struct {
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	InfCte		*TAnonComplexInfCte1		`xml:"infCte" json:"infCte,omitempty"`
-	InfCTeSupl	*TAnonComplexInfCTeSupl1	`xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
-	DsSignature	*SignatureType			`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                   `xml:"versao,attr" json:"versao,omitempty"`
+	InfCte      *TAnonComplexInfCte1     `xml:"infCte" json:"infCte,omitempty"`
+	InfCTeSupl  *TAnonComplexInfCTeSupl1 `xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
+	DsSignature *SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProtCTe is Mensagem do Fisco
 type TProtCTe struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	InfProt		*TAnonComplexInfProt1	`xml:"infProt" json:"infProt,omitempty"`
-	InfFisco	*TAnonComplexInfFisco1	`xml:"infFisco" json:"infFisco,omitempty"`
-	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                 `xml:"versao,attr" json:"versao,omitempty"`
+	InfProt     *TAnonComplexInfProt1  `xml:"infProt" json:"infProt,omitempty"`
+	InfFisco    *TAnonComplexInfFisco1 `xml:"infFisco" json:"infFisco,omitempty"`
+	DsSignature *SignatureType         `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProtCTeOS is Mensagem do Fisco
 type TProtCTeOS struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	InfProt		*TAnonComplexInfProt2	`xml:"infProt" json:"infProt,omitempty"`
-	InfFisco	*TAnonComplexInfFisco2	`xml:"infFisco" json:"infFisco,omitempty"`
-	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                 `xml:"versao,attr" json:"versao,omitempty"`
+	InfProt     *TAnonComplexInfProt2  `xml:"infProt" json:"infProt,omitempty"`
+	InfFisco    *TAnonComplexInfFisco2 `xml:"infFisco" json:"infFisco,omitempty"`
+	DsSignature *SignatureType         `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProtGTVe is Mensagem do Fisco
 type TProtGTVe struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	InfProt		*TAnonComplexInfProt3	`xml:"infProt" json:"infProt,omitempty"`
-	InfFisco	*TAnonComplexInfFisco3	`xml:"infFisco" json:"infFisco,omitempty"`
-	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                 `xml:"versao,attr" json:"versao,omitempty"`
+	InfProt     *TAnonComplexInfProt3  `xml:"infProt" json:"infProt,omitempty"`
+	InfFisco    *TAnonComplexInfFisco3 `xml:"infFisco" json:"infFisco,omitempty"`
+	DsSignature *SignatureType         `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TRetCTeSimp is Reposta ao processamento do CT-e
 type TRetCTeSimp struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	ProtCTe		*TProtCTe	`xml:"protCTe" json:"protCTe,omitempty"`
+	VersaoAttr string    `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string    `xml:"tpAmb" json:"tpAmb,omitempty"`
+	CUF        string    `xml:"cUF" json:"cUF,omitempty"`
+	VerAplic   string    `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat      string    `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    *TString  `xml:"xMotivo" json:"xMotivo,omitempty"`
+	ProtCTe    *TProtCTe `xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // TRetCTe is Reposta ao processamento do CT-e
 type TRetCTe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	ProtCTe		*TProtCTe	`xml:"protCTe" json:"protCTe,omitempty"`
+	VersaoAttr string    `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string    `xml:"tpAmb" json:"tpAmb,omitempty"`
+	CUF        string    `xml:"cUF" json:"cUF,omitempty"`
+	VerAplic   string    `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat      string    `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    *TString  `xml:"xMotivo" json:"xMotivo,omitempty"`
+	ProtCTe    *TProtCTe `xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // TRetGTVe is Reposta ao processamento do CT-e
 type TRetGTVe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	ProtCTe		*TProtGTVe	`xml:"protCTe" json:"protCTe,omitempty"`
+	VersaoAttr string     `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string     `xml:"tpAmb" json:"tpAmb,omitempty"`
+	CUF        string     `xml:"cUF" json:"cUF,omitempty"`
+	VerAplic   string     `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat      string     `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    *TString   `xml:"xMotivo" json:"xMotivo,omitempty"`
+	ProtCTe    *TProtGTVe `xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // TRetCTeOS is Reposta ao processamento do CT-e
 type TRetCTeOS struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	ProtCTe		*TProtCTeOS	`xml:"protCTe" json:"protCTe,omitempty"`
+	VersaoAttr string      `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string      `xml:"tpAmb" json:"tpAmb,omitempty"`
+	CUF        string      `xml:"cUF" json:"cUF,omitempty"`
+	VerAplic   string      `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat      string      `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    *TString    `xml:"xMotivo" json:"xMotivo,omitempty"`
+	ProtCTe    *TProtCTeOS `xml:"protCTe" json:"protCTe,omitempty"`
 }
 
 // TCTeSimp is Informações suplementares do CT-e
 type TCTeSimp struct {
-	InfCte		*TAnonComplexInfCte2		`xml:"infCte" json:"infCte,omitempty"`
-	InfCTeSupl	*TAnonComplexInfCTeSupl2	`xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
-	DsSignature	*SignatureType			`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	InfCte      *TAnonComplexInfCte2     `xml:"infCte" json:"infCte,omitempty"`
+	InfCTeSupl  *TAnonComplexInfCTeSupl2 `xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
+	DsSignature *SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TCTe is Informações suplementares do CT-e
 type TCTe struct {
-	InfCte		*TAnonComplexInfCte3		`xml:"infCte" json:"infCte,omitempty"`
-	InfCTeSupl	*TAnonComplexInfCTeSupl3	`xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
-	DsSignature	*SignatureType			`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	InfCte      *TAnonComplexInfCte3     `xml:"infCte" json:"infCte,omitempty"`
+	InfCTeSupl  *TAnonComplexInfCTeSupl3 `xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
+	DsSignature *SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TCTeOS is Informações suplementares do CT-e
 type TCTeOS struct {
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	InfCte		*TAnonComplexInfCte4		`xml:"infCte" json:"infCte,omitempty"`
-	InfCTeSupl	*TAnonComplexInfCTeSupl4	`xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
-	DsSignature	*SignatureType			`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                   `xml:"versao,attr" json:"versao,omitempty"`
+	InfCte      *TAnonComplexInfCte4     `xml:"infCte" json:"infCte,omitempty"`
+	InfCTeSupl  *TAnonComplexInfCTeSupl4 `xml:"infCTeSupl" json:"infCTeSupl,omitempty"`
+	DsSignature *SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TEndeEmi is Telefone
 type TEndeEmi struct {
-	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string	`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string	`xml:"xBairro" json:"xBairro,omitempty"`
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
-	CEP	*string	`xml:"CEP" json:"CEP,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
-	Fone	*string	`xml:"fone" json:"fone,omitempty"`
+	XLgr    string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string  `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string  `xml:"xBairro" json:"xBairro,omitempty"`
+	CMun    string  `xml:"cMun" json:"cMun,omitempty"`
+	XMun    string  `xml:"xMun" json:"xMun,omitempty"`
+	CEP     *string `xml:"CEP" json:"CEP,omitempty"`
+	UF      string  `xml:"UF" json:"UF,omitempty"`
+	Fone    *string `xml:"fone" json:"fone,omitempty"`
 }
 
 // TEndereco is Nome do país
 type TEndereco struct {
-	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string	`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string	`xml:"xBairro" json:"xBairro,omitempty"`
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
-	CEP	*string	`xml:"CEP" json:"CEP,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
-	CPais	*string	`xml:"cPais" json:"cPais,omitempty"`
-	XPais	*string	`xml:"xPais" json:"xPais,omitempty"`
+	XLgr    string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string  `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string  `xml:"xBairro" json:"xBairro,omitempty"`
+	CMun    string  `xml:"cMun" json:"cMun,omitempty"`
+	XMun    string  `xml:"xMun" json:"xMun,omitempty"`
+	CEP     *string `xml:"CEP" json:"CEP,omitempty"`
+	UF      string  `xml:"UF" json:"UF,omitempty"`
+	CPais   *string `xml:"cPais" json:"cPais,omitempty"`
+	XPais   *string `xml:"xPais" json:"xPais,omitempty"`
 }
 
 // TEndernac is Informar EX para operações com o exterior.
 type TEndernac struct {
-	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string	`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string	`xml:"xBairro" json:"xBairro,omitempty"`
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
-	CEP	*string	`xml:"CEP" json:"CEP,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
+	XLgr    string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string  `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string  `xml:"xBairro" json:"xBairro,omitempty"`
+	CMun    string  `xml:"cMun" json:"cMun,omitempty"`
+	XMun    string  `xml:"xMun" json:"xMun,omitempty"`
+	CEP     *string `xml:"CEP" json:"CEP,omitempty"`
+	UF      string  `xml:"UF" json:"UF,omitempty"`
 }
 
 // TEndOrg is Telefone
 type TEndOrg struct {
-	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string	`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string	`xml:"xBairro" json:"xBairro,omitempty"`
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
-	CEP	*string	`xml:"CEP" json:"CEP,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
-	CPais	*string	`xml:"cPais" json:"cPais,omitempty"`
-	XPais	*string	`xml:"xPais" json:"xPais,omitempty"`
-	Fone	*string	`xml:"fone" json:"fone,omitempty"`
+	XLgr    string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string  `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string  `xml:"xBairro" json:"xBairro,omitempty"`
+	CMun    string  `xml:"cMun" json:"cMun,omitempty"`
+	XMun    string  `xml:"xMun" json:"xMun,omitempty"`
+	CEP     *string `xml:"CEP" json:"CEP,omitempty"`
+	UF      string  `xml:"UF" json:"UF,omitempty"`
+	CPais   *string `xml:"cPais" json:"cPais,omitempty"`
+	XPais   *string `xml:"xPais" json:"xPais,omitempty"`
+	Fone    *string `xml:"fone" json:"fone,omitempty"`
 }
 
 // TLocal is Sigla da UF
 type TLocal struct {
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
+	CMun string `xml:"cMun" json:"cMun,omitempty"`
+	XMun string `xml:"xMun" json:"xMun,omitempty"`
+	UF   string `xml:"UF" json:"UF,omitempty"`
 }
 
 // TEndReEnt is Informar EX para operações com o exterior.
 type TEndReEnt struct {
-	CNPJ	*string	`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string	`xml:"CPF" json:"CPF,omitempty"`
-	XNome	string	`xml:"xNome" json:"xNome,omitempty"`
-	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string	`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string	`xml:"xBairro" json:"xBairro,omitempty"`
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	XMun	string	`xml:"xMun" json:"xMun,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
+	CNPJ    *string `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string `xml:"CPF" json:"CPF,omitempty"`
+	XNome   string  `xml:"xNome" json:"xNome,omitempty"`
+	XLgr    string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string  `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string  `xml:"xBairro" json:"xBairro,omitempty"`
+	CMun    string  `xml:"cMun" json:"cMun,omitempty"`
+	XMun    string  `xml:"xMun" json:"xMun,omitempty"`
+	UF      string  `xml:"UF" json:"UF,omitempty"`
 }
 
 // TImp is Simples Nacional
 type TImp struct {
-	ICMS00		*TAnonComplexICMS001		`xml:"ICMS00" json:"ICMS00,omitempty"`
-	ICMS20		*TAnonComplexICMS201		`xml:"ICMS20" json:"ICMS20,omitempty"`
-	ICMS45		*TAnonComplexICMS451		`xml:"ICMS45" json:"ICMS45,omitempty"`
-	ICMS60		*TAnonComplexICMS601		`xml:"ICMS60" json:"ICMS60,omitempty"`
-	ICMS90		*TAnonComplexICMS901		`xml:"ICMS90" json:"ICMS90,omitempty"`
-	ICMSOutraUF	*TAnonComplexICMSOutraUF1	`xml:"ICMSOutraUF" json:"ICMSOutraUF,omitempty"`
-	ICMSSN		*TAnonComplexICMSSN1		`xml:"ICMSSN" json:"ICMSSN,omitempty"`
+	ICMS00      *TAnonComplexICMS001      `xml:"ICMS00" json:"ICMS00,omitempty"`
+	ICMS20      *TAnonComplexICMS201      `xml:"ICMS20" json:"ICMS20,omitempty"`
+	ICMS45      *TAnonComplexICMS451      `xml:"ICMS45" json:"ICMS45,omitempty"`
+	ICMS60      *TAnonComplexICMS601      `xml:"ICMS60" json:"ICMS60,omitempty"`
+	ICMS90      *TAnonComplexICMS901      `xml:"ICMS90" json:"ICMS90,omitempty"`
+	ICMSOutraUF *TAnonComplexICMSOutraUF1 `xml:"ICMSOutraUF" json:"ICMSOutraUF,omitempty"`
+	ICMSSN      *TAnonComplexICMSSN1      `xml:"ICMSSN" json:"ICMSSN,omitempty"`
 }
 
 // TImpOS is Simples Nacional
 type TImpOS struct {
-	ICMS00		*TAnonComplexICMS002		`xml:"ICMS00" json:"ICMS00,omitempty"`
-	ICMS20		*TAnonComplexICMS202		`xml:"ICMS20" json:"ICMS20,omitempty"`
-	ICMS45		*TAnonComplexICMS452		`xml:"ICMS45" json:"ICMS45,omitempty"`
-	ICMS90		*TAnonComplexICMS902		`xml:"ICMS90" json:"ICMS90,omitempty"`
-	ICMSOutraUF	*TAnonComplexICMSOutraUF2	`xml:"ICMSOutraUF" json:"ICMSOutraUF,omitempty"`
-	ICMSSN		*TAnonComplexICMSSN2		`xml:"ICMSSN" json:"ICMSSN,omitempty"`
+	ICMS00      *TAnonComplexICMS002      `xml:"ICMS00" json:"ICMS00,omitempty"`
+	ICMS20      *TAnonComplexICMS202      `xml:"ICMS20" json:"ICMS20,omitempty"`
+	ICMS45      *TAnonComplexICMS452      `xml:"ICMS45" json:"ICMS45,omitempty"`
+	ICMS90      *TAnonComplexICMS902      `xml:"ICMS90" json:"ICMS90,omitempty"`
+	ICMSOutraUF *TAnonComplexICMSOutraUF2 `xml:"ICMSOutraUF" json:"ICMSOutraUF,omitempty"`
+	ICMSSN      *TAnonComplexICMSSN2      `xml:"ICMSSN" json:"ICMSSN,omitempty"`
 }
 
 // TUnidadeTransp is Quantidade rateada (Peso,Volume)
 type TUnidadeTransp struct {
-	TpUnidTransp	string				`xml:"tpUnidTransp" json:"tpUnidTransp,omitempty"`
-	IdUnidTransp	string				`xml:"idUnidTransp" json:"idUnidTransp,omitempty"`
-	LacUnidTransp	[]*TAnonComplexLacUnidTransp1	`xml:"lacUnidTransp" json:"lacUnidTransp,omitempty"`
-	InfUnidCarga	[]*TUnidCarga			`xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
-	QtdRat		*string				`xml:"qtdRat" json:"qtdRat,omitempty"`
+	TpUnidTransp  string                        `xml:"tpUnidTransp" json:"tpUnidTransp,omitempty"`
+	IdUnidTransp  string                        `xml:"idUnidTransp" json:"idUnidTransp,omitempty"`
+	LacUnidTransp []*TAnonComplexLacUnidTransp1 `xml:"lacUnidTransp" json:"lacUnidTransp,omitempty"`
+	InfUnidCarga  []*TUnidCarga                 `xml:"infUnidCarga" json:"infUnidCarga,omitempty"`
+	QtdRat        *string                       `xml:"qtdRat" json:"qtdRat,omitempty"`
 }
 
 // TUnidCarga is Quantidade rateada (Peso,Volume)
 type TUnidCarga struct {
-	TpUnidCarga	string				`xml:"tpUnidCarga" json:"tpUnidCarga,omitempty"`
-	IdUnidCarga	string				`xml:"idUnidCarga" json:"idUnidCarga,omitempty"`
-	LacUnidCarga	[]*TAnonComplexLacUnidCarga1	`xml:"lacUnidCarga" json:"lacUnidCarga,omitempty"`
-	QtdRat		*string				`xml:"qtdRat" json:"qtdRat,omitempty"`
+	TpUnidCarga  string                       `xml:"tpUnidCarga" json:"tpUnidCarga,omitempty"`
+	IdUnidCarga  string                       `xml:"idUnidCarga" json:"idUnidCarga,omitempty"`
+	LacUnidCarga []*TAnonComplexLacUnidCarga1 `xml:"lacUnidCarga" json:"lacUnidCarga,omitempty"`
+	QtdRat       *string                      `xml:"qtdRat" json:"qtdRat,omitempty"`
 }
 
 // TRespTec is O hashCSRT é o resultado das funções SHA-1 e base64 do token CSRT fornecido pelo fisco + chave de acesso do DF-e. (Implementação em futura NT)
 //
 // Observação: 28 caracteres são representados no schema como 20 bytes do tipo base64Binary
 type TRespTec struct {
-	CNPJ		string	`xml:"CNPJ" json:"CNPJ,omitempty"`
-	XContato	string	`xml:"xContato" json:"xContato,omitempty"`
-	Email		string	`xml:"email" json:"email,omitempty"`
-	Fone		string	`xml:"fone" json:"fone,omitempty"`
-	IdCSRT		*string	`xml:"idCSRT" json:"idCSRT,omitempty"`
-	HashCSRT	*string	`xml:"hashCSRT" json:"hashCSRT,omitempty"`
+	CNPJ     string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	XContato string  `xml:"xContato" json:"xContato,omitempty"`
+	Email    string  `xml:"email" json:"email,omitempty"`
+	Fone     string  `xml:"fone" json:"fone,omitempty"`
+	IdCSRT   *string `xml:"idCSRT" json:"idCSRT,omitempty"`
+	HashCSRT *string `xml:"hashCSRT" json:"hashCSRT,omitempty"`
 }
 
 // TCfop is Tipo CFOP

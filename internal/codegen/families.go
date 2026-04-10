@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -439,7 +440,7 @@ func fixTypedRootAliasFromSchema(path, updated string) string {
 		return updated
 	}
 
-	return postprocess.SetTypeExpr(postprocess.TypeNamed(match[1]), fmt.Sprintf("*%s", rootType))(path, updated)
+	return postprocess.SetTypeExpr(postprocess.TypeNamed(match[1]), "*"+rootType)(path, updated)
 }
 
 func schemaRootTypeFromSchema(schemaText []byte) (string, bool) {
@@ -447,7 +448,7 @@ func schemaRootTypeFromSchema(schemaText []byte) (string, bool) {
 	for {
 		tok, err := decoder.Token()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				return "", false
 			}
 			return "", false

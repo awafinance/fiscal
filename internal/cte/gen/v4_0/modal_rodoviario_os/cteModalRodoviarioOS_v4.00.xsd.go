@@ -32,24 +32,24 @@ type TAnonTpProp1 string
 // 1-TAC Independente; ou
 // 2 – Outros.
 type TAnonComplexProp1 struct {
-	XMLName		xml.Name	`xml:"prop" json:"-"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	TAF		*string		`xml:"TAF" json:"TAF,omitempty"`
-	NroRegEstadual	*string		`xml:"NroRegEstadual" json:"NroRegEstadual,omitempty"`
-	XNome		string		`xml:"xNome" json:"xNome,omitempty"`
-	IE		*string		`xml:"IE" json:"IE,omitempty"`
-	UF		*string		`xml:"UF" json:"UF,omitempty"`
-	TpProp		string		`xml:"tpProp" json:"tpProp,omitempty"`
+	XMLName        xml.Name `xml:"prop" json:"-"`
+	CPF            *string  `xml:"CPF" json:"CPF,omitempty"`
+	CNPJ           *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	TAF            *string  `xml:"TAF" json:"TAF,omitempty"`
+	NroRegEstadual *string  `xml:"NroRegEstadual" json:"NroRegEstadual,omitempty"`
+	XNome          string   `xml:"xNome" json:"xNome,omitempty"`
+	IE             *string  `xml:"IE" json:"IE,omitempty"`
+	UF             *string  `xml:"UF" json:"UF,omitempty"`
+	TpProp         string   `xml:"tpProp" json:"tpProp,omitempty"`
 }
 
 // TAnonComplexVeic1 is Sigla da UF de licenciamento do veículo.
 type TAnonComplexVeic1 struct {
-	XMLName	xml.Name		`xml:"veic" json:"-"`
-	Placa	string			`xml:"placa" json:"placa,omitempty"`
-	RENAVAM	*string			`xml:"RENAVAM" json:"RENAVAM,omitempty"`
-	Prop	*TAnonComplexProp1	`xml:"prop" json:"prop,omitempty"`
-	UF	*string			`xml:"UF" json:"UF,omitempty"`
+	XMLName xml.Name           `xml:"veic" json:"-"`
+	Placa   string             `xml:"placa" json:"placa,omitempty"`
+	RENAVAM *string            `xml:"RENAVAM" json:"RENAVAM,omitempty"`
+	Prop    *TAnonComplexProp1 `xml:"prop" json:"prop,omitempty"`
+	UF      *string            `xml:"UF" json:"UF,omitempty"`
 }
 
 // TAnonTpFretamento1 ...
@@ -57,18 +57,18 @@ type TAnonTpFretamento1 string
 
 // TAnonComplexInfFretamento1 is Formato AAAA-MM-DDTHH:MM:DD TZD
 type TAnonComplexInfFretamento1 struct {
-	XMLName		xml.Name	`xml:"infFretamento" json:"-"`
-	TpFretamento	string		`xml:"tpFretamento" json:"tpFretamento,omitempty"`
-	DhViagem	*string		`xml:"dhViagem" json:"dhViagem,omitempty"`
+	XMLName      xml.Name `xml:"infFretamento" json:"-"`
+	TpFretamento string   `xml:"tpFretamento" json:"tpFretamento,omitempty"`
+	DhViagem     *string  `xml:"dhViagem" json:"dhViagem,omitempty"`
 }
 
 // TAnonComplexRodoOS1 is Dados do fretamento (apenas para Transporte de Pessoas)
 type TAnonComplexRodoOS1 struct {
-	XMLName		xml.Name			`xml:"rodoOS" json:"-"`
-	TAF		*string				`xml:"TAF" json:"TAF,omitempty"`
-	NroRegEstadual	*string				`xml:"NroRegEstadual" json:"NroRegEstadual,omitempty"`
-	Veic		*TAnonComplexVeic1		`xml:"veic" json:"veic,omitempty"`
-	InfFretamento	*TAnonComplexInfFretamento1	`xml:"infFretamento" json:"infFretamento,omitempty"`
+	XMLName        xml.Name                    `xml:"rodoOS" json:"-"`
+	TAF            *string                     `xml:"TAF" json:"TAF,omitempty"`
+	NroRegEstadual *string                     `xml:"NroRegEstadual" json:"NroRegEstadual,omitempty"`
+	Veic           *TAnonComplexVeic1          `xml:"veic" json:"veic,omitempty"`
+	InfFretamento  *TAnonComplexInfFretamento1 `xml:"infFretamento" json:"infFretamento,omitempty"`
 }
 
 // RodoOS is Informações do modal Rodoviário
