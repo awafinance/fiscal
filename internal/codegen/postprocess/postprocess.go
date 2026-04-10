@@ -22,6 +22,7 @@ const xmlDSigSignatureNamespaceTag = "`xml:\"http://www.w3.org/2000/09/xmldsig# 
 var anonComplexXMLName = regexp.MustCompile("`xml:\"TAnonComplex_([^\"_]+(?:_[^\"_]+)*)_\\d+\"`")
 
 type Replacement func(path, text string) string
+type FieldMatcher func(path string, field *ast.Field) bool
 
 type Options struct {
 	GenDir               string
@@ -131,6 +132,77 @@ func Replace(old, new string, n int) Replacement {
 func RegexReplaceAll(re *regexp.Regexp, replacement string) Replacement {
 	return func(_ string, text string) string {
 		return re.ReplaceAllString(text, replacement)
+	}
+}
+
+func ReplaceFieldType(match FieldMatcher, replacementType string) Replacement {
+	return func(path string, text string) string {
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, text, parser.ParseComments)
+		if err != nil {
+			return text
+		}
+
+		replacementExpr, err := parser.ParseExpr(replacementType)
+		if err != nil {
+			return text
+		}
+
+		changed := false
+		ast.Inspect(file, func(node ast.Node) bool {
+			structType, ok := node.(*ast.StructType)
+			if !ok {
+				return true
+			}
+
+			for _, field := range structType.Fields.List {
+				if !match(path, field) {
+					continue
+				}
+				field.Type = cloneExpr(replacementExpr)
+				changed = true
+			}
+
+			return false
+		})
+
+		if !changed {
+			return text
+		}
+
+		var buf bytes.Buffer
+		if err := printer.Fprint(&buf, fset, file); err != nil {
+			return text
+		}
+		return buf.String()
+	}
+}
+
+func FieldNamed(names ...string) FieldMatcher {
+	return func(_ string, field *ast.Field) bool {
+		for _, name := range names {
+			if fieldHasName(field, name) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+func FieldTypeEquals(typeExpr string) FieldMatcher {
+	return func(_ string, field *ast.Field) bool {
+		return exprString(field.Type) == typeExpr
+	}
+}
+
+func AllFields(matchers ...FieldMatcher) FieldMatcher {
+	return func(path string, field *ast.Field) bool {
+		for _, matcher := range matchers {
+			if !matcher(path, field) {
+				return false
+			}
+		}
+		return true
 	}
 }
 
@@ -281,4 +353,28 @@ func fieldHasName(field *ast.Field, name string) bool {
 		}
 	}
 	return false
+}
+
+func exprString(expr ast.Expr) string {
+	if expr == nil {
+		return ""
+	}
+
+	var buf bytes.Buffer
+	if err := printer.Fprint(&buf, token.NewFileSet(), expr); err != nil {
+		return ""
+	}
+	return buf.String()
+}
+
+func cloneExpr(expr ast.Expr) ast.Expr {
+	if expr == nil {
+		return nil
+	}
+
+	cloned, err := parser.ParseExpr(exprString(expr))
+	if err != nil {
+		return expr
+	}
+	return cloned
 }

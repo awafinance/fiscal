@@ -34,15 +34,9 @@ const (
 	xmlOnlyImportBlock         = "import (\n\t\"encoding/xml\"\n)"
 	typedInfModalImportBlock   = "import (\n\t\"encoding/xml\"\n\n\tmodalaereo \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aereo\"\n\tmodalaquaviario \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_aquaviario\"\n\tmodaldutoviario \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_dutoviario\"\n\tmodalferroviario \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_ferroviario\"\n\tmodalmultimodal \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_multimodal\"\n\tmodalrodoviario \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario\"\n\tmodalrodoviarioos \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
 	typedInfModalImportBlockOS = "import (\n\t\"encoding/xml\"\n\n\tmodalrodoviarioos \"github.com/awafinance/fiscal/internal/cte/gen/v4_0/modal_rodoviario_os\"\n)"
-
-	xDescInterfaceField = "interface{} `xml:\"xDesc\"`"
-	xDescStringField    = "string `xml:\"xDesc\"`"
 )
 
 var (
-	optionalFieldDhCont = regexp.MustCompile(`\n\tDhCont\s+string\s+` + "`xml:\"dhCont\"`")
-	optionalFieldXJust  = regexp.MustCompile(`\n\tXJust\s+string\s+` + "`xml:\"xJust\"`")
-	optionalFieldCRT    = regexp.MustCompile(`\n\tCRT\s+string\s+` + "`xml:\"CRT\"`")
 	nProtTProtField     = regexp.MustCompile(`\n\tNProt\s+\*TProt\s+` + "`xml:\"nProt\"`")
 	nProtPrestDesField  = regexp.MustCompile(`\n\tNProtEvPrestDes\s+\*TProt\s+` + "`xml:\"nProtEvPrestDes\"`")
 	rootAliasStringType = regexp.MustCompile(`(?m)^type\s+([A-Z][A-Za-z0-9_]*)\s+string$`)
@@ -253,24 +247,24 @@ func nfseFamily() family {
 }
 
 func postprocessBPe(verbose bool) error {
-	return postprocess.Generated(postprocess.Options{
-		GenDir: "internal/bpe/gen",
-		NestedImportPatterns: []string{
+	return runGeneratedPostprocess(verbose, generatedPostprocessSpec{
+		genDir: "internal/bpe/gen",
+		nestedImportPatterns: []string{
 			pathPattern("internal", "bpe", "schemas"),
 			pathPattern("internal", "bpe", "gen", "v1_0", "schemas"),
 		},
-		Replacements: []postprocess.Replacement{
-			postprocess.ReplaceAll("*interface{}", "*string"),
-			postprocess.ReplaceAll("interface{}", "string"),
-			fixTypedRootAliasFromSchema,
-			postprocess.ReplaceAll(infBPeCompField, infBPeCompFieldFixed),
-			postprocess.IfPath(
+		workarounds: []generatedWorkaround{
+			workaround("replace pointer interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("*interface{}"), "*string")),
+			workaround("replace interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("interface{}"), "string")),
+			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),
+			workaround("fix BPe Comp field type mismatch", postprocess.ReplaceAll(infBPeCompField, infBPeCompFieldFixed)),
+			workaround("preserve raw detEvento payload XML for BPe event base types", postprocess.IfPath(
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"eventoBPeTiposBasico_v1.00.xsd.go")
 				},
 				postprocess.Replace(bpeDetEventoStruct, bpeDetEventoStructInnerXML, 1),
-			),
-			postprocess.IfPath(
+			)),
+			workaround("flatten BPe event protocol wrappers to string values", postprocess.IfPath(
 				func(path string) bool {
 					return hasAnySuffix(path,
 						string(filepath.Separator)+"evAlteracaoPoltrona_v1.00.xsd.go",
@@ -280,32 +274,31 @@ func postprocessBPe(verbose bool) error {
 					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
-			),
+			)),
 		},
-		AddJSONTags: true,
-		Verbose:     verbose,
+		addJSONTags: true,
 	})
 }
 
 func postprocessCTe(verbose bool) error {
-	return postprocess.Generated(postprocess.Options{
-		GenDir: "internal/cte/gen",
-		NestedImportPatterns: []string{
+	return runGeneratedPostprocess(verbose, generatedPostprocessSpec{
+		genDir: "internal/cte/gen",
+		nestedImportPatterns: []string{
 			pathPattern("nfelib", "nfelib", "cte", "schemas"),
 			pathPattern("internal", "cte", "schemas"),
 			pathPattern("internal", "cte", "gen", "v4_0", "schemas"),
 		},
-		RemoveFile: func(path string) (bool, string) {
+		removeFile: func(path string) (bool, string) {
 			return isDiscardedCTeModalSupportFile(path), "removed modal support schema package"
 		},
-		Replacements: []postprocess.Replacement{
-			postprocess.ReplaceAll("*interface{}", "*string"),
-			postprocess.ReplaceAll("interface{}", "string"),
-			fixTypedRootAliasFromSchema,
-			postprocess.RegexReplaceAll(optionalFieldDhCont, "\n\tDhCont         *string `xml:\"dhCont\"`"),
-			postprocess.RegexReplaceAll(optionalFieldXJust, "\n\tXJust          *string `xml:\"xJust\"`"),
-			postprocess.RegexReplaceAll(optionalFieldCRT, "\n\tCRT       *string   `xml:\"CRT\"`"),
-			postprocess.IfPath(
+		workarounds: []generatedWorkaround{
+			workaround("replace pointer interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("*interface{}"), "*string")),
+			workaround("replace interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("interface{}"), "string")),
+			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),
+			workaround("make DhCont optional in generated CTe structs", postprocess.ReplaceFieldType(postprocess.AllFields(postprocess.FieldNamed("DhCont"), postprocess.FieldTypeEquals("string")), "*string")),
+			workaround("make XJust optional in generated CTe structs", postprocess.ReplaceFieldType(postprocess.AllFields(postprocess.FieldNamed("XJust"), postprocess.FieldTypeEquals("string")), "*string")),
+			workaround("make CRT optional in generated CTe structs", postprocess.ReplaceFieldType(postprocess.AllFields(postprocess.FieldNamed("CRT"), postprocess.FieldTypeEquals("string")), "*string")),
+			workaround("flatten selected CTe event protocol wrappers to string values", postprocess.IfPath(
 				func(path string) bool {
 					return hasAnySuffix(path,
 						string(filepath.Separator)+"evCancCTe_v4.00.xsd.go",
@@ -316,34 +309,33 @@ func postprocessCTe(verbose bool) error {
 					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
-			),
-			postprocess.IfPath(
+			)),
+			workaround("flatten CTe disagreement event protocol wrapper to string value", postprocess.IfPath(
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"evCancPrestDesacordo_v4.00.xsd.go")
 				},
 				postprocess.RegexReplaceAll(nProtPrestDesField, "\n\tNProtEvPrestDes string `xml:\"nProtEvPrestDes\"`"),
-			),
-			replaceTypedCTeEventPayloads,
+			)),
+			workaround("replace CTe event payload placeholders with typed modal payloads", replaceTypedCTeEventPayloads),
 		},
-		AddJSONTags: true,
-		Verbose:     verbose,
+		addJSONTags: true,
 	})
 }
 
 func postprocessMDFe(verbose bool) error {
-	return postprocess.Generated(postprocess.Options{
-		GenDir: "internal/mdfe/gen",
-		NestedImportPatterns: []string{
+	return runGeneratedPostprocess(verbose, generatedPostprocessSpec{
+		genDir: "internal/mdfe/gen",
+		nestedImportPatterns: []string{
 			pathPattern("nfelib", "nfelib", "mdfe", "schemas"),
 			pathPattern("internal", "mdfe", "schemas"),
 			pathPattern("internal", "mdfe", "gen", "v3_0", "schemas"),
 		},
-		Replacements: []postprocess.Replacement{
-			postprocess.ReplaceAll("*TpAmb", "*string"),
-			fixTypedRootAliasFromSchema,
-			postprocess.Replace(mdfeInfModalStruct, mdfeInfModalStructInnerXML, 1),
-			postprocess.Replace(mdfeAnonInfModalStruct, mdfeAnonInfModalInnerXML, 1),
-			postprocess.IfPath(
+		workarounds: []generatedWorkaround{
+			workaround("replace MDFe ambient enum pointers with strings", postprocess.ReplaceAll("*TpAmb", "*string")),
+			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),
+			workaround("preserve raw infModal payload XML in MDFe root type", postprocess.Replace(mdfeInfModalStruct, mdfeInfModalStructInnerXML, 1)),
+			workaround("preserve raw infModal payload XML in MDFe anonymous type", postprocess.Replace(mdfeAnonInfModalStruct, mdfeAnonInfModalInnerXML, 1)),
+			workaround("flatten selected MDFe event protocol wrappers to string values", postprocess.IfPath(
 				func(path string) bool {
 					return hasAnySuffix(path,
 						string(filepath.Separator)+"evAlteracaoPagtoServMDFe_v3.00.xsd.go",
@@ -355,66 +347,63 @@ func postprocessMDFe(verbose bool) error {
 					)
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
-			),
-			postprocess.IfPath(
+			)),
+			workaround("preserve raw detEvento payload XML for MDFe event base types", postprocess.IfPath(
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"eventoMDFeTiposBasico_v3.00.xsd.go")
 				},
 				postprocess.Replace(mdfeDetEventoStruct, mdfeDetEventoInnerXML, 1),
 				postprocess.Replace(mdfeAnonDetEventoStruct, mdfeAnonDetEventoInnerXML, 1),
-			),
+			)),
 		},
-		AddJSONTags: true,
-		Verbose:     verbose,
+		addJSONTags: true,
 	})
 }
 
 func postprocessNFe(verbose bool) error {
-	return postprocess.Generated(postprocess.Options{
-		GenDir: "internal/nfe/gen",
-		NestedImportPatterns: []string{
+	return runGeneratedPostprocess(verbose, generatedPostprocessSpec{
+		genDir: "internal/nfe/gen",
+		nestedImportPatterns: []string{
 			pathPattern("internal", "nfe", "schemas"),
 			pathPattern("internal", "nfe", "gen", "v1_0", "schemas"),
 			pathPattern("internal", "nfe", "gen", "v4_0", "schemas"),
 		},
-		RemoveFile: func(path string) (bool, string) {
+		removeFile: func(path string) (bool, string) {
 			return isDuplicateGeneratedNFeFragment(path), "removed duplicated imported schema package"
 		},
-		Replacements: []postprocess.Replacement{
-			postprocess.ReplaceAll("*interface{}", "*string"),
-			postprocess.ReplaceAll("interface{}", "string"),
-			fixTypedRootAliasFromSchema,
-			postprocess.IfPath(
+		workarounds: []generatedWorkaround{
+			workaround("replace pointer interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("*interface{}"), "*string")),
+			workaround("replace interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("interface{}"), "string")),
+			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),
+			workaround("flatten NFe cancel event protocol wrapper to string value", postprocess.IfPath(
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"leiauteEventoCancNFe_v1.00.xsd.go")
 				},
 				postprocess.RegexReplaceAll(nProtTProtField, "\n\tNProt string `xml:\"nProt\"`"),
-			),
-			postprocess.IfPath(
+			)),
+			workaround("replace unsupported NFe evento_cce enums with strings", postprocess.IfPath(
 				postprocess.PathContains("internal", "nfe", "gen", "v1_0", "evento_cce"),
-				postprocess.ReplaceAll("*TCOrgaoIBGE", "*string"),
-				postprocess.ReplaceAll("*TVerEvento", "*string"),
-			),
+				postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("*TCOrgaoIBGE"), "*string"),
+				postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("*TVerEvento"), "*string"),
+			)),
 		},
-		AddJSONTags: true,
-		Verbose:     verbose,
+		addJSONTags: true,
 	})
 }
 
 func postprocessNFSe(verbose bool) error {
-	return postprocess.Generated(postprocess.Options{
-		GenDir: "internal/nfse/gen",
-		NestedImportPatterns: []string{
+	return runGeneratedPostprocess(verbose, generatedPostprocessSpec{
+		genDir: "internal/nfse/gen",
+		nestedImportPatterns: []string{
 			pathPattern("nfelib", "nfelib", "nfse", "schemas"),
 			pathPattern("internal", "nfse", "schemas"),
 			pathPattern("internal", "nfse", "gen", "v1_0", "schemas"),
 		},
-		Replacements: []postprocess.Replacement{
-			fixTypedRootAliasFromSchema,
-			postprocess.ReplaceAll(xDescInterfaceField, xDescStringField),
+		workarounds: []generatedWorkaround{
+			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),
+			workaround("replace NFSe xDesc interface payload with string", postprocess.ReplaceFieldType(postprocess.AllFields(postprocess.FieldNamed("XDesc"), postprocess.FieldTypeEquals("interface{}")), "string")),
 		},
-		AddJSONTags: true,
-		Verbose:     verbose,
+		addJSONTags: true,
 	})
 }
 
