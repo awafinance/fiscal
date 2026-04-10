@@ -8,6 +8,7 @@ import (
 	"io"
 
 	schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
+	"github.com/awafinance/fiscal/internal/xmlutil"
 )
 
 const namespace = "http://www.sped.fazenda.gov.br/nfse"
@@ -24,6 +25,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
 	}
+	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
 	switch d.rootName {
 	case "DPS", "":
@@ -36,7 +38,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				Signature  *schema.SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "DPS"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DPS.VersaoAttr),
@@ -54,7 +56,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				Signature  *schema.SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "NFSe"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.NFSe.VersaoAttr),
@@ -72,7 +74,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				Signature  *schema.SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "pedRegEvento"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.PedRegEvento.VersaoAttr),

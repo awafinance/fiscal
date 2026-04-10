@@ -25,6 +25,7 @@ import (
 	regMultimodalEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_reg_multimodal"
 	gtveSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/gtve"
 	statusSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/status_servico"
+	"github.com/awafinance/fiscal/internal/xmlutil"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/cte"
@@ -89,6 +90,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
 	}
+	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
 	switch d.rootName {
 	case "CTe", "":
@@ -101,7 +103,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				DsSignature *cteSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "CTe"},
 				XMLNS:       namespace,
 				InfCte:      d.CTe.InfCte,
@@ -121,7 +123,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				CTe               *cteSchema.TCTe     `xml:"CTe"`
 				ProtCTe           *cteSchema.TProtCTe `xml:"protCTe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "cteProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.CTeProc.VersaoAttr),
@@ -134,7 +136,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retCTe":
 		if d.RetCTe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retCTe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*cteSchema.TRetCTe
@@ -155,7 +157,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				DsSignature *cteOSSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "CTeOS"},
 				XMLNS:       namespace,
 				VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.CTeOS.VersaoAttr),
@@ -176,7 +178,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				CTeOS             *cteOSSchema.TCTeOS     `xml:"CTeOS"`
 				ProtCTe           *cteOSSchema.TProtCTeOS `xml:"protCTe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "cteOSProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.CTeOSProc.VersaoAttr),
@@ -189,7 +191,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retCTeOS":
 		if d.RetCTeOS != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retCTeOS"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*cteOSSchema.TRetCTeOS
@@ -208,7 +210,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				InfCTeSupl  *cteSimpSchema.TAnonComplexInfCTeSupl2 `xml:"infCTeSupl,omitempty"`
 				DsSignature *cteSimpSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "CTeSimp"},
 				XMLNS:       namespace,
 				InfCte:      d.CTeSimp.InfCte,
@@ -228,7 +230,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				CTeSimp           *cteSimpSchema.TCTeSimp `xml:"CTeSimp"`
 				ProtCTe           *cteSimpSchema.TProtCTe `xml:"protCTe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "cteSimpProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.CTeSimpProc.VersaoAttr),
@@ -241,7 +243,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retCTeSimp":
 		if d.RetCTeSimp != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retCTeSimp"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*cteSimpSchema.TRetCTeSimp
@@ -261,7 +263,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				InfCTeSupl  *gtveSchema.TAnonComplexInfCTeSupl1 `xml:"infCTeSupl,omitempty"`
 				DsSignature *gtveSchema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "GTVe"},
 				XMLNS:       namespace,
 				VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.GTVe.VersaoAttr),
@@ -282,7 +284,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				GTVe              *gtveSchema.TGTVe     `xml:"GTVe"`
 				ProtCTe           *gtveSchema.TProtGTVe `xml:"protCTe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "GTVeProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.GTVeProc.VersaoAttr),
@@ -295,7 +297,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retGTVe":
 		if d.RetGTVe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retGTVe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*gtveSchema.TRetGTVe
@@ -307,7 +309,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "consSitCTe":
 		if d.ConsSitCTe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"consSitCTe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TConsSitCTe
@@ -319,7 +321,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsSitCTe":
 		if d.RetConsSitCTe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsSitCTe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TRetConsSitCTe
@@ -331,7 +333,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "consStatServCTe":
 		if d.ConsStatServCTe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"consStatServCTe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TConsStatServ
@@ -343,7 +345,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsStatServCTe":
 		if d.RetConsStatServCTe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsStatServCTe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TRetConsStatServ
@@ -372,7 +374,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				DistNSU    *distSchema.TAnonComplexDistNSU1 `xml:"distNSU,omitempty"`
 				ConsNSU    *distSchema.TAnonComplexConsNSU1 `xml:"consNSU,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "distDFeInt"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
@@ -399,7 +401,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				MaxNSU         string                                  `xml:"maxNSU"`
 				LoteDistDFeInt *distSchema.TAnonComplexLoteDistDFeInt1 `xml:"loteDistDFeInt,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:        xml.Name{Local: "retDistDFeInt"},
 				XMLNS:          namespace,
 				VersaoAttr:     firstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
@@ -1126,7 +1128,7 @@ func encodeCTeEvent(e *xml.Encoder, versao string, infEvento any, signature any)
 		InfEvento   any      `xml:"infEvento"`
 		DsSignature any      `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 	}
-	return e.Encode(root{
+	return xmlutil.EncodeCanonical(e, root{
 		XMLName:     xml.Name{Local: "eventoCTe"},
 		XMLNS:       namespace,
 		VersaoAttr:  versao,
@@ -1143,7 +1145,7 @@ func encodeCTeRetEvent(e *xml.Encoder, versao string, infEvento any, signature a
 		InfEvento   any      `xml:"infEvento"`
 		DsSignature any      `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 	}
-	return e.Encode(root{
+	return xmlutil.EncodeCanonical(e, root{
 		XMLName:     xml.Name{Local: "retEventoCTe"},
 		XMLNS:       namespace,
 		VersaoAttr:  versao,
@@ -1163,7 +1165,7 @@ func encodeCTeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon,
 		EventoCTe         any      `xml:"eventoCTe"`
 		RetEventoCTe      any      `xml:"retEventoCTe"`
 	}
-	return e.Encode(root{
+	return xmlutil.EncodeCanonical(e, root{
 		XMLName:           xml.Name{Local: "procEventoCTe"},
 		XMLNS:             namespace,
 		VersaoAttr:        versao,

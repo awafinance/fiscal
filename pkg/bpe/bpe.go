@@ -12,6 +12,7 @@ import (
 	cancelEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_cancel"
 	excessoBagagemEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
 	naoEmbEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
+	"github.com/awafinance/fiscal/internal/xmlutil"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/bpe"
@@ -49,6 +50,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
 	}
+	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
 	switch d.rootName {
 	case "BPe", "":
@@ -60,7 +62,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				InfBPeSupl  *schema.TAnonComplexInfBPeSupl1 `xml:"infBPeSupl,omitempty"`
 				DsSignature *schema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "BPe"},
 				XMLNS:       namespace,
 				InfBPe:      d.BPe.InfBPe,
@@ -76,7 +78,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				InfBPe      *schema.TAnonComplexInfBPe1 `xml:"infBPe"`
 				DsSignature *schema.SignatureType       `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "BPeTM"},
 				XMLNS:       namespace,
 				InfBPe:      d.BPeTM.InfBPe,
@@ -95,7 +97,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				BPe               *schema.TBPe     `xml:"BPe"`
 				ProtBPe           *schema.TProtBPe `xml:"protBPe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "bpeProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.BPeProc.VersaoAttr),
@@ -118,7 +120,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				BPeTM             *schema.TBPeTM   `xml:"BPeTM"`
 				ProtBPe           *schema.TProtBPe `xml:"protBPe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "bpeTMProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.BPeTMProc.VersaoAttr),
@@ -131,7 +133,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retBPe":
 		if d.RetBPe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*schema.TRetBPe
@@ -143,7 +145,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "consSitBPe":
 		if d.ConsSitBPe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"consSitBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*schema.TConsSitBPe
@@ -155,7 +157,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsSitBPe":
 		if d.RetConsSitBPe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsSitBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*schema.TRetConsSitBPe
@@ -167,7 +169,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "consStatServBPe":
 		if d.ConsStatServBPe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"consStatServBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*schema.TConsStatServ
@@ -179,7 +181,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsStatServBPe":
 		if d.RetConsStatServBPe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsStatServBPe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*schema.TRetConsStatServ
@@ -674,7 +676,7 @@ func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
 }
 
 func encodeEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
-	return e.Encode(struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName     xml.Name `xml:"eventoBPe"`
 		XMLNS       string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr  string   `xml:"versao,attr,omitempty"`
@@ -690,7 +692,7 @@ func encodeEvent(e *xml.Encoder, versao string, infEvento any, signature any) er
 }
 
 func encodeRetEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
-	return e.Encode(struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName     xml.Name `xml:"retEventoBPe"`
 		XMLNS       string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr  string   `xml:"versao,attr,omitempty"`
@@ -706,7 +708,7 @@ func encodeRetEvent(e *xml.Encoder, versao string, infEvento any, signature any)
 }
 
 func encodeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon, dhConexao *string, evento any, retEvento any) error {
-	return e.Encode(struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName           xml.Name `xml:"procEventoBPe"`
 		XMLNS             string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr        string   `xml:"versao,attr,omitempty"`

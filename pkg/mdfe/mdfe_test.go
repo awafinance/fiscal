@@ -842,11 +842,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 						continue
 					}
 					currentNS[prefix] = value
-					if prefix == "" {
-						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
-					} else {
-						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
-					}
+					continue
 				}
 				attrs = append(attrs, attr)
 			}

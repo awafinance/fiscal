@@ -184,6 +184,7 @@ func readFixture(t *testing.T, name string) []byte {
 func normalizeXML(t *testing.T, data []byte) string {
 	t.Helper()
 
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	var b strings.Builder
 	nsStack := []map[string]string{{}}
@@ -217,11 +218,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 						continue
 					}
 					currentNS[prefix] = value
-					if prefix == "" {
-						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
-					} else {
-						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
-					}
+					continue
 				}
 				attrs = append(attrs, attr)
 			}

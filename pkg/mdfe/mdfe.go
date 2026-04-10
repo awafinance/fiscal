@@ -23,6 +23,7 @@ import (
 	pagtoOperEventSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/evento_pagto_oper"
 	mdfeSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/mdfe"
 	statusSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/status_servico"
+	"github.com/awafinance/fiscal/internal/xmlutil"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/mdfe"
@@ -79,6 +80,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
 	}
+	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
 	switch d.rootName {
 	case "MDFe", "":
@@ -91,7 +93,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				DsSignature *mdfeSchema.SignatureType            `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:     xml.Name{Local: "MDFe"},
 				XMLNS:       namespace,
 				InfMDFe:     d.MDFe.InfMDFe,
@@ -111,7 +113,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				MDFe              *mdfeSchema.TMDFe     `xml:"MDFe"`
 				ProtMDFe          *mdfeSchema.TProtMDFe `xml:"protMDFe"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:           xml.Name{Local: "mdfeProc"},
 				XMLNS:             namespace,
 				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.MDFeProc.VersaoAttr),
@@ -124,7 +126,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "enviMDFe":
 		if d.EnviMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"enviMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*mdfeSchema.TEnviMDFe
@@ -136,7 +138,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retEnviMDFe":
 		if d.RetEnviMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retEnviMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*mdfeSchema.TRetEnviMDFe
@@ -148,7 +150,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retMDFe":
 		if d.RetMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*mdfeSchema.TRetMDFe
@@ -170,7 +172,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				CPF        *string                   `xml:"CPF,omitempty"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "consMDFeNaoEnc"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.ConsNaoEnc.VersaoAttr),
@@ -182,7 +184,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsMDFeNaoEnc":
 		if d.RetConsNaoEnc != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsMDFeNaoEnc"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consNaoEncSchema.TRetConsMDFeNaoEnc
@@ -202,7 +204,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				NRec       string   `xml:"nRec"`
 			}
 
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "consReciMDFe"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.ConsReciMDFe.VersaoAttr),
@@ -212,7 +214,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsReciMDFe":
 		if d.RetConsReciMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsReciMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consReciSchema.TRetConsReciMDFe
@@ -224,7 +226,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "consSitMDFe":
 		if d.ConsSitMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"consSitMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TConsSitMDFe
@@ -236,7 +238,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsSitMDFe":
 		if d.RetConsSitMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsSitMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consSitSchema.TRetConsSitMDFe
@@ -248,7 +250,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "consStatServMDFe":
 		if d.ConsStatServMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"consStatServMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TConsStatServ
@@ -260,7 +262,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retConsStatServMDFe":
 		if d.RetConsStatServMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retConsStatServMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*statusSchema.TRetConsStatServ
@@ -288,7 +290,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				DistNSU    *distSchema.TAnonComplexDistNSU1 `xml:"distNSU,omitempty"`
 				ConsNSU    *distSchema.TAnonComplexConsNSU1 `xml:"consNSU,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:    xml.Name{Local: "distDFeInt"},
 				XMLNS:      namespace,
 				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
@@ -314,7 +316,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 				MaxNSU         string                                  `xml:"maxNSU"`
 				LoteDistDFeInt *distSchema.TAnonComplexLoteDistDFeInt1 `xml:"loteDistDFeInt,omitempty"`
 			}
-			return e.Encode(root{
+			return encode(root{
 				XMLName:        xml.Name{Local: "retDistDFeInt"},
 				XMLNS:          namespace,
 				VersaoAttr:     firstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
@@ -330,7 +332,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "distMDFe":
 		if d.DistMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"distMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*distMDFeSchema.TDistDFe
@@ -342,7 +344,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retDistMDFe":
 		if d.RetDistMDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retDistMDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*distMDFeSchema.TRetDistDFe
@@ -354,7 +356,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "mdfeConsultaDFe":
 		if d.MDFeConsultaDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"mdfeConsultaDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consultaDFESchema.TMDFeConsultaDFe
@@ -366,7 +368,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		}
 	case "retMDFeConsultaDFe":
 		if d.RetMDFeConsultaDFe != nil && activeRootCount(d) == 1 {
-			return e.Encode(struct {
+			return encode(struct {
 				XMLName xml.Name `xml:"retMDFeConsultaDFe"`
 				XMLNS   string   `xml:"xmlns,attr,omitempty"`
 				*consultaDFESchema.TRetMDFeConsultaDFe
@@ -1089,7 +1091,7 @@ func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
 }
 
 func encodeMDFeEvent(e *xml.Encoder, versao string, infEvento any, signature any) error {
-	return e.Encode(struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName     xml.Name `xml:"eventoMDFe"`
 		XMLNS       string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr  string   `xml:"versao,attr,omitempty"`
@@ -1105,7 +1107,7 @@ func encodeMDFeEvent(e *xml.Encoder, versao string, infEvento any, signature any
 }
 
 func encodeMDFeRetEvent(e *xml.Encoder, versao string, infEvento any) error {
-	return e.Encode(struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName    xml.Name `xml:"retEventoMDFe"`
 		XMLNS      string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr string   `xml:"versao,attr,omitempty"`
@@ -1119,7 +1121,7 @@ func encodeMDFeRetEvent(e *xml.Encoder, versao string, infEvento any) error {
 }
 
 func encodeMDFeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon, dhConexao *string, evento any, retEvento any) error {
-	return e.Encode(struct {
+	return xmlutil.EncodeCanonical(e, struct {
 		XMLName           xml.Name `xml:"procEventoMDFe"`
 		XMLNS             string   `xml:"xmlns,attr,omitempty"`
 		VersaoAttr        string   `xml:"versao,attr,omitempty"`

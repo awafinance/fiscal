@@ -218,6 +218,37 @@ func TestParse_EventFixtures(t *testing.T) {
 	}
 }
 
+func TestParse_InutilizacaoFixture(t *testing.T) {
+	t.Parallel()
+
+	fixture := filepath.Join("..", "..", "testdata", "nfe_inutilizacao", "v4_0", "41080676472349000430550010000001041671821888-ped-inu.xml")
+
+	data, err := os.ReadFile(fixture)
+	require.NoError(t, err)
+
+	doc, err := nfe.Parse(data)
+	require.NoError(t, err)
+	require.NotNil(t, doc)
+	require.NotNil(t, doc.InutNFe)
+	require.Equal(t, "76472349000430", doc.InutNFe.InfInut.CNPJ)
+
+	roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+	require.NoError(t, err)
+	require.Equal(t, normalizeXML(t, data), normalizeXML(t, roundTripped))
+}
+
+func TestMarshalXML_MinimizesNamespaceDeclarations(t *testing.T) {
+	t.Parallel()
+
+	doc := parseFixture(t, "35180834128745000152550010000476121675985748-nfe.xml")
+
+	roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+	require.NoError(t, err)
+
+	require.Equal(t, 1, strings.Count(string(roundTripped), `xmlns="http://www.portalfiscal.inf.br/nfe"`))
+	require.Equal(t, 1, strings.Count(string(roundTripped), `xmlns:ds="http://www.w3.org/2000/09/xmldsig#"`))
+}
+
 func TestParse_InvalidInputs(t *testing.T) {
 	t.Parallel()
 
@@ -1008,6 +1039,7 @@ func issuerDocument(t *testing.T, doc *nfe.Document) string {
 func normalizeXML(t *testing.T, data []byte) string {
 	t.Helper()
 
+	data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	var b strings.Builder
 	nsStack := []map[string]string{{}}
@@ -1044,11 +1076,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 						continue
 					}
 					currentNS[prefix] = value
-					if prefix == "" {
-						attr = xml.Attr{Name: xml.Name{Local: "xmlns"}, Value: value}
-					} else {
-						attr = xml.Attr{Name: xml.Name{Space: "xmlns", Local: prefix}, Value: value}
-					}
+					continue
 				}
 				attrs = append(attrs, attr)
 			}
