@@ -386,23 +386,18 @@ func postprocessNFSe(verbose bool) error {
 
 func replaceTypedCTeEventPayloads(path, updated string) string {
 	if strings.HasSuffix(path, string(filepath.Separator)+"cteTiposBasico_v4.00.xsd.go") && usesTypedCTeInfModal(path) {
-		if strings.Contains(path, string(filepath.Separator)+"cte_os"+string(filepath.Separator)) {
-			updated = postprocess.EnsureNamedImports(cteInfModalImports(true))(path, updated)
-			updated = postprocess.SetStructFields(postprocess.AnyType(
-				postprocess.TypeNamed("InfModal"),
-				postprocess.TypeNamed("TAnonComplexInfModal1"),
-				postprocess.TypeNamed("TAnonComplexInfModal2"),
-				postprocess.TypeNamed("TAnonComplexInfModal3"),
-			), cteInfModalFields(true))(path, updated)
-		} else {
-			updated = postprocess.EnsureNamedImports(cteInfModalImports(false))(path, updated)
-			updated = postprocess.SetStructFields(postprocess.AnyType(
-				postprocess.TypeNamed("InfModal"),
-				postprocess.TypeNamed("TAnonComplexInfModal1"),
-				postprocess.TypeNamed("TAnonComplexInfModal2"),
-				postprocess.TypeNamed("TAnonComplexInfModal3"),
-			), cteInfModalFields(false))(path, updated)
+		spec, ok := cteInfModalSpecFor(path)
+		if !ok {
+			return updated
 		}
+
+		updated = postprocess.EnsureNamedImports(spec.imports)(path, updated)
+		updated = postprocess.SetStructFields(postprocess.AnyType(
+			postprocess.TypeNamed("InfModal"),
+			postprocess.TypeNamed("TAnonComplexInfModal1"),
+			postprocess.TypeNamed("TAnonComplexInfModal2"),
+			postprocess.TypeNamed("TAnonComplexInfModal3"),
+		), spec.fields)(path, updated)
 	}
 	if strings.HasSuffix(path, string(filepath.Separator)+"eventoCTeTiposBasico_v4.00.xsd.go") {
 		for folder, element := range cteEventPayloads {
@@ -416,6 +411,11 @@ func replaceTypedCTeEventPayloads(path, updated string) string {
 		}
 	}
 	return updated
+}
+
+type cteInfModalSpec struct {
+	imports map[string]string
+	fields  []postprocess.StructFieldSpec
 }
 
 func fixTypedRootAliasFromSchema(path, updated string) string {
@@ -559,6 +559,20 @@ func cteInfModalFields(osOnly bool) []postprocess.StructFieldSpec {
 		postprocess.StructFieldSpec{Name: "Duto", Type: "modaldutoviario.Duto", Tag: `xml:"duto,omitempty"`},
 		postprocess.StructFieldSpec{Name: "Multimodal", Type: "modalmultimodal.Multimodal", Tag: `xml:"multimodal,omitempty"`},
 	)
+}
+
+func cteInfModalSpecFor(path string) (cteInfModalSpec, bool) {
+	if strings.Contains(path, string(filepath.Separator)+"cte_os"+string(filepath.Separator)) {
+		return cteInfModalSpec{
+			imports: cteInfModalImports(true),
+			fields:  cteInfModalFields(true),
+		}, true
+	}
+
+	return cteInfModalSpec{
+		imports: cteInfModalImports(false),
+		fields:  cteInfModalFields(false),
+	}, true
 }
 
 func cteDetEventoFields(element string) []postprocess.StructFieldSpec {
