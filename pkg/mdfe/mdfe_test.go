@@ -217,6 +217,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.DistDFeInt)
 				require.Equal(t, "000000000000001", doc.DistDFeInt.DistNSU.UltNSU)
 			},
@@ -245,6 +246,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetDistDFeInt)
 				require.Len(t, doc.RetDistDFeInt.LoteDistDFeInt.DocZip, 1)
 			},
@@ -293,6 +295,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				ProtMDFe:   minimalProtMDFe(),
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.MDFeProc)
 				require.NotNil(t, doc.MDFeProc.MDFe)
 				require.NotNil(t, doc.MDFeProc.ProtMDFe)
