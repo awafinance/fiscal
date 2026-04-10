@@ -63,6 +63,30 @@ func TestSchemaPathForGenerated(t *testing.T) {
 	}
 }
 
+func TestSchemaRootTypeFromSchema(t *testing.T) {
+	schemaText := []byte(`<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Doc" type="TDoc"/>
+</xs:schema>`)
+
+	got, ok := schemaRootTypeFromSchema(schemaText)
+	if !ok {
+		t.Fatal("expected schemaRootTypeFromSchema to find a root type")
+	}
+	if got != "TDoc" {
+		t.Fatalf("expected root type %q, got %q", "TDoc", got)
+	}
+}
+
+func TestSchemaRootTypeFromSchemaMissing(t *testing.T) {
+	schemaText := []byte(`<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:complexType name="Doc"></xs:complexType>
+</xs:schema>`)
+
+	if got, ok := schemaRootTypeFromSchema(schemaText); ok || got != "" {
+		t.Fatalf("expected no root type, got %q ok=%v", got, ok)
+	}
+}
+
 func TestReplaceTypedCTeEventPayloads(t *testing.T) {
 	input := `package schema
 
