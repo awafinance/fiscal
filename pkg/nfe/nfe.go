@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 
 	atorSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/ator_interessado"
 	distSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/dist_dfe"
@@ -125,25 +124,25 @@ func marshalSingleRoot(e *xml.Encoder, d *Document) error {
 func marshalEventRoot(e *xml.Encoder, d *Document) error {
 	switch {
 	case d.EventoCancel != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCancel.VersaoAttr), d.EventoCancel.InfEvento, d.EventoCancel.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancel.VersaoAttr), d.EventoCancel.InfEvento, d.EventoCancel.DsSignature)
 	case d.EventoEntrega != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoEntrega.VersaoAttr), d.EventoEntrega.InfEvento, d.EventoEntrega.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoEntrega.VersaoAttr), d.EventoEntrega.InfEvento, d.EventoEntrega.DsSignature)
 	case d.EventoCancEntrega != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCancEntrega.VersaoAttr), d.EventoCancEntrega.InfEvento, d.EventoCancEntrega.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancEntrega.VersaoAttr), d.EventoCancEntrega.InfEvento, d.EventoCancEntrega.DsSignature)
 	case d.EventoCCe != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCCe.VersaoAttr), d.EventoCCe.InfEvento, d.EventoCCe.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCCe.VersaoAttr), d.EventoCCe.InfEvento, d.EventoCCe.DsSignature)
 	case d.EventoEPEC != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoEPEC.VersaoAttr), d.EventoEPEC.InfEvento, d.EventoEPEC.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoEPEC.VersaoAttr), d.EventoEPEC.InfEvento, d.EventoEPEC.DsSignature)
 	case d.EventoAtorInteressado != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoAtorInteressado.VersaoAttr), d.EventoAtorInteressado.InfEvento, d.EventoAtorInteressado.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoAtorInteressado.VersaoAttr), d.EventoAtorInteressado.InfEvento, d.EventoAtorInteressado.DsSignature)
 	case d.EventoMDE != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoMDE.VersaoAttr), d.EventoMDE.InfEvento, d.EventoMDE.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoMDE.VersaoAttr), d.EventoMDE.InfEvento, d.EventoMDE.DsSignature)
 	case d.EventoInsucesso != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoInsucesso.VersaoAttr), d.EventoInsucesso.InfEvento, d.EventoInsucesso.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoInsucesso.VersaoAttr), d.EventoInsucesso.InfEvento, d.EventoInsucesso.DsSignature)
 	case d.EventoCancInsucesso != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCancInsucesso.VersaoAttr), d.EventoCancInsucesso.InfEvento, d.EventoCancInsucesso.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancInsucesso.VersaoAttr), d.EventoCancInsucesso.InfEvento, d.EventoCancInsucesso.DsSignature)
 	case d.EventoGenerico != nil:
-		return encodeNFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoGenerico.VersaoAttr), d.EventoGenerico.InfEvento, d.EventoGenerico.DsSignature)
+		return encodeNFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoGenerico.VersaoAttr), d.EventoGenerico.InfEvento, d.EventoGenerico.DsSignature)
 	default:
 		return errUnsupportedRoot
 	}
@@ -292,7 +291,7 @@ func encodeConsSitNFe(e *xml.Encoder, d *Document) error {
 	return xmlutil.EncodeCanonical(e, root{
 		XMLName:    xml.Name{Local: "consSitNFe"},
 		XMLNS:      namespace,
-		VersaoAttr: firstNonEmpty(d.VersaoAttr, d.ConsSitNFe.VersaoAttr),
+		VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.ConsSitNFe.VersaoAttr),
 		TpAmb:      d.ConsSitNFe.TpAmb,
 		XServ:      d.ConsSitNFe.XServ,
 		ChNFe:      d.ConsSitNFe.ChNFe,
@@ -316,7 +315,7 @@ func encodeRetConsSitNFe(e *xml.Encoder, d *Document) error {
 	return xmlutil.EncodeCanonical(e, root{
 		XMLName:       xml.Name{Local: "retConsSitNFe"},
 		XMLNS:         namespace,
-		VersaoAttr:    firstNonEmpty(d.VersaoAttr, d.RetConsSitNFe.VersaoAttr),
+		VersaoAttr:    xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetConsSitNFe.VersaoAttr),
 		TpAmb:         d.RetConsSitNFe.TpAmb,
 		VerAplic:      d.RetConsSitNFe.VerAplic,
 		CStat:         d.RetConsSitNFe.CStat,
@@ -404,7 +403,7 @@ func encodeDistDFeInt(e *xml.Encoder, d *Document) error {
 	return xmlutil.EncodeCanonical(e, root{
 		XMLName:    xml.Name{Local: "distDFeInt"},
 		XMLNS:      namespace,
-		VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
+		VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
 		TpAmb:      d.DistDFeInt.TpAmb,
 		CUFAutor:   d.DistDFeInt.CUFAutor,
 		CNPJ:       d.DistDFeInt.CNPJ,
@@ -432,7 +431,7 @@ func encodeRetDistDFeInt(e *xml.Encoder, d *Document) error {
 	return xmlutil.EncodeCanonical(e, root{
 		XMLName:        xml.Name{Local: "retDistDFeInt"},
 		XMLNS:          namespace,
-		VersaoAttr:     firstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
+		VersaoAttr:     xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
 		TpAmb:          d.RetDistDFeInt.TpAmb,
 		VerAplic:       d.RetDistDFeInt.VerAplic,
 		CStat:          d.RetDistDFeInt.CStat,
@@ -474,7 +473,7 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse nfe: empty xml document")
 	}
 
-	rootName, rootErr := parseRootName(data)
+	rootName, rootErr := xmlutil.ParseRootName(data)
 	if rootErr != nil && rootName == "" {
 		return nil, fmt.Errorf("parse nfe: read root: %w", rootErr)
 	}
@@ -890,28 +889,6 @@ func eventTypeFromXML(data []byte) (string, error) {
 	return head.InfEvento.TpEvento, nil
 }
 
-func parseRootName(data []byte) (string, error) {
-	decoder := xml.NewDecoder(bytes.NewReader(data))
-	var rootName string
-
-	for {
-		tok, err := decoder.Token()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				if rootName == "" {
-					return "", err
-				}
-				return rootName, nil
-			}
-			return rootName, err
-		}
-
-		if start, ok := tok.(xml.StartElement); ok && rootName == "" {
-			rootName = start.Name.Local
-		}
-	}
-}
-
 func versionFromNFe(invoice *schema.TNFe) string {
 	if invoice.InfNFe == nil {
 		return ""
@@ -1303,103 +1280,42 @@ func validateDocument(doc *Document) error {
 	return nil
 }
 
-func firstNonEmpty(values ...string) string {
-	for _, value := range values {
-		if value != "" {
-			return value
-		}
-	}
-	return ""
-}
-
 func activeRootCount(doc *Document) int {
 	count := 0
-	if doc.NFe != nil {
-		count++
-	}
-	if doc.EnviNFe != nil {
-		count++
-	}
-	if doc.RetEnviNFe != nil {
-		count++
-	}
-	if doc.ConsReciNFe != nil {
-		count++
-	}
-	if doc.RetConsReciNFe != nil {
-		count++
-	}
-	if doc.EventoCancel != nil {
-		count++
-	}
-	if doc.EventoEntrega != nil {
-		count++
-	}
-	if doc.EventoCancEntrega != nil {
-		count++
-	}
-	if doc.EventoCCe != nil {
-		count++
-	}
-	if doc.EventoEPEC != nil {
-		count++
-	}
-	if doc.EventoAtorInteressado != nil {
-		count++
-	}
-	if doc.EventoMDE != nil {
-		count++
-	}
-	if doc.EventoInsucesso != nil {
-		count++
-	}
-	if doc.EventoCancInsucesso != nil {
-		count++
-	}
-	if doc.EventoGenerico != nil {
-		count++
-	}
-	if doc.EnvEvento != nil {
-		count++
-	}
-	if doc.RetEnvEvento != nil {
-		count++
-	}
-	if doc.ProcEventoNFe != nil {
-		count++
-	}
-	if doc.ConsSitNFe != nil {
-		count++
-	}
-	if doc.RetConsSitNFe != nil {
-		count++
-	}
-	if doc.ConsStatServ != nil {
-		count++
-	}
-	if doc.RetConsStatServ != nil {
-		count++
-	}
-	if doc.InutNFe != nil {
-		count++
-	}
-	if doc.RetInutNFe != nil {
-		count++
-	}
-	if doc.ProcInutNFe != nil {
-		count++
-	}
-	if doc.DistDFeInt != nil {
-		count++
-	}
-	if doc.RetDistDFeInt != nil {
-		count++
-	}
-	if doc.ResNFe != nil {
-		count++
-	}
-	if doc.ResEvento != nil {
-		count++
+	for _, ok := range []bool{
+		doc.NFe != nil,
+		doc.EnviNFe != nil,
+		doc.RetEnviNFe != nil,
+		doc.ConsReciNFe != nil,
+		doc.RetConsReciNFe != nil,
+		doc.EventoCancel != nil,
+		doc.EventoEntrega != nil,
+		doc.EventoCancEntrega != nil,
+		doc.EventoCCe != nil,
+		doc.EventoEPEC != nil,
+		doc.EventoAtorInteressado != nil,
+		doc.EventoMDE != nil,
+		doc.EventoInsucesso != nil,
+		doc.EventoCancInsucesso != nil,
+		doc.EventoGenerico != nil,
+		doc.EnvEvento != nil,
+		doc.RetEnvEvento != nil,
+		doc.ProcEventoNFe != nil,
+		doc.ConsSitNFe != nil,
+		doc.RetConsSitNFe != nil,
+		doc.ConsStatServ != nil,
+		doc.RetConsStatServ != nil,
+		doc.InutNFe != nil,
+		doc.RetInutNFe != nil,
+		doc.ProcInutNFe != nil,
+		doc.DistDFeInt != nil,
+		doc.RetDistDFeInt != nil,
+		doc.ResNFe != nil,
+		doc.ResEvento != nil,
+	} {
+		if ok {
+			count++
+		}
 	}
 	return count
 }

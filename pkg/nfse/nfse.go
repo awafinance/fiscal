@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 
 	schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
 	"github.com/awafinance/fiscal/internal/xmlutil"
@@ -41,7 +40,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "DPS"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DPS.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.DPS.VersaoAttr),
 				InfDPS:     d.DPS.InfDPS,
 				Signature:  d.DPS.DsSignature,
 			})
@@ -59,7 +58,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "NFSe"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.NFSe.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.NFSe.VersaoAttr),
 				InfNFSe:    d.NFSe.InfNFSe,
 				Signature:  d.NFSe.DsSignature,
 			})
@@ -77,7 +76,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "pedRegEvento"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.PedRegEvento.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.PedRegEvento.VersaoAttr),
 				InfPedReg:  d.PedRegEvento.InfPedReg,
 				Signature:  d.PedRegEvento.DsSignature,
 			})
@@ -93,7 +92,7 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse nfse: empty xml document")
 	}
 
-	rootName, rootErr := parseRootName(data)
+	rootName, rootErr := xmlutil.ParseRootName(data)
 	if rootErr != nil && rootName == "" {
 		return nil, fmt.Errorf("parse nfse: read root: %w", rootErr)
 	}
@@ -137,28 +136,6 @@ func Parse(data []byte) (*Document, error) {
 	}
 }
 
-func parseRootName(data []byte) (string, error) {
-	decoder := xml.NewDecoder(bytes.NewReader(data))
-	var rootName string
-
-	for {
-		tok, err := decoder.Token()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				if rootName == "" {
-					return "", err
-				}
-				return rootName, nil
-			}
-			return rootName, err
-		}
-
-		if start, ok := tok.(xml.StartElement); ok && rootName == "" {
-			rootName = start.Name.Local
-		}
-	}
-}
-
 func validateDocument(doc *Document) error {
 	count := 0
 	if doc.DPS != nil {
@@ -198,13 +175,4 @@ func validateDocument(doc *Document) error {
 		return errors.New("parse nfse: document must contain exactly one supported root")
 	}
 	return nil
-}
-
-func firstNonEmpty(values ...string) string {
-	for _, value := range values {
-		if value != "" {
-			return value
-		}
-	}
-	return ""
 }

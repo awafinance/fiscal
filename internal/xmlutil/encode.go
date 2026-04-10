@@ -3,6 +3,7 @@ package xmlutil
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"slices"
@@ -82,6 +83,37 @@ func EncodeCanonical(enc *xml.Encoder, value any) error {
 			}
 		}
 	}
+}
+
+func ParseRootName(data []byte) (string, error) {
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	var rootName string
+
+	for {
+		tok, err := decoder.Token()
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				if rootName == "" {
+					return "", err
+				}
+				return rootName, nil
+			}
+			return rootName, err
+		}
+
+		if start, ok := tok.(xml.StartElement); ok && rootName == "" {
+			rootName = start.Name.Local
+		}
+	}
+}
+
+func FirstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
+			return value
+		}
+	}
+	return ""
 }
 
 func collectNamespaces(data []byte) (string, map[string]string, error) {

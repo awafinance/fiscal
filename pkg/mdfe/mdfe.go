@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 
 	distSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v1_0/dist_dfe"
 	consNaoEncSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/cons_nao_enc"
@@ -116,7 +115,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "mdfeProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.MDFeProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.MDFeProc.VersaoAttr),
 				IpTransmissorAttr: d.MDFeProc.IpTransmissorAttr,
 				NPortaConAttr:     d.MDFeProc.NPortaConAttr,
 				DhConexaoAttr:     d.MDFeProc.DhConexaoAttr,
@@ -175,7 +174,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "consMDFeNaoEnc"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.ConsNaoEnc.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.ConsNaoEnc.VersaoAttr),
 				TpAmb:      d.ConsNaoEnc.TpAmb,
 				XServ:      d.ConsNaoEnc.XServ,
 				CNPJ:       d.ConsNaoEnc.CNPJ,
@@ -207,7 +206,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "consReciMDFe"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.ConsReciMDFe.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.ConsReciMDFe.VersaoAttr),
 				TpAmb:      d.ConsReciMDFe.TpAmb,
 				NRec:       d.ConsReciMDFe.NRec,
 			})
@@ -293,7 +292,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "distDFeInt"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
 				TpAmb:      d.DistDFeInt.TpAmb,
 				CNPJ:       d.DistDFeInt.CNPJ,
 				CPF:        d.DistDFeInt.CPF,
@@ -319,7 +318,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:        xml.Name{Local: "retDistDFeInt"},
 				XMLNS:          namespace,
-				VersaoAttr:     firstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
+				VersaoAttr:     xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
 				TpAmb:          d.RetDistDFeInt.TpAmb,
 				VerAplic:       d.RetDistDFeInt.VerAplic,
 				CStat:          d.RetDistDFeInt.CStat,
@@ -389,7 +388,7 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse mdfe: empty xml document")
 	}
 
-	rootName, rootErr := parseRootName(data)
+	rootName, rootErr := xmlutil.ParseRootName(data)
 	if rootErr != nil && rootName == "" {
 		return nil, fmt.Errorf("parse mdfe: read root: %w", rootErr)
 	}
@@ -638,28 +637,6 @@ func eventTypeFromXML(data []byte) (string, error) {
 		return head.InfEvento.TpEvento, nil
 	}
 	return head.EventoMDFe.InfEvento.TpEvento, nil
-}
-
-func parseRootName(data []byte) (string, error) {
-	decoder := xml.NewDecoder(bytes.NewReader(data))
-	var rootName string
-
-	for {
-		tok, err := decoder.Token()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				if rootName == "" {
-					return "", err
-				}
-				return rootName, nil
-			}
-			return rootName, err
-		}
-
-		if start, ok := tok.(xml.StartElement); ok && rootName == "" {
-			rootName = start.Name.Local
-		}
-	}
 }
 
 func validateDocument(doc *Document) error {
@@ -1016,21 +993,21 @@ func marshalEventRoot(e *xml.Encoder, d *Document) error {
 
 	switch {
 	case d.EventoMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoMDFe.VersaoAttr), d.EventoMDFe.InfEvento, d.EventoMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoMDFe.VersaoAttr), d.EventoMDFe.InfEvento, d.EventoMDFe.DsSignature)
 	case d.EventoCancMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCancMDFe.VersaoAttr), d.EventoCancMDFe.InfEvento, d.EventoCancMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancMDFe.VersaoAttr), d.EventoCancMDFe.InfEvento, d.EventoCancMDFe.DsSignature)
 	case d.EventoEncMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoEncMDFe.VersaoAttr), d.EventoEncMDFe.InfEvento, d.EventoEncMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoEncMDFe.VersaoAttr), d.EventoEncMDFe.InfEvento, d.EventoEncMDFe.DsSignature)
 	case d.EventoIncCondutorMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoIncCondutorMDFe.VersaoAttr), d.EventoIncCondutorMDFe.InfEvento, d.EventoIncCondutorMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoIncCondutorMDFe.VersaoAttr), d.EventoIncCondutorMDFe.InfEvento, d.EventoIncCondutorMDFe.DsSignature)
 	case d.EventoInclusaoDFeMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoInclusaoDFeMDFe.VersaoAttr), d.EventoInclusaoDFeMDFe.InfEvento, d.EventoInclusaoDFeMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoInclusaoDFeMDFe.VersaoAttr), d.EventoInclusaoDFeMDFe.InfEvento, d.EventoInclusaoDFeMDFe.DsSignature)
 	case d.EventoPagtoOperMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoPagtoOperMDFe.VersaoAttr), d.EventoPagtoOperMDFe.InfEvento, d.EventoPagtoOperMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoPagtoOperMDFe.VersaoAttr), d.EventoPagtoOperMDFe.InfEvento, d.EventoPagtoOperMDFe.DsSignature)
 	case d.EventoAlteracaoPagtoServMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPagtoServMDFe.VersaoAttr), d.EventoAlteracaoPagtoServMDFe.InfEvento, d.EventoAlteracaoPagtoServMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPagtoServMDFe.VersaoAttr), d.EventoAlteracaoPagtoServMDFe.InfEvento, d.EventoAlteracaoPagtoServMDFe.DsSignature)
 	case d.EventoConfirmaServMDFe != nil:
-		return encodeMDFeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoConfirmaServMDFe.VersaoAttr), d.EventoConfirmaServMDFe.InfEvento, d.EventoConfirmaServMDFe.DsSignature)
+		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoConfirmaServMDFe.VersaoAttr), d.EventoConfirmaServMDFe.InfEvento, d.EventoConfirmaServMDFe.DsSignature)
 	default:
 		return errors.New("marshal mdfe: document must contain exactly one supported root")
 	}
@@ -1043,21 +1020,21 @@ func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
 
 	switch {
 	case d.RetEventoMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoMDFe.VersaoAttr), d.RetEventoMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoMDFe.VersaoAttr), d.RetEventoMDFe.InfEvento)
 	case d.RetEventoCancMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoCancMDFe.VersaoAttr), d.RetEventoCancMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoCancMDFe.VersaoAttr), d.RetEventoCancMDFe.InfEvento)
 	case d.RetEventoEncMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoEncMDFe.VersaoAttr), d.RetEventoEncMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoEncMDFe.VersaoAttr), d.RetEventoEncMDFe.InfEvento)
 	case d.RetEventoIncCondutorMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoIncCondutorMDFe.VersaoAttr), d.RetEventoIncCondutorMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoIncCondutorMDFe.VersaoAttr), d.RetEventoIncCondutorMDFe.InfEvento)
 	case d.RetEventoInclusaoDFeMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoInclusaoDFeMDFe.VersaoAttr), d.RetEventoInclusaoDFeMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoInclusaoDFeMDFe.VersaoAttr), d.RetEventoInclusaoDFeMDFe.InfEvento)
 	case d.RetEventoPagtoOperMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoPagtoOperMDFe.VersaoAttr), d.RetEventoPagtoOperMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoPagtoOperMDFe.VersaoAttr), d.RetEventoPagtoOperMDFe.InfEvento)
 	case d.RetEventoAlteracaoPagtoServMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPagtoServMDFe.VersaoAttr), d.RetEventoAlteracaoPagtoServMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPagtoServMDFe.VersaoAttr), d.RetEventoAlteracaoPagtoServMDFe.InfEvento)
 	case d.RetEventoConfirmaServMDFe != nil:
-		return encodeMDFeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoConfirmaServMDFe.VersaoAttr), d.RetEventoConfirmaServMDFe.InfEvento)
+		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoConfirmaServMDFe.VersaoAttr), d.RetEventoConfirmaServMDFe.InfEvento)
 	default:
 		return errors.New("marshal mdfe: document must contain exactly one supported root")
 	}
@@ -1070,21 +1047,21 @@ func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
 
 	switch {
 	case d.ProcEventoMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoMDFe.VersaoAttr), d.ProcEventoMDFe.IpTransmissorAttr, d.ProcEventoMDFe.NPortaConAttr, d.ProcEventoMDFe.DhConexaoAttr, d.ProcEventoMDFe.EventoMDFe, d.ProcEventoMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoMDFe.VersaoAttr), d.ProcEventoMDFe.IpTransmissorAttr, d.ProcEventoMDFe.NPortaConAttr, d.ProcEventoMDFe.DhConexaoAttr, d.ProcEventoMDFe.EventoMDFe, d.ProcEventoMDFe.RetEventoMDFe)
 	case d.ProcEventoCancMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoCancMDFe.VersaoAttr), d.ProcEventoCancMDFe.IpTransmissorAttr, d.ProcEventoCancMDFe.NPortaConAttr, d.ProcEventoCancMDFe.DhConexaoAttr, d.ProcEventoCancMDFe.EventoMDFe, d.ProcEventoCancMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoCancMDFe.VersaoAttr), d.ProcEventoCancMDFe.IpTransmissorAttr, d.ProcEventoCancMDFe.NPortaConAttr, d.ProcEventoCancMDFe.DhConexaoAttr, d.ProcEventoCancMDFe.EventoMDFe, d.ProcEventoCancMDFe.RetEventoMDFe)
 	case d.ProcEventoEncMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoEncMDFe.VersaoAttr), d.ProcEventoEncMDFe.IpTransmissorAttr, d.ProcEventoEncMDFe.NPortaConAttr, d.ProcEventoEncMDFe.DhConexaoAttr, d.ProcEventoEncMDFe.EventoMDFe, d.ProcEventoEncMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoEncMDFe.VersaoAttr), d.ProcEventoEncMDFe.IpTransmissorAttr, d.ProcEventoEncMDFe.NPortaConAttr, d.ProcEventoEncMDFe.DhConexaoAttr, d.ProcEventoEncMDFe.EventoMDFe, d.ProcEventoEncMDFe.RetEventoMDFe)
 	case d.ProcEventoIncCondutorMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoIncCondutorMDFe.VersaoAttr), d.ProcEventoIncCondutorMDFe.IpTransmissorAttr, d.ProcEventoIncCondutorMDFe.NPortaConAttr, d.ProcEventoIncCondutorMDFe.DhConexaoAttr, d.ProcEventoIncCondutorMDFe.EventoMDFe, d.ProcEventoIncCondutorMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoIncCondutorMDFe.VersaoAttr), d.ProcEventoIncCondutorMDFe.IpTransmissorAttr, d.ProcEventoIncCondutorMDFe.NPortaConAttr, d.ProcEventoIncCondutorMDFe.DhConexaoAttr, d.ProcEventoIncCondutorMDFe.EventoMDFe, d.ProcEventoIncCondutorMDFe.RetEventoMDFe)
 	case d.ProcEventoInclusaoDFeMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoInclusaoDFeMDFe.VersaoAttr), d.ProcEventoInclusaoDFeMDFe.IpTransmissorAttr, d.ProcEventoInclusaoDFeMDFe.NPortaConAttr, d.ProcEventoInclusaoDFeMDFe.DhConexaoAttr, d.ProcEventoInclusaoDFeMDFe.EventoMDFe, d.ProcEventoInclusaoDFeMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoInclusaoDFeMDFe.VersaoAttr), d.ProcEventoInclusaoDFeMDFe.IpTransmissorAttr, d.ProcEventoInclusaoDFeMDFe.NPortaConAttr, d.ProcEventoInclusaoDFeMDFe.DhConexaoAttr, d.ProcEventoInclusaoDFeMDFe.EventoMDFe, d.ProcEventoInclusaoDFeMDFe.RetEventoMDFe)
 	case d.ProcEventoPagtoOperMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoPagtoOperMDFe.VersaoAttr), d.ProcEventoPagtoOperMDFe.IpTransmissorAttr, d.ProcEventoPagtoOperMDFe.NPortaConAttr, d.ProcEventoPagtoOperMDFe.DhConexaoAttr, d.ProcEventoPagtoOperMDFe.EventoMDFe, d.ProcEventoPagtoOperMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoPagtoOperMDFe.VersaoAttr), d.ProcEventoPagtoOperMDFe.IpTransmissorAttr, d.ProcEventoPagtoOperMDFe.NPortaConAttr, d.ProcEventoPagtoOperMDFe.DhConexaoAttr, d.ProcEventoPagtoOperMDFe.EventoMDFe, d.ProcEventoPagtoOperMDFe.RetEventoMDFe)
 	case d.ProcEventoAlteracaoPagtoServMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPagtoServMDFe.VersaoAttr), d.ProcEventoAlteracaoPagtoServMDFe.IpTransmissorAttr, d.ProcEventoAlteracaoPagtoServMDFe.NPortaConAttr, d.ProcEventoAlteracaoPagtoServMDFe.DhConexaoAttr, d.ProcEventoAlteracaoPagtoServMDFe.EventoMDFe, d.ProcEventoAlteracaoPagtoServMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPagtoServMDFe.VersaoAttr), d.ProcEventoAlteracaoPagtoServMDFe.IpTransmissorAttr, d.ProcEventoAlteracaoPagtoServMDFe.NPortaConAttr, d.ProcEventoAlteracaoPagtoServMDFe.DhConexaoAttr, d.ProcEventoAlteracaoPagtoServMDFe.EventoMDFe, d.ProcEventoAlteracaoPagtoServMDFe.RetEventoMDFe)
 	case d.ProcEventoConfirmaServMDFe != nil:
-		return encodeMDFeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoConfirmaServMDFe.VersaoAttr), d.ProcEventoConfirmaServMDFe.IpTransmissorAttr, d.ProcEventoConfirmaServMDFe.NPortaConAttr, d.ProcEventoConfirmaServMDFe.DhConexaoAttr, d.ProcEventoConfirmaServMDFe.EventoMDFe, d.ProcEventoConfirmaServMDFe.RetEventoMDFe)
+		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoConfirmaServMDFe.VersaoAttr), d.ProcEventoConfirmaServMDFe.IpTransmissorAttr, d.ProcEventoConfirmaServMDFe.NPortaConAttr, d.ProcEventoConfirmaServMDFe.DhConexaoAttr, d.ProcEventoConfirmaServMDFe.EventoMDFe, d.ProcEventoConfirmaServMDFe.RetEventoMDFe)
 	default:
 		return errors.New("marshal mdfe: document must contain exactly one supported root")
 	}
@@ -1399,134 +1376,54 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 
 func activeRootCount(doc *Document) int {
 	count := 0
-	if doc.MDFe != nil {
-		count++
-	}
-	if doc.MDFeProc != nil {
-		count++
-	}
-	if doc.EnviMDFe != nil {
-		count++
-	}
-	if doc.RetEnviMDFe != nil {
-		count++
-	}
-	if doc.RetMDFe != nil {
-		count++
-	}
-	if doc.ConsNaoEnc != nil {
-		count++
-	}
-	if doc.RetConsNaoEnc != nil {
-		count++
-	}
-	if doc.ConsReciMDFe != nil {
-		count++
-	}
-	if doc.RetConsReciMDFe != nil {
-		count++
-	}
-	if doc.ConsSitMDFe != nil {
-		count++
-	}
-	if doc.RetConsSitMDFe != nil {
-		count++
-	}
-	if doc.ConsStatServMDFe != nil {
-		count++
-	}
-	if doc.RetConsStatServMDFe != nil {
-		count++
-	}
-	if doc.EventoMDFe != nil {
-		count++
-	}
-	if doc.RetEventoMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoMDFe != nil {
-		count++
-	}
-	if doc.EventoCancMDFe != nil {
-		count++
-	}
-	if doc.RetEventoCancMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoCancMDFe != nil {
-		count++
-	}
-	if doc.EventoEncMDFe != nil {
-		count++
-	}
-	if doc.RetEventoEncMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoEncMDFe != nil {
-		count++
-	}
-	if doc.EventoIncCondutorMDFe != nil {
-		count++
-	}
-	if doc.RetEventoIncCondutorMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoIncCondutorMDFe != nil {
-		count++
-	}
-	if doc.EventoInclusaoDFeMDFe != nil {
-		count++
-	}
-	if doc.RetEventoInclusaoDFeMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoInclusaoDFeMDFe != nil {
-		count++
-	}
-	if doc.EventoPagtoOperMDFe != nil {
-		count++
-	}
-	if doc.RetEventoPagtoOperMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoPagtoOperMDFe != nil {
-		count++
-	}
-	if doc.EventoAlteracaoPagtoServMDFe != nil {
-		count++
-	}
-	if doc.RetEventoAlteracaoPagtoServMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoAlteracaoPagtoServMDFe != nil {
-		count++
-	}
-	if doc.EventoConfirmaServMDFe != nil {
-		count++
-	}
-	if doc.RetEventoConfirmaServMDFe != nil {
-		count++
-	}
-	if doc.ProcEventoConfirmaServMDFe != nil {
-		count++
-	}
-	if doc.DistDFeInt != nil {
-		count++
-	}
-	if doc.RetDistDFeInt != nil {
-		count++
-	}
-	if doc.DistMDFe != nil {
-		count++
-	}
-	if doc.RetDistMDFe != nil {
-		count++
-	}
-	if doc.MDFeConsultaDFe != nil {
-		count++
-	}
-	if doc.RetMDFeConsultaDFe != nil {
-		count++
+	for _, ok := range []bool{
+		doc.MDFe != nil,
+		doc.MDFeProc != nil,
+		doc.EnviMDFe != nil,
+		doc.RetEnviMDFe != nil,
+		doc.RetMDFe != nil,
+		doc.ConsNaoEnc != nil,
+		doc.RetConsNaoEnc != nil,
+		doc.ConsReciMDFe != nil,
+		doc.RetConsReciMDFe != nil,
+		doc.ConsSitMDFe != nil,
+		doc.RetConsSitMDFe != nil,
+		doc.ConsStatServMDFe != nil,
+		doc.RetConsStatServMDFe != nil,
+		doc.EventoMDFe != nil,
+		doc.RetEventoMDFe != nil,
+		doc.ProcEventoMDFe != nil,
+		doc.EventoCancMDFe != nil,
+		doc.RetEventoCancMDFe != nil,
+		doc.ProcEventoCancMDFe != nil,
+		doc.EventoEncMDFe != nil,
+		doc.RetEventoEncMDFe != nil,
+		doc.ProcEventoEncMDFe != nil,
+		doc.EventoIncCondutorMDFe != nil,
+		doc.RetEventoIncCondutorMDFe != nil,
+		doc.ProcEventoIncCondutorMDFe != nil,
+		doc.EventoInclusaoDFeMDFe != nil,
+		doc.RetEventoInclusaoDFeMDFe != nil,
+		doc.ProcEventoInclusaoDFeMDFe != nil,
+		doc.EventoPagtoOperMDFe != nil,
+		doc.RetEventoPagtoOperMDFe != nil,
+		doc.ProcEventoPagtoOperMDFe != nil,
+		doc.EventoAlteracaoPagtoServMDFe != nil,
+		doc.RetEventoAlteracaoPagtoServMDFe != nil,
+		doc.ProcEventoAlteracaoPagtoServMDFe != nil,
+		doc.EventoConfirmaServMDFe != nil,
+		doc.RetEventoConfirmaServMDFe != nil,
+		doc.ProcEventoConfirmaServMDFe != nil,
+		doc.DistDFeInt != nil,
+		doc.RetDistDFeInt != nil,
+		doc.DistMDFe != nil,
+		doc.RetDistMDFe != nil,
+		doc.MDFeConsultaDFe != nil,
+		doc.RetMDFeConsultaDFe != nil,
+	} {
+		if ok {
+			count++
+		}
 	}
 	return count
 }
@@ -1543,13 +1440,4 @@ func valueOrEmpty(value *string) string {
 		return ""
 	}
 	return *value
-}
-
-func firstNonEmpty(values ...string) string {
-	for _, value := range values {
-		if value != "" {
-			return value
-		}
-	}
-	return ""
 }

@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 
 	schema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/core"
 	alteracaoPoltronaEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
@@ -100,7 +99,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "bpeProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.BPeProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.BPeProc.VersaoAttr),
 				IpTransmissorAttr: d.BPeProc.IpTransmissorAttr,
 				NPortaConAttr:     d.BPeProc.NPortaConAttr,
 				DhConexaoAttr:     d.BPeProc.DhConexaoAttr,
@@ -123,7 +122,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "bpeTMProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.BPeTMProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.BPeTMProc.VersaoAttr),
 				IpTransmissorAttr: d.BPeTMProc.IpTransmissorAttr,
 				NPortaConAttr:     d.BPeTMProc.NPortaConAttr,
 				DhConexaoAttr:     d.BPeTMProc.DhConexaoAttr,
@@ -208,7 +207,7 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse bpe: empty xml document")
 	}
 
-	rootName, rootErr := parseRootName(data)
+	rootName, rootErr := xmlutil.ParseRootName(data)
 	if rootErr != nil && rootName == "" {
 		return nil, fmt.Errorf("parse bpe: read root: %w", rootErr)
 	}
@@ -357,28 +356,6 @@ func eventTypeFromXML(data []byte) (string, error) {
 		return head.InfEvento.TpEvento, nil
 	}
 	return head.EventoBPe.InfEvento.TpEvento, nil
-}
-
-func parseRootName(data []byte) (string, error) {
-	decoder := xml.NewDecoder(bytes.NewReader(data))
-	var rootName string
-
-	for {
-		tok, err := decoder.Token()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				if rootName == "" {
-					return "", err
-				}
-				return rootName, nil
-			}
-			return rootName, err
-		}
-
-		if start, ok := tok.(xml.StartElement); ok && rootName == "" {
-			rootName = start.Name.Local
-		}
-	}
 }
 
 func validateDocument(doc *Document) error {
@@ -619,15 +596,15 @@ func marshalEventRoot(e *xml.Encoder, d *Document) error {
 
 	switch {
 	case d.EventoBPe != nil:
-		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoBPe.VersaoAttr), d.EventoBPe.InfEvento, d.EventoBPe.DsSignature)
+		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoBPe.VersaoAttr), d.EventoBPe.InfEvento, d.EventoBPe.DsSignature)
 	case d.EventoCancBPe != nil:
-		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoCancBPe.VersaoAttr), d.EventoCancBPe.InfEvento, d.EventoCancBPe.DsSignature)
+		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancBPe.VersaoAttr), d.EventoCancBPe.InfEvento, d.EventoCancBPe.DsSignature)
 	case d.EventoAlteracaoPoltrona != nil:
-		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPoltrona.VersaoAttr), d.EventoAlteracaoPoltrona.InfEvento, d.EventoAlteracaoPoltrona.DsSignature)
+		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPoltrona.VersaoAttr), d.EventoAlteracaoPoltrona.InfEvento, d.EventoAlteracaoPoltrona.DsSignature)
 	case d.EventoExcessoBagagem != nil:
-		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoExcessoBagagem.VersaoAttr), d.EventoExcessoBagagem.InfEvento, d.EventoExcessoBagagem.DsSignature)
+		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoExcessoBagagem.VersaoAttr), d.EventoExcessoBagagem.InfEvento, d.EventoExcessoBagagem.DsSignature)
 	case d.EventoNaoEmbBPe != nil:
-		return encodeEvent(e, firstNonEmpty(d.VersaoAttr, d.EventoNaoEmbBPe.VersaoAttr), d.EventoNaoEmbBPe.InfEvento, d.EventoNaoEmbBPe.DsSignature)
+		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoNaoEmbBPe.VersaoAttr), d.EventoNaoEmbBPe.InfEvento, d.EventoNaoEmbBPe.DsSignature)
 	default:
 		return errors.New("marshal bpe: document must contain exactly one supported root")
 	}
@@ -640,15 +617,15 @@ func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
 
 	switch {
 	case d.RetEventoBPe != nil:
-		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoBPe.VersaoAttr), d.RetEventoBPe.InfEvento, d.RetEventoBPe.DsSignature)
+		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoBPe.VersaoAttr), d.RetEventoBPe.InfEvento, d.RetEventoBPe.DsSignature)
 	case d.RetEventoCancBPe != nil:
-		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoCancBPe.VersaoAttr), d.RetEventoCancBPe.InfEvento, d.RetEventoCancBPe.DsSignature)
+		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoCancBPe.VersaoAttr), d.RetEventoCancBPe.InfEvento, d.RetEventoCancBPe.DsSignature)
 	case d.RetEventoAlteracaoPoltrona != nil:
-		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPoltrona.VersaoAttr), d.RetEventoAlteracaoPoltrona.InfEvento, d.RetEventoAlteracaoPoltrona.DsSignature)
+		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPoltrona.VersaoAttr), d.RetEventoAlteracaoPoltrona.InfEvento, d.RetEventoAlteracaoPoltrona.DsSignature)
 	case d.RetEventoExcessoBagagem != nil:
-		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoExcessoBagagem.VersaoAttr), d.RetEventoExcessoBagagem.InfEvento, d.RetEventoExcessoBagagem.DsSignature)
+		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoExcessoBagagem.VersaoAttr), d.RetEventoExcessoBagagem.InfEvento, d.RetEventoExcessoBagagem.DsSignature)
 	case d.RetEventoNaoEmbBPe != nil:
-		return encodeRetEvent(e, firstNonEmpty(d.VersaoAttr, d.RetEventoNaoEmbBPe.VersaoAttr), d.RetEventoNaoEmbBPe.InfEvento, d.RetEventoNaoEmbBPe.DsSignature)
+		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoNaoEmbBPe.VersaoAttr), d.RetEventoNaoEmbBPe.InfEvento, d.RetEventoNaoEmbBPe.DsSignature)
 	default:
 		return errors.New("marshal bpe: document must contain exactly one supported root")
 	}
@@ -661,15 +638,15 @@ func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
 
 	switch {
 	case d.ProcEventoBPe != nil:
-		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoBPe.VersaoAttr), d.ProcEventoBPe.IpTransmissorAttr, d.ProcEventoBPe.NPortaConAttr, d.ProcEventoBPe.DhConexaoAttr, d.ProcEventoBPe.EventoBPe, d.ProcEventoBPe.RetEventoBPe)
+		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoBPe.VersaoAttr), d.ProcEventoBPe.IpTransmissorAttr, d.ProcEventoBPe.NPortaConAttr, d.ProcEventoBPe.DhConexaoAttr, d.ProcEventoBPe.EventoBPe, d.ProcEventoBPe.RetEventoBPe)
 	case d.ProcEventoCancBPe != nil:
-		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoCancBPe.VersaoAttr), d.ProcEventoCancBPe.IpTransmissorAttr, d.ProcEventoCancBPe.NPortaConAttr, d.ProcEventoCancBPe.DhConexaoAttr, d.ProcEventoCancBPe.EventoBPe, d.ProcEventoCancBPe.RetEventoBPe)
+		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoCancBPe.VersaoAttr), d.ProcEventoCancBPe.IpTransmissorAttr, d.ProcEventoCancBPe.NPortaConAttr, d.ProcEventoCancBPe.DhConexaoAttr, d.ProcEventoCancBPe.EventoBPe, d.ProcEventoCancBPe.RetEventoBPe)
 	case d.ProcEventoAlteracaoPoltrona != nil:
-		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPoltrona.VersaoAttr), d.ProcEventoAlteracaoPoltrona.IpTransmissorAttr, d.ProcEventoAlteracaoPoltrona.NPortaConAttr, d.ProcEventoAlteracaoPoltrona.DhConexaoAttr, d.ProcEventoAlteracaoPoltrona.EventoBPe, d.ProcEventoAlteracaoPoltrona.RetEventoBPe)
+		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPoltrona.VersaoAttr), d.ProcEventoAlteracaoPoltrona.IpTransmissorAttr, d.ProcEventoAlteracaoPoltrona.NPortaConAttr, d.ProcEventoAlteracaoPoltrona.DhConexaoAttr, d.ProcEventoAlteracaoPoltrona.EventoBPe, d.ProcEventoAlteracaoPoltrona.RetEventoBPe)
 	case d.ProcEventoExcessoBagagem != nil:
-		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoExcessoBagagem.VersaoAttr), d.ProcEventoExcessoBagagem.IpTransmissorAttr, d.ProcEventoExcessoBagagem.NPortaConAttr, d.ProcEventoExcessoBagagem.DhConexaoAttr, d.ProcEventoExcessoBagagem.EventoBPe, d.ProcEventoExcessoBagagem.RetEventoBPe)
+		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoExcessoBagagem.VersaoAttr), d.ProcEventoExcessoBagagem.IpTransmissorAttr, d.ProcEventoExcessoBagagem.NPortaConAttr, d.ProcEventoExcessoBagagem.DhConexaoAttr, d.ProcEventoExcessoBagagem.EventoBPe, d.ProcEventoExcessoBagagem.RetEventoBPe)
 	case d.ProcEventoNaoEmbBPe != nil:
-		return encodeProcEvent(e, firstNonEmpty(d.VersaoAttr, d.ProcEventoNaoEmbBPe.VersaoAttr), d.ProcEventoNaoEmbBPe.IpTransmissorAttr, d.ProcEventoNaoEmbBPe.NPortaConAttr, d.ProcEventoNaoEmbBPe.DhConexaoAttr, d.ProcEventoNaoEmbBPe.EventoBPe, d.ProcEventoNaoEmbBPe.RetEventoBPe)
+		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoNaoEmbBPe.VersaoAttr), d.ProcEventoNaoEmbBPe.IpTransmissorAttr, d.ProcEventoNaoEmbBPe.NPortaConAttr, d.ProcEventoNaoEmbBPe.DhConexaoAttr, d.ProcEventoNaoEmbBPe.EventoBPe, d.ProcEventoNaoEmbBPe.RetEventoBPe)
 	default:
 		return errors.New("marshal bpe: document must contain exactly one supported root")
 	}
@@ -910,86 +887,35 @@ func versionFromBPeTM(inf *schema.TAnonComplexInfBPe1) string {
 
 func activeRootCount(doc *Document) int {
 	count := 0
-	if doc.BPe != nil {
-		count++
-	}
-	if doc.BPeTM != nil {
-		count++
-	}
-	if doc.BPeProc != nil {
-		count++
-	}
-	if doc.BPeTMProc != nil {
-		count++
-	}
-	if doc.RetBPe != nil {
-		count++
-	}
-	if doc.ConsSitBPe != nil {
-		count++
-	}
-	if doc.RetConsSitBPe != nil {
-		count++
-	}
-	if doc.ConsStatServBPe != nil {
-		count++
-	}
-	if doc.RetConsStatServBPe != nil {
-		count++
-	}
-	if doc.EventoBPe != nil {
-		count++
-	}
-	if doc.RetEventoBPe != nil {
-		count++
-	}
-	if doc.ProcEventoBPe != nil {
-		count++
-	}
-	if doc.EventoCancBPe != nil {
-		count++
-	}
-	if doc.RetEventoCancBPe != nil {
-		count++
-	}
-	if doc.ProcEventoCancBPe != nil {
-		count++
-	}
-	if doc.EventoAlteracaoPoltrona != nil {
-		count++
-	}
-	if doc.RetEventoAlteracaoPoltrona != nil {
-		count++
-	}
-	if doc.ProcEventoAlteracaoPoltrona != nil {
-		count++
-	}
-	if doc.EventoExcessoBagagem != nil {
-		count++
-	}
-	if doc.RetEventoExcessoBagagem != nil {
-		count++
-	}
-	if doc.ProcEventoExcessoBagagem != nil {
-		count++
-	}
-	if doc.EventoNaoEmbBPe != nil {
-		count++
-	}
-	if doc.RetEventoNaoEmbBPe != nil {
-		count++
-	}
-	if doc.ProcEventoNaoEmbBPe != nil {
-		count++
-	}
-	return count
-}
-
-func firstNonEmpty(values ...string) string {
-	for _, value := range values {
-		if value != "" {
-			return value
+	for _, ok := range []bool{
+		doc.BPe != nil,
+		doc.BPeTM != nil,
+		doc.BPeProc != nil,
+		doc.BPeTMProc != nil,
+		doc.RetBPe != nil,
+		doc.ConsSitBPe != nil,
+		doc.RetConsSitBPe != nil,
+		doc.ConsStatServBPe != nil,
+		doc.RetConsStatServBPe != nil,
+		doc.EventoBPe != nil,
+		doc.RetEventoBPe != nil,
+		doc.ProcEventoBPe != nil,
+		doc.EventoCancBPe != nil,
+		doc.RetEventoCancBPe != nil,
+		doc.ProcEventoCancBPe != nil,
+		doc.EventoAlteracaoPoltrona != nil,
+		doc.RetEventoAlteracaoPoltrona != nil,
+		doc.ProcEventoAlteracaoPoltrona != nil,
+		doc.EventoExcessoBagagem != nil,
+		doc.RetEventoExcessoBagagem != nil,
+		doc.ProcEventoExcessoBagagem != nil,
+		doc.EventoNaoEmbBPe != nil,
+		doc.RetEventoNaoEmbBPe != nil,
+		doc.ProcEventoNaoEmbBPe != nil,
+	} {
+		if ok {
+			count++
 		}
 	}
-	return ""
+	return count
 }

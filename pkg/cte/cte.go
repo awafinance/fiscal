@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 
 	distSchema "github.com/awafinance/fiscal/internal/cte/gen/v1_0/dist_dfe"
 	consSitSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/consulta_situacao"
@@ -126,7 +125,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "cteProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.CTeProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeProc.VersaoAttr),
 				IpTransmissorAttr: d.CTeProc.IpTransmissorAttr,
 				NPortaConAttr:     d.CTeProc.NPortaConAttr,
 				DhConexaoAttr:     d.CTeProc.DhConexaoAttr,
@@ -160,7 +159,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:     xml.Name{Local: "CTeOS"},
 				XMLNS:       namespace,
-				VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.CTeOS.VersaoAttr),
+				VersaoAttr:  xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeOS.VersaoAttr),
 				InfCte:      d.CTeOS.InfCte,
 				InfCTeSupl:  d.CTeOS.InfCTeSupl,
 				DsSignature: d.CTeOS.DsSignature,
@@ -181,7 +180,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "cteOSProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.CTeOSProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeOSProc.VersaoAttr),
 				IpTransmissorAttr: d.CTeOSProc.IpTransmissorAttr,
 				NPortaConAttr:     d.CTeOSProc.NPortaConAttr,
 				DhConexaoAttr:     d.CTeOSProc.DhConexaoAttr,
@@ -233,7 +232,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "cteSimpProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.CTeSimpProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.CTeSimpProc.VersaoAttr),
 				IpTransmissorAttr: d.CTeSimpProc.IpTransmissorAttr,
 				NPortaConAttr:     d.CTeSimpProc.NPortaConAttr,
 				DhConexaoAttr:     d.CTeSimpProc.DhConexaoAttr,
@@ -266,7 +265,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:     xml.Name{Local: "GTVe"},
 				XMLNS:       namespace,
-				VersaoAttr:  firstNonEmpty(d.VersaoAttr, d.GTVe.VersaoAttr),
+				VersaoAttr:  xmlutil.FirstNonEmpty(d.VersaoAttr, d.GTVe.VersaoAttr),
 				InfCte:      d.GTVe.InfCte,
 				InfCTeSupl:  d.GTVe.InfCTeSupl,
 				DsSignature: d.GTVe.DsSignature,
@@ -287,7 +286,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:           xml.Name{Local: "GTVeProc"},
 				XMLNS:             namespace,
-				VersaoAttr:        firstNonEmpty(d.VersaoAttr, d.GTVeProc.VersaoAttr),
+				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.GTVeProc.VersaoAttr),
 				IpTransmissorAttr: d.GTVeProc.IpTransmissorAttr,
 				NPortaConAttr:     d.GTVeProc.NPortaConAttr,
 				DhConexaoAttr:     d.GTVeProc.DhConexaoAttr,
@@ -377,7 +376,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:    xml.Name{Local: "distDFeInt"},
 				XMLNS:      namespace,
-				VersaoAttr: firstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
+				VersaoAttr: xmlutil.FirstNonEmpty(d.VersaoAttr, d.DistDFeInt.VersaoAttr),
 				TpAmb:      d.DistDFeInt.TpAmb,
 				CUFAutor:   d.DistDFeInt.CUFAutor,
 				CNPJ:       d.DistDFeInt.CNPJ,
@@ -404,7 +403,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 			return encode(root{
 				XMLName:        xml.Name{Local: "retDistDFeInt"},
 				XMLNS:          namespace,
-				VersaoAttr:     firstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
+				VersaoAttr:     xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetDistDFeInt.VersaoAttr),
 				TpAmb:          d.RetDistDFeInt.TpAmb,
 				VerAplic:       d.RetDistDFeInt.VerAplic,
 				CStat:          d.RetDistDFeInt.CStat,
@@ -426,7 +425,7 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse cte: empty xml document")
 	}
 
-	rootName, rootErr := parseRootName(data)
+	rootName, rootErr := xmlutil.ParseRootName(data)
 	if rootErr != nil && rootName == "" {
 		return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
 	}
@@ -683,28 +682,6 @@ func eventTypeFromXML(data []byte) (string, error) {
 		return head.InfEvento.TpEvento, nil
 	}
 	return head.EventoCTe.InfEvento.TpEvento, nil
-}
-
-func parseRootName(data []byte) (string, error) {
-	decoder := xml.NewDecoder(bytes.NewReader(data))
-	var rootName string
-
-	for {
-		tok, err := decoder.Token()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				if rootName == "" {
-					return "", err
-				}
-				return rootName, nil
-			}
-			return rootName, err
-		}
-
-		if start, ok := tok.(xml.StartElement); ok && rootName == "" {
-			rootName = start.Name.Local
-		}
-	}
 }
 
 func versionFromInfCte(inf *cteSchema.TAnonComplexInfCte3) string {
@@ -1463,13 +1440,4 @@ func activeRootCount(doc *Document) int {
 		}
 	}
 	return count
-}
-
-func firstNonEmpty(values ...string) string {
-	for _, value := range values {
-		if value != "" {
-			return value
-		}
-	}
-	return ""
 }
