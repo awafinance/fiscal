@@ -1,6 +1,8 @@
 package postprocess
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -83,5 +85,93 @@ type Doc struct {
 		if !strings.Contains(updated, snippet) {
 			t.Fatalf("updated source missing snippet %q:\n%s", snippet, updated)
 		}
+	}
+}
+
+func TestGeneratedFixturePipeline(t *testing.T) {
+	genDir := t.TempDir()
+
+	keepPath := filepath.Join(genDir, "keep.go")
+	dupPath := filepath.Join(genDir, "nested", "schemas", "dup.go")
+	removePath := filepath.Join(genDir, "remove.go")
+
+	if err := os.MkdirAll(filepath.Dir(dupPath), 0o755); err != nil {
+		t.Fatalf("mkdir dup dir: %v", err)
+	}
+
+	keepSrc := `package schema
+
+type Doc struct {
+	Value interface{} ` + "`xml:\"value\"`" + `
+}
+`
+	if err := os.WriteFile(keepPath, []byte(keepSrc), 0o644); err != nil {
+		t.Fatalf("write keep file: %v", err)
+	}
+
+	if err := os.WriteFile(dupPath, []byte("package schema\n"), 0o644); err != nil {
+		t.Fatalf("write dup file: %v", err)
+	}
+	if err := os.WriteFile(removePath, []byte("package schema\n"), 0o644); err != nil {
+		t.Fatalf("write remove file: %v", err)
+	}
+
+	err := Generated(Options{
+		GenDir: genDir,
+		NestedImportPatterns: []string{
+			string(filepath.Separator) + filepath.Join("nested", "schemas") + string(filepath.Separator),
+		},
+		RemoveFile: func(path string) (bool, string) {
+			return filepath.Base(path) == "remove.go", "removed fixture file"
+		},
+		Replacements: []Replacement{
+			ReplaceFieldType(FieldTypeEquals("interface{}"), "string"),
+		},
+		AddJSONTags: true,
+	})
+	if err != nil {
+		t.Fatalf("Generated returned error: %v", err)
+	}
+
+	updated, err := os.ReadFile(keepPath)
+	if err != nil {
+		t.Fatalf("read keep file: %v", err)
+	}
+	got := string(updated)
+	wantSnippets := []string{
+		"Value string `xml:\"value\" json:\"value,omitempty\"`",
+	}
+	for _, snippet := range wantSnippets {
+		if !strings.Contains(got, snippet) {
+			t.Fatalf("updated keep.go missing snippet %q:\n%s", snippet, got)
+		}
+	}
+
+	if _, err := os.Stat(dupPath); !os.IsNotExist(err) {
+		t.Fatalf("expected nested imported schema file to be removed, stat err=%v", err)
+	}
+	if _, err := os.Stat(removePath); !os.IsNotExist(err) {
+		t.Fatalf("expected remove.go to be removed, stat err=%v", err)
+	}
+}
+
+func TestAddStructField(t *testing.T) {
+	src := `package schema
+
+type DetEvento struct {
+	XMLName string ` + "`xml:\"detEvento\"`" + `
+}
+`
+
+	replacer := AddStructField(TypeNamed("DetEvento"), "InnerXML", "string", `xml:",innerxml"`)
+	updated := replacer("doc.go", src)
+
+	if !strings.Contains(updated, "InnerXML\tstring\t`xml:\",innerxml\"`") {
+		t.Fatalf("updated source missing InnerXML field:\n%s", updated)
+	}
+
+	updatedAgain := replacer("doc.go", updated)
+	if strings.Count(updatedAgain, "InnerXML") != 1 {
+		t.Fatalf("expected InnerXML field to be inserted once, got:\n%s", updatedAgain)
 	}
 }

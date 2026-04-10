@@ -23,6 +23,7 @@ var anonComplexXMLName = regexp.MustCompile("`xml:\"TAnonComplex_([^\"_]+(?:_[^\
 
 type Replacement func(path, text string) string
 type FieldMatcher func(path string, field *ast.Field) bool
+type TypeMatcher func(path string, typeSpec *ast.TypeSpec) bool
 
 type Options struct {
 	GenDir               string
@@ -178,6 +179,58 @@ func ReplaceFieldType(match FieldMatcher, replacementType string) Replacement {
 	}
 }
 
+func AddStructField(match TypeMatcher, fieldName, fieldType, fieldTag string) Replacement {
+	return func(path string, text string) string {
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, path, text, parser.ParseComments)
+		if err != nil {
+			return text
+		}
+
+		fieldTypeExpr, err := parser.ParseExpr(fieldType)
+		if err != nil {
+			return text
+		}
+
+		changed := false
+		for _, decl := range file.Decls {
+			genDecl, ok := decl.(*ast.GenDecl)
+			if !ok || genDecl.Tok != token.TYPE {
+				continue
+			}
+
+			for _, spec := range genDecl.Specs {
+				typeSpec, ok := spec.(*ast.TypeSpec)
+				if !ok || !match(path, typeSpec) {
+					continue
+				}
+
+				structType, ok := typeSpec.Type.(*ast.StructType)
+				if !ok || structHasField(structType, fieldName) {
+					continue
+				}
+
+				structType.Fields.List = append(structType.Fields.List, &ast.Field{
+					Names: []*ast.Ident{ast.NewIdent(fieldName)},
+					Type:  cloneExpr(fieldTypeExpr),
+					Tag:   &ast.BasicLit{Kind: token.STRING, Value: "`" + fieldTag + "`"},
+				})
+				changed = true
+			}
+		}
+
+		if !changed {
+			return text
+		}
+
+		var buf bytes.Buffer
+		if err := printer.Fprint(&buf, fset, file); err != nil {
+			return text
+		}
+		return buf.String()
+	}
+}
+
 func FieldNamed(names ...string) FieldMatcher {
 	return func(_ string, field *ast.Field) bool {
 		for _, name := range names {
@@ -203,6 +256,17 @@ func AllFields(matchers ...FieldMatcher) FieldMatcher {
 			}
 		}
 		return true
+	}
+}
+
+func TypeNamed(names ...string) TypeMatcher {
+	return func(_ string, typeSpec *ast.TypeSpec) bool {
+		for _, name := range names {
+			if typeSpec.Name != nil && typeSpec.Name.Name == name {
+				return true
+			}
+		}
+		return false
 	}
 }
 
@@ -349,6 +413,15 @@ func jsonNameFromXMLTag(xmlTag string, field *ast.Field) string {
 func fieldHasName(field *ast.Field, name string) bool {
 	for _, fieldName := range field.Names {
 		if fieldName.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+func structHasField(structType *ast.StructType, name string) bool {
+	for _, field := range structType.Fields.List {
+		if fieldHasName(field, name) {
 			return true
 		}
 	}

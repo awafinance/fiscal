@@ -11,19 +11,8 @@ import (
 )
 
 const (
-	bpeDetEventoStruct         = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
-	bpeDetEventoStructInnerXML = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n\tInnerXML         string   `xml:\",innerxml\"`\n}"
-	infBPeCompField            = "\tComp        *TAnonComplexComp1        `xml:\"comp\"`"
-	infBPeCompFieldFixed       = "\tComp        *TAnonComplexComp12       `xml:\"comp\"`"
-
-	mdfeInfModalStruct         = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
-	mdfeInfModalStructInnerXML = "type InfModal struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
-	mdfeAnonInfModalStruct     = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n}"
-	mdfeAnonInfModalInnerXML   = "type TAnonComplexInfModal1 struct {\n\tXMLName         xml.Name `xml:\"infModal\"`\n\tVersaoModalAttr string   `xml:\"versaoModal,attr\"`\n\tInnerXML        string   `xml:\",innerxml\"`\n}"
-	mdfeDetEventoStruct        = "type DetEvento struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
-	mdfeDetEventoInnerXML      = "type DetEvento struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n\tInnerXML         string   `xml:\",innerxml\"`\n}"
-	mdfeAnonDetEventoStruct    = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
-	mdfeAnonDetEventoInnerXML  = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n\tInnerXML         string   `xml:\",innerxml\"`\n}"
+	infBPeCompField      = "\tComp        *TAnonComplexComp1        `xml:\"comp\"`"
+	infBPeCompFieldFixed = "\tComp        *TAnonComplexComp12       `xml:\"comp\"`"
 
 	cteDetEventoStruct         = "type DetEvento struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
 	cteAnonDetEventoStruct     = "type TAnonComplexDetEvento1 struct {\n\tXMLName          xml.Name `xml:\"detEvento\"`\n\tVersaoEventoAttr string   `xml:\"versaoEvento,attr\"`\n}"
@@ -262,7 +251,7 @@ func postprocessBPe(verbose bool) error {
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"eventoBPeTiposBasico_v1.00.xsd.go")
 				},
-				postprocess.Replace(bpeDetEventoStruct, bpeDetEventoStructInnerXML, 1),
+				postprocess.AddStructField(postprocess.TypeNamed("TAnonComplexDetEvento1"), "InnerXML", "string", `xml:",innerxml"`),
 			)),
 			workaround("flatten BPe event protocol wrappers to string values", postprocess.IfPath(
 				func(path string) bool {
@@ -333,8 +322,8 @@ func postprocessMDFe(verbose bool) error {
 		workarounds: []generatedWorkaround{
 			workaround("replace MDFe ambient enum pointers with strings", postprocess.ReplaceAll("*TpAmb", "*string")),
 			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),
-			workaround("preserve raw infModal payload XML in MDFe root type", postprocess.Replace(mdfeInfModalStruct, mdfeInfModalStructInnerXML, 1)),
-			workaround("preserve raw infModal payload XML in MDFe anonymous type", postprocess.Replace(mdfeAnonInfModalStruct, mdfeAnonInfModalInnerXML, 1)),
+			workaround("preserve raw infModal payload XML in MDFe root type", postprocess.AddStructField(postprocess.TypeNamed("InfModal"), "InnerXML", "string", `xml:",innerxml"`)),
+			workaround("preserve raw infModal payload XML in MDFe anonymous type", postprocess.AddStructField(postprocess.TypeNamed("TAnonComplexInfModal1"), "InnerXML", "string", `xml:",innerxml"`)),
 			workaround("flatten selected MDFe event protocol wrappers to string values", postprocess.IfPath(
 				func(path string) bool {
 					return hasAnySuffix(path,
@@ -352,8 +341,7 @@ func postprocessMDFe(verbose bool) error {
 				func(path string) bool {
 					return strings.HasSuffix(path, string(filepath.Separator)+"eventoMDFeTiposBasico_v3.00.xsd.go")
 				},
-				postprocess.Replace(mdfeDetEventoStruct, mdfeDetEventoInnerXML, 1),
-				postprocess.Replace(mdfeAnonDetEventoStruct, mdfeAnonDetEventoInnerXML, 1),
+				postprocess.AddStructField(postprocess.TypeNamed("DetEvento", "TAnonComplexDetEvento1"), "InnerXML", "string", `xml:",innerxml"`),
 			)),
 		},
 		addJSONTags: true,

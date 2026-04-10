@@ -86,7 +86,7 @@ func runFamilies(ctx context.Context, repoRoot string, families []family, parall
 	errCh := make(chan error, len(families))
 	var wg sync.WaitGroup
 	for _, family := range families {
-		family := family
+
 		wg.Add(1)
 		go func() {
 			defer wg.Done()

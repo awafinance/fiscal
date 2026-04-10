@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmp"
 	"encoding/xml"
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -192,7 +193,7 @@ func normalizeXML(t *testing.T, data []byte) string {
 	for {
 		tok, err := decoder.Token()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			require.NoError(t, err)

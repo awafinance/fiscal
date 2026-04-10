@@ -39,7 +39,7 @@ func EncodeCanonical(enc *xml.Encoder, value any) error {
 	for {
 		tok, err := decoder.Token()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				return nil
 			}
 			return err
@@ -125,7 +125,7 @@ func collectNamespaces(data []byte) (string, map[string]string, error) {
 	for {
 		tok, err := decoder.Token()
 		if err != nil {
-			if err == io.EOF {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return "", nil, err

@@ -1,14 +1,15 @@
 package cte
 
 import (
+	distSchema "github.com/awafinance/fiscal/internal/cte/gen/v1_0/dist_dfe"
 	cteSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/cte"
 	cteOSSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/cte_os"
 	cteSimpSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/cte_simp"
-	eventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cce"
 	cancelEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel"
 	cancelCEEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel_ce"
 	cancelIEEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel_ie"
 	cancelPrestDesacordoEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel_prest_desacordo"
+	eventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cce"
 	ceEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_ce"
 	epecEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_epec"
 	gtvEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_gtv"
@@ -17,7 +18,6 @@ import (
 	regMultimodalEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_reg_multimodal"
 	gtveSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/gtve"
 	statusSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/status_servico"
-	distSchema "github.com/awafinance/fiscal/internal/cte/gen/v1_0/dist_dfe"
 )
 
 // Public aliases for the generated CTe schema graph.
