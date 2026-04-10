@@ -45,6 +45,15 @@ Parse(data []byte) (*Document, error)
 The returned `Document` is a tagged container where exactly one root field is
 expected to be populated.
 
+The generated XML schema types are also part of the public API through each
+family package, so external consumers can build and pass typed values without
+importing `internal/...`.
+
+```go
+var inf *nfe.NFeProcTNFe
+doc := &nfe.Document{NFe: inf}
+```
+
 ## Basic usage
 
 ```go
