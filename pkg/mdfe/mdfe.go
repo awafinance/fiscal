@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 
 	distSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v1_0/dist_dfe"
 	consNaoEncSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/cons_nao_enc"
@@ -72,7 +73,7 @@ type Document struct {
 	RetDistMDFe                      *distMDFeSchema.TRetDistDFe                `json:"retDistMDFe,omitempty"`
 	MDFeConsultaDFe                  *consultaDFESchema.TMDFeConsultaDFe        `json:"mdfeConsultaDFe,omitempty"`
 	RetMDFeConsultaDFe               *consultaDFESchema.TRetMDFeConsultaDFe     `json:"retMDFeConsultaDFe,omitempty"`
-	rootName                         string                                     `json:"-"`
+	RootName                         string                                     `json:"rootName,omitempty"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -81,7 +82,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
-	switch d.rootName {
+	switch d.RootName {
 	case "MDFe", "":
 		if d.MDFe != nil && activeRootCount(d) == 1 {
 			type root struct {
@@ -388,18 +389,18 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse mdfe: empty xml document")
 	}
 
-	rootName, rootErr := xmlutil.ParseRootName(data)
-	if rootErr != nil && rootName == "" {
+	RootName, rootErr := xmlutil.ParseRootName(data)
+	if rootErr != nil && RootName == "" {
 		return nil, fmt.Errorf("parse mdfe: read root: %w", rootErr)
 	}
 
-	switch rootName {
+	switch RootName {
 	case "MDFe":
 		var parsed mdfeSchema.TMDFe
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode MDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: versionFromMDFe(&parsed), MDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: versionFromMDFe(&parsed), MDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -409,7 +410,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode mdfeProc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, MDFeProc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, MDFeProc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -419,7 +420,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode enviMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EnviMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EnviMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -429,7 +430,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEnviMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEnviMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEnviMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -439,7 +440,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -449,7 +450,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode consMDFeNaoEnc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsNaoEnc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsNaoEnc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -459,7 +460,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retConsMDFeNaoEnc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsNaoEnc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsNaoEnc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -469,7 +470,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode consReciMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsReciMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsReciMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -479,7 +480,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retConsReciMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsReciMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsReciMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -489,7 +490,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode consSitMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -499,7 +500,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retConsSitMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsSitMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsSitMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -509,7 +510,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode consStatServMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -519,7 +520,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retConsStatServMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -532,7 +533,7 @@ func Parse(data []byte) (*Document, error) {
 		if tpEvento == "" {
 			return nil, errors.New("parse mdfe: missing infEvento")
 		}
-		return parseEventDocument(data, rootName, tpEvento)
+		return parseEventDocument(data, RootName, tpEvento)
 	case "retEventoMDFe":
 		tpEvento, err := eventTypeFromXML(data)
 		if err != nil {
@@ -541,7 +542,7 @@ func Parse(data []byte) (*Document, error) {
 		if tpEvento == "" {
 			return nil, errors.New("parse mdfe: missing infEvento")
 		}
-		return parseRetEventDocument(data, rootName, tpEvento)
+		return parseRetEventDocument(data, RootName, tpEvento)
 	case "procEventoMDFe":
 		tpEvento, err := eventTypeFromXML(data)
 		if err != nil {
@@ -550,13 +551,13 @@ func Parse(data []byte) (*Document, error) {
 		if tpEvento == "" {
 			return nil, errors.New("parse mdfe: missing infEvento")
 		}
-		return parseProcEventDocument(data, rootName, tpEvento)
+		return parseProcEventDocument(data, RootName, tpEvento)
 	case "distDFeInt":
 		var parsed distSchema.TAnonComplexDistDFeInt1
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode distDFeInt: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -566,7 +567,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retDistDFeInt: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -576,7 +577,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode distMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -586,7 +587,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retDistMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -596,7 +597,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode mdfeConsultaDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, MDFeConsultaDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, MDFeConsultaDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -606,7 +607,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retMDFeConsultaDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetMDFeConsultaDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetMDFeConsultaDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -615,8 +616,16 @@ func Parse(data []byte) (*Document, error) {
 		if rootErr != nil {
 			return nil, fmt.Errorf("parse mdfe: read root: %w", rootErr)
 		}
-		return nil, fmt.Errorf("parse mdfe: unsupported root element %q", rootName)
+		return nil, fmt.Errorf("parse mdfe: unsupported root element %q", RootName)
 	}
+}
+
+func ParseReader(r io.Reader) (*Document, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, fmt.Errorf("parse mdfe: read xml: %w", err)
+	}
+	return Parse(data)
 }
 
 func eventTypeFromXML(data []byte) (string, error) {
@@ -1119,14 +1128,14 @@ func encodeMDFeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon
 	})
 }
 
-func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+func parseEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110111":
 		var parsed cancelEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe cancelamento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoCancMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoCancMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1136,7 +1145,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe encerramento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoEncMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoEncMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1146,7 +1155,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe inclusao condutor: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoIncCondutorMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoIncCondutorMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1156,7 +1165,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe inclusao dfe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoInclusaoDFeMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoInclusaoDFeMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1166,7 +1175,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe pagamento operacao: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoPagtoOperMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoPagtoOperMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1176,7 +1185,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe confirma servico: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoConfirmaServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoConfirmaServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1186,7 +1195,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe alteracao pagamento servico: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoAlteracaoPagtoServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoAlteracaoPagtoServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1196,7 +1205,7 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode eventoMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1204,14 +1213,14 @@ func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, erro
 	}
 }
 
-func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+func parseRetEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110111":
 		var parsed cancelEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe cancelamento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1221,7 +1230,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe encerramento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoEncMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoEncMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1231,7 +1240,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe inclusao condutor: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoIncCondutorMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoIncCondutorMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1241,7 +1250,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe inclusao dfe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoInclusaoDFeMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoInclusaoDFeMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1251,7 +1260,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe pagamento operacao: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoPagtoOperMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoPagtoOperMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1261,7 +1270,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe confirma servico: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoConfirmaServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoConfirmaServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1271,7 +1280,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe alteracao pagamento servico: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoAlteracaoPagtoServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoAlteracaoPagtoServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1281,7 +1290,7 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode retEventoMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1289,14 +1298,14 @@ func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, e
 	}
 }
 
-func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+func parseProcEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110111":
 		var parsed cancelEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe cancelamento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1306,7 +1315,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe encerramento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoEncMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoEncMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1316,7 +1325,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe inclusao condutor: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoIncCondutorMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoIncCondutorMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1326,7 +1335,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe inclusao dfe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoInclusaoDFeMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoInclusaoDFeMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1336,7 +1345,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe pagamento operacao: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoPagtoOperMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoPagtoOperMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1346,7 +1355,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe confirma servico: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoConfirmaServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoConfirmaServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1356,7 +1365,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe alteracao pagamento servico: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoAlteracaoPagtoServMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoAlteracaoPagtoServMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -1366,7 +1375,7 @@ func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, 
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse mdfe: decode procEventoMDFe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoMDFe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoMDFe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}

@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 
 	distSchema "github.com/awafinance/fiscal/internal/cte/gen/v1_0/dist_dfe"
 	consSitSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/consulta_situacao"
@@ -82,7 +83,7 @@ type Document struct {
 	ProcEventoCancPrestDesacordo *cancelPrestDesacordoEventSchema.TProcEvento `json:"procEventoCancPrestDesacordo,omitempty"`
 	DistDFeInt                   *distSchema.TAnonComplexDistDFeInt1          `json:"distDFeInt,omitempty"`
 	RetDistDFeInt                *distSchema.TAnonComplexRetDistDFeInt1       `json:"retDistDFeInt,omitempty"`
-	rootName                     string                                       `json:"-"`
+	RootName                     string                                       `json:"rootName,omitempty"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -91,7 +92,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
-	switch d.rootName {
+	switch d.RootName {
 	case "CTe", "":
 		if d.CTe != nil && activeRootCount(d) == 1 {
 			type root struct {
@@ -425,12 +426,12 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse cte: empty xml document")
 	}
 
-	rootName, rootErr := xmlutil.ParseRootName(data)
-	if rootErr != nil && rootName == "" {
+	RootName, rootErr := xmlutil.ParseRootName(data)
+	if rootErr != nil && RootName == "" {
 		return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
 	}
 
-	switch rootName {
+	switch RootName {
 	case "CTe":
 		var parsed cteSchema.TCTe
 		if err := xml.Unmarshal(data, &parsed); err != nil {
@@ -439,7 +440,7 @@ func Parse(data []byte) (*Document, error) {
 		doc := &Document{
 			VersaoAttr: versionFromInfCte(parsed.InfCte),
 			CTe:        &parsed,
-			rootName:   rootName,
+			RootName:   RootName,
 		}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
@@ -450,7 +451,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode cteProc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeProc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeProc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -460,7 +461,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retCTe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -483,7 +484,7 @@ func Parse(data []byte) (*Document, error) {
 				InfCTeSupl:  parsed.InfCTeSupl,
 				DsSignature: parsed.Signature,
 			},
-			rootName: rootName,
+			RootName: RootName,
 		}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
@@ -494,7 +495,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode cteOSProc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeOSProc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeOSProc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -504,7 +505,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retCTeOS: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTeOS: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTeOS: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -514,7 +515,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode CTeSimp: %w", err)
 		}
-		doc := &Document{VersaoAttr: versionFromInfCteSimp(parsed.InfCte), CTeSimp: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: versionFromInfCteSimp(parsed.InfCte), CTeSimp: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -524,7 +525,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode cteSimpProc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeSimpProc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, CTeSimpProc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -534,7 +535,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retCTeSimp: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTeSimp: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetCTeSimp: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -544,7 +545,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode GTVe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, GTVe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, GTVe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -554,7 +555,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode GTVeProc: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, GTVeProc: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, GTVeProc: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -564,7 +565,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retGTVe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetGTVe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetGTVe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -574,7 +575,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode consSitCTe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitCTe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitCTe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -584,7 +585,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retConsSitCTe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsSitCTe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsSitCTe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -594,7 +595,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode consStatServCTe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServCTe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServCTe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -604,7 +605,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retConsStatServCTe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServCTe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServCTe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -617,7 +618,7 @@ func Parse(data []byte) (*Document, error) {
 		if tpEvento == "" {
 			return nil, errors.New("parse cte: missing infEvento")
 		}
-		return parseEventDocument(data, rootName, tpEvento)
+		return parseEventDocument(data, RootName, tpEvento)
 	case "retEventoCTe":
 		tpEvento, err := eventTypeFromXML(data)
 		if err != nil {
@@ -626,7 +627,7 @@ func Parse(data []byte) (*Document, error) {
 		if tpEvento == "" {
 			return nil, errors.New("parse cte: missing infEvento")
 		}
-		return parseRetEventDocument(data, rootName, tpEvento)
+		return parseRetEventDocument(data, RootName, tpEvento)
 	case "procEventoCTe":
 		tpEvento, err := eventTypeFromXML(data)
 		if err != nil {
@@ -635,13 +636,13 @@ func Parse(data []byte) (*Document, error) {
 		if tpEvento == "" {
 			return nil, errors.New("parse cte: missing infEvento")
 		}
-		return parseProcEventDocument(data, rootName, tpEvento)
+		return parseProcEventDocument(data, RootName, tpEvento)
 	case "distDFeInt":
 		var parsed distSchema.TAnonComplexDistDFeInt1
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode distDFeInt: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, DistDFeInt: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -651,7 +652,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retDistDFeInt: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetDistDFeInt: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -660,8 +661,16 @@ func Parse(data []byte) (*Document, error) {
 		if rootErr != nil {
 			return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
 		}
-		return nil, fmt.Errorf("parse cte: unsupported root element %q", rootName)
+		return nil, fmt.Errorf("parse cte: unsupported root element %q", RootName)
 	}
+}
+
+func ParseReader(r io.Reader) (*Document, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, fmt.Errorf("parse cte: read xml: %w", err)
+	}
+	return Parse(data)
 }
 
 func eventTypeFromXML(data []byte) (string, error) {
@@ -1154,220 +1163,220 @@ func encodeCTeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon,
 	})
 }
 
-func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+func parseEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110110":
 		var parsed eventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe cce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCTe: &parsed, RootName: RootName})
 	case "110111":
 		var parsed cancelEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancCTe: &parsed, RootName: RootName})
 	case "110113":
 		var parsed epecEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe epec: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoEPECCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoEPECCTe: &parsed, RootName: RootName})
 	case "110160":
 		var parsed regMultimodalEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe reg multimodal: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoRegMultimodal: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoRegMultimodal: &parsed, RootName: RootName})
 	case "110170":
 		var parsed gtvEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe gtv: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoGTV: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoGTV: &parsed, RootName: RootName})
 	case "110180":
 		var parsed ceEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe ce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCECTe: &parsed, RootName: RootName})
 	case "110181":
 		var parsed cancelCEEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel ce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancCECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancCECTe: &parsed, RootName: RootName})
 	case "110190":
 		var parsed ieEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe ie: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoIECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoIECTe: &parsed, RootName: RootName})
 	case "110191":
 		var parsed cancelIEEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel ie: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancIECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancIECTe: &parsed, RootName: RootName})
 	case "610110":
 		var parsed prestDesacordoEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe prest desacordo: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoPrestDesacordo: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoPrestDesacordo: &parsed, RootName: RootName})
 	case "610111":
 		var parsed cancelPrestDesacordoEventSchema.TEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode eventoCTe cancel prest desacordo: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancPrestDesacordo: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, EventoCancPrestDesacordo: &parsed, RootName: RootName})
 	default:
 		return nil, fmt.Errorf("parse cte: unsupported tpEvento %q", tpEvento)
 	}
 }
 
-func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+func parseRetEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110110":
 		var parsed eventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe cce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCTe: &parsed, RootName: RootName})
 	case "110111":
 		var parsed cancelEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancCTe: &parsed, RootName: RootName})
 	case "110113":
 		var parsed epecEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe epec: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoEPECCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoEPECCTe: &parsed, RootName: RootName})
 	case "110160":
 		var parsed regMultimodalEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe reg multimodal: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoRegMultimodal: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoRegMultimodal: &parsed, RootName: RootName})
 	case "110170":
 		var parsed gtvEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe gtv: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoGTV: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoGTV: &parsed, RootName: RootName})
 	case "110180":
 		var parsed ceEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe ce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCECTe: &parsed, RootName: RootName})
 	case "110181":
 		var parsed cancelCEEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel ce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancCECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancCECTe: &parsed, RootName: RootName})
 	case "110190":
 		var parsed ieEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe ie: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoIECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoIECTe: &parsed, RootName: RootName})
 	case "110191":
 		var parsed cancelIEEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel ie: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancIECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancIECTe: &parsed, RootName: RootName})
 	case "610110":
 		var parsed prestDesacordoEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe prest desacordo: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoPrestDesacordo: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoPrestDesacordo: &parsed, RootName: RootName})
 	case "610111":
 		var parsed cancelPrestDesacordoEventSchema.TRetEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode retEventoCTe cancel prest desacordo: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancPrestDesacordo: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancPrestDesacordo: &parsed, RootName: RootName})
 	default:
 		return nil, fmt.Errorf("parse cte: unsupported tpEvento %q", tpEvento)
 	}
 }
 
-func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
+func parseProcEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110110":
 		var parsed eventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe cce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCTe: &parsed, RootName: RootName})
 	case "110111":
 		var parsed cancelEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancCTe: &parsed, RootName: RootName})
 	case "110113":
 		var parsed epecEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe epec: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoEPECCTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoEPECCTe: &parsed, RootName: RootName})
 	case "110160":
 		var parsed regMultimodalEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe reg multimodal: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoRegMultimodal: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoRegMultimodal: &parsed, RootName: RootName})
 	case "110170":
 		var parsed gtvEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe gtv: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoGTV: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoGTV: &parsed, RootName: RootName})
 	case "110180":
 		var parsed ceEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe ce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCECTe: &parsed, RootName: RootName})
 	case "110181":
 		var parsed cancelCEEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel ce: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancCECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancCECTe: &parsed, RootName: RootName})
 	case "110190":
 		var parsed ieEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe ie: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoIECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoIECTe: &parsed, RootName: RootName})
 	case "110191":
 		var parsed cancelIEEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel ie: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancIECTe: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancIECTe: &parsed, RootName: RootName})
 	case "610110":
 		var parsed prestDesacordoEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe prest desacordo: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoPrestDesacordo: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoPrestDesacordo: &parsed, RootName: RootName})
 	case "610111":
 		var parsed cancelPrestDesacordoEventSchema.TProcEvento
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse cte: decode procEventoCTe cancel prest desacordo: %w", err)
 		}
-		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancPrestDesacordo: &parsed, rootName: rootName})
+		return validatedCTeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancPrestDesacordo: &parsed, RootName: RootName})
 	default:
 		return nil, fmt.Errorf("parse cte: unsupported tpEvento %q", tpEvento)
 	}

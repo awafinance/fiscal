@@ -40,6 +40,7 @@ Each package exposes the same core entrypoint:
 
 ```go
 Parse(data []byte) (*Document, error)
+ParseReader(r io.Reader) (*Document, error)
 ```
 
 The returned `Document` is a tagged container where exactly one root field is
@@ -104,6 +105,15 @@ out, err := xml.MarshalIndent(doc, "", "  ")
 ```
 
 The library implements custom `MarshalXML` logic so the original supported root is preserved.
+
+JSON output also includes `rootName` so parsed documents can preserve their original root selection when marshaled back to XML after a JSON round-trip.
+
+## Limitations
+
+- A `Document` must contain exactly one supported root field. Setting multiple root fields is invalid.
+- XML round-tripping preserves the parsed root only when `rootName` is available. Parsed documents populate it automatically, and JSON output now carries it as well.
+- NF-e marshaling emits `nfeProc` when protocol data is present. A document with `ProtNFe` is not re-encoded as bare `NFe`.
+- The supported typed API is the alias surface exported from `pkg/<family>/types.go`. Depending directly on `internal/...` generated packages is not supported.
 
 ## CLI
 

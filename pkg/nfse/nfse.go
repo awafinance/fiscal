@@ -5,6 +5,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 
 	schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
 	"github.com/awafinance/fiscal/internal/xmlutil"
@@ -17,7 +18,7 @@ type Document struct {
 	DPS          *schema.TCDPS       `json:"DPS,omitempty"`
 	NFSe         *schema.TCNFSe      `json:"NFSe,omitempty"`
 	PedRegEvento *schema.TCPedRegEvt `json:"pedRegEvento,omitempty"`
-	rootName     string              `json:"-"`
+	RootName     string              `json:"rootName,omitempty"`
 }
 
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
@@ -26,7 +27,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
-	switch d.rootName {
+	switch d.RootName {
 	case "DPS", "":
 		if d.DPS != nil && d.NFSe == nil && d.PedRegEvento == nil {
 			type root struct {
@@ -92,18 +93,18 @@ func Parse(data []byte) (*Document, error) {
 		return nil, errors.New("parse nfse: empty xml document")
 	}
 
-	rootName, rootErr := xmlutil.ParseRootName(data)
-	if rootErr != nil && rootName == "" {
+	RootName, rootErr := xmlutil.ParseRootName(data)
+	if rootErr != nil && RootName == "" {
 		return nil, fmt.Errorf("parse nfse: read root: %w", rootErr)
 	}
 
-	switch rootName {
+	switch RootName {
 	case "DPS":
 		var parsed schema.TCDPS
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse nfse: decode DPS: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, DPS: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, DPS: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -113,7 +114,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse nfse: decode NFSe: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, NFSe: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, NFSe: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -123,7 +124,7 @@ func Parse(data []byte) (*Document, error) {
 		if err := xml.Unmarshal(data, &parsed); err != nil {
 			return nil, fmt.Errorf("parse nfse: decode pedRegEvento: %w", err)
 		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, PedRegEvento: &parsed, rootName: rootName}
+		doc := &Document{VersaoAttr: parsed.VersaoAttr, PedRegEvento: &parsed, RootName: RootName}
 		if err := validateDocument(doc); err != nil {
 			return nil, err
 		}
@@ -132,8 +133,16 @@ func Parse(data []byte) (*Document, error) {
 		if rootErr != nil {
 			return nil, fmt.Errorf("parse nfse: read root: %w", rootErr)
 		}
-		return nil, fmt.Errorf("parse nfse: unsupported root element %q", rootName)
+		return nil, fmt.Errorf("parse nfse: unsupported root element %q", RootName)
 	}
+}
+
+func ParseReader(r io.Reader) (*Document, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, fmt.Errorf("parse nfse: read xml: %w", err)
+	}
+	return Parse(data)
 }
 
 func validateDocument(doc *Document) error {
