@@ -14,10 +14,10 @@ type TAnonPoltrona1 string
 
 // TAnonComplexEvAlteracaoPoltrona1 is Número da Poltrona / assento / cabine
 type TAnonComplexEvAlteracaoPoltrona1 struct {
-	XMLName		xml.Name	`xml:"evAlteracaoPoltrona" json:"-"`
-	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
-	Poltrona	string		`xml:"poltrona" json:"poltrona,omitempty"`
+	XMLName    xml.Name `xml:"evAlteracaoPoltrona" json:"-"`
+	DescEvento string   `xml:"descEvento" json:"descEvento,omitempty"`
+	NProt      string   `xml:"nProt" json:"nProt,omitempty"`
+	Poltrona   string   `xml:"poltrona" json:"poltrona,omitempty"`
 }
 
 // EvAlteracaoPoltrona is Schema XML de validação do evento de alteração de poltrona

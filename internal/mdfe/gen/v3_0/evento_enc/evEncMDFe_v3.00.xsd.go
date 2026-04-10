@@ -14,13 +14,13 @@ type TAnonIndEncPorTerceiro1 string
 
 // TAnonComplexEvEncMDFe1 is Informar valor 1 quando o MDFe for encerrado pelo transportador terceiro, este sendo diferente do emitente do MDFe
 type TAnonComplexEvEncMDFe1 struct {
-	XMLName			xml.Name	`xml:"evEncMDFe" json:"-"`
-	DescEvento		string		`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt			string		`xml:"nProt" json:"nProt,omitempty"`
-	DtEnc			string		`xml:"dtEnc" json:"dtEnc,omitempty"`
-	CUF			string		`xml:"cUF" json:"cUF,omitempty"`
-	CMun			string		`xml:"cMun" json:"cMun,omitempty"`
-	IndEncPorTerceiro	*string		`xml:"indEncPorTerceiro" json:"indEncPorTerceiro,omitempty"`
+	XMLName           xml.Name `xml:"evEncMDFe" json:"-"`
+	DescEvento        string   `xml:"descEvento" json:"descEvento,omitempty"`
+	NProt             string   `xml:"nProt" json:"nProt,omitempty"`
+	DtEnc             string   `xml:"dtEnc" json:"dtEnc,omitempty"`
+	CUF               string   `xml:"cUF" json:"cUF,omitempty"`
+	CMun              string   `xml:"cMun" json:"cMun,omitempty"`
+	IndEncPorTerceiro *string  `xml:"indEncPorTerceiro" json:"indEncPorTerceiro,omitempty"`
 }
 
 // EvEncMDFe is Schema XML de validação do evento do encerramento

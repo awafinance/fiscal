@@ -8,42 +8,42 @@ import (
 
 // TAnonComplexProtMDFe1 is Retornar protMDFe da versão correspondente do MDF-e autorizado
 type TAnonComplexProtMDFe1 struct {
-	XMLName		xml.Name	`xml:"protMDFe" json:"-"`
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	XMLName    xml.Name `xml:"protMDFe" json:"-"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
 }
 
 // TAnonComplexProcEventoMDFe1 is Retornar procEventoMDFe da versão correspondente do evento MDF-e autorizado
 type TAnonComplexProcEventoMDFe1 struct {
-	XMLName		xml.Name	`xml:"procEventoMDFe" json:"-"`
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	XMLName    xml.Name `xml:"procEventoMDFe" json:"-"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
 }
 
 // TAnonComplexProcInfraSA1 is Data e hora de geração do protocolo, no formato AAAA-MM-DDTHH:MM:SS TZD.
 type TAnonComplexProcInfraSA1 struct {
-	XMLName		xml.Name	`xml:"procInfraSA" json:"-"`
-	NProtDTe	string		`xml:"nProtDTe" json:"nProtDTe,omitempty"`
-	DhProt		string		`xml:"dhProt" json:"dhProt,omitempty"`
+	XMLName  xml.Name `xml:"procInfraSA" json:"-"`
+	NProtDTe string   `xml:"nProtDTe" json:"nProtDTe,omitempty"`
+	DhProt   string   `xml:"dhProt" json:"dhProt,omitempty"`
 }
 
 // TConsSitMDFe is Chaves de acesso do MDF-e, compostas por: UF do emitente, AAMM da emissão do MDF-e, CNPJ do emitente, modelo, série, tipo de emissão e número do MDF-e e código numérico + DV.
 type TConsSitMDFe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	XServ		*TString	`xml:"xServ" json:"xServ,omitempty"`
-	ChMDFe		string		`xml:"chMDFe" json:"chMDFe,omitempty"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ      *TString `xml:"xServ" json:"xServ,omitempty"`
+	ChMDFe     string   `xml:"chMDFe" json:"chMDFe,omitempty"`
 }
 
 // TRetConsSitMDFe is Grupo de informações do compartilhamento do MDFe com InfraSA para geração do DTe
 type TRetConsSitMDFe struct {
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string				`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString			`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string				`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString			`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string				`xml:"cUF" json:"cUF,omitempty"`
-	ProtMDFe	*TAnonComplexProtMDFe1		`xml:"protMDFe" json:"protMDFe,omitempty"`
-	ProcEventoMDFe	[]*TAnonComplexProcEventoMDFe1	`xml:"procEventoMDFe" json:"procEventoMDFe,omitempty"`
-	ProcInfraSA	*TAnonComplexProcInfraSA1	`xml:"procInfraSA" json:"procInfraSA,omitempty"`
+	VersaoAttr     string                         `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb          string                         `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic       *TString                       `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat          string                         `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo        *TString                       `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF            string                         `xml:"cUF" json:"cUF,omitempty"`
+	ProtMDFe       *TAnonComplexProtMDFe1         `xml:"protMDFe" json:"protMDFe,omitempty"`
+	ProcEventoMDFe []*TAnonComplexProcEventoMDFe1 `xml:"procEventoMDFe" json:"procEventoMDFe,omitempty"`
+	ProcInfraSA    *TAnonComplexProcInfraSA1      `xml:"procInfraSA" json:"procInfraSA,omitempty"`
 }
 
 // TVerConsSitMDFe is Tipo Versão do Consulta situação de MDF-e - 1.00

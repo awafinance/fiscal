@@ -17,18 +17,18 @@ type TAnonXEvento1 string
 
 // TAnonComplexResEvento1 is Número do Protocolo do evento. 1 posição (1 – Secretaria de Fazenda Estadual 2 – Receita Federal); 2 - códiga da UF - 2 posições ano; 10 seqüencial no ano
 type TAnonComplexResEvento1 struct {
-	XMLName		xml.Name	`xml:"resEvento" json:"-"`
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	COrgao		string		`xml:"cOrgao" json:"cOrgao,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
-	ChNFe		string		`xml:"chNFe" json:"chNFe,omitempty"`
-	DhEvento	string		`xml:"dhEvento" json:"dhEvento,omitempty"`
-	TpEvento	string		`xml:"tpEvento" json:"tpEvento,omitempty"`
-	NSeqEvento	string		`xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
-	XEvento		string		`xml:"xEvento" json:"xEvento,omitempty"`
-	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	XMLName    xml.Name `xml:"resEvento" json:"-"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
+	COrgao     string   `xml:"cOrgao" json:"cOrgao,omitempty"`
+	CNPJ       *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF        *string  `xml:"CPF" json:"CPF,omitempty"`
+	ChNFe      string   `xml:"chNFe" json:"chNFe,omitempty"`
+	DhEvento   string   `xml:"dhEvento" json:"dhEvento,omitempty"`
+	TpEvento   string   `xml:"tpEvento" json:"tpEvento,omitempty"`
+	NSeqEvento string   `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	XEvento    string   `xml:"xEvento" json:"xEvento,omitempty"`
+	DhRecbto   string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt      string   `xml:"nProt" json:"nProt,omitempty"`
 }
 
 // ResEvento is Schema da estrutura XML gerada pelo Ambiente Nacional com o conjunto de informações resumidas de um evento de NF-e

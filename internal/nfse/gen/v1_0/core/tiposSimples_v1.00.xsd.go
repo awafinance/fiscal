@@ -12,36 +12,42 @@ type TSString string
 type TSStringComQuebraDeLinha string
 
 // TSIdNFSe is Informar o identificador precedido do literal ‘NFS’. A regra de formação do identificador de 53 posições da NFS-e é:
-//         "NFS" + Cód.Mun.(7) + Amb.Ger.(1) + Tipo de Inscrição Federal(1) + Inscrição Federal(14) + No.NFS-e(13) + AnoMes Emis.(4) + Cód.Num.(9) + DV(1)
+//
+//	"NFS" + Cód.Mun.(7) + Amb.Ger.(1) + Tipo de Inscrição Federal(1) + Inscrição Federal(14) + No.NFS-e(13) + AnoMes Emis.(4) + Cód.Num.(9) + DV(1)
 type TSIdNFSe string
 
 // TSIdDPS is Informar o identificador precedido do literal ‘DPS’. A regra de formação do identificador de 45 posições da DPS é:
-//         "DPS" + Cód.Mun (7) + Tipo de Inscrição Federal (1) + Inscrição Federal (14 - CPF completar com 000 à esquerda) + Série DPS (5)+ Núm. DPS (15)
+//
+//	"DPS" + Cód.Mun (7) + Tipo de Inscrição Federal (1) + Inscrição Federal (14 - CPF completar com 000 à esquerda) + Série DPS (5)+ Núm. DPS (15)
 type TSIdDPS string
 
 // TSTipoAmbiente is Tipos de ambiente do Sistema Nacional NFS-e: 1 - Produção; 2 - Homologação;
 type TSTipoAmbiente string
 
 // TSAmbGeradorNFSe is Tipo Ambiente Gerador de NFS-e:
-//         1 - Prefeitura;
-//         2 - Sistema Nacional da NFS-e;
+//
+//	1 - Prefeitura;
+//	2 - Sistema Nacional da NFS-e;
 type TSAmbGeradorNFSe string
 
 // TSAmbGeradorEvt is Tipo Ambiente gerador do evento:
-//         1- Prefeitura;
-//         2- Sefin Nacional;
-//         3- Ambiente Nacional.
+//
+//	1- Prefeitura;
+//	2- Sefin Nacional;
+//	3- Ambiente Nacional.
 type TSAmbGeradorEvt string
 
 // TSTipoEmissao is Tipo de emissão da NFS-e:
-//         1 - Emissão normal no modelo da NFS-e Nacional;
-//         2 - Emissão original em leiaute próprio do município com transcrição para o modelo da NFS-e Nacional.
+//
+//	1 - Emissão normal no modelo da NFS-e Nacional;
+//	2 - Emissão original em leiaute próprio do município com transcrição para o modelo da NFS-e Nacional.
 type TSTipoEmissao string
 
 // TSProcEmissao is Processo de Emissão da DPS:
-//         1 - Emissão com aplicativo do contribuinte (via Web Service);
-//         2 - Emissão com aplicativo disponibilizado pelo fisco (Web);
-//         3 - Emissão com aplicativo disponibilizado pelo fisco (App);
+//
+//	1 - Emissão com aplicativo do contribuinte (via Web Service);
+//	2 - Emissão com aplicativo disponibilizado pelo fisco (Web);
+//	3 - Emissão com aplicativo disponibilizado pelo fisco (App);
 type TSProcEmissao string
 
 // TSData is Tipo data no formato AAAA-MM-DD
@@ -57,9 +63,10 @@ type TSVerAplic string
 type TSSerieDPS string
 
 // TSEmitenteDPS is Emitente da DPS:
-//         1 - Prestador
-//         2 - Tomador
-//         3 - Intermediário
+//
+//	1 - Prestador
+//	2 - Tomador
+//	3 - Intermediário
 type TSEmitenteDPS string
 
 // TSChaveNFSe is Tipo Chave da Nota Fiscal de Serviço Eletrônica
@@ -69,52 +76,58 @@ type TSChaveNFSe string
 type TSChaveNFe string
 
 // TSCodJustCanc is Código de justificativa de cancelamento:
-//         1 - Erro na Emissão;
-//         2 - Serviço não Prestado;
-//         9 - Outros;
+//
+//	1 - Erro na Emissão;
+//	2 - Serviço não Prestado;
+//	9 - Outros;
 type TSCodJustCanc string
 
 // TSCodJustSubst is Código de justificativa para substituição de NFS-e:
-//         01 - Desenquadramento de NFS-e do Simples Nacional;
-//         02 - Enquadramento de NFS-e no Simples Nacional;
-//         03 - Inclusão Retroativa de Imunidade/Isenção para NFS-e;
-//         04 - Exclusão Retroativa de Imunidade/Isenção para NFS-e;
-//         05 - Rejeição de NFS-e pelo tomador ou pelo intermediário se responsável pelo recolhimento do tributo;
-//         99 - Outros;
+//
+//	01 - Desenquadramento de NFS-e do Simples Nacional;
+//	02 - Enquadramento de NFS-e no Simples Nacional;
+//	03 - Inclusão Retroativa de Imunidade/Isenção para NFS-e;
+//	04 - Exclusão Retroativa de Imunidade/Isenção para NFS-e;
+//	05 - Rejeição de NFS-e pelo tomador ou pelo intermediário se responsável pelo recolhimento do tributo;
+//	99 - Outros;
 type TSCodJustSubst string
 
 // TSCodJustAnaliseFiscalCanc is Código do motivo da solicitação de análise fiscal para cancelamento de NFS-e:
-//         1 - Erro na Emissão;
-//         2 - Serviço não Prestado;
-//         3 - Outros.
+//
+//	1 - Erro na Emissão;
+//	2 - Serviço não Prestado;
+//	3 - Outros.
 type TSCodJustAnaliseFiscalCanc string
 
 // TSCodMotivoRejeicao is Motivo da Rejeição da NFS-e:
 //
-//         1 - NFS-e em duplicidade;
-//         2 - NFS-e já emitida pelo tomador;
-//         3 - Não ocorrência do fato gerador;
-//         4 - Erro quanto a responsabilidade tributária;
-//         5 - Erro quanto ao valor do serviço, valor das deduções ou serviço prestado ou data do fato gerador;
-//         9 - Outros;
+//	1 - NFS-e em duplicidade;
+//	2 - NFS-e já emitida pelo tomador;
+//	3 - Não ocorrência do fato gerador;
+//	4 - Erro quanto a responsabilidade tributária;
+//	5 - Erro quanto ao valor do serviço, valor das deduções ou serviço prestado ou data do fato gerador;
+//	9 - Outros;
 type TSCodMotivoRejeicao string
 
 // TSCodJustAnaliseFiscalCancDef is Resposta da análise da solicitação do cancelamento extemporâneo de NFS-e:
-//         1 - Cancelamento Extemporâneo Deferido.
+//
+//	1 - Cancelamento Extemporâneo Deferido.
 type TSCodJustAnaliseFiscalCancDef string
 
 // TSCodJustAnaliseFiscalCancIndef is Resposta da análise da solicitação do cancelamento extemporâneo de NFS-e:
-//         1 - Cancelamento Extemporâneo Indeferido;
-//         2 - Cancelamento Extemporâneo Indeferido Sem Análise de Mérito.
+//
+//	1 - Cancelamento Extemporâneo Indeferido;
+//	2 - Cancelamento Extemporâneo Indeferido Sem Análise de Mérito.
 type TSCodJustAnaliseFiscalCancIndef string
 
 // TSNumProcAdmAnaliseFiscalCanc is Número do processo administrativo municipal vinculado à solicitação de cancelamento extemporâneo de NFS-e.
 type TSNumProcAdmAnaliseFiscalCanc string
 
 // TSCodAutorManifestacao is Tipo do autor da manifestação da NFS-e:
-//         1 - Prestador;
-//         2 - Tomador;
-//         3 - Intermediário.
+//
+//	1 - Prestador;
+//	2 - Tomador;
+//	3 - Intermediário.
 type TSCodAutorManifestacao string
 
 // TSMotivo is Descrição do motivo da substituição da NFS-e
@@ -133,9 +146,10 @@ type TSCAEPF string
 type TSNIF string
 
 // TSCodNaoNIF is Motivo para não informação do NIF:
-//         0 - Não informado na nota de origem;
-//         1 - Dispensado do NIF;
-//         2 - Não exigência do NIF;
+//
+//	0 - Não informado na nota de origem;
+//	1 - Dispensado do NIF;
+//	2 - Não exigência do NIF;
 type TSCodNaoNIF string
 
 // TSInscMun ...
@@ -178,8 +192,9 @@ type TSEstadoProvRegiao string
 type TSEnderCompletoExt string
 
 // TSTelefone is Número do telefone do prestador:
-//         Preencher com o Código DDD + número do telefone.
-//         Nas operações com exterior é permitido informar o código do país + código da localidade + número do telefone
+//
+//	Preencher com o Código DDD + número do telefone.
+//	Nas operações com exterior é permitido informar o código do país + código da localidade + número do telefone
 type TSTelefone string
 
 // TSEmail ...
@@ -192,85 +207,91 @@ type TCCodTribMun string
 type TSCodMoeda string
 
 // TSModoPrestacao is Modo de Prestação:
-//         0 - Desconhecido (tipo não informado na nota de origem);
-//         1 - Transfronteiriço;
-//         2 - Consumo no Brasil;
-//         3 - Presença Comercial no Exterior;
-//         4 - Movimento Temporário de Pessoas Físicas;
+//
+//	0 - Desconhecido (tipo não informado na nota de origem);
+//	1 - Transfronteiriço;
+//	2 - Consumo no Brasil;
+//	3 - Presença Comercial no Exterior;
+//	4 - Movimento Temporário de Pessoas Físicas;
 type TSModoPrestacao string
 
 // TSVincPrest is Vínculo entre as partes no negócio:
-//         0 - Sem vínculo com o tomador/ Prestador
-//         1 - Controlada;
-//         2 - Controladora;
-//         3 - Coligada;
-//         4 - Matriz;
-//         5 - Filial ou sucursal;
-//         6 - Outro vínculo;
+//
+//	0 - Sem vínculo com o tomador/ Prestador
+//	1 - Controlada;
+//	2 - Controladora;
+//	3 - Coligada;
+//	4 - Matriz;
+//	5 - Filial ou sucursal;
+//	6 - Outro vínculo;
 type TSVincPrest string
 
 // TSMecAFComExPrest is Mecanismo de apoio/fomento ao Comércio Exterior utilizado pelo prestador do serviço:
-//         00 - Desconhecido (tipo não informado na nota de origem);
-//         01 - Nenhum;
-//         02 - ACC - Adiantamento sobre Contrato de Câmbio – Redução a Zero do IR e do IOF;
-//         03 - ACE – Adiantamento sobre Cambiais Entregues - Redução a Zero do IR e do IOF;
-//         04 - BNDES-Exim Pós-Embarque – Serviços;
-//         05 - BNDES-Exim Pré-Embarque - Serviços;
-//         06 - FGE - Fundo de Garantia à Exportação;
-//         07 - PROEX - EQUALIZAÇÃO
-//         08 - PROEX - Financiamento;
+//
+//	00 - Desconhecido (tipo não informado na nota de origem);
+//	01 - Nenhum;
+//	02 - ACC - Adiantamento sobre Contrato de Câmbio – Redução a Zero do IR e do IOF;
+//	03 - ACE – Adiantamento sobre Cambiais Entregues - Redução a Zero do IR e do IOF;
+//	04 - BNDES-Exim Pós-Embarque – Serviços;
+//	05 - BNDES-Exim Pré-Embarque - Serviços;
+//	06 - FGE - Fundo de Garantia à Exportação;
+//	07 - PROEX - EQUALIZAÇÃO
+//	08 - PROEX - Financiamento;
 type TSMecAFComExPrest string
 
 // TSMecAFComExToma is Mecanismo de apoio/fomento ao Comércio Exterior utilizado pelo tomador do serviço:
-//         00 - Desconhecido (tipo não informado na nota de origem);
-//         01 - Nenhum;
-//         02 - Adm. Pública e Repr. Internacional;
-//         03 - Alugueis e Arrend. Mercantil de maquinas, equip., embarc. e aeronaves;
-//         04 - Arrendamento Mercantil de aeronave para empresa de transporte aéreo público;
-//         05 - Comissão a agentes externos na exportação;
-//         06 - Despesas de armazenagem, mov. e transporte de carga no exterior;
-//         07 - Eventos FIFA (subsidiária);
-//         08 - Eventos FIFA;
-//         09 - Fretes, arrendamentos de embarcações ou aeronaves e outros;
-//         10 - Material Aeronáutico;
-//         11 - Promoção de Bens no Exterior;
-//         12 - Promoção de Dest. Turísticos Brasileiros;
-//         13 - Promoção do Brasil no Exterior;
-//         14 - Promoção Serviços no Exterior;
-//         15 - RECINE;
-//         16 - RECOPA;
-//         17 - Registro e Manutenção de marcas, patentes e cultivares;
-//         18 - REICOMP;
-//         19 - REIDI;
-//         20 - REPENEC;
-//         21 - REPES;
-//         22 - RETAERO;
-//         23 - RETID;
-//         24 - Royalties, Assistência Técnica, Científica e Assemelhados;
-//         25 - Serviços de avaliação da conformidade vinculados aos Acordos da OMC;
-//         26 - ZPE;
+//
+//	00 - Desconhecido (tipo não informado na nota de origem);
+//	01 - Nenhum;
+//	02 - Adm. Pública e Repr. Internacional;
+//	03 - Alugueis e Arrend. Mercantil de maquinas, equip., embarc. e aeronaves;
+//	04 - Arrendamento Mercantil de aeronave para empresa de transporte aéreo público;
+//	05 - Comissão a agentes externos na exportação;
+//	06 - Despesas de armazenagem, mov. e transporte de carga no exterior;
+//	07 - Eventos FIFA (subsidiária);
+//	08 - Eventos FIFA;
+//	09 - Fretes, arrendamentos de embarcações ou aeronaves e outros;
+//	10 - Material Aeronáutico;
+//	11 - Promoção de Bens no Exterior;
+//	12 - Promoção de Dest. Turísticos Brasileiros;
+//	13 - Promoção do Brasil no Exterior;
+//	14 - Promoção Serviços no Exterior;
+//	15 - RECINE;
+//	16 - RECOPA;
+//	17 - Registro e Manutenção de marcas, patentes e cultivares;
+//	18 - REICOMP;
+//	19 - REIDI;
+//	20 - REPENEC;
+//	21 - REPES;
+//	22 - RETAERO;
+//	23 - RETID;
+//	24 - Royalties, Assistência Técnica, Científica e Assemelhados;
+//	25 - Serviços de avaliação da conformidade vinculados aos Acordos da OMC;
+//	26 - ZPE;
 type TSMecAFComExToma string
 
 // TSMovTempBens is Operação está vinculada à Movimentação Temporária de Bens:
-//         0 - Desconhecido (tipo não informado na nota de origem);
-//         1 - Não
-//         2 - Vinculada - Declaração de Importação
-//         3 - Vinculada - Declaração de Exportação
+//
+//	0 - Desconhecido (tipo não informado na nota de origem);
+//	1 - Não
+//	2 - Vinculada - Declaração de Importação
+//	3 - Vinculada - Declaração de Exportação
 type TSMovTempBens string
 
 // TSCategVeic is Categorias de veículos para cobrança:
-//         00 - Categoria de Veículos (tipo não informado na nota de origem);
-//         01 - Automóvel, caminhonete e furgão;
-//         02 - Caminhão leve, ônibus, caminhão trator e furgão;
-//         03 - Automóvel e caminhonete com semireboque;
-//         04 - Caminhão, caminhão-trator, caminhão-trator com semi-reboque e ônibus;
-//         05 - Automóvel e caminhonete com reboque;
-//         06 - Caminhão com reboque e caminhãotrator com semi-reboque;
-//         07 - Caminhão com reboque e caminhãotrator com semi-reboque;
-//         08 - Caminhão com reboque e caminhãotrator com semi-reboque;
-//         09 - Motocicletas, motonetas e bicicletas motorizadas;
-//         10 - Veículo especial;
-//         11 - Veículo Isento;
+//
+//	00 - Categoria de Veículos (tipo não informado na nota de origem);
+//	01 - Automóvel, caminhonete e furgão;
+//	02 - Caminhão leve, ônibus, caminhão trator e furgão;
+//	03 - Automóvel e caminhonete com semireboque;
+//	04 - Caminhão, caminhão-trator, caminhão-trator com semi-reboque e ônibus;
+//	05 - Automóvel e caminhonete com reboque;
+//	06 - Caminhão com reboque e caminhãotrator com semi-reboque;
+//	07 - Caminhão com reboque e caminhãotrator com semi-reboque;
+//	08 - Caminhão com reboque e caminhãotrator com semi-reboque;
+//	09 - Motocicletas, motonetas e bicicletas motorizadas;
+//	10 - Veículo especial;
+//	11 - Veículo Isento;
 type TSCategVeic string
 
 // TSNumDocImport is Número da Declaração de Importação (DI/DSI/DA/DRI-E) averbado
@@ -280,8 +301,9 @@ type TSNumDocImport string
 type TSNumRegExport string
 
 // TSEnvMDIC is Compartilhar as informações da NFS-e gerada a partir desta DPS com a Secretaria de Comércio Exterior:
-//         0 - Não enviar para o MDIC;
-//         1 - Enviar para o MDIC;
+//
+//	0 - Não enviar para o MDIC;
+//	1 - Enviar para o MDIC;
 type TSEnvMDIC string
 
 // TSPlaca ...
@@ -297,8 +319,9 @@ type TSCodContrato string
 type TSNumEixos string
 
 // TSRodagem is Tipo de rodagem:
-//         1 - Simples;
-//         2 - Dupla;
+//
+//	1 - Simples;
+//	2 - Dupla;
 type TSRodagem string
 
 // TSSentido is Orientação de passagem do veículo: ângulo em graus a partir do norte geográfico em sentido horário, número inteiro de 0 a 359, onde 0º seria o norte, 90º o leste, 180º o sul, 270º o oeste. Precisão mínima de 10
@@ -326,122 +349,137 @@ type TSCodVerificacao string
 type TSSerieNFNFS string
 
 // TSIdeDedRed is Identificação da Dedução/Redução:
-//         1 – Alimentação e bebidas/frigobar;
-//         2 – Materiais;
-//         3 – Produção externa;
-//         4 – Reembolso de despesas;
-//         5 – Repasse consorciado;
-//         6 – Repasse plano de saúde;
-//         7 – Serviços;
-//         8 – Subempreitada de mão de obra;
-//         99 – Outras deduções;
+//
+//	1 – Alimentação e bebidas/frigobar;
+//	2 – Materiais;
+//	3 – Produção externa;
+//	4 – Reembolso de despesas;
+//	5 – Repasse consorciado;
+//	6 – Repasse plano de saúde;
+//	7 – Serviços;
+//	8 – Subempreitada de mão de obra;
+//	99 – Outras deduções;
 type TSIdeDedRed string
 
 // TSDescOutDedRed is Descrição da Dedução/Redução quando a opção é "99 – Outras Deduções"
 type TSDescOutDedRed string
 
 // TSOpTipoBM is Tipo do Benefício Municipal:
-//         1 - Alíquota Diferenciada;
-//         2 - Redução da BC;
-//         3 - Isenção;
+//
+//	1 - Alíquota Diferenciada;
+//	2 - Redução da BC;
+//	3 - Isenção;
 type TSOpTipoBM string
 
 // TSNumBeneficioMunicipal is Identificador do benefício municipal parametrizado pelo município
 type TSNumBeneficioMunicipal string
 
 // TSOpExigSuspensa is Opção para Exigibilidade Suspensa:
-//         1 - Exigibilidade Suspensa por Decisão Judicial;
-//         2 - Exigibilidade Suspensa por Processo Administrativo;
+//
+//	1 - Exigibilidade Suspensa por Decisão Judicial;
+//	2 - Exigibilidade Suspensa por Processo Administrativo;
 type TSOpExigSuspensa string
 
 // TSNumProcExigSuspensa is Número do processo judicial ou administrativo de suspensão da exigibilidade
 type TSNumProcExigSuspensa string
 
 // TSOpSimpNac is Situação perante o Simples Nacional:
-//         1 - Não Optante;
-//         2 - Optante - Microempreendedor Individual (MEI);
-//         3 - Optante - Microempresa ou Empresa de Pequeno Porte (ME/EPP);
+//
+//	1 - Não Optante;
+//	2 - Optante - Microempreendedor Individual (MEI);
+//	3 - Optante - Microempresa ou Empresa de Pequeno Porte (ME/EPP);
 type TSOpSimpNac string
 
 // TSRegimeApuracaoSimpNac is Opção para que o contribuinte optante pelo Simples Nacional ME/EPP (opSimpNac = 3) possa indicar, ao emitir o documento fiscal, em qual regime de apuração os tributos federais e municipal estão inseridos, caso tenha ultrapassado algum sublimite ou limite definido para o Simples Nacional.
-//         1 – Regime de apuração dos tributos federais e municipal pelo SN;
-//         2 – Regime de apuração dos tributos federais pelo SN e ISSQN  por fora do SN conforme respectiva legislação municipal do tributo;
-//         3 – Regime de apuração dos tributos federais e municipal por fora do SN conforme respectivas legilações federal e municipal de cada tributo;
+//
+//	1 – Regime de apuração dos tributos federais e municipal pelo SN;
+//	2 – Regime de apuração dos tributos federais pelo SN e ISSQN  por fora do SN conforme respectiva legislação municipal do tributo;
+//	3 – Regime de apuração dos tributos federais e municipal por fora do SN conforme respectivas legilações federal e municipal de cada tributo;
 type TSRegimeApuracaoSimpNac string
 
 // TSOpSNLimUltrap is Opção que indica se o limite do Simples Nacional foi ultrapassado:
-//         0 - Não ultrapassado;
-//         1 - Ultrapassado;
+//
+//	0 - Não ultrapassado;
+//	1 - Ultrapassado;
 type TSOpSNLimUltrap string
 
 // TSRegEspTrib is Tipos de Regimes Especiais de Tributação:
-//         0 - Nenhum;
-//         1 - Ato Cooperado (Cooperativa);
-//         2 - Estimativa;
-//         3 - Microempresa Municipal;
-//         4 - Notário ou Registrador;
-//         5 - Profissional Autônomo;
-//         6 - Sociedade de Profissionais;
+//
+//	0 - Nenhum;
+//	1 - Ato Cooperado (Cooperativa);
+//	2 - Estimativa;
+//	3 - Microempresa Municipal;
+//	4 - Notário ou Registrador;
+//	5 - Profissional Autônomo;
+//	6 - Sociedade de Profissionais;
 type TSRegEspTrib string
 
 // TSTribISSQN is Tributação do ISSQN sobre o serviço prestado:
-//         1 - Operação tributável;
-//         2 - Exportação de serviço;
-//         3 - Não Incidência;
-//         4 - Imunidade;
+//
+//	1 - Operação tributável;
+//	2 - Exportação de serviço;
+//	3 - Não Incidência;
+//	4 - Imunidade;
 type TSTribISSQN string
 
 // TSNumProcesso is Número do processo judicial ou administrativo de suspensão da exigibilidade.
 type TSNumProcesso string
 
 // TSTipoImunidadeISSQN is Identificação da Imunidade do ISSQN – somente para o caso de Imunidade.
-//         Tipos de Imunidades:
-//         0 - Imunidade (tipo não informado na nota de origem);
-//         1 - Patrimônio, renda ou serviços, uns dos outros (CF88, Art 150, VI, a);
-//         2 - Templos de qualquer culto (CF88, Art 150, VI, b);
-//         3 - Patrimônio, renda ou serviços dos partidos políticos, inclusive suas fundações, das entidades sindicais dos trabalhadores, das instituições de        educação e de assistência social, sem fins lucrativos, atendidos os requisitos da lei (CF88, Art 150, VI, c);
-//         4 - Livros, jornais, periódicos e o papel destinado a sua impressão (CF88, Art 150, VI, d);
-//         5 - Fonogramas e videofonogramas musicais produzidos no Brasil contendo obras musicais ou literomusicais de autores brasileiros e/ou obras em geral interpretadas por artistas brasileiros bem como os suportes materiais ou arquivos digitais que os contenham, salvo na etapa de replicação industrial de mídias ópticas de leitura a laser.   (CF88, Art 150, VI, e);
+//
+//	Tipos de Imunidades:
+//	0 - Imunidade (tipo não informado na nota de origem);
+//	1 - Patrimônio, renda ou serviços, uns dos outros (CF88, Art 150, VI, a);
+//	2 - Templos de qualquer culto (CF88, Art 150, VI, b);
+//	3 - Patrimônio, renda ou serviços dos partidos políticos, inclusive suas fundações, das entidades sindicais dos trabalhadores, das instituições de        educação e de assistência social, sem fins lucrativos, atendidos os requisitos da lei (CF88, Art 150, VI, c);
+//	4 - Livros, jornais, periódicos e o papel destinado a sua impressão (CF88, Art 150, VI, d);
+//	5 - Fonogramas e videofonogramas musicais produzidos no Brasil contendo obras musicais ou literomusicais de autores brasileiros e/ou obras em geral interpretadas por artistas brasileiros bem como os suportes materiais ou arquivos digitais que os contenham, salvo na etapa de replicação industrial de mídias ópticas de leitura a laser.   (CF88, Art 150, VI, e);
 type TSTipoImunidadeISSQN string
 
 // TSTipoRetISSQN is Tipo de retencao do ISSQN:
-//         1 - Não Retido;
-//         2 - Retido pelo Tomador;
-//         3 - Retido pelo Intermediario;
+//
+//	1 - Não Retido;
+//	2 - Retido pelo Tomador;
+//	3 - Retido pelo Intermediario;
 type TSTipoRetISSQN string
 
 // TSTipoCST is Código de Situação Tributária do PIS/COFINS (CST):
-//         00 - Nenhum;
-//         01 - Operação Tributável com Alíquota Básica;
-//         02 - Operação Tributável com Alíquota Diferenciada;
-//         03 - Operação Tributável com Alíquota por Unidade de Medida de Produto;
-//         04 - Operação Tributável monofásica - Revenda a Alíquota Zero;
-//         05 - Operação Tributável por Substituição Tributária;
-//         06 - Operação Tributável a Alíquota Zero;
-//         07 - Operação Tributável da Contribuição;
-//         08 - Operação sem Incidência da Contribuição;
-//         09 - Operação com Suspensão da Contribuição;
+//
+//	00 - Nenhum;
+//	01 - Operação Tributável com Alíquota Básica;
+//	02 - Operação Tributável com Alíquota Diferenciada;
+//	03 - Operação Tributável com Alíquota por Unidade de Medida de Produto;
+//	04 - Operação Tributável monofásica - Revenda a Alíquota Zero;
+//	05 - Operação Tributável por Substituição Tributária;
+//	06 - Operação Tributável a Alíquota Zero;
+//	07 - Operação Tributável da Contribuição;
+//	08 - Operação sem Incidência da Contribuição;
+//	09 - Operação com Suspensão da Contribuição;
 type TSTipoCST string
 
 // TSOpConsumServ is Opção para que o emitente informe onde ocorreu o consumo do serviço prestado.
-//         0 - Consumo do serviço prestado ocorrido no município do local da prestação;
-//         1 - Consumo do serviço prestado ocorrido ocorrido no exterior ;
+//
+//	0 - Consumo do serviço prestado ocorrido no município do local da prestação;
+//	1 - Consumo do serviço prestado ocorrido ocorrido no exterior ;
 type TSOpConsumServ string
 
 // TSTipoRetPISCofins is Tipo de retencao do Pis/Cofins:
-//         1 - Retido;
-//         2 - Não Retido;
+//
+//	1 - Retido;
+//	2 - Não Retido;
 type TSTipoRetPISCofins string
 
 // TSTipoIndTotTrib is Indicador de informação de valor total de tributos. Possui valor fixo igual a zero (indTotTrib=0).
-//         Não informar nenhum valor estimado para os Tributos (Decreto 8.264/2014).
-//         0 - Não;
+//
+//	Não informar nenhum valor estimado para os Tributos (Decreto 8.264/2014).
+//	0 - Não;
 type TSTipoIndTotTrib string
 
 // TStat is 100 - NFS-e Gerada;
-//         101 - NFS-e de Substituição Gerada;
-//         102 - NFS-e de Decisão Judicial;
-//         103 - NFS-e Avulsa;"
+//
+//	101 - NFS-e de Substituição Gerada;
+//	102 - NFS-e de Decisão Judicial;
+//	103 - NFS-e Avulsa;"
 type TStat string
 
 // TSNumDPS is Tipo Número do DPS
@@ -460,7 +498,8 @@ type TSCodMunIBGE string
 type TSCodPaisISO string
 
 // TSCodTribNac is Código de tributação nacional do ISSQN:
-//         Regra de formação - 6 dígitos numéricos sendo: 2 para Item (LC 116/2003), 2 para Subitem (LC 116/2003) e 2 para Desdobro Nacional
+//
+//	Regra de formação - 6 dígitos numéricos sendo: 2 para Item (LC 116/2003), 2 para Subitem (LC 116/2003) e 2 para Desdobro Nacional
 type TSCodTribNac string
 
 // TSCodNBS is Código da lista de Nomenclatura Brasileira de Serviços (NBS)
@@ -512,7 +551,8 @@ type TSNum14Dig string
 type TSNum15Dig string
 
 // TSIdPedRefEvt is O identificador do pedido de registro do evento é formado conforme a concatenação dos seguintes campos:
-//         "PRE" + Chave de Acesso NFS-e + Tipo do evento + Número do Pedido de Registro do Evento (nPedRegEvento)
+//
+//	"PRE" + Chave de Acesso NFS-e + Tipo do evento + Número do Pedido de Registro do Evento (nPedRegEvento)
 type TSIdPedRefEvt string
 
 // TSIdEvento is Identificador do evento: "EVT" + Chave de acesso(50) Tipo do evento (6) + Pedido de Registro do Evento(3) (nPedRegEvento)
@@ -534,25 +574,28 @@ type TSSituacaoCadastroContribuinte string
 type TSMotivoSituacaoCadastroContribuinte string
 
 // TSSituacaoEmissaoNFSE is Situação Emissão NFS-e:
-//         0 - Não Habilitado;
-//         1 - Habilitado;
+//
+//	0 - Não Habilitado;
+//	1 - Habilitado;
 type TSSituacaoEmissaoNFSE string
 
 // TSCategoriaServico is Categorias do serviço:
-//         1 - Locação;
-//         2 - Sublocação;
-//         3 - Arrendamento;
-//         4 - Direito de passagem;
-//         5 - Permissão de uso;
+//
+//	1 - Locação;
+//	2 - Sublocação;
+//	3 - Arrendamento;
+//	4 - Direito de passagem;
+//	5 - Permissão de uso;
 type TSCategoriaServico string
 
 // TCObjetoLocacao is Tipo de objetos da locação, sublocação, arrendamento, direito de passagem ou permissão de uso:
-//         1 - Ferrovia;
-//         2 - Rodovia;
-//         3 - Postes;
-//         4 - Cabos;
-//         5 - Dutos;
-//         6 - Condutos de qualquer natureza;
+//
+//	1 - Ferrovia;
+//	2 - Rodovia;
+//	3 - Postes;
+//	4 - Cabos;
+//	5 - Dutos;
+//	6 - Condutos de qualquer natureza;
 type TCObjetoLocacao string
 
 // TSExtensaoTotal is Extensão total da ferrovia, rodovia, cabos, dutos ou condutos

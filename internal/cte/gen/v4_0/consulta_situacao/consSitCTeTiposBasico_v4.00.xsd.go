@@ -8,34 +8,34 @@ import (
 
 // TAnonComplexProtCTe1 is Retornar protCTe da versão correspondente do CT-e autorizado
 type TAnonComplexProtCTe1 struct {
-	XMLName		xml.Name	`xml:"protCTe" json:"-"`
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	XMLName    xml.Name `xml:"protCTe" json:"-"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
 }
 
 // TAnonComplexProcEventoCTe1 is Retornar procEventoCTe da versão correspondente do evento CT-e autorizado
 type TAnonComplexProcEventoCTe1 struct {
-	XMLName		xml.Name	`xml:"procEventoCTe" json:"-"`
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
+	XMLName    xml.Name `xml:"procEventoCTe" json:"-"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
 }
 
 // TConsSitCTe is Tipo Pedido de Consulta da Situação Atual do Conhecimento de Transporte eletrônico
 type TConsSitCTe struct {
-	VersaoAttr	string	`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string	`xml:"tpAmb" json:"tpAmb,omitempty"`
-	XServ		string	`xml:"xServ" json:"xServ,omitempty"`
-	ChCTe		string	`xml:"chCTe" json:"chCTe,omitempty"`
+	VersaoAttr string `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ      string `xml:"xServ" json:"xServ,omitempty"`
+	ChCTe      string `xml:"chCTe" json:"chCTe,omitempty"`
 }
 
 // TRetConsSitCTe is Tipo Retorno de Pedido de Consulta da Situação Atual do Conhecimento de Transporte eletrônico
 type TRetConsSitCTe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		string		`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	ProtCTe		*string		`xml:"protCTe" json:"protCTe,omitempty"`
-	ProcEventoCTe	[]string	`xml:"procEventoCTe" json:"procEventoCTe,omitempty"`
+	VersaoAttr    string        `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb         string        `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic      string        `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat         string        `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo       string        `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF           string        `xml:"cUF" json:"cUF,omitempty"`
+	ProtCTe       *string       `xml:"protCTe" json:"protCTe,omitempty"`
+	ProcEventoCTe []interface{} `xml:"procEventoCTe" json:"procEventoCTe,omitempty"`
 }
 
 // TVerConsSitCTe is Tipo Versão do Consulta situação de CT-e - 4.00

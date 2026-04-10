@@ -26,19 +26,19 @@ type TAnonHashTentativaEntrega1 string
 
 // TAnonComplexDetEvento1 is Data e hora da geração do hash da tentativa de entrega. Formato AAAA-MMDDThh:mm:ssTZD.
 type TAnonComplexDetEvento1 struct {
-	XMLName			xml.Name	`xml:"detEvento" json:"-"`
-	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
-	DescEvento		string		`xml:"descEvento" json:"descEvento,omitempty"`
-	COrgaoAutor		string		`xml:"cOrgaoAutor" json:"cOrgaoAutor,omitempty"`
-	VerAplic		*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	DhTentativaEntrega	string		`xml:"dhTentativaEntrega" json:"dhTentativaEntrega,omitempty"`
-	NTentativa		*string		`xml:"nTentativa" json:"nTentativa,omitempty"`
-	TpMotivo		string		`xml:"tpMotivo" json:"tpMotivo,omitempty"`
-	XJustMotivo		*string		`xml:"xJustMotivo" json:"xJustMotivo,omitempty"`
-	LatGPS			*string		`xml:"latGPS" json:"latGPS,omitempty"`
-	LongGPS			*string		`xml:"longGPS" json:"longGPS,omitempty"`
-	HashTentativaEntrega	string		`xml:"hashTentativaEntrega" json:"hashTentativaEntrega,omitempty"`
-	DhHashTentativaEntrega	*string		`xml:"dhHashTentativaEntrega" json:"dhHashTentativaEntrega,omitempty"`
+	XMLName                xml.Name `xml:"detEvento" json:"-"`
+	VersaoAttr             string   `xml:"versao,attr" json:"versao,omitempty"`
+	DescEvento             string   `xml:"descEvento" json:"descEvento,omitempty"`
+	COrgaoAutor            string   `xml:"cOrgaoAutor" json:"cOrgaoAutor,omitempty"`
+	VerAplic               *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	DhTentativaEntrega     string   `xml:"dhTentativaEntrega" json:"dhTentativaEntrega,omitempty"`
+	NTentativa             *string  `xml:"nTentativa" json:"nTentativa,omitempty"`
+	TpMotivo               string   `xml:"tpMotivo" json:"tpMotivo,omitempty"`
+	XJustMotivo            *string  `xml:"xJustMotivo" json:"xJustMotivo,omitempty"`
+	LatGPS                 *string  `xml:"latGPS" json:"latGPS,omitempty"`
+	LongGPS                *string  `xml:"longGPS" json:"longGPS,omitempty"`
+	HashTentativaEntrega   string   `xml:"hashTentativaEntrega" json:"hashTentativaEntrega,omitempty"`
+	DhHashTentativaEntrega *string  `xml:"dhHashTentativaEntrega" json:"dhHashTentativaEntrega,omitempty"`
 }
 
 // DetEvento is Schema XML de validação do evento de Comprovante de Entrega da NF-e

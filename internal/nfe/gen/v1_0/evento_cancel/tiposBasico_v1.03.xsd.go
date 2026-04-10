@@ -104,7 +104,9 @@ type TSerie string
 // Tpais is Tipo Código do Pais
 // // PL_005d - 11/08/09
 // eliminado:
-//  4235-LEBUAN, ILHAS -
+//
+//	4235-LEBUAN, ILHAS -
+//
 // acrescentado:
 // 7200 SAO TOME E PRINCIPE, ILHAS,
 // 8958 ZONA DO CANAL DO PANAMA
@@ -112,12 +114,16 @@ type TSerie string
 // 9946 A DESIGNAR
 // 9950 BANCOS CENTRAIS
 // 9970 ORGANIZACOES INTERNACIONAIS
-//  // PL_005b - 24/10/08
-//  // Acrescentado:
-//  4235 - LEBUAN,ILHAS
-//  4885 - MAYOTTE (ILHAS FRANCESAS)
+//
+//	// PL_005b - 24/10/08
+//	// Acrescentado:
+//	4235 - LEBUAN,ILHAS
+//	4885 - MAYOTTE (ILHAS FRANCESAS)
+//
 // // NT2011/004
-//  acrescentado a tabela de paises
+//
+//	acrescentado a tabela de paises
+//
 // //PL_006t - 21/03/2014
 // acrescentado:
 // 5780 - Palestina

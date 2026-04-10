@@ -29,24 +29,24 @@ type TAnonDhHashTentativaEntrega1 string
 
 // TAnonComplexInfEntrega1 is Chave de acesso da NF-e com insucesso na tentativa de entrega
 type TAnonComplexInfEntrega1 struct {
-	XMLName	xml.Name	`xml:"infEntrega" json:"-"`
-	ChNFe	string		`xml:"chNFe" json:"chNFe,omitempty"`
+	XMLName xml.Name `xml:"infEntrega" json:"-"`
+	ChNFe   string   `xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TAnonComplexEvIECTe1 is Informar o grupo apenas para CT-e com tipo de serviço Normal
 type TAnonComplexEvIECTe1 struct {
-	XMLName			xml.Name			`xml:"evIECTe" json:"-"`
-	DescEvento		string				`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt			string				`xml:"nProt" json:"nProt,omitempty"`
-	DhTentativaEntrega	string				`xml:"dhTentativaEntrega" json:"dhTentativaEntrega,omitempty"`
-	NTentativa		*string				`xml:"nTentativa" json:"nTentativa,omitempty"`
-	TpMotivo		string				`xml:"tpMotivo" json:"tpMotivo,omitempty"`
-	XJustMotivo		*string				`xml:"xJustMotivo" json:"xJustMotivo,omitempty"`
-	Latitude		*string				`xml:"latitude" json:"latitude,omitempty"`
-	Longitude		*string				`xml:"longitude" json:"longitude,omitempty"`
-	HashTentativaEntrega	*string				`xml:"hashTentativaEntrega" json:"hashTentativaEntrega,omitempty"`
-	DhHashTentativaEntrega	*string				`xml:"dhHashTentativaEntrega" json:"dhHashTentativaEntrega,omitempty"`
-	InfEntrega		[]*TAnonComplexInfEntrega1	`xml:"infEntrega" json:"infEntrega,omitempty"`
+	XMLName                xml.Name                   `xml:"evIECTe" json:"-"`
+	DescEvento             string                     `xml:"descEvento" json:"descEvento,omitempty"`
+	NProt                  string                     `xml:"nProt" json:"nProt,omitempty"`
+	DhTentativaEntrega     string                     `xml:"dhTentativaEntrega" json:"dhTentativaEntrega,omitempty"`
+	NTentativa             *string                    `xml:"nTentativa" json:"nTentativa,omitempty"`
+	TpMotivo               string                     `xml:"tpMotivo" json:"tpMotivo,omitempty"`
+	XJustMotivo            *string                    `xml:"xJustMotivo" json:"xJustMotivo,omitempty"`
+	Latitude               *string                    `xml:"latitude" json:"latitude,omitempty"`
+	Longitude              *string                    `xml:"longitude" json:"longitude,omitempty"`
+	HashTentativaEntrega   *string                    `xml:"hashTentativaEntrega" json:"hashTentativaEntrega,omitempty"`
+	DhHashTentativaEntrega *string                    `xml:"dhHashTentativaEntrega" json:"dhHashTentativaEntrega,omitempty"`
+	InfEntrega             []*TAnonComplexInfEntrega1 `xml:"infEntrega" json:"infEntrega,omitempty"`
 }
 
 // EvIECTe is Schema XML de validação do evento insucesso na entrega eletrônico do CT-e

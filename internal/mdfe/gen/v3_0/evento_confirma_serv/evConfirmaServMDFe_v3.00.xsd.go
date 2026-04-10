@@ -14,9 +14,9 @@ type TAnonDescEvento1 string
 // 2 posições ano;
 // 10 seqüencial no ano.
 type TAnonComplexEvConfirmaServMDFe1 struct {
-	XMLName		xml.Name	`xml:"evConfirmaServMDFe" json:"-"`
-	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt		string		`xml:"nProt" json:"nProt,omitempty"`
+	XMLName    xml.Name `xml:"evConfirmaServMDFe" json:"-"`
+	DescEvento string   `xml:"descEvento" json:"descEvento,omitempty"`
+	NProt      string   `xml:"nProt" json:"nProt,omitempty"`
 }
 
 // EvConfirmaServMDFe is Schema XML de validação do evento de confirmação do serviço de transporte 110117

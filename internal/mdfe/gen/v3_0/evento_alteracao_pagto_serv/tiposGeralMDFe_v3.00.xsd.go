@@ -172,8 +172,8 @@ type TIPv4 string
 
 // TRSAKeyValueType is Tipo que representa uma chave publica padrão RSA
 type TRSAKeyValueType struct {
-	Modulus		string	`xml:"Modulus" json:"Modulus,omitempty"`
-	Exponent	string	`xml:"Exponent" json:"Exponent,omitempty"`
+	Modulus  string `xml:"Modulus" json:"Modulus,omitempty"`
+	Exponent string `xml:"Exponent" json:"Exponent,omitempty"`
 }
 
 // TPlaca is Tipo Placa

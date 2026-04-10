@@ -17,6 +17,23 @@ import (
 
 const namespace = "http://www.portalfiscal.inf.br/bpe"
 
+var errSingleRoot = errors.New("marshal bpe: document must contain exactly one supported root")
+
+var parsersByRoot = map[string]func([]byte, string) (*Document, error){
+	"BPe":                parseBPe,
+	"BPeTM":              parseBPeTM,
+	"bpeProc":            parseBPeProc,
+	"bpeTMProc":          parseBPeTMProc,
+	"retBPe":             parseRetBPe,
+	"consSitBPe":         parseConsSitBPe,
+	"retConsSitBPe":      parseRetConsSitBPe,
+	"consStatServBPe":    parseConsStatServBPe,
+	"retConsStatServBPe": parseRetConsStatServBPe,
+	"eventoBPe":          func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseEventDocument) },
+	"retEventoBPe":       func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseRetEventDocument) },
+	"procEventoBPe":      func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseProcEventDocument) },
+}
+
 type Document struct {
 	VersaoAttr                  string                                    `json:"versao,omitempty"`
 	BPe                         *schema.TBPe                              `json:"BPe,omitempty"`
@@ -50,147 +67,26 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
 	}
-	encode := func(v any) error { return xmlutil.EncodeCanonical(e, v) }
 
 	switch d.RootName {
 	case "BPe", "":
-		if d.BPe != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName     xml.Name                        `xml:"BPe"`
-				XMLNS       string                          `xml:"xmlns,attr,omitempty"`
-				InfBPe      *schema.TAnonComplexInfBPe2     `xml:"infBPe"`
-				InfBPeSupl  *schema.TAnonComplexInfBPeSupl1 `xml:"infBPeSupl,omitempty"`
-				DsSignature *schema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-			return encode(root{
-				XMLName:     xml.Name{Local: "BPe"},
-				XMLNS:       namespace,
-				InfBPe:      d.BPe.InfBPe,
-				InfBPeSupl:  d.BPe.InfBPeSupl,
-				DsSignature: d.BPe.DsSignature,
-			})
-		}
+		return marshalBPe(e, d)
 	case "BPeTM":
-		if d.BPeTM != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName     xml.Name                    `xml:"BPeTM"`
-				XMLNS       string                      `xml:"xmlns,attr,omitempty"`
-				InfBPe      *schema.TAnonComplexInfBPe1 `xml:"infBPe"`
-				DsSignature *schema.SignatureType       `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
-			}
-			return encode(root{
-				XMLName:     xml.Name{Local: "BPeTM"},
-				XMLNS:       namespace,
-				InfBPe:      d.BPeTM.InfBPe,
-				DsSignature: d.BPeTM.DsSignature,
-			})
-		}
+		return marshalBPeTM(e, d)
 	case "bpeProc":
-		if d.BPeProc != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName           xml.Name         `xml:"bpeProc"`
-				XMLNS             string           `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string           `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string          `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string          `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string          `xml:"dhConexao,attr,omitempty"`
-				BPe               *schema.TBPe     `xml:"BPe"`
-				ProtBPe           *schema.TProtBPe `xml:"protBPe"`
-			}
-			return encode(root{
-				XMLName:           xml.Name{Local: "bpeProc"},
-				XMLNS:             namespace,
-				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.BPeProc.VersaoAttr),
-				IpTransmissorAttr: d.BPeProc.IpTransmissorAttr,
-				NPortaConAttr:     d.BPeProc.NPortaConAttr,
-				DhConexaoAttr:     d.BPeProc.DhConexaoAttr,
-				BPe:               d.BPeProc.BPe,
-				ProtBPe:           d.BPeProc.ProtBPe,
-			})
-		}
+		return marshalBPeProc(e, d)
 	case "bpeTMProc":
-		if d.BPeTMProc != nil && activeRootCount(d) == 1 {
-			type root struct {
-				XMLName           xml.Name         `xml:"bpeTMProc"`
-				XMLNS             string           `xml:"xmlns,attr,omitempty"`
-				VersaoAttr        string           `xml:"versao,attr,omitempty"`
-				IpTransmissorAttr *string          `xml:"ipTransmissor,attr,omitempty"`
-				NPortaConAttr     *string          `xml:"nPortaCon,attr,omitempty"`
-				DhConexaoAttr     *string          `xml:"dhConexao,attr,omitempty"`
-				BPeTM             *schema.TBPeTM   `xml:"BPeTM"`
-				ProtBPe           *schema.TProtBPe `xml:"protBPe"`
-			}
-			return encode(root{
-				XMLName:           xml.Name{Local: "bpeTMProc"},
-				XMLNS:             namespace,
-				VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.BPeTMProc.VersaoAttr),
-				IpTransmissorAttr: d.BPeTMProc.IpTransmissorAttr,
-				NPortaConAttr:     d.BPeTMProc.NPortaConAttr,
-				DhConexaoAttr:     d.BPeTMProc.DhConexaoAttr,
-				BPeTM:             d.BPeTMProc.BPeTM,
-				ProtBPe:           d.BPeTMProc.ProtBPe,
-			})
-		}
+		return marshalBPeTMProc(e, d)
 	case "retBPe":
-		if d.RetBPe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retBPe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*schema.TRetBPe
-			}{
-				XMLName: xml.Name{Local: "retBPe"},
-				XMLNS:   namespace,
-				TRetBPe: d.RetBPe,
-			})
-		}
+		return marshalRetBPe(e, d)
 	case "consSitBPe":
-		if d.ConsSitBPe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"consSitBPe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*schema.TConsSitBPe
-			}{
-				XMLName:     xml.Name{Local: "consSitBPe"},
-				XMLNS:       namespace,
-				TConsSitBPe: d.ConsSitBPe,
-			})
-		}
+		return marshalConsSitBPe(e, d)
 	case "retConsSitBPe":
-		if d.RetConsSitBPe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retConsSitBPe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*schema.TRetConsSitBPe
-			}{
-				XMLName:        xml.Name{Local: "retConsSitBPe"},
-				XMLNS:          namespace,
-				TRetConsSitBPe: d.RetConsSitBPe,
-			})
-		}
+		return marshalRetConsSitBPe(e, d)
 	case "consStatServBPe":
-		if d.ConsStatServBPe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"consStatServBPe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*schema.TConsStatServ
-			}{
-				XMLName:       xml.Name{Local: "consStatServBPe"},
-				XMLNS:         namespace,
-				TConsStatServ: d.ConsStatServBPe,
-			})
-		}
+		return marshalConsStatServBPe(e, d)
 	case "retConsStatServBPe":
-		if d.RetConsStatServBPe != nil && activeRootCount(d) == 1 {
-			return encode(struct {
-				XMLName xml.Name `xml:"retConsStatServBPe"`
-				XMLNS   string   `xml:"xmlns,attr,omitempty"`
-				*schema.TRetConsStatServ
-			}{
-				XMLName:          xml.Name{Local: "retConsStatServBPe"},
-				XMLNS:            namespace,
-				TRetConsStatServ: d.RetConsStatServBPe,
-			})
-		}
+		return marshalRetConsStatServBPe(e, d)
 	case "eventoBPe":
 		return marshalEventRoot(e, d)
 	case "retEventoBPe":
@@ -199,7 +95,173 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return marshalProcEventRoot(e, d)
 	}
 
-	return errors.New("marshal bpe: document must contain exactly one supported root")
+	return errSingleRoot
+}
+
+func marshalBPe(e *xml.Encoder, d *Document) error {
+	if d.BPe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName     xml.Name                        `xml:"BPe"`
+		XMLNS       string                          `xml:"xmlns,attr,omitempty"`
+		InfBPe      *schema.TAnonComplexInfBPe2     `xml:"infBPe"`
+		InfBPeSupl  *schema.TAnonComplexInfBPeSupl1 `xml:"infBPeSupl,omitempty"`
+		DsSignature *schema.SignatureType           `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:     xml.Name{Local: "BPe"},
+		XMLNS:       namespace,
+		InfBPe:      d.BPe.InfBPe,
+		InfBPeSupl:  d.BPe.InfBPeSupl,
+		DsSignature: d.BPe.DsSignature,
+	})
+}
+
+func marshalBPeTM(e *xml.Encoder, d *Document) error {
+	if d.BPeTM == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName     xml.Name                    `xml:"BPeTM"`
+		XMLNS       string                      `xml:"xmlns,attr,omitempty"`
+		InfBPe      *schema.TAnonComplexInfBPe1 `xml:"infBPe"`
+		DsSignature *schema.SignatureType       `xml:"http://www.w3.org/2000/09/xmldsig# Signature,omitempty"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:     xml.Name{Local: "BPeTM"},
+		XMLNS:       namespace,
+		InfBPe:      d.BPeTM.InfBPe,
+		DsSignature: d.BPeTM.DsSignature,
+	})
+}
+
+func marshalBPeProc(e *xml.Encoder, d *Document) error {
+	if d.BPeProc == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName           xml.Name         `xml:"bpeProc"`
+		XMLNS             string           `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string           `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string          `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string          `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string          `xml:"dhConexao,attr,omitempty"`
+		BPe               *schema.TBPe     `xml:"BPe"`
+		ProtBPe           *schema.TProtBPe `xml:"protBPe"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:           xml.Name{Local: "bpeProc"},
+		XMLNS:             namespace,
+		VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.BPeProc.VersaoAttr),
+		IpTransmissorAttr: d.BPeProc.IpTransmissorAttr,
+		NPortaConAttr:     d.BPeProc.NPortaConAttr,
+		DhConexaoAttr:     d.BPeProc.DhConexaoAttr,
+		BPe:               d.BPeProc.BPe,
+		ProtBPe:           d.BPeProc.ProtBPe,
+	})
+}
+
+func marshalBPeTMProc(e *xml.Encoder, d *Document) error {
+	if d.BPeTMProc == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	type root struct {
+		XMLName           xml.Name         `xml:"bpeTMProc"`
+		XMLNS             string           `xml:"xmlns,attr,omitempty"`
+		VersaoAttr        string           `xml:"versao,attr,omitempty"`
+		IpTransmissorAttr *string          `xml:"ipTransmissor,attr,omitempty"`
+		NPortaConAttr     *string          `xml:"nPortaCon,attr,omitempty"`
+		DhConexaoAttr     *string          `xml:"dhConexao,attr,omitempty"`
+		BPeTM             *schema.TBPeTM   `xml:"BPeTM"`
+		ProtBPe           *schema.TProtBPe `xml:"protBPe"`
+	}
+	return xmlutil.EncodeCanonical(e, root{
+		XMLName:           xml.Name{Local: "bpeTMProc"},
+		XMLNS:             namespace,
+		VersaoAttr:        xmlutil.FirstNonEmpty(d.VersaoAttr, d.BPeTMProc.VersaoAttr),
+		IpTransmissorAttr: d.BPeTMProc.IpTransmissorAttr,
+		NPortaConAttr:     d.BPeTMProc.NPortaConAttr,
+		DhConexaoAttr:     d.BPeTMProc.DhConexaoAttr,
+		BPeTM:             d.BPeTMProc.BPeTM,
+		ProtBPe:           d.BPeTMProc.ProtBPe,
+	})
+}
+
+func marshalRetBPe(e *xml.Encoder, d *Document) error {
+	if d.RetBPe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e,
+		struct {
+			XMLName xml.Name `xml:"retBPe"`
+			XMLNS   string   `xml:"xmlns,attr,omitempty"`
+			*schema.TRetBPe
+		}{
+			XMLName: xml.Name{Local: "retBPe"},
+			XMLNS:   namespace,
+			TRetBPe: d.RetBPe,
+		})
+}
+
+func marshalConsSitBPe(e *xml.Encoder, d *Document) error {
+	if d.ConsSitBPe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"consSitBPe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*schema.TConsSitBPe
+	}{
+		XMLName:     xml.Name{Local: "consSitBPe"},
+		XMLNS:       namespace,
+		TConsSitBPe: d.ConsSitBPe,
+	})
+}
+
+func marshalRetConsSitBPe(e *xml.Encoder, d *Document) error {
+	if d.RetConsSitBPe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retConsSitBPe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*schema.TRetConsSitBPe
+	}{
+		XMLName:        xml.Name{Local: "retConsSitBPe"},
+		XMLNS:          namespace,
+		TRetConsSitBPe: d.RetConsSitBPe,
+	})
+}
+
+func marshalConsStatServBPe(e *xml.Encoder, d *Document) error {
+	if d.ConsStatServBPe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"consStatServBPe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*schema.TConsStatServ
+	}{
+		XMLName:       xml.Name{Local: "consStatServBPe"},
+		XMLNS:         namespace,
+		TConsStatServ: d.ConsStatServBPe,
+	})
+}
+
+func marshalRetConsStatServBPe(e *xml.Encoder, d *Document) error {
+	if d.RetConsStatServBPe == nil || activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	return xmlutil.EncodeCanonical(e, struct {
+		XMLName xml.Name `xml:"retConsStatServBPe"`
+		XMLNS   string   `xml:"xmlns,attr,omitempty"`
+		*schema.TRetConsStatServ
+	}{
+		XMLName:          xml.Name{Local: "retConsStatServBPe"},
+		XMLNS:            namespace,
+		TRetConsStatServ: d.RetConsStatServBPe,
+	})
 }
 
 func Parse(data []byte) (*Document, error) {
@@ -213,130 +275,13 @@ func Parse(data []byte) (*Document, error) {
 		return nil, fmt.Errorf("parse bpe: read root: %w", rootErr)
 	}
 
-	switch RootName {
-	case "BPe":
-		var parsed schema.TBPe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode BPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: versionFromBPe(parsed.InfBPe), BPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "BPeTM":
-		var parsed schema.TBPeTM
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode BPeTM: %w", err)
-		}
-		doc := &Document{VersaoAttr: versionFromBPeTM(parsed.InfBPe), BPeTM: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "bpeProc":
-		var parsed schema.TAnonComplexBpeProc1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode bpeProc: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, BPeProc: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "bpeTMProc":
-		var parsed schema.TAnonComplexBpeTMProc1
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode bpeTMProc: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, BPeTMProc: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retBPe":
-		var parsed schema.TRetBPe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "consSitBPe":
-		var parsed schema.TConsSitBPe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode consSitBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsSitBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retConsSitBPe":
-		var parsed schema.TRetConsSitBPe
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retConsSitBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsSitBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "consStatServBPe":
-		var parsed schema.TConsStatServ
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode consStatServBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ConsStatServBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "retConsStatServBPe":
-		var parsed schema.TRetConsStatServ
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retConsStatServBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
-	case "eventoBPe":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe head: %w", err)
-		}
-		if tpEvento == "" {
-			return nil, errors.New("parse bpe: missing infEvento")
-		}
-		return parseEventDocument(data, RootName, tpEvento)
-	case "retEventoBPe":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe head: %w", err)
-		}
-		if tpEvento == "" {
-			return nil, errors.New("parse bpe: missing infEvento")
-		}
-		return parseRetEventDocument(data, RootName, tpEvento)
-	case "procEventoBPe":
-		tpEvento, err := eventTypeFromXML(data)
-		if err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe head: %w", err)
-		}
-		if tpEvento == "" {
-			return nil, errors.New("parse bpe: missing infEvento")
-		}
-		return parseProcEventDocument(data, RootName, tpEvento)
-	default:
-		if rootErr != nil {
-			return nil, fmt.Errorf("parse bpe: read root: %w", rootErr)
-		}
-		return nil, fmt.Errorf("parse bpe: unsupported root element %q", RootName)
+	if fn, ok := parsersByRoot[RootName]; ok {
+		return fn(data, RootName)
 	}
+	if rootErr != nil {
+		return nil, fmt.Errorf("parse bpe: read root: %w", rootErr)
+	}
+	return nil, fmt.Errorf("parse bpe: unsupported root element %q", RootName)
 }
 
 func ParseReader(r io.Reader) (*Document, error) {
@@ -345,6 +290,96 @@ func ParseReader(r io.Reader) (*Document, error) {
 		return nil, fmt.Errorf("parse bpe: read xml: %w", err)
 	}
 	return Parse(data)
+}
+
+func finalizeDoc(doc *Document) (*Document, error) {
+	if err := validateDocument(doc); err != nil {
+		return nil, err
+	}
+	return doc, nil
+}
+
+func parseBPe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TBPe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode BPe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: versionFromBPe(parsed.InfBPe), BPe: &parsed, RootName: rootName})
+}
+
+func parseBPeTM(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TBPeTM
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode BPeTM: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: versionFromBPeTM(parsed.InfBPe), BPeTM: &parsed, RootName: rootName})
+}
+
+func parseBPeProc(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TAnonComplexBpeProc1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode bpeProc: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, BPeProc: &parsed, RootName: rootName})
+}
+
+func parseBPeTMProc(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TAnonComplexBpeTMProc1
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode bpeTMProc: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, BPeTMProc: &parsed, RootName: rootName})
+}
+
+func parseRetBPe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TRetBPe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode retBPe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetBPe: &parsed, RootName: rootName})
+}
+
+func parseConsSitBPe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TConsSitBPe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode consSitBPe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsSitBPe: &parsed, RootName: rootName})
+}
+
+func parseRetConsSitBPe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TRetConsSitBPe
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode retConsSitBPe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetConsSitBPe: &parsed, RootName: rootName})
+}
+
+func parseConsStatServBPe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TConsStatServ
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode consStatServBPe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, ConsStatServBPe: &parsed, RootName: rootName})
+}
+
+func parseRetConsStatServBPe(data []byte, rootName string) (*Document, error) {
+	var parsed schema.TRetConsStatServ
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode retConsStatServBPe: %w", err)
+	}
+	return finalizeDoc(&Document{VersaoAttr: parsed.VersaoAttr, RetConsStatServBPe: &parsed, RootName: rootName})
+}
+
+func parseEventRoot(data []byte, rootName string, fn func([]byte, string, string) (*Document, error)) (*Document, error) {
+	tpEvento, err := eventTypeFromXML(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse bpe: decode %s head: %w", rootName, err)
+	}
+	if tpEvento == "" {
+		return nil, errors.New("parse bpe: missing infEvento")
+	}
+	return fn(data, rootName, tpEvento)
 }
 
 func eventTypeFromXML(data []byte) (string, error) {
@@ -367,88 +402,134 @@ func eventTypeFromXML(data []byte) (string, error) {
 	return head.EventoBPe.InfEvento.TpEvento, nil
 }
 
+var rootValidators = []func(*Document) error{
+	validateBPeRoot,
+	validateBPeTMRoot,
+	validateBPeProcRoot,
+	validateBPeTMProcRoot,
+	validateRetBPeRoot,
+	validateConsSitBPeRoot,
+	validateRetConsSitBPeRoot,
+	validateConsStatServBPeRoot,
+	validateRetConsStatServBPeRoot,
+	validateEventRoots,
+}
+
 func validateDocument(doc *Document) error {
 	if activeRootCount(doc) != 1 {
 		return errors.New("parse bpe: document must contain exactly one supported root")
 	}
+	for _, v := range rootValidators {
+		if err := v(doc); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
-	if doc.BPe != nil {
-		if err := validateInfBPe(doc.BPe.InfBPe); err != nil {
+func validateBPeRoot(doc *Document) error {
+	if doc.BPe == nil {
+		return nil
+	}
+	return validateInfBPe(doc.BPe.InfBPe)
+}
+
+func validateBPeTMRoot(doc *Document) error {
+	if doc.BPeTM == nil {
+		return nil
+	}
+	return validateInfBPeTM(doc.BPeTM.InfBPe)
+}
+
+func validateBPeProcRoot(doc *Document) error {
+	if doc.BPeProc == nil {
+		return nil
+	}
+	if doc.BPeProc.BPe == nil {
+		return errors.New("parse bpe: missing BPe")
+	}
+	if doc.BPeProc.ProtBPe == nil {
+		return errors.New("parse bpe: missing protBPe")
+	}
+	return nil
+}
+
+func validateBPeTMProcRoot(doc *Document) error {
+	if doc.BPeTMProc == nil {
+		return nil
+	}
+	if doc.BPeTMProc.BPeTM == nil {
+		return errors.New("parse bpe: missing BPeTM")
+	}
+	if doc.BPeTMProc.ProtBPe == nil {
+		return errors.New("parse bpe: missing protBPe")
+	}
+	return nil
+}
+
+func validateRetBPeRoot(doc *Document) error {
+	if doc.RetBPe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetBPe.TpAmb),
+		missing("cUF", doc.RetBPe.CUF),
+		missing("cStat", doc.RetBPe.CStat),
+	)
+}
+
+func validateConsSitBPeRoot(doc *Document) error {
+	if doc.ConsSitBPe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.ConsSitBPe.TpAmb),
+		missing("chBPe", doc.ConsSitBPe.ChBPe),
+	)
+}
+
+func validateRetConsSitBPeRoot(doc *Document) error {
+	if doc.RetConsSitBPe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetConsSitBPe.TpAmb),
+		missing("cUF", doc.RetConsSitBPe.CUF),
+		missing("cStat", doc.RetConsSitBPe.CStat),
+	)
+}
+
+func validateConsStatServBPeRoot(doc *Document) error {
+	if doc.ConsStatServBPe == nil {
+		return nil
+	}
+	return firstMissing(missing("tpAmb", doc.ConsStatServBPe.TpAmb))
+}
+
+func validateRetConsStatServBPeRoot(doc *Document) error {
+	if doc.RetConsStatServBPe == nil {
+		return nil
+	}
+	return firstMissing(
+		missing("tpAmb", doc.RetConsStatServBPe.TpAmb),
+		missing("cUF", doc.RetConsStatServBPe.CUF),
+		missing("cStat", doc.RetConsStatServBPe.CStat),
+		missing("dhRecbto", doc.RetConsStatServBPe.DhRecbto),
+	)
+}
+
+func missing(field, value string) error {
+	if value == "" {
+		return errors.New("parse bpe: missing " + field)
+	}
+	return nil
+}
+
+func firstMissing(errs ...error) error {
+	for _, err := range errs {
+		if err != nil {
 			return err
 		}
-	}
-	if doc.BPeTM != nil {
-		if err := validateInfBPeTM(doc.BPeTM.InfBPe); err != nil {
-			return err
-		}
-	}
-	if doc.BPeProc != nil {
-		if doc.BPeProc.BPe == nil {
-			return errors.New("parse bpe: missing BPe")
-		}
-		if doc.BPeProc.ProtBPe == nil {
-			return errors.New("parse bpe: missing protBPe")
-		}
-	}
-	if doc.BPeTMProc != nil {
-		if doc.BPeTMProc.BPeTM == nil {
-			return errors.New("parse bpe: missing BPeTM")
-		}
-		if doc.BPeTMProc.ProtBPe == nil {
-			return errors.New("parse bpe: missing protBPe")
-		}
-	}
-	if doc.RetBPe != nil {
-		if doc.RetBPe.TpAmb == "" {
-			return errors.New("parse bpe: missing tpAmb")
-		}
-		if doc.RetBPe.CUF == "" {
-			return errors.New("parse bpe: missing cUF")
-		}
-		if doc.RetBPe.CStat == "" {
-			return errors.New("parse bpe: missing cStat")
-		}
-	}
-	if doc.ConsSitBPe != nil {
-		if doc.ConsSitBPe.TpAmb == "" {
-			return errors.New("parse bpe: missing tpAmb")
-		}
-		if doc.ConsSitBPe.ChBPe == "" {
-			return errors.New("parse bpe: missing chBPe")
-		}
-	}
-	if doc.RetConsSitBPe != nil {
-		if doc.RetConsSitBPe.TpAmb == "" {
-			return errors.New("parse bpe: missing tpAmb")
-		}
-		if doc.RetConsSitBPe.CUF == "" {
-			return errors.New("parse bpe: missing cUF")
-		}
-		if doc.RetConsSitBPe.CStat == "" {
-			return errors.New("parse bpe: missing cStat")
-		}
-	}
-	if doc.ConsStatServBPe != nil {
-		if doc.ConsStatServBPe.TpAmb == "" {
-			return errors.New("parse bpe: missing tpAmb")
-		}
-	}
-	if doc.RetConsStatServBPe != nil {
-		if doc.RetConsStatServBPe.TpAmb == "" {
-			return errors.New("parse bpe: missing tpAmb")
-		}
-		if doc.RetConsStatServBPe.CUF == "" {
-			return errors.New("parse bpe: missing cUF")
-		}
-		if doc.RetConsStatServBPe.CStat == "" {
-			return errors.New("parse bpe: missing cStat")
-		}
-		if doc.RetConsStatServBPe.DhRecbto == "" {
-			return errors.New("parse bpe: missing dhRecbto")
-		}
-	}
-	if err := validateEventRoots(doc); err != nil {
-		return err
 	}
 	return nil
 }
@@ -492,6 +573,16 @@ func validateInfBPeTM(inf *schema.TAnonComplexInfBPe1) error {
 }
 
 func validateEventRoots(doc *Document) error {
+	if err := validateEventos(doc); err != nil {
+		return err
+	}
+	if err := validateRetEventos(doc); err != nil {
+		return err
+	}
+	return validateProcEventos(doc)
+}
+
+func validateEventos(doc *Document) error {
 	switch {
 	case doc.EventoBPe != nil:
 		return validateEvento(doc.EventoBPe.InfEvento)
@@ -503,6 +594,12 @@ func validateEventRoots(doc *Document) error {
 		return validateEvento(doc.EventoExcessoBagagem.InfEvento)
 	case doc.EventoNaoEmbBPe != nil:
 		return validateEvento(doc.EventoNaoEmbBPe.InfEvento)
+	}
+	return nil
+}
+
+func validateRetEventos(doc *Document) error {
+	switch {
 	case doc.RetEventoBPe != nil:
 		return validateRetEvento(doc.RetEventoBPe.InfEvento)
 	case doc.RetEventoCancBPe != nil:
@@ -513,6 +610,12 @@ func validateEventRoots(doc *Document) error {
 		return validateRetEvento(doc.RetEventoExcessoBagagem.InfEvento)
 	case doc.RetEventoNaoEmbBPe != nil:
 		return validateRetEvento(doc.RetEventoNaoEmbBPe.InfEvento)
+	}
+	return nil
+}
+
+func validateProcEventos(doc *Document) error {
+	switch {
 	case doc.ProcEventoBPe != nil:
 		return validateProcEvento(doc.ProcEventoBPe.EventoBPe, doc.ProcEventoBPe.RetEventoBPe)
 	case doc.ProcEventoCancBPe != nil:
@@ -523,9 +626,8 @@ func validateEventRoots(doc *Document) error {
 		return validateProcEvento(doc.ProcEventoExcessoBagagem.EventoBPe, doc.ProcEventoExcessoBagagem.RetEventoBPe)
 	case doc.ProcEventoNaoEmbBPe != nil:
 		return validateProcEvento(doc.ProcEventoNaoEmbBPe.EventoBPe, doc.ProcEventoNaoEmbBPe.RetEventoBPe)
-	default:
-		return nil
 	}
+	return nil
 }
 
 func validateEvento(inf any) error {
@@ -715,168 +817,86 @@ func encodeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon, dh
 	})
 }
 
-func parseEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
+func decodeEvent[T any](data []byte, context string, assign func(*T) *Document) (*Document, error) {
+	var parsed T
+	if err := xml.Unmarshal(data, &parsed); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode %s: %w", context, err)
+	}
+	return finalizeDoc(assign(&parsed))
+}
+
+func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110111":
-		var parsed cancelEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe cancelamento: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoCancBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "eventoBPe cancelamento", func(p *cancelEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoCancBPe: p, RootName: rootName}
+		})
 	case "110115":
-		var parsed naoEmbEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe nao embarque: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoNaoEmbBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "eventoBPe nao embarque", func(p *naoEmbEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoNaoEmbBPe: p, RootName: rootName}
+		})
 	case "110116":
-		var parsed alteracaoPoltronaEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe alteracao poltrona: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoAlteracaoPoltrona: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "eventoBPe alteracao poltrona", func(p *alteracaoPoltronaEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoAlteracaoPoltrona: p, RootName: rootName}
+		})
 	case "110117":
-		var parsed excessoBagagemEventSchema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe excesso bagagem: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoExcessoBagagem: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "eventoBPe excesso bagagem", func(p *excessoBagagemEventSchema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoExcessoBagagem: p, RootName: rootName}
+		})
 	default:
-		var parsed schema.TEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode eventoBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, EventoBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "eventoBPe", func(p *schema.TEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, EventoBPe: p, RootName: rootName}
+		})
 	}
 }
 
-func parseRetEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
+func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110111":
-		var parsed cancelEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe cancelamento: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoCancBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "retEventoBPe cancelamento", func(p *cancelEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancBPe: p, RootName: rootName}
+		})
 	case "110115":
-		var parsed naoEmbEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe nao embarque: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoNaoEmbBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "retEventoBPe nao embarque", func(p *naoEmbEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoNaoEmbBPe: p, RootName: rootName}
+		})
 	case "110116":
-		var parsed alteracaoPoltronaEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe alteracao poltrona: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoAlteracaoPoltrona: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "retEventoBPe alteracao poltrona", func(p *alteracaoPoltronaEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoAlteracaoPoltrona: p, RootName: rootName}
+		})
 	case "110117":
-		var parsed excessoBagagemEventSchema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe excesso bagagem: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoExcessoBagagem: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "retEventoBPe excesso bagagem", func(p *excessoBagagemEventSchema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoExcessoBagagem: p, RootName: rootName}
+		})
 	default:
-		var parsed schema.TRetEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode retEventoBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, RetEventoBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "retEventoBPe", func(p *schema.TRetEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, RetEventoBPe: p, RootName: rootName}
+		})
 	}
 }
 
-func parseProcEventDocument(data []byte, RootName, tpEvento string) (*Document, error) {
+func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
 	switch tpEvento {
 	case "110111":
-		var parsed cancelEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe cancelamento: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoCancBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "procEventoBPe cancelamento", func(p *cancelEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancBPe: p, RootName: rootName}
+		})
 	case "110115":
-		var parsed naoEmbEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe nao embarque: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoNaoEmbBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "procEventoBPe nao embarque", func(p *naoEmbEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoNaoEmbBPe: p, RootName: rootName}
+		})
 	case "110116":
-		var parsed alteracaoPoltronaEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe alteracao poltrona: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoAlteracaoPoltrona: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "procEventoBPe alteracao poltrona", func(p *alteracaoPoltronaEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoAlteracaoPoltrona: p, RootName: rootName}
+		})
 	case "110117":
-		var parsed excessoBagagemEventSchema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe excesso bagagem: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoExcessoBagagem: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "procEventoBPe excesso bagagem", func(p *excessoBagagemEventSchema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoExcessoBagagem: p, RootName: rootName}
+		})
 	default:
-		var parsed schema.TProcEvento
-		if err := xml.Unmarshal(data, &parsed); err != nil {
-			return nil, fmt.Errorf("parse bpe: decode procEventoBPe: %w", err)
-		}
-		doc := &Document{VersaoAttr: parsed.VersaoAttr, ProcEventoBPe: &parsed, RootName: RootName}
-		if err := validateDocument(doc); err != nil {
-			return nil, err
-		}
-		return doc, nil
+		return decodeEvent(data, "procEventoBPe", func(p *schema.TProcEvento) *Document {
+			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoBPe: p, RootName: rootName}
+		})
 	}
 }
 

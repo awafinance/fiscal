@@ -80,15 +80,15 @@ linters:
         - G117 # Config structs flagged for field names (APIKey, Password)
     revive:
       rules:
-        - name: var-naming
-          arguments:
-            - - ID
-              - URL
-              - HTTP
-              - API
-              - JSON
-              - XML
-          severity: warning
+        # - name: var-naming
+        #   arguments:
+        #     - - ID
+        #       - URL
+        #       - HTTP
+        #       - API
+        #       - JSON
+        #       - XML
+        #   severity: warning
         - name: unexported-return
           severity: warning
         - name: blank-imports
@@ -110,33 +110,9 @@ linters:
           - gocyclo
           - gosec
         path: _test\.go
-      # Generated files should be excluded
-      - linters:
-          - all
-        path: .*_gen\.go
-      - linters:
-          - all
-        path: app/api/gen/
-      - linters:
-          - all
-        path: gateways/repository/pg/gen/
-      # Package underscore names: too disruptive to rename existing packages
-      - linters:
-          - revive
-        path: domain/pending_user/
-        text: don't use an underscore in package name
-      - linters:
-          - revive
-        path: gateways/defi/zerox/internal/
-        text: don't use an underscore in package name
       - linters:
           - goconst
         path: (.+)_test\.go
-      # Package names that are meaningless or conflict with stdlib
-      - linters:
-          - revive
-        path: (app/api/|app/api/handlers/common/|gateways/common/|domain/user/|internal/crypto/|internal/http/|gateways/crypto/|internal/metrics/)
-        text: "avoid meaningless package names|avoid package names that conflict"
 
 formatters:
   enable:

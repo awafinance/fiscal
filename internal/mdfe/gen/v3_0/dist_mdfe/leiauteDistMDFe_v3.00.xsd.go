@@ -17,36 +17,36 @@ type TAnonIndCompRet1 uint32
 
 // TAnonComplexProc1 is informação do proc
 type TAnonComplexProc1 struct {
-	XMLName			xml.Name	`xml:"proc" json:"-"`
-	SchemaAttr		string		`xml:"schema,attr" json:"schema,omitempty"`
-	NSUAttr			string		`xml:"NSU,attr" json:"NSU,omitempty"`
-	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	XMLName           xml.Name `xml:"proc" json:"-"`
+	SchemaAttr        string   `xml:"schema,attr" json:"schema,omitempty"`
+	NSUAttr           string   `xml:"NSU,attr" json:"NSU,omitempty"`
+	IpTransmissorAttr *string  `xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
 }
 
 // TDistDFe is último NSU recebido, caso seja informado com zero, o Ambiente Autorizador tentará localizar o primeiro DF-e existente.
 type TDistDFe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	IndDFe		uint32		`xml:"indDFe" json:"indDFe,omitempty"`
-	IndCompRet	uint32		`xml:"indCompRet" json:"indCompRet,omitempty"`
-	UltNSU		string		`xml:"ultNSU" json:"ultNSU,omitempty"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic   *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	IndDFe     uint32   `xml:"indDFe" json:"indDFe,omitempty"`
+	IndCompRet uint32   `xml:"indCompRet" json:"indCompRet,omitempty"`
+	UltNSU     string   `xml:"ultNSU" json:"ultNSU,omitempty"`
 }
 
 // TRetDistDFe is último NSU
 type TRetDistDFe struct {
-	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb			string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic		*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat			string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo			*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	UltNSU			*string		`xml:"ultNSU" json:"ultNSU,omitempty"`
-	LoteDistMDFeComp	*string		`xml:"loteDistMDFeComp" json:"loteDistMDFeComp,omitempty"`
-	LoteDistMDFe		*TLoteDistDFe	`xml:"loteDistMDFe" json:"loteDistMDFe,omitempty"`
+	VersaoAttr       string        `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb            string        `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic         *TString      `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat            string        `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo          *TString      `xml:"xMotivo" json:"xMotivo,omitempty"`
+	UltNSU           *string       `xml:"ultNSU" json:"ultNSU,omitempty"`
+	LoteDistMDFeComp *string       `xml:"loteDistMDFeComp" json:"loteDistMDFeComp,omitempty"`
+	LoteDistMDFe     *TLoteDistDFe `xml:"loteDistMDFe" json:"loteDistMDFe,omitempty"`
 }
 
 // TLoteDistDFe is Schema XML de validação da área de dados descompactada
 type TLoteDistDFe struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	Proc		[]*TAnonComplexProc1	`xml:"proc" json:"proc,omitempty"`
+	VersaoAttr string               `xml:"versao,attr" json:"versao,omitempty"`
+	Proc       []*TAnonComplexProc1 `xml:"proc" json:"proc,omitempty"`
 }

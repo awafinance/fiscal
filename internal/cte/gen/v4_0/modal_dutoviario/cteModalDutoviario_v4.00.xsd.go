@@ -23,15 +23,15 @@ type TAnonNContrato1 string
 
 // TAnonComplexDuto1 is Número do Contrato de Capacidade
 type TAnonComplexDuto1 struct {
-	XMLName		xml.Name	`xml:"duto" json:"-"`
-	VTar		*string		`xml:"vTar" json:"vTar,omitempty"`
-	DIni		string		`xml:"dIni" json:"dIni,omitempty"`
-	DFim		string		`xml:"dFim" json:"dFim,omitempty"`
-	ClassDuto	*string		`xml:"classDuto" json:"classDuto,omitempty"`
-	TpContratacao	*string		`xml:"tpContratacao" json:"tpContratacao,omitempty"`
-	CodPontoEntrada	*string		`xml:"codPontoEntrada" json:"codPontoEntrada,omitempty"`
-	CodPontoSaida	*string		`xml:"codPontoSaida" json:"codPontoSaida,omitempty"`
-	NContrato	*string		`xml:"nContrato" json:"nContrato,omitempty"`
+	XMLName         xml.Name `xml:"duto" json:"-"`
+	VTar            *string  `xml:"vTar" json:"vTar,omitempty"`
+	DIni            string   `xml:"dIni" json:"dIni,omitempty"`
+	DFim            string   `xml:"dFim" json:"dFim,omitempty"`
+	ClassDuto       *string  `xml:"classDuto" json:"classDuto,omitempty"`
+	TpContratacao   *string  `xml:"tpContratacao" json:"tpContratacao,omitempty"`
+	CodPontoEntrada *string  `xml:"codPontoEntrada" json:"codPontoEntrada,omitempty"`
+	CodPontoSaida   *string  `xml:"codPontoSaida" json:"codPontoSaida,omitempty"`
+	NContrato       *string  `xml:"nContrato" json:"nContrato,omitempty"`
 }
 
 // Duto is Informações do modal Dutoviário

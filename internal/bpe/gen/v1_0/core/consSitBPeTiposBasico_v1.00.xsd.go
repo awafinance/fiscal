@@ -4,22 +4,22 @@ package schema
 
 // TConsSitBPe is Chaves de acesso do BP-e
 type TConsSitBPe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	XServ		*TString	`xml:"xServ" json:"xServ,omitempty"`
-	ChBPe		string		`xml:"chBPe" json:"chBPe,omitempty"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ      *TString `xml:"xServ" json:"xServ,omitempty"`
+	ChBPe      string   `xml:"chBPe" json:"chBPe,omitempty"`
 }
 
 // TRetConsSitBPe is código da UF de atendimento
 type TRetConsSitBPe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	ProtBPe		[]*TProtBPe	`xml:"protBPe" json:"protBPe,omitempty"`
-	ProcEventoBPe	[]*TProcEvento	`xml:"procEventoBPe" json:"procEventoBPe,omitempty"`
+	VersaoAttr    string         `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb         string         `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic      *TString       `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat         string         `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo       *TString       `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF           string         `xml:"cUF" json:"cUF,omitempty"`
+	ProtBPe       []*TProtBPe    `xml:"protBPe" json:"protBPe,omitempty"`
+	ProcEventoBPe []*TProcEvento `xml:"procEventoBPe" json:"procEventoBPe,omitempty"`
 }
 
 // TVerConsSitBPe is Tipo Versão do Consulta situação de BP-e - 1.00

@@ -17,20 +17,20 @@ type TAnonXMunDescarga1 string
 
 // TAnonComplexInfDoc1 is Nota Fiscal Eletrônica
 type TAnonComplexInfDoc1 struct {
-	XMLName		xml.Name	`xml:"infDoc" json:"-"`
-	CMunDescarga	string		`xml:"cMunDescarga" json:"cMunDescarga,omitempty"`
-	XMunDescarga	string		`xml:"xMunDescarga" json:"xMunDescarga,omitempty"`
-	ChNFe		string		`xml:"chNFe" json:"chNFe,omitempty"`
+	XMLName      xml.Name `xml:"infDoc" json:"-"`
+	CMunDescarga string   `xml:"cMunDescarga" json:"cMunDescarga,omitempty"`
+	XMunDescarga string   `xml:"xMunDescarga" json:"xMunDescarga,omitempty"`
+	ChNFe        string   `xml:"chNFe" json:"chNFe,omitempty"`
 }
 
 // TAnonComplexEvIncDFeMDFe1 is Informações dos Documentos fiscais vinculados ao manifesto
 type TAnonComplexEvIncDFeMDFe1 struct {
-	XMLName		xml.Name		`xml:"evIncDFeMDFe" json:"-"`
-	DescEvento	string			`xml:"descEvento" json:"descEvento,omitempty"`
-	NProt		string			`xml:"nProt" json:"nProt,omitempty"`
-	CMunCarrega	string			`xml:"cMunCarrega" json:"cMunCarrega,omitempty"`
-	XMunCarrega	string			`xml:"xMunCarrega" json:"xMunCarrega,omitempty"`
-	InfDoc		[]*TAnonComplexInfDoc1	`xml:"infDoc" json:"infDoc,omitempty"`
+	XMLName     xml.Name               `xml:"evIncDFeMDFe" json:"-"`
+	DescEvento  string                 `xml:"descEvento" json:"descEvento,omitempty"`
+	NProt       string                 `xml:"nProt" json:"nProt,omitempty"`
+	CMunCarrega string                 `xml:"cMunCarrega" json:"cMunCarrega,omitempty"`
+	XMunCarrega string                 `xml:"xMunCarrega" json:"xMunCarrega,omitempty"`
+	InfDoc      []*TAnonComplexInfDoc1 `xml:"infDoc" json:"infDoc,omitempty"`
 }
 
 // EvIncDFeMDFe is Schema XML de validação do evento de inclusão de DFe

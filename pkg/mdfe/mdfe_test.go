@@ -317,6 +317,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EnviMDFe)
 				require.Equal(t, "1", doc.EnviMDFe.IdLote)
 			},
@@ -338,6 +339,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetEnviMDFe)
 				require.Equal(t, "103", doc.RetEnviMDFe.CStat)
 			},
@@ -359,6 +361,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetMDFe)
 				require.Equal(t, "100", doc.RetMDFe.CStat)
 			},
@@ -380,6 +383,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsNaoEnc)
 				require.Equal(t, "111", doc.RetConsNaoEnc.CStat)
 			},
@@ -402,6 +406,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsReciMDFe)
 				require.Equal(t, "104", doc.RetConsReciMDFe.CStat)
 			},
@@ -422,6 +427,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ConsSitMDFe)
 				require.Equal(t, mdfeDocumentKey, doc.ConsSitMDFe.ChMDFe)
 			},
@@ -443,6 +449,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsSitMDFe)
 				require.Equal(t, "100", doc.RetConsSitMDFe.CStat)
 			},
@@ -462,6 +469,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ConsStatServMDFe)
 				require.Equal(t, "2", doc.ConsStatServMDFe.TpAmb)
 			},
@@ -484,6 +492,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsStatServMDFe)
 				require.Equal(t, "107", doc.RetConsStatServMDFe.CStat)
 			},
@@ -504,6 +513,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.DistMDFe)
 				require.Equal(t, "000000000000001", doc.DistMDFe.UltNSU)
 			},
@@ -524,6 +534,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetDistMDFe)
 				require.Equal(t, "138", doc.RetDistMDFe.CStat)
 			},
@@ -544,6 +555,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.MDFeConsultaDFe)
 				require.Equal(t, mdfeDocumentKey, doc.MDFeConsultaDFe.ChMDFe)
 			},
@@ -564,6 +576,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *mdfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetMDFeConsultaDFe)
 				require.Equal(t, "100", doc.RetMDFeConsultaDFe.CStat)
 			},
@@ -596,22 +609,70 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		data   string
 		assert func(t *testing.T, doc *mdfe.Document)
 	}{
-		{name: "ret generico", data: minimalMDFERetEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoMDFe) }},
-		{name: "ret cancelamento", data: minimalMDFERetEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoCancMDFe) }},
-		{name: "ret encerramento", data: minimalMDFERetEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoEncMDFe) }},
-		{name: "ret inclusao condutor", data: minimalMDFERetEventXML("110114"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoIncCondutorMDFe) }},
-		{name: "ret inclusao dfe", data: minimalMDFERetEventXML("110115"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoInclusaoDFeMDFe) }},
-		{name: "ret pagamento operacao", data: minimalMDFERetEventXML("110116"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoPagtoOperMDFe) }},
-		{name: "ret confirma servico", data: minimalMDFERetEventXML("110117"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoConfirmaServMDFe) }},
-		{name: "ret alteracao pagamento servico", data: minimalMDFERetEventXML("110118"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.RetEventoAlteracaoPagtoServMDFe) }},
-		{name: "proc generico", data: minimalMDFEProcEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoMDFe) }},
-		{name: "proc cancelamento", data: minimalMDFEProcEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoCancMDFe) }},
-		{name: "proc encerramento", data: minimalMDFEProcEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoEncMDFe) }},
-		{name: "proc inclusao condutor", data: minimalMDFEProcEventXML("110114"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoIncCondutorMDFe) }},
-		{name: "proc inclusao dfe", data: minimalMDFEProcEventXML("110115"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoInclusaoDFeMDFe) }},
-		{name: "proc pagamento operacao", data: minimalMDFEProcEventXML("110116"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoPagtoOperMDFe) }},
-		{name: "proc confirma servico", data: minimalMDFEProcEventXML("110117"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoConfirmaServMDFe) }},
-		{name: "proc alteracao pagamento servico", data: minimalMDFEProcEventXML("110118"), assert: func(t *testing.T, doc *mdfe.Document) { require.NotNil(t, doc.ProcEventoAlteracaoPagtoServMDFe) }},
+		{name: "ret generico", data: minimalMDFERetEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoMDFe)
+		}},
+		{name: "ret cancelamento", data: minimalMDFERetEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoCancMDFe)
+		}},
+		{name: "ret encerramento", data: minimalMDFERetEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoEncMDFe)
+		}},
+		{name: "ret inclusao condutor", data: minimalMDFERetEventXML("110114"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoIncCondutorMDFe)
+		}},
+		{name: "ret inclusao dfe", data: minimalMDFERetEventXML("110115"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoInclusaoDFeMDFe)
+		}},
+		{name: "ret pagamento operacao", data: minimalMDFERetEventXML("110116"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoPagtoOperMDFe)
+		}},
+		{name: "ret confirma servico", data: minimalMDFERetEventXML("110117"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoConfirmaServMDFe)
+		}},
+		{name: "ret alteracao pagamento servico", data: minimalMDFERetEventXML("110118"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoAlteracaoPagtoServMDFe)
+		}},
+		{name: "proc generico", data: minimalMDFEProcEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoMDFe)
+		}},
+		{name: "proc cancelamento", data: minimalMDFEProcEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoCancMDFe)
+		}},
+		{name: "proc encerramento", data: minimalMDFEProcEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoEncMDFe)
+		}},
+		{name: "proc inclusao condutor", data: minimalMDFEProcEventXML("110114"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoIncCondutorMDFe)
+		}},
+		{name: "proc inclusao dfe", data: minimalMDFEProcEventXML("110115"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoInclusaoDFeMDFe)
+		}},
+		{name: "proc pagamento operacao", data: minimalMDFEProcEventXML("110116"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoPagtoOperMDFe)
+		}},
+		{name: "proc confirma servico", data: minimalMDFEProcEventXML("110117"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoConfirmaServMDFe)
+		}},
+		{name: "proc alteracao pagamento servico", data: minimalMDFEProcEventXML("110118"), assert: func(t *testing.T, doc *mdfe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoAlteracaoPagtoServMDFe)
+		}},
 	}
 
 	for _, tt := range tests {

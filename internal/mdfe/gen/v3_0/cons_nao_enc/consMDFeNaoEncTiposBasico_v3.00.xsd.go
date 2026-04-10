@@ -8,30 +8,30 @@ import (
 
 // TAnonComplexInfMDFe1 is Número do Protocolo de autorização do MDF-e não encerrado
 type TAnonComplexInfMDFe1 struct {
-	XMLName	xml.Name	`xml:"infMDFe" json:"-"`
-	ChMDFe	string		`xml:"chMDFe" json:"chMDFe,omitempty"`
-	NProt	string		`xml:"nProt" json:"nProt,omitempty"`
+	XMLName xml.Name `xml:"infMDFe" json:"-"`
+	ChMDFe  string   `xml:"chMDFe" json:"chMDFe,omitempty"`
+	NProt   string   `xml:"nProt" json:"nProt,omitempty"`
 }
 
 // TConsMDFeNaoEnc is Informar zeros não significativos
 // Usar com serie específica 920-969 para emitente pessoa física com inscrição estadual
 type TConsMDFeNaoEnc struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	XServ		*TString	`xml:"xServ" json:"xServ,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string		`xml:"CPF" json:"CPF,omitempty"`
+	VersaoAttr string   `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ      *TString `xml:"xServ" json:"xServ,omitempty"`
+	CNPJ       *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF        *string  `xml:"CPF" json:"CPF,omitempty"`
 }
 
 // TRetConsMDFeNaoEnc is código da UF de atendimento
 type TRetConsMDFeNaoEnc struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString		`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string			`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString		`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string			`xml:"cUF" json:"cUF,omitempty"`
-	InfMDFe		[]*TAnonComplexInfMDFe1	`xml:"infMDFe" json:"infMDFe,omitempty"`
+	VersaoAttr string                  `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string                  `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic   *TString                `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat      string                  `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    *TString                `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF        string                  `xml:"cUF" json:"cUF,omitempty"`
+	InfMDFe    []*TAnonComplexInfMDFe1 `xml:"infMDFe" json:"infMDFe,omitempty"`
 }
 
 // TVerConsMDFeNaoEnc is Tipo Versão do Consulta MDF-e não encerrados - 3.00

@@ -17,10 +17,10 @@ type TAnonNDoc1 string
 
 // TAnonComplexEvRegMultimodal1 is Numero do Documento lançado no CT-e Multimodal
 type TAnonComplexEvRegMultimodal1 struct {
-	XMLName		xml.Name	`xml:"evRegMultimodal" json:"-"`
-	DescEvento	string		`xml:"descEvento" json:"descEvento,omitempty"`
-	XRegistro	string		`xml:"xRegistro" json:"xRegistro,omitempty"`
-	NDoc		*string		`xml:"nDoc" json:"nDoc,omitempty"`
+	XMLName    xml.Name `xml:"evRegMultimodal" json:"-"`
+	DescEvento string   `xml:"descEvento" json:"descEvento,omitempty"`
+	XRegistro  string   `xml:"xRegistro" json:"xRegistro,omitempty"`
+	NDoc       *string  `xml:"nDoc" json:"nDoc,omitempty"`
 }
 
 // EvRegMultimodal is Schema XML de validação do evento Registro Multimodal 110160

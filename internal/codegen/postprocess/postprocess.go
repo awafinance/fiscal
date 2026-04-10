@@ -38,6 +38,75 @@ type Options struct {
 	Verbose              bool
 }
 
+func generateFile(opts Options, path string) error {
+	text, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	updated := strings.ReplaceAll(string(text), xmlDSigSignatureTag, xmlDSigSignatureNamespaceTag)
+	updated = anonComplexXMLName.ReplaceAllString(updated, "`xml:\"$1\"`")
+	for _, replacement := range opts.Replacements {
+		updated = replacement(path, updated)
+	}
+
+	changedTags := false
+	if opts.AddJSONTags {
+		updatedBytes, tagsChanged, err := addJSONTags(path, []byte(updated))
+		if err != nil {
+			return err
+		}
+		updated = string(updatedBytes)
+		changedTags = tagsChanged
+	}
+
+	if updated == string(text) {
+		return nil
+	}
+
+	if err := os.WriteFile(path, []byte(updated), 0o600); err != nil {
+		return err
+	}
+
+	if changedTags {
+		if opts.Verbose {
+			fmt.Printf("postprocessed generated xml/json tags in %s\n", path)
+		}
+	} else {
+		if opts.Verbose {
+			fmt.Printf("postprocessed generated xml tags in %s\n", path)
+		}
+	}
+	return nil
+}
+
+func cleanUp(opts Options, path string) (int, error) {
+	if opts.RemoveFile != nil {
+		remove, message := opts.RemoveFile(path)
+		if remove {
+			if err := os.Remove(path); err != nil {
+				return 1, err
+			}
+			if opts.Verbose {
+				fmt.Printf("%s %s\n", message, path)
+			}
+			return 1, nil
+		}
+	}
+
+	if isNestedImportedSchema(path, opts.NestedImportPatterns) {
+		if err := os.Remove(path); err != nil {
+			return 1, err
+		}
+		if opts.Verbose {
+			fmt.Printf("removed duplicated imported schema package %s\n", path)
+		}
+		return 1, nil
+	}
+
+	return 0, nil
+}
+
 func Generated(opts Options) error {
 	repoRoot, err := FindRepoRoot()
 	if err != nil {
@@ -57,68 +126,16 @@ func Generated(opts Options) error {
 			return nil
 		}
 
-		if opts.RemoveFile != nil {
-			remove, message := opts.RemoveFile(path)
-			if remove {
-				if err := os.Remove(path); err != nil {
-					return err
-				}
-				if opts.Verbose {
-					fmt.Printf("%s %s\n", message, path)
-				}
-				return nil
-			}
-		}
-
-		if isNestedImportedSchema(path, opts.NestedImportPatterns) {
-			if err := os.Remove(path); err != nil {
-				return err
-			}
-			if opts.Verbose {
-				fmt.Printf("removed duplicated imported schema package %s\n", path)
-			}
-			return nil
-		}
-
-		text, err := os.ReadFile(path)
+		status, err := cleanUp(opts, path)
 		if err != nil {
 			return err
 		}
 
-		updated := strings.ReplaceAll(string(text), xmlDSigSignatureTag, xmlDSigSignatureNamespaceTag)
-		updated = anonComplexXMLName.ReplaceAllString(updated, "`xml:\"$1\"`")
-		for _, replacement := range opts.Replacements {
-			updated = replacement(path, updated)
-		}
-
-		changedTags := false
-		if opts.AddJSONTags {
-			updatedBytes, tagsChanged, err := addJSONTags(path, []byte(updated))
-			if err != nil {
-				return err
-			}
-			updated = string(updatedBytes)
-			changedTags = tagsChanged
-		}
-
-		if updated == string(text) {
+		if status != 0 {
 			return nil
 		}
 
-		if err := os.WriteFile(path, []byte(updated), 0o644); err != nil {
-			return err
-		}
-
-		if changedTags {
-			if opts.Verbose {
-				fmt.Printf("postprocessed generated xml/json tags in %s\n", path)
-			}
-		} else {
-			if opts.Verbose {
-				fmt.Printf("postprocessed generated xml tags in %s\n", path)
-			}
-		}
-		return nil
+		return generateFile(opts, path)
 	})
 }
 

@@ -8,13 +8,13 @@ import (
 
 // TAnonComplexMdfeProc1 ...
 type TAnonComplexMdfeProc1 struct {
-	XMLName			xml.Name	`xml:"mdfeProc" json:"-"`
-	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
-	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
-	NPortaConAttr		*string		`xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
-	DhConexaoAttr		*string		`xml:"dhConexao,attr" json:"dhConexao,omitempty"`
-	MDFe			*TMDFe		`xml:"MDFe" json:"MDFe,omitempty"`
-	ProtMDFe		*TProtMDFe	`xml:"protMDFe" json:"protMDFe,omitempty"`
+	XMLName           xml.Name   `xml:"mdfeProc" json:"-"`
+	VersaoAttr        string     `xml:"versao,attr" json:"versao,omitempty"`
+	IpTransmissorAttr *string    `xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	NPortaConAttr     *string    `xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
+	DhConexaoAttr     *string    `xml:"dhConexao,attr" json:"dhConexao,omitempty"`
+	MDFe              *TMDFe     `xml:"MDFe" json:"MDFe,omitempty"`
+	ProtMDFe          *TProtMDFe `xml:"protMDFe" json:"protMDFe,omitempty"`
 }
 
 // MdfeProc is MDF-e processado

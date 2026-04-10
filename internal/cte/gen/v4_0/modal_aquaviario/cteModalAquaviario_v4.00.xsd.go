@@ -14,8 +14,8 @@ type TAnonXBalsa1 string
 
 // TAnonComplexBalsa1 is Identificador da Balsa
 type TAnonComplexBalsa1 struct {
-	XMLName	xml.Name	`xml:"balsa" json:"-"`
-	XBalsa	string		`xml:"xBalsa" json:"xBalsa,omitempty"`
+	XMLName xml.Name `xml:"balsa" json:"-"`
+	XBalsa  string   `xml:"xBalsa" json:"xBalsa,omitempty"`
 }
 
 // TAnonNViag1 ...
@@ -32,8 +32,8 @@ type TAnonNLacre1 string
 
 // TAnonComplexLacre1 is Lacre
 type TAnonComplexLacre1 struct {
-	XMLName	xml.Name	`xml:"lacre" json:"-"`
-	NLacre	string		`xml:"nLacre" json:"nLacre,omitempty"`
+	XMLName xml.Name `xml:"lacre" json:"-"`
+	NLacre  string   `xml:"nLacre" json:"nLacre,omitempty"`
 }
 
 // TAnonSerie1 ...
@@ -44,32 +44,32 @@ type TAnonNDoc1 string
 
 // TAnonComplexInfNF1 is Unidade de medida rateada (Peso,Volume)
 type TAnonComplexInfNF1 struct {
-	XMLName	xml.Name	`xml:"infNF" json:"-"`
-	Serie	string		`xml:"serie" json:"serie,omitempty"`
-	NDoc	string		`xml:"nDoc" json:"nDoc,omitempty"`
-	UnidRat	*string		`xml:"unidRat" json:"unidRat,omitempty"`
+	XMLName xml.Name `xml:"infNF" json:"-"`
+	Serie   string   `xml:"serie" json:"serie,omitempty"`
+	NDoc    string   `xml:"nDoc" json:"nDoc,omitempty"`
+	UnidRat *string  `xml:"unidRat" json:"unidRat,omitempty"`
 }
 
 // TAnonComplexInfNFe1 is Unidade de medida rateada (Peso,Volume)
 type TAnonComplexInfNFe1 struct {
-	XMLName	xml.Name	`xml:"infNFe" json:"-"`
-	Chave	string		`xml:"chave" json:"chave,omitempty"`
-	UnidRat	*string		`xml:"unidRat" json:"unidRat,omitempty"`
+	XMLName xml.Name `xml:"infNFe" json:"-"`
+	Chave   string   `xml:"chave" json:"chave,omitempty"`
+	UnidRat *string  `xml:"unidRat" json:"unidRat,omitempty"`
 }
 
 // TAnonComplexInfDoc1 is Informações das NFe
 type TAnonComplexInfDoc1 struct {
-	XMLName	xml.Name		`xml:"infDoc" json:"-"`
-	InfNF	[]*TAnonComplexInfNF1	`xml:"infNF" json:"infNF,omitempty"`
-	InfNFe	[]*TAnonComplexInfNFe1	`xml:"infNFe" json:"infNFe,omitempty"`
+	XMLName xml.Name               `xml:"infDoc" json:"-"`
+	InfNF   []*TAnonComplexInfNF1  `xml:"infNF" json:"infNF,omitempty"`
+	InfNFe  []*TAnonComplexInfNFe1 `xml:"infNFe" json:"infNFe,omitempty"`
 }
 
 // TAnonComplexDetCont1 is Informações dos documentos dos conteiners
 type TAnonComplexDetCont1 struct {
-	XMLName	xml.Name		`xml:"detCont" json:"-"`
-	NCont	string			`xml:"nCont" json:"nCont,omitempty"`
-	Lacre	[]*TAnonComplexLacre1	`xml:"lacre" json:"lacre,omitempty"`
-	InfDoc	*TAnonComplexInfDoc1	`xml:"infDoc" json:"infDoc,omitempty"`
+	XMLName xml.Name              `xml:"detCont" json:"-"`
+	NCont   string                `xml:"nCont" json:"nCont,omitempty"`
+	Lacre   []*TAnonComplexLacre1 `xml:"lacre" json:"lacre,omitempty"`
+	InfDoc  *TAnonComplexInfDoc1  `xml:"infDoc" json:"infDoc,omitempty"`
 }
 
 // TAnonTpNav1 ...
@@ -79,16 +79,16 @@ type TAnonTpNav1 string
 // 0 - Interior;
 // 1 - Cabotagem
 type TAnonComplexAquav1 struct {
-	XMLName	xml.Name		`xml:"aquav" json:"-"`
-	VPrest	string			`xml:"vPrest" json:"vPrest,omitempty"`
-	VAFRMM	string			`xml:"vAFRMM" json:"vAFRMM,omitempty"`
-	XNavio	string			`xml:"xNavio" json:"xNavio,omitempty"`
-	Balsa	[]*TAnonComplexBalsa1	`xml:"balsa" json:"balsa,omitempty"`
-	NViag	*string			`xml:"nViag" json:"nViag,omitempty"`
-	Direc	string			`xml:"direc" json:"direc,omitempty"`
-	Irin	string			`xml:"irin" json:"irin,omitempty"`
-	DetCont	[]*TAnonComplexDetCont1	`xml:"detCont" json:"detCont,omitempty"`
-	TpNav	*string			`xml:"tpNav" json:"tpNav,omitempty"`
+	XMLName xml.Name                `xml:"aquav" json:"-"`
+	VPrest  string                  `xml:"vPrest" json:"vPrest,omitempty"`
+	VAFRMM  string                  `xml:"vAFRMM" json:"vAFRMM,omitempty"`
+	XNavio  string                  `xml:"xNavio" json:"xNavio,omitempty"`
+	Balsa   []*TAnonComplexBalsa1   `xml:"balsa" json:"balsa,omitempty"`
+	NViag   *string                 `xml:"nViag" json:"nViag,omitempty"`
+	Direc   string                  `xml:"direc" json:"direc,omitempty"`
+	Irin    string                  `xml:"irin" json:"irin,omitempty"`
+	DetCont []*TAnonComplexDetCont1 `xml:"detCont" json:"detCont,omitempty"`
+	TpNav   *string                 `xml:"tpNav" json:"tpNav,omitempty"`
 }
 
 // Aquav is Informações do modal Aquaviário

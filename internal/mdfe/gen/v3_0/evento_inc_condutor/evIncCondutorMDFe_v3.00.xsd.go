@@ -14,16 +14,16 @@ type TAnonXNome1 string
 
 // TAnonComplexCondutor1 is CPF do Condutor
 type TAnonComplexCondutor1 struct {
-	XMLName	xml.Name	`xml:"condutor" json:"-"`
-	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
-	CPF	string		`xml:"CPF" json:"CPF,omitempty"`
+	XMLName xml.Name `xml:"condutor" json:"-"`
+	XNome   string   `xml:"xNome" json:"xNome,omitempty"`
+	CPF     string   `xml:"CPF" json:"CPF,omitempty"`
 }
 
 // TAnonComplexEvIncCondutorMDFe1 is Informações do(s) Condutor(s) do veículo
 type TAnonComplexEvIncCondutorMDFe1 struct {
-	XMLName		xml.Name		`xml:"evIncCondutorMDFe" json:"-"`
-	DescEvento	string			`xml:"descEvento" json:"descEvento,omitempty"`
-	Condutor	*TAnonComplexCondutor1	`xml:"condutor" json:"condutor,omitempty"`
+	XMLName    xml.Name               `xml:"evIncCondutorMDFe" json:"-"`
+	DescEvento string                 `xml:"descEvento" json:"descEvento,omitempty"`
+	Condutor   *TAnonComplexCondutor1 `xml:"condutor" json:"condutor,omitempty"`
 }
 
 // EvIncCondutorMDFe is Schema XML de validação do evento de inclusao de condutor 110114

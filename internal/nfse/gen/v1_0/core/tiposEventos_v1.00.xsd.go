@@ -4,95 +4,95 @@ package schema
 
 // TCEvento ...
 type TCEvento struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	InfEvento	*TCInfEvento	`xml:"infEvento" json:"infEvento,omitempty"`
-	DsSignature	*SignatureType	`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfEvento   *TCInfEvento   `xml:"infEvento" json:"infEvento,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TCInfEvento is Leiaute do pedido de registro do evento gerado pelo autor do evento
 type TCInfEvento struct {
-	IdAttr		string		`xml:"Id,attr" json:"Id,omitempty"`
-	VerAplic	*string		`xml:"verAplic" json:"verAplic,omitempty"`
-	AmbGer		string		`xml:"ambGer" json:"ambGer,omitempty"`
-	NSeqEvento	string		`xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
-	DhProc		string		`xml:"dhProc" json:"dhProc,omitempty"`
-	NDFe		string		`xml:"nDFe" json:"nDFe,omitempty"`
-	PedRegEvento	*TCPedRegEvt	`xml:"pedRegEvento" json:"pedRegEvento,omitempty"`
+	IdAttr       string       `xml:"Id,attr" json:"Id,omitempty"`
+	VerAplic     *string      `xml:"verAplic" json:"verAplic,omitempty"`
+	AmbGer       string       `xml:"ambGer" json:"ambGer,omitempty"`
+	NSeqEvento   string       `xml:"nSeqEvento" json:"nSeqEvento,omitempty"`
+	DhProc       string       `xml:"dhProc" json:"dhProc,omitempty"`
+	NDFe         string       `xml:"nDFe" json:"nDFe,omitempty"`
+	PedRegEvento *TCPedRegEvt `xml:"pedRegEvento" json:"pedRegEvento,omitempty"`
 }
 
 // TCPedRegEvt ...
 type TCPedRegEvt struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	InfPedReg	*TCInfPedReg	`xml:"infPedReg" json:"infPedReg,omitempty"`
-	DsSignature	*SignatureType	`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfPedReg   *TCInfPedReg   `xml:"infPedReg" json:"infPedReg,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TCInfPedReg is Desbloqueio de NFS-e por Ofício
 type TCInfPedReg struct {
-	IdAttr		string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	DhEvento	string		`xml:"dhEvento" json:"dhEvento,omitempty"`
-	CNPJAutor	*string		`xml:"CNPJAutor" json:"CNPJAutor,omitempty"`
-	CPFAutor	*string		`xml:"CPFAutor" json:"CPFAutor,omitempty"`
-	ChNFSe		string		`xml:"chNFSe" json:"chNFSe,omitempty"`
-	NPedRegEvento	string		`xml:"nPedRegEvento" json:"nPedRegEvento,omitempty"`
-	E101101		*TE101101	`xml:"e101101" json:"e101101,omitempty"`
-	E105102		*TE105102	`xml:"e105102" json:"e105102,omitempty"`
-	E101103		*TE101103	`xml:"e101103" json:"e101103,omitempty"`
-	E105104		*TE105104	`xml:"e105104" json:"e105104,omitempty"`
-	E105105		*TE105105	`xml:"e105105" json:"e105105,omitempty"`
-	E202201		*TE202201	`xml:"e202201" json:"e202201,omitempty"`
-	E203202		*TE203202	`xml:"e203202" json:"e203202,omitempty"`
-	E204203		*TE204203	`xml:"e204203" json:"e204203,omitempty"`
-	E205204		*TE205204	`xml:"e205204" json:"e205204,omitempty"`
-	E202205		*TE202205	`xml:"e202205" json:"e202205,omitempty"`
-	E203206		*TE203206	`xml:"e203206" json:"e203206,omitempty"`
-	E204207		*TE204207	`xml:"e204207" json:"e204207,omitempty"`
-	E205208		*TE205208	`xml:"e205208" json:"e205208,omitempty"`
-	E305101		*TE305101	`xml:"e305101" json:"e305101,omitempty"`
-	E305102		*TE305102	`xml:"e305102" json:"e305102,omitempty"`
-	E305103		*TE305103	`xml:"e305103" json:"e305103,omitempty"`
+	IdAttr        string    `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb         string    `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic      string    `xml:"verAplic" json:"verAplic,omitempty"`
+	DhEvento      string    `xml:"dhEvento" json:"dhEvento,omitempty"`
+	CNPJAutor     *string   `xml:"CNPJAutor" json:"CNPJAutor,omitempty"`
+	CPFAutor      *string   `xml:"CPFAutor" json:"CPFAutor,omitempty"`
+	ChNFSe        string    `xml:"chNFSe" json:"chNFSe,omitempty"`
+	NPedRegEvento string    `xml:"nPedRegEvento" json:"nPedRegEvento,omitempty"`
+	E101101       *TE101101 `xml:"e101101" json:"e101101,omitempty"`
+	E105102       *TE105102 `xml:"e105102" json:"e105102,omitempty"`
+	E101103       *TE101103 `xml:"e101103" json:"e101103,omitempty"`
+	E105104       *TE105104 `xml:"e105104" json:"e105104,omitempty"`
+	E105105       *TE105105 `xml:"e105105" json:"e105105,omitempty"`
+	E202201       *TE202201 `xml:"e202201" json:"e202201,omitempty"`
+	E203202       *TE203202 `xml:"e203202" json:"e203202,omitempty"`
+	E204203       *TE204203 `xml:"e204203" json:"e204203,omitempty"`
+	E205204       *TE205204 `xml:"e205204" json:"e205204,omitempty"`
+	E202205       *TE202205 `xml:"e202205" json:"e202205,omitempty"`
+	E203206       *TE203206 `xml:"e203206" json:"e203206,omitempty"`
+	E204207       *TE204207 `xml:"e204207" json:"e204207,omitempty"`
+	E205208       *TE205208 `xml:"e205208" json:"e205208,omitempty"`
+	E305101       *TE305101 `xml:"e305101" json:"e305101,omitempty"`
+	E305102       *TE305102 `xml:"e305102" json:"e305102,omitempty"`
+	E305103       *TE305103 `xml:"e305103" json:"e305103,omitempty"`
 }
 
 // TE101101 ...
 type TE101101 struct {
-	XDesc	string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CMotivo	string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo	string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XDesc   string `xml:"xDesc" json:"xDesc,omitempty"`
+	CMotivo string `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo string `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TE105102 ...
 type TE105102 struct {
-	XDesc		string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CMotivo		string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo		*string	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	ChSubstituta	string	`xml:"chSubstituta" json:"chSubstituta,omitempty"`
+	XDesc        string  `xml:"xDesc" json:"xDesc,omitempty"`
+	CMotivo      string  `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo      *string `xml:"xMotivo" json:"xMotivo,omitempty"`
+	ChSubstituta string  `xml:"chSubstituta" json:"chSubstituta,omitempty"`
 }
 
 // TE101103 ...
 type TE101103 struct {
-	XDesc	string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CMotivo	string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo	string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XDesc   string `xml:"xDesc" json:"xDesc,omitempty"`
+	CMotivo string `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo string `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TE105104 ...
 type TE105104 struct {
-	XDesc		string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CPFAgTrib	string	`xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
-	NProcAdm	*string	`xml:"nProcAdm" json:"nProcAdm,omitempty"`
-	CMotivo		string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo		string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XDesc     string  `xml:"xDesc" json:"xDesc,omitempty"`
+	CPFAgTrib string  `xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
+	NProcAdm  *string `xml:"nProcAdm" json:"nProcAdm,omitempty"`
+	CMotivo   string  `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo   string  `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TE105105 ...
 type TE105105 struct {
-	XDesc		string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CPFAgTrib	string	`xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
-	NProcAdm	*string	`xml:"nProcAdm" json:"nProcAdm,omitempty"`
-	CMotivo		string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo		string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XDesc     string  `xml:"xDesc" json:"xDesc,omitempty"`
+	CPFAgTrib string  `xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
+	NProcAdm  *string `xml:"nProcAdm" json:"nProcAdm,omitempty"`
+	CMotivo   string  `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo   string  `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TE202201 ...
@@ -117,49 +117,49 @@ type TE205204 struct {
 
 // TE202205 ...
 type TE202205 struct {
-	XDesc	interface{}		`xml:"xDesc" json:"xDesc,omitempty"`
-	InfRej	*TCInfoEventoRejeicao	`xml:"infRej" json:"infRej,omitempty"`
+	XDesc  string                `xml:"xDesc" json:"xDesc,omitempty"`
+	InfRej *TCInfoEventoRejeicao `xml:"infRej" json:"infRej,omitempty"`
 }
 
 // TE203206 ...
 type TE203206 struct {
-	XDesc	interface{}		`xml:"xDesc" json:"xDesc,omitempty"`
-	InfRej	*TCInfoEventoRejeicao	`xml:"infRej" json:"infRej,omitempty"`
+	XDesc  string                `xml:"xDesc" json:"xDesc,omitempty"`
+	InfRej *TCInfoEventoRejeicao `xml:"infRej" json:"infRej,omitempty"`
 }
 
 // TE204207 ...
 type TE204207 struct {
-	XDesc	interface{}		`xml:"xDesc" json:"xDesc,omitempty"`
-	InfRej	*TCInfoEventoRejeicao	`xml:"infRej" json:"infRej,omitempty"`
+	XDesc  string                `xml:"xDesc" json:"xDesc,omitempty"`
+	InfRej *TCInfoEventoRejeicao `xml:"infRej" json:"infRej,omitempty"`
 }
 
 // TE205208 ...
 type TE205208 struct {
-	XDesc		interface{}			`xml:"xDesc" json:"xDesc,omitempty"`
-	InfAnRej	*TCInfoEventoAnulacaoRejeicao	`xml:"infAnRej" json:"infAnRej,omitempty"`
+	XDesc    string                        `xml:"xDesc" json:"xDesc,omitempty"`
+	InfAnRej *TCInfoEventoAnulacaoRejeicao `xml:"infAnRej" json:"infAnRej,omitempty"`
 }
 
 // TE305101 ...
 type TE305101 struct {
-	XDesc		string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CPFAgTrib	string	`xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
-	NProcAdm	string	`xml:"nProcAdm" json:"nProcAdm,omitempty"`
-	XProcAdm	string	`xml:"xProcAdm" json:"xProcAdm,omitempty"`
+	XDesc     string `xml:"xDesc" json:"xDesc,omitempty"`
+	CPFAgTrib string `xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
+	NProcAdm  string `xml:"nProcAdm" json:"nProcAdm,omitempty"`
+	XProcAdm  string `xml:"xProcAdm" json:"xProcAdm,omitempty"`
 }
 
 // TE305102 ...
 type TE305102 struct {
-	XDesc		string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CPFAgTrib	string	`xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
-	XMotivo		string	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CodEvento	string	`xml:"codEvento" json:"codEvento,omitempty"`
+	XDesc     string `xml:"xDesc" json:"xDesc,omitempty"`
+	CPFAgTrib string `xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
+	XMotivo   string `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CodEvento string `xml:"codEvento" json:"codEvento,omitempty"`
 }
 
 // TE305103 ...
 type TE305103 struct {
-	XDesc		string	`xml:"xDesc" json:"xDesc,omitempty"`
-	CPFAgTrib	string	`xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
-	IdBloqOfic	string	`xml:"idBloqOfic" json:"idBloqOfic,omitempty"`
+	XDesc      string `xml:"xDesc" json:"xDesc,omitempty"`
+	CPFAgTrib  string `xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
+	IdBloqOfic string `xml:"idBloqOfic" json:"idBloqOfic,omitempty"`
 }
 
 // TCListaEventos is Grupo de informações de documento utilizado para Dedução/Redução do valor do serviço
@@ -169,13 +169,13 @@ type TCListaEventos struct {
 
 // TCInfoEventoRejeicao is Descrição para explicitar o motivo indicado neste evento
 type TCInfoEventoRejeicao struct {
-	CMotivo	string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo	*string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	CMotivo string  `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo *string `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TCInfoEventoAnulacaoRejeicao is Descrição para explicitar o motivo da anluação
 type TCInfoEventoAnulacaoRejeicao struct {
-	CPFAgTrib	string	`xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
-	IdEvManifRej	string	`xml:"idEvManifRej" json:"idEvManifRej,omitempty"`
-	XMotivo		string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	CPFAgTrib    string `xml:"CPFAgTrib" json:"CPFAgTrib,omitempty"`
+	IdEvManifRej string `xml:"idEvManifRej" json:"idEvManifRej,omitempty"`
+	XMotivo      string `xml:"xMotivo" json:"xMotivo,omitempty"`
 }

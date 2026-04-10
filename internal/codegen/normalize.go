@@ -98,7 +98,7 @@ func normalizeSchema(path string) (normalizeStats, error) {
 		return stats, nil
 	}
 
-	if err := os.WriteFile(path, output, 0o644); err != nil {
+	if err := os.WriteFile(path, output, 0o600); err != nil {
 		return stats, err
 	}
 	stats.rewritten = 1

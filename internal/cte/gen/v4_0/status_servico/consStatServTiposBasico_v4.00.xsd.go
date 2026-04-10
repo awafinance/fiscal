@@ -3,7 +3,7 @@
 package schema
 
 // TAnonVerAplic1 ...
-type TAnonVerAplic1 string
+type TAnonVerAplic1 interface{}
 
 // TAnonTMed1 ...
 type TAnonTMed1 int
@@ -13,24 +13,24 @@ type TAnonXObs1 string
 
 // TConsStatServ is Tipo Pedido de Consulta do Status do Serviço CTe
 type TConsStatServ struct {
-	VersaoAttr	string	`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string	`xml:"tpAmb" json:"tpAmb,omitempty"`
-	CUF		string	`xml:"cUF" json:"cUF,omitempty"`
-	XServ		string	`xml:"xServ" json:"xServ,omitempty"`
+	VersaoAttr string `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string `xml:"tpAmb" json:"tpAmb,omitempty"`
+	CUF        string `xml:"cUF" json:"cUF,omitempty"`
+	XServ      string `xml:"xServ" json:"xServ,omitempty"`
 }
 
 // TRetConsStatServ is Campo observação utilizado para incluir informações ao contribuinte
 type TRetConsStatServ struct {
-	VersaoAttr	string	`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string	`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	string	`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string	`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		string	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string	`xml:"cUF" json:"cUF,omitempty"`
-	DhRecbto	string	`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	TMed		*int	`xml:"tMed" json:"tMed,omitempty"`
-	DhRetorno	*string	`xml:"dhRetorno" json:"dhRetorno,omitempty"`
-	XObs		*string	`xml:"xObs" json:"xObs,omitempty"`
+	VersaoAttr string  `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string  `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic   string  `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat      string  `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    string  `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF        string  `xml:"cUF" json:"cUF,omitempty"`
+	DhRecbto   string  `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	TMed       *int    `xml:"tMed" json:"tMed,omitempty"`
+	DhRetorno  *string `xml:"dhRetorno" json:"dhRetorno,omitempty"`
+	XObs       *string `xml:"xObs" json:"xObs,omitempty"`
 }
 
 // TVerConsStat is Tipo Versão do Consulta do Status do Serviço CTe

@@ -101,6 +101,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *cte.Document) {
+				t.Helper()
 				require.NotNil(t, doc.DistDFeInt)
 				require.Equal(t, "35", doc.DistDFeInt.CUFAutor)
 			},
@@ -129,6 +130,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *cte.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetDistDFeInt)
 				require.Len(t, doc.RetDistDFeInt.LoteDistDFeInt.DocZip, 1)
 			},
@@ -161,28 +163,28 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		data   string
 		assert func(t *testing.T, doc *cte.Document)
 	}{
-		{name: "ret cce", data: minimalCTeRetEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCTe) }},
-		{name: "ret cancel", data: minimalCTeRetEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancCTe) }},
-		{name: "ret epec", data: minimalCTeRetEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoEPECCTe) }},
-		{name: "ret reg multimodal", data: minimalCTeRetEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoRegMultimodal) }},
-		{name: "ret gtv", data: minimalCTeRetEventXML("110170"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoGTV) }},
-		{name: "ret ce", data: minimalCTeRetEventXML("110180"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCECTe) }},
-		{name: "ret cancel ce", data: minimalCTeRetEventXML("110181"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancCECTe) }},
-		{name: "ret ie", data: minimalCTeRetEventXML("110190"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoIECTe) }},
-		{name: "ret cancel ie", data: minimalCTeRetEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancIECTe) }},
-		{name: "ret prest desacordo", data: minimalCTeRetEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoPrestDesacordo) }},
-		{name: "ret cancel prest desacordo", data: minimalCTeRetEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.RetEventoCancPrestDesacordo) }},
-		{name: "proc cce", data: minimalCTeProcEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCTe) }},
-		{name: "proc cancel", data: minimalCTeProcEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancCTe) }},
-		{name: "proc epec", data: minimalCTeProcEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoEPECCTe) }},
-		{name: "proc reg multimodal", data: minimalCTeProcEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoRegMultimodal) }},
-		{name: "proc gtv", data: minimalCTeProcEventXML("110170"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoGTV) }},
-		{name: "proc ce", data: minimalCTeProcEventXML("110180"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCECTe) }},
-		{name: "proc cancel ce", data: minimalCTeProcEventXML("110181"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancCECTe) }},
-		{name: "proc ie", data: minimalCTeProcEventXML("110190"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoIECTe) }},
-		{name: "proc cancel ie", data: minimalCTeProcEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancIECTe) }},
-		{name: "proc prest desacordo", data: minimalCTeProcEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoPrestDesacordo) }},
-		{name: "proc cancel prest desacordo", data: minimalCTeProcEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { require.NotNil(t, doc.ProcEventoCancPrestDesacordo) }},
+		{name: "ret cce", data: minimalCTeRetEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCTe) }},
+		{name: "ret cancel", data: minimalCTeRetEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancCTe) }},
+		{name: "ret epec", data: minimalCTeRetEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoEPECCTe) }},
+		{name: "ret reg multimodal", data: minimalCTeRetEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoRegMultimodal) }},
+		{name: "ret gtv", data: minimalCTeRetEventXML("110170"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoGTV) }},
+		{name: "ret ce", data: minimalCTeRetEventXML("110180"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCECTe) }},
+		{name: "ret cancel ce", data: minimalCTeRetEventXML("110181"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancCECTe) }},
+		{name: "ret ie", data: minimalCTeRetEventXML("110190"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoIECTe) }},
+		{name: "ret cancel ie", data: minimalCTeRetEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancIECTe) }},
+		{name: "ret prest desacordo", data: minimalCTeRetEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoPrestDesacordo) }},
+		{name: "ret cancel prest desacordo", data: minimalCTeRetEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancPrestDesacordo) }},
+		{name: "proc cce", data: minimalCTeProcEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCTe) }},
+		{name: "proc cancel", data: minimalCTeProcEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancCTe) }},
+		{name: "proc epec", data: minimalCTeProcEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoEPECCTe) }},
+		{name: "proc reg multimodal", data: minimalCTeProcEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoRegMultimodal) }},
+		{name: "proc gtv", data: minimalCTeProcEventXML("110170"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoGTV) }},
+		{name: "proc ce", data: minimalCTeProcEventXML("110180"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCECTe) }},
+		{name: "proc cancel ce", data: minimalCTeProcEventXML("110181"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancCECTe) }},
+		{name: "proc ie", data: minimalCTeProcEventXML("110190"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoIECTe) }},
+		{name: "proc cancel ie", data: minimalCTeProcEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancIECTe) }},
+		{name: "proc prest desacordo", data: minimalCTeProcEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoPrestDesacordo) }},
+		{name: "proc cancel prest desacordo", data: minimalCTeProcEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancPrestDesacordo) }},
 	}
 
 	for _, tt := range tests {

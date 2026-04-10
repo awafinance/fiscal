@@ -8,30 +8,30 @@ import (
 
 // TAnonComplexDocZip1 ...
 type TAnonComplexDocZip1 struct {
-	XMLName		xml.Name	`xml:"docZip" json:"-"`
-	NSUAttr		string		`xml:"NSU,attr" json:"NSU,omitempty"`
-	SchemaAttr	string		`xml:"schema,attr" json:"schema,omitempty"`
-	Value		string		`xml:",chardata" json:"value,omitempty"`
+	XMLName    xml.Name `xml:"docZip" json:"-"`
+	NSUAttr    string   `xml:"NSU,attr" json:"NSU,omitempty"`
+	SchemaAttr string   `xml:"schema,attr" json:"schema,omitempty"`
+	Value      string   `xml:",chardata" json:"value,omitempty"`
 }
 
 // TAnonComplexLoteDistDFeInt1 is Informação resumida ou documento fiscal eletrônico de interesse da pessoa ou empresa. O conteúdo desta tag estará compactado no padrão gZip. O tipo do campo é base64Binary.
 type TAnonComplexLoteDistDFeInt1 struct {
-	XMLName	xml.Name		`xml:"loteDistDFeInt" json:"-"`
-	DocZip	[]*TAnonComplexDocZip1	`xml:"docZip" json:"docZip,omitempty"`
+	XMLName xml.Name               `xml:"loteDistDFeInt" json:"-"`
+	DocZip  []*TAnonComplexDocZip1 `xml:"docZip" json:"docZip,omitempty"`
 }
 
 // TAnonComplexRetDistDFeInt1 is Conjunto de informações resumidas e documentos fiscais eletrônicos de interesse da pessoa ou empresa.
 type TAnonComplexRetDistDFeInt1 struct {
-	XMLName		xml.Name			`xml:"retDistDFeInt" json:"-"`
-	VersaoAttr	string				`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string				`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString			`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string				`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString			`xml:"xMotivo" json:"xMotivo,omitempty"`
-	DhResp		string				`xml:"dhResp" json:"dhResp,omitempty"`
-	UltNSU		string				`xml:"ultNSU" json:"ultNSU,omitempty"`
-	MaxNSU		string				`xml:"maxNSU" json:"maxNSU,omitempty"`
-	LoteDistDFeInt	*TAnonComplexLoteDistDFeInt1	`xml:"loteDistDFeInt" json:"loteDistDFeInt,omitempty"`
+	XMLName        xml.Name                     `xml:"retDistDFeInt" json:"-"`
+	VersaoAttr     string                       `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb          string                       `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic       *TString                     `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat          string                       `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo        *TString                     `xml:"xMotivo" json:"xMotivo,omitempty"`
+	DhResp         string                       `xml:"dhResp" json:"dhResp,omitempty"`
+	UltNSU         string                       `xml:"ultNSU" json:"ultNSU,omitempty"`
+	MaxNSU         string                       `xml:"maxNSU" json:"maxNSU,omitempty"`
+	LoteDistDFeInt *TAnonComplexLoteDistDFeInt1 `xml:"loteDistDFeInt" json:"loteDistDFeInt,omitempty"`
 }
 
 // RetDistDFeInt is Schema do resultado do pedido de distribuição de DF-e de interesse

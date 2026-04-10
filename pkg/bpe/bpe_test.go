@@ -100,6 +100,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfBPeSupl: &schema.TAnonComplexInfBPeSupl1{QrCodBPe: "qr"},
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.BPe)
 				require.Equal(t, "12345678000195", doc.BPe.InfBPe.Emit.CNPJ)
 			},
@@ -116,6 +117,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfBPe:  minimalInfBPeTM(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.BPeTM)
 				require.Len(t, doc.BPeTM.InfBPe.DetBPeTM, 1)
 			},
@@ -136,6 +138,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				ProtBPe:    minimalProtBPe(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.BPeProc)
 				require.NotNil(t, doc.BPeProc.ProtBPe)
 			},
@@ -152,6 +155,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				TRetBPe: &schema.TRetBPe{VersaoAttr: "1.00", TpAmb: "2", CUF: "43", CStat: "100"},
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetBPe)
 				require.Equal(t, "100", doc.RetBPe.CStat)
 			},
@@ -168,6 +172,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				TConsSitBPe: &schema.TConsSitBPe{VersaoAttr: "1.00", TpAmb: "2", ChBPe: documentKey},
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ConsSitBPe)
 				require.Equal(t, documentKey, doc.ConsSitBPe.ChBPe)
 			},
@@ -191,6 +196,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsStatServBPe)
 				require.Equal(t, "107", doc.RetConsStatServBPe.CStat)
 			},
@@ -209,6 +215,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfEvento:  minimalEventoInf(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoCancBPe)
 				evento := decodeInnerXML[bpeCancEvento](t, doc.EventoCancBPe.InfEvento.DetEvento.InnerXML)
 				require.Equal(t, "Cancelamento", evento.EvCancBPe.DescEvento)
@@ -232,6 +239,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				RetEventoBPe: &schema.TRetEvento{VersaoAttr: "1.00", InfEvento: &schema.TAnonComplexInfEvento2{TpAmb: "2", CStat: "135"}},
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ProcEventoCancBPe)
 				require.NotNil(t, doc.ProcEventoCancBPe.EventoBPe)
 				require.NotNil(t, doc.ProcEventoCancBPe.RetEventoBPe)
@@ -251,6 +259,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfEvento:  minimalAlteracaoPoltronaEventoInf(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoAlteracaoPoltrona)
 				evento := decodeInnerXML[bpeAlteracaoPoltronaEvento](t, doc.EventoAlteracaoPoltrona.InfEvento.DetEvento.InnerXML)
 				require.Equal(t, "110116", doc.EventoAlteracaoPoltrona.InfEvento.TpEvento)
@@ -271,6 +280,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfEvento:  minimalExcessoBagagemEventoInf(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoExcessoBagagem)
 				evento := decodeInnerXML[bpeExcessoBagagemEvento](t, doc.EventoExcessoBagagem.InfEvento.DetEvento.InnerXML)
 				require.Equal(t, "2", evento.EvExcessoBagagem.QBagagem)
@@ -291,6 +301,7 @@ func TestParse_SupportedRoots(t *testing.T) {
 				InfEvento:  minimalNaoEmbEventoInf(),
 			},
 			assert: func(t *testing.T, doc *bpe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoNaoEmbBPe)
 				evento := decodeInnerXML[bpeNaoEmbEvento](t, doc.EventoNaoEmbBPe.InfEvento.DetEvento.InnerXML)
 				require.Equal(t, "Passageiro ausente", evento.EvNaoEmbBPe.XJust)
@@ -350,16 +361,46 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		data   string
 		assert func(t *testing.T, doc *bpe.Document)
 	}{
-		{name: "ret generico", data: minimalBPERetEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoBPe) }},
-		{name: "ret cancelamento", data: minimalBPERetEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoCancBPe) }},
-		{name: "ret nao embarque", data: minimalBPERetEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoNaoEmbBPe) }},
-		{name: "ret alteracao poltrona", data: minimalBPERetEventXML("110116"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoAlteracaoPoltrona) }},
-		{name: "ret excesso bagagem", data: minimalBPERetEventXML("110117"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.RetEventoExcessoBagagem) }},
-		{name: "proc generico", data: minimalBPEProcEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoBPe) }},
-		{name: "proc cancelamento", data: minimalBPEProcEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoCancBPe) }},
-		{name: "proc nao embarque", data: minimalBPEProcEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoNaoEmbBPe) }},
-		{name: "proc alteracao poltrona", data: minimalBPEProcEventXML("110116"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoAlteracaoPoltrona) }},
-		{name: "proc excesso bagagem", data: minimalBPEProcEventXML("110117"), assert: func(t *testing.T, doc *bpe.Document) { require.NotNil(t, doc.ProcEventoExcessoBagagem) }},
+		{name: "ret generico", data: minimalBPERetEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoBPe)
+		}},
+		{name: "ret cancelamento", data: minimalBPERetEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoCancBPe)
+		}},
+		{name: "ret nao embarque", data: minimalBPERetEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoNaoEmbBPe)
+		}},
+		{name: "ret alteracao poltrona", data: minimalBPERetEventXML("110116"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoAlteracaoPoltrona)
+		}},
+		{name: "ret excesso bagagem", data: minimalBPERetEventXML("110117"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoExcessoBagagem)
+		}},
+		{name: "proc generico", data: minimalBPEProcEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoBPe)
+		}},
+		{name: "proc cancelamento", data: minimalBPEProcEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoCancBPe)
+		}},
+		{name: "proc nao embarque", data: minimalBPEProcEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoNaoEmbBPe)
+		}},
+		{name: "proc alteracao poltrona", data: minimalBPEProcEventXML("110116"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoAlteracaoPoltrona)
+		}},
+		{name: "proc excesso bagagem", data: minimalBPEProcEventXML("110117"), assert: func(t *testing.T, doc *bpe.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoExcessoBagagem)
+		}},
 	}
 
 	for _, tt := range tests {

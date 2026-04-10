@@ -13,6 +13,7 @@ pkl = "0.30.2"
 "aqua:golang-migrate/migrate" = "4.19.1"
 "go:github.com/sqlc-dev/sqlc/cmd/sqlc" = "1.30.0"
 "go:github.com/xuri/xgen/cmd/xgen" = "v0.0.0-20260109003923-38cc1baf99f3"
+"go:golang.org/x/tools/cmd/goimports" = "0.44.0"
 
 [env]
 _.file = '.env'
@@ -28,7 +29,10 @@ depends = ['format']
 
 [tasks.gen]
 description = 'Run Codegen'
-run = 'go run ./internal/codegen'
+run = [
+  'go run ./internal/codegen',
+  'goimports -w internal/bpe/gen internal/cte/gen internal/mdfe/gen internal/nfe/gen internal/nfse/gen',
+]
 
 
 [tasks.format]

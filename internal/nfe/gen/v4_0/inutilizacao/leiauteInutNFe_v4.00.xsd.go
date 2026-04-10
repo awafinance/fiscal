@@ -11,58 +11,58 @@ type TAnonXServ1 string
 
 // TAnonComplexInfInut1 is Justificativa do pedido de inutilização
 type TAnonComplexInfInut1 struct {
-	XMLName	xml.Name	`xml:"infInut" json:"-"`
-	IdAttr	string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb	string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	XServ	string		`xml:"xServ" json:"xServ,omitempty"`
-	CUF	string		`xml:"cUF" json:"cUF,omitempty"`
-	Ano	string		`xml:"ano" json:"ano,omitempty"`
-	CNPJ	string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	Mod	string		`xml:"mod" json:"mod,omitempty"`
-	Serie	string		`xml:"serie" json:"serie,omitempty"`
-	NNFIni	string		`xml:"nNFIni" json:"nNFIni,omitempty"`
-	NNFFin	string		`xml:"nNFFin" json:"nNFFin,omitempty"`
-	XJust	*TString	`xml:"xJust" json:"xJust,omitempty"`
+	XMLName xml.Name `xml:"infInut" json:"-"`
+	IdAttr  string   `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb   string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	XServ   string   `xml:"xServ" json:"xServ,omitempty"`
+	CUF     string   `xml:"cUF" json:"cUF,omitempty"`
+	Ano     string   `xml:"ano" json:"ano,omitempty"`
+	CNPJ    string   `xml:"CNPJ" json:"CNPJ,omitempty"`
+	Mod     string   `xml:"mod" json:"mod,omitempty"`
+	Serie   string   `xml:"serie" json:"serie,omitempty"`
+	NNFIni  string   `xml:"nNFIni" json:"nNFIni,omitempty"`
+	NNFFin  string   `xml:"nNFFin" json:"nNFFin,omitempty"`
+	XJust   *TString `xml:"xJust" json:"xJust,omitempty"`
 }
 
 // TAnonComplexInfInut2 is Número do Protocolo de Status da NF-e. 1 posição (1 – Secretaria de Fazenda Estadual 2 – Receita Federal); 2 - código da UF - 2 posições ano; 10 seqüencial no ano.
 type TAnonComplexInfInut2 struct {
-	XMLName		xml.Name	`xml:"infInut" json:"-"`
-	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	Ano		*string		`xml:"ano" json:"ano,omitempty"`
-	CNPJ		*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	Mod		*string		`xml:"mod" json:"mod,omitempty"`
-	Serie		*string		`xml:"serie" json:"serie,omitempty"`
-	NNFIni		*string		`xml:"nNFIni" json:"nNFIni,omitempty"`
-	NNFFin		*string		`xml:"nNFFin" json:"nNFFin,omitempty"`
-	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
+	XMLName  xml.Name `xml:"infInut" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF      string   `xml:"cUF" json:"cUF,omitempty"`
+	Ano      *string  `xml:"ano" json:"ano,omitempty"`
+	CNPJ     *string  `xml:"CNPJ" json:"CNPJ,omitempty"`
+	Mod      *string  `xml:"mod" json:"mod,omitempty"`
+	Serie    *string  `xml:"serie" json:"serie,omitempty"`
+	NNFIni   *string  `xml:"nNFIni" json:"nNFIni,omitempty"`
+	NNFFin   *string  `xml:"nNFFin" json:"nNFFin,omitempty"`
+	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
 }
 
 // TInutNFe is Dados do Pedido de Inutilização de Numeração da Nota Fiscal Eletrônica
 type TInutNFe struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	InfInut		*TAnonComplexInfInut1	`xml:"infInut" json:"infInut,omitempty"`
-	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                `xml:"versao,attr" json:"versao,omitempty"`
+	InfInut     *TAnonComplexInfInut1 `xml:"infInut" json:"infInut,omitempty"`
+	DsSignature *SignatureType        `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TRetInutNFe is Dados do Retorno do Pedido de Inutilização de Numeração da Nota Fiscal Eletrônica
 type TRetInutNFe struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	InfInut		*TAnonComplexInfInut2	`xml:"infInut" json:"infInut,omitempty"`
-	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                `xml:"versao,attr" json:"versao,omitempty"`
+	InfInut     *TAnonComplexInfInut2 `xml:"infInut" json:"infInut,omitempty"`
+	DsSignature *SignatureType        `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TProcInutNFe is Tipo Pedido de inutilzação de númeração de  NF-e processado
 type TProcInutNFe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	InutNFe		*TInutNFe	`xml:"inutNFe" json:"inutNFe,omitempty"`
-	RetInutNFe	*TRetInutNFe	`xml:"retInutNFe" json:"retInutNFe,omitempty"`
+	VersaoAttr string       `xml:"versao,attr" json:"versao,omitempty"`
+	InutNFe    *TInutNFe    `xml:"inutNFe" json:"inutNFe,omitempty"`
+	RetInutNFe *TRetInutNFe `xml:"retInutNFe" json:"retInutNFe,omitempty"`
 }
 
 // TVerInutNFe is Tipo Versão do leiaute de Inutilização 4.00

@@ -8,13 +8,13 @@ import (
 
 // TAnonComplexBpeProc1 ...
 type TAnonComplexBpeProc1 struct {
-	XMLName			xml.Name	`xml:"bpeProc" json:"-"`
-	VersaoAttr		string		`xml:"versao,attr" json:"versao,omitempty"`
-	IpTransmissorAttr	*string		`xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
-	NPortaConAttr		*string		`xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
-	DhConexaoAttr		*string		`xml:"dhConexao,attr" json:"dhConexao,omitempty"`
-	BPe			*TBPe		`xml:"BPe" json:"BPe,omitempty"`
-	ProtBPe			*TProtBPe	`xml:"protBPe" json:"protBPe,omitempty"`
+	XMLName           xml.Name  `xml:"bpeProc" json:"-"`
+	VersaoAttr        string    `xml:"versao,attr" json:"versao,omitempty"`
+	IpTransmissorAttr *string   `xml:"ipTransmissor,attr" json:"ipTransmissor,omitempty"`
+	NPortaConAttr     *string   `xml:"nPortaCon,attr" json:"nPortaCon,omitempty"`
+	DhConexaoAttr     *string   `xml:"dhConexao,attr" json:"dhConexao,omitempty"`
+	BPe               *TBPe     `xml:"BPe" json:"BPe,omitempty"`
+	ProtBPe           *TProtBPe `xml:"protBPe" json:"protBPe,omitempty"`
 }
 
 // BpeProc is BP-e processado

@@ -4,105 +4,105 @@ package schema
 
 // TCNFSe ...
 type TCNFSe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	InfNFSe		*TCInfNFSe	`xml:"infNFSe" json:"infNFSe,omitempty"`
-	DsSignature	*SignatureType	`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfNFSe     *TCInfNFSe     `xml:"infNFSe" json:"infNFSe,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TCInfNFSe is Grupo de informações da DPS relativas ao serviço prestado
 type TCInfNFSe struct {
-	IdAttr		string		`xml:"Id,attr" json:"Id,omitempty"`
-	XLocEmi		string		`xml:"xLocEmi" json:"xLocEmi,omitempty"`
-	XLocPrestacao	string		`xml:"xLocPrestacao" json:"xLocPrestacao,omitempty"`
-	NNFSe		string		`xml:"nNFSe" json:"nNFSe,omitempty"`
-	CLocIncid	*string		`xml:"cLocIncid" json:"cLocIncid,omitempty"`
-	XLocIncid	*string		`xml:"xLocIncid" json:"xLocIncid,omitempty"`
-	XTribNac	string		`xml:"xTribNac" json:"xTribNac,omitempty"`
-	XTribMun	*string		`xml:"xTribMun" json:"xTribMun,omitempty"`
-	XNBS		*string		`xml:"xNBS" json:"xNBS,omitempty"`
-	VerAplic	string		`xml:"verAplic" json:"verAplic,omitempty"`
-	AmbGer		string		`xml:"ambGer" json:"ambGer,omitempty"`
-	TpEmis		string		`xml:"tpEmis" json:"tpEmis,omitempty"`
-	ProcEmi		string		`xml:"procEmi" json:"procEmi,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	DhProc		string		`xml:"dhProc" json:"dhProc,omitempty"`
-	NDFSe		string		`xml:"nDFSe" json:"nDFSe,omitempty"`
-	Emit		*TCEmitente	`xml:"emit" json:"emit,omitempty"`
-	Valores		*TCValoresNFSe	`xml:"valores" json:"valores,omitempty"`
-	DPS		*TCDPS		`xml:"DPS" json:"DPS,omitempty"`
+	IdAttr        string         `xml:"Id,attr" json:"Id,omitempty"`
+	XLocEmi       string         `xml:"xLocEmi" json:"xLocEmi,omitempty"`
+	XLocPrestacao string         `xml:"xLocPrestacao" json:"xLocPrestacao,omitempty"`
+	NNFSe         string         `xml:"nNFSe" json:"nNFSe,omitempty"`
+	CLocIncid     *string        `xml:"cLocIncid" json:"cLocIncid,omitempty"`
+	XLocIncid     *string        `xml:"xLocIncid" json:"xLocIncid,omitempty"`
+	XTribNac      string         `xml:"xTribNac" json:"xTribNac,omitempty"`
+	XTribMun      *string        `xml:"xTribMun" json:"xTribMun,omitempty"`
+	XNBS          *string        `xml:"xNBS" json:"xNBS,omitempty"`
+	VerAplic      string         `xml:"verAplic" json:"verAplic,omitempty"`
+	AmbGer        string         `xml:"ambGer" json:"ambGer,omitempty"`
+	TpEmis        string         `xml:"tpEmis" json:"tpEmis,omitempty"`
+	ProcEmi       string         `xml:"procEmi" json:"procEmi,omitempty"`
+	CStat         string         `xml:"cStat" json:"cStat,omitempty"`
+	DhProc        string         `xml:"dhProc" json:"dhProc,omitempty"`
+	NDFSe         string         `xml:"nDFSe" json:"nDFSe,omitempty"`
+	Emit          *TCEmitente    `xml:"emit" json:"emit,omitempty"`
+	Valores       *TCValoresNFSe `xml:"valores" json:"valores,omitempty"`
+	DPS           *TCDPS         `xml:"DPS" json:"DPS,omitempty"`
 }
 
 // TCEmitente is E-mail do emitente.
 type TCEmitente struct {
-	CNPJ		*string			`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF		*string			`xml:"CPF" json:"CPF,omitempty"`
-	IM		*string			`xml:"IM" json:"IM,omitempty"`
-	XNome		string			`xml:"xNome" json:"xNome,omitempty"`
-	XFant		*string			`xml:"xFant" json:"xFant,omitempty"`
-	EnderNac	*TCEnderecoEmitente	`xml:"enderNac" json:"enderNac,omitempty"`
-	Fone		*string			`xml:"fone" json:"fone,omitempty"`
-	Email		*string			`xml:"email" json:"email,omitempty"`
+	CNPJ     *string             `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF      *string             `xml:"CPF" json:"CPF,omitempty"`
+	IM       *string             `xml:"IM" json:"IM,omitempty"`
+	XNome    string              `xml:"xNome" json:"xNome,omitempty"`
+	XFant    *string             `xml:"xFant" json:"xFant,omitempty"`
+	EnderNac *TCEnderecoEmitente `xml:"enderNac" json:"enderNac,omitempty"`
+	Fone     *string             `xml:"fone" json:"fone,omitempty"`
+	Email    *string             `xml:"email" json:"email,omitempty"`
 }
 
 // TCValoresNFSe is Uso da Administração Tributária Municipal.
 type TCValoresNFSe struct {
-	VCalcDR		*string	`xml:"vCalcDR" json:"vCalcDR,omitempty"`
-	TpBM		*string	`xml:"tpBM" json:"tpBM,omitempty"`
-	VCalcBM		*string	`xml:"vCalcBM" json:"vCalcBM,omitempty"`
-	VBC		*string	`xml:"vBC" json:"vBC,omitempty"`
-	PAliqAplic	*string	`xml:"pAliqAplic" json:"pAliqAplic,omitempty"`
-	VISSQN		*string	`xml:"vISSQN" json:"vISSQN,omitempty"`
-	VTotalRet	*string	`xml:"vTotalRet" json:"vTotalRet,omitempty"`
-	VLiq		string	`xml:"vLiq" json:"vLiq,omitempty"`
-	XOutInf		*string	`xml:"xOutInf" json:"xOutInf,omitempty"`
+	VCalcDR    *string `xml:"vCalcDR" json:"vCalcDR,omitempty"`
+	TpBM       *string `xml:"tpBM" json:"tpBM,omitempty"`
+	VCalcBM    *string `xml:"vCalcBM" json:"vCalcBM,omitempty"`
+	VBC        *string `xml:"vBC" json:"vBC,omitempty"`
+	PAliqAplic *string `xml:"pAliqAplic" json:"pAliqAplic,omitempty"`
+	VISSQN     *string `xml:"vISSQN" json:"vISSQN,omitempty"`
+	VTotalRet  *string `xml:"vTotalRet" json:"vTotalRet,omitempty"`
+	VLiq       string  `xml:"vLiq" json:"vLiq,omitempty"`
+	XOutInf    *string `xml:"xOutInf" json:"xOutInf,omitempty"`
 }
 
 // TCDPS ...
 type TCDPS struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	InfDPS		*TCInfDPS	`xml:"infDPS" json:"infDPS,omitempty"`
-	DsSignature	*SignatureType	`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string         `xml:"versao,attr" json:"versao,omitempty"`
+	InfDPS      *TCInfDPS      `xml:"infDPS" json:"infDPS,omitempty"`
+	DsSignature *SignatureType `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TCInfDPS is Grupo de informações relativas à valores do serviço prestado
 type TCInfDPS struct {
-	IdAttr		string			`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string			`xml:"tpAmb" json:"tpAmb,omitempty"`
-	DhEmi		string			`xml:"dhEmi" json:"dhEmi,omitempty"`
-	VerAplic	string			`xml:"verAplic" json:"verAplic,omitempty"`
-	Serie		string			`xml:"serie" json:"serie,omitempty"`
-	NDPS		string			`xml:"nDPS" json:"nDPS,omitempty"`
-	DCompet		string			`xml:"dCompet" json:"dCompet,omitempty"`
-	TpEmit		string			`xml:"tpEmit" json:"tpEmit,omitempty"`
-	CLocEmi		string			`xml:"cLocEmi" json:"cLocEmi,omitempty"`
-	Subst		*TCSubstituicao		`xml:"subst" json:"subst,omitempty"`
-	Prest		*TCInfoPrestador	`xml:"prest" json:"prest,omitempty"`
-	Toma		*TCInfoPessoa		`xml:"toma" json:"toma,omitempty"`
-	Interm		*TCInfoPessoa		`xml:"interm" json:"interm,omitempty"`
-	Serv		*TCServ			`xml:"serv" json:"serv,omitempty"`
-	Valores		*TCInfoValores		`xml:"valores" json:"valores,omitempty"`
+	IdAttr   string           `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string           `xml:"tpAmb" json:"tpAmb,omitempty"`
+	DhEmi    string           `xml:"dhEmi" json:"dhEmi,omitempty"`
+	VerAplic string           `xml:"verAplic" json:"verAplic,omitempty"`
+	Serie    string           `xml:"serie" json:"serie,omitempty"`
+	NDPS     string           `xml:"nDPS" json:"nDPS,omitempty"`
+	DCompet  string           `xml:"dCompet" json:"dCompet,omitempty"`
+	TpEmit   string           `xml:"tpEmit" json:"tpEmit,omitempty"`
+	CLocEmi  string           `xml:"cLocEmi" json:"cLocEmi,omitempty"`
+	Subst    *TCSubstituicao  `xml:"subst" json:"subst,omitempty"`
+	Prest    *TCInfoPrestador `xml:"prest" json:"prest,omitempty"`
+	Toma     *TCInfoPessoa    `xml:"toma" json:"toma,omitempty"`
+	Interm   *TCInfoPessoa    `xml:"interm" json:"interm,omitempty"`
+	Serv     *TCServ          `xml:"serv" json:"serv,omitempty"`
+	Valores  *TCInfoValores   `xml:"valores" json:"valores,omitempty"`
 }
 
 // TCSubstituicao is Descrição do motivo da substituição da NFS-e
 type TCSubstituicao struct {
-	ChSubstda	string	`xml:"chSubstda" json:"chSubstda,omitempty"`
-	CMotivo		string	`xml:"cMotivo" json:"cMotivo,omitempty"`
-	XMotivo		*string	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	ChSubstda string  `xml:"chSubstda" json:"chSubstda,omitempty"`
+	CMotivo   string  `xml:"cMotivo" json:"cMotivo,omitempty"`
+	XMotivo   *string `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TCInfoPrestador is Grupo de informações relativas aos regimes de tributação do prestador de serviços
 type TCInfoPrestador struct {
-	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
-	NIF	*string		`xml:"NIF" json:"NIF,omitempty"`
-	CNaoNIF	*string		`xml:"cNaoNIF" json:"cNaoNIF,omitempty"`
-	CAEPF	*string		`xml:"CAEPF" json:"CAEPF,omitempty"`
-	IM	*string		`xml:"IM" json:"IM,omitempty"`
-	XNome	*string		`xml:"xNome" json:"xNome,omitempty"`
-	End	*TCEndereco	`xml:"end" json:"end,omitempty"`
-	Fone	*string		`xml:"fone" json:"fone,omitempty"`
-	Email	*string		`xml:"email" json:"email,omitempty"`
-	RegTrib	*TCRegTrib	`xml:"regTrib" json:"regTrib,omitempty"`
+	CNPJ    *string     `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string     `xml:"CPF" json:"CPF,omitempty"`
+	NIF     *string     `xml:"NIF" json:"NIF,omitempty"`
+	CNaoNIF *string     `xml:"cNaoNIF" json:"cNaoNIF,omitempty"`
+	CAEPF   *string     `xml:"CAEPF" json:"CAEPF,omitempty"`
+	IM      *string     `xml:"IM" json:"IM,omitempty"`
+	XNome   *string     `xml:"xNome" json:"xNome,omitempty"`
+	End     *TCEndereco `xml:"end" json:"end,omitempty"`
+	Fone    *string     `xml:"fone" json:"fone,omitempty"`
+	Email   *string     `xml:"email" json:"email,omitempty"`
+	RegTrib *TCRegTrib  `xml:"regTrib" json:"regTrib,omitempty"`
 }
 
 // TCRegTrib is Tipos de Regimes Especiais de Tributação:
@@ -115,98 +115,98 @@ type TCInfoPrestador struct {
 //	5 - Profissional Autônomo;
 //	6 - Sociedade de Profissionais;
 type TCRegTrib struct {
-	OpSimpNac	string	`xml:"opSimpNac" json:"opSimpNac,omitempty"`
-	RegApTribSN	*string	`xml:"regApTribSN" json:"regApTribSN,omitempty"`
-	RegEspTrib	string	`xml:"regEspTrib" json:"regEspTrib,omitempty"`
+	OpSimpNac   string  `xml:"opSimpNac" json:"opSimpNac,omitempty"`
+	RegApTribSN *string `xml:"regApTribSN" json:"regApTribSN,omitempty"`
+	RegEspTrib  string  `xml:"regEspTrib" json:"regEspTrib,omitempty"`
 }
 
 // TCInfoPessoa is E-mail
 type TCInfoPessoa struct {
-	CNPJ	*string		`xml:"CNPJ" json:"CNPJ,omitempty"`
-	CPF	*string		`xml:"CPF" json:"CPF,omitempty"`
-	NIF	*string		`xml:"NIF" json:"NIF,omitempty"`
-	CNaoNIF	*string		`xml:"cNaoNIF" json:"cNaoNIF,omitempty"`
-	CAEPF	*string		`xml:"CAEPF" json:"CAEPF,omitempty"`
-	IM	*string		`xml:"IM" json:"IM,omitempty"`
-	XNome	string		`xml:"xNome" json:"xNome,omitempty"`
-	End	*TCEndereco	`xml:"end" json:"end,omitempty"`
-	Fone	*string		`xml:"fone" json:"fone,omitempty"`
-	Email	*string		`xml:"email" json:"email,omitempty"`
+	CNPJ    *string     `xml:"CNPJ" json:"CNPJ,omitempty"`
+	CPF     *string     `xml:"CPF" json:"CPF,omitempty"`
+	NIF     *string     `xml:"NIF" json:"NIF,omitempty"`
+	CNaoNIF *string     `xml:"cNaoNIF" json:"cNaoNIF,omitempty"`
+	CAEPF   *string     `xml:"CAEPF" json:"CAEPF,omitempty"`
+	IM      *string     `xml:"IM" json:"IM,omitempty"`
+	XNome   string      `xml:"xNome" json:"xNome,omitempty"`
+	End     *TCEndereco `xml:"end" json:"end,omitempty"`
+	Fone    *string     `xml:"fone" json:"fone,omitempty"`
+	Email   *string     `xml:"email" json:"email,omitempty"`
 }
 
 // TCEndereco is Bairro
 type TCEndereco struct {
-	EndNac	*TCEnderNac	`xml:"endNac" json:"endNac,omitempty"`
-	EndExt	*TCEnderExt	`xml:"endExt" json:"endExt,omitempty"`
-	XLgr	string		`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string		`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string		`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string		`xml:"xBairro" json:"xBairro,omitempty"`
+	EndNac  *TCEnderNac `xml:"endNac" json:"endNac,omitempty"`
+	EndExt  *TCEnderExt `xml:"endExt" json:"endExt,omitempty"`
+	XLgr    string      `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string      `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string     `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string      `xml:"xBairro" json:"xBairro,omitempty"`
 }
 
 // TCEnderecoEmitente is Número do CEP
 type TCEnderecoEmitente struct {
-	XLgr	string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string	`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string	`xml:"xBairro" json:"xBairro,omitempty"`
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	UF	string	`xml:"UF" json:"UF,omitempty"`
-	CEP	string	`xml:"CEP" json:"CEP,omitempty"`
+	XLgr    string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string  `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string  `xml:"xBairro" json:"xBairro,omitempty"`
+	CMun    string  `xml:"cMun" json:"cMun,omitempty"`
+	UF      string  `xml:"UF" json:"UF,omitempty"`
+	CEP     string  `xml:"CEP" json:"CEP,omitempty"`
 }
 
 // TCEnderecoSimples is Bairro
 type TCEnderecoSimples struct {
-	CEP	*string			`xml:"CEP" json:"CEP,omitempty"`
-	EndExt	*TCEnderExtSimples	`xml:"endExt" json:"endExt,omitempty"`
-	XLgr	string			`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro	string			`xml:"nro" json:"nro,omitempty"`
-	XCpl	*string			`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro	string			`xml:"xBairro" json:"xBairro,omitempty"`
+	CEP     *string            `xml:"CEP" json:"CEP,omitempty"`
+	EndExt  *TCEnderExtSimples `xml:"endExt" json:"endExt,omitempty"`
+	XLgr    string             `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro     string             `xml:"nro" json:"nro,omitempty"`
+	XCpl    *string            `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro string             `xml:"xBairro" json:"xBairro,omitempty"`
 }
 
 // TCEnderNac is Número do CEP
 type TCEnderNac struct {
-	CMun	string	`xml:"cMun" json:"cMun,omitempty"`
-	CEP	string	`xml:"CEP" json:"CEP,omitempty"`
+	CMun string `xml:"cMun" json:"cMun,omitempty"`
+	CEP  string `xml:"CEP" json:"CEP,omitempty"`
 }
 
 // TCEnderExt is Estado, província ou região da cidade no exterior do prestador do serviço.
 type TCEnderExt struct {
-	CPais		string	`xml:"cPais" json:"cPais,omitempty"`
-	CEndPost	string	`xml:"cEndPost" json:"cEndPost,omitempty"`
-	XCidade		string	`xml:"xCidade" json:"xCidade,omitempty"`
-	XEstProvReg	string	`xml:"xEstProvReg" json:"xEstProvReg,omitempty"`
+	CPais       string `xml:"cPais" json:"cPais,omitempty"`
+	CEndPost    string `xml:"cEndPost" json:"cEndPost,omitempty"`
+	XCidade     string `xml:"xCidade" json:"xCidade,omitempty"`
+	XEstProvReg string `xml:"xEstProvReg" json:"xEstProvReg,omitempty"`
 }
 
 // TCEnderExtSimples is Estado, província ou região da cidade no exterior do prestador do serviço.
 type TCEnderExtSimples struct {
-	CEndPost	string	`xml:"cEndPost" json:"cEndPost,omitempty"`
-	XCidade		string	`xml:"xCidade" json:"xCidade,omitempty"`
-	XEstProvReg	string	`xml:"xEstProvReg" json:"xEstProvReg,omitempty"`
+	CEndPost    string `xml:"cEndPost" json:"cEndPost,omitempty"`
+	XCidade     string `xml:"xCidade" json:"xCidade,omitempty"`
+	XEstProvReg string `xml:"xEstProvReg" json:"xEstProvReg,omitempty"`
 }
 
 // TCEnderObraEvento is Estado, província ou região
 type TCEnderObraEvento struct {
-	CEndPost	string	`xml:"cEndPost" json:"cEndPost,omitempty"`
-	XLgr		string	`xml:"xLgr" json:"xLgr,omitempty"`
-	Nro		string	`xml:"nro" json:"nro,omitempty"`
-	XCpl		*string	`xml:"xCpl" json:"xCpl,omitempty"`
-	XBairro		string	`xml:"xBairro" json:"xBairro,omitempty"`
-	XCidade		string	`xml:"xCidade" json:"xCidade,omitempty"`
-	XEstProvReg	string	`xml:"xEstProvReg" json:"xEstProvReg,omitempty"`
+	CEndPost    string  `xml:"cEndPost" json:"cEndPost,omitempty"`
+	XLgr        string  `xml:"xLgr" json:"xLgr,omitempty"`
+	Nro         string  `xml:"nro" json:"nro,omitempty"`
+	XCpl        *string `xml:"xCpl" json:"xCpl,omitempty"`
+	XBairro     string  `xml:"xBairro" json:"xBairro,omitempty"`
+	XCidade     string  `xml:"xCidade" json:"xCidade,omitempty"`
+	XEstProvReg string  `xml:"xEstProvReg" json:"xEstProvReg,omitempty"`
 }
 
 // TCServ is Grupo de informações complementares disponível para todos os serviços prestados
 type TCServ struct {
-	LocPrest	*TCLocPrest		`xml:"locPrest" json:"locPrest,omitempty"`
-	CServ		*TCCServ		`xml:"cServ" json:"cServ,omitempty"`
-	ComExt		*TCComExterior		`xml:"comExt" json:"comExt,omitempty"`
-	Lsadppu		*TCLocacaoSublocacao	`xml:"lsadppu" json:"lsadppu,omitempty"`
-	Obra		*TCInfoObra		`xml:"obra" json:"obra,omitempty"`
-	AtvEvento	*TCAtvEvento		`xml:"atvEvento" json:"atvEvento,omitempty"`
-	ExplRod		*TCExploracaoRodoviaria	`xml:"explRod" json:"explRod,omitempty"`
-	InfoCompl	*TCInfoCompl		`xml:"infoCompl" json:"infoCompl,omitempty"`
+	LocPrest  *TCLocPrest             `xml:"locPrest" json:"locPrest,omitempty"`
+	CServ     *TCCServ                `xml:"cServ" json:"cServ,omitempty"`
+	ComExt    *TCComExterior          `xml:"comExt" json:"comExt,omitempty"`
+	Lsadppu   *TCLocacaoSublocacao    `xml:"lsadppu" json:"lsadppu,omitempty"`
+	Obra      *TCInfoObra             `xml:"obra" json:"obra,omitempty"`
+	AtvEvento *TCAtvEvento            `xml:"atvEvento" json:"atvEvento,omitempty"`
+	ExplRod   *TCExploracaoRodoviaria `xml:"explRod" json:"explRod,omitempty"`
+	InfoCompl *TCInfoCompl            `xml:"infoCompl" json:"infoCompl,omitempty"`
 }
 
 // TCLocPrest is Opção para que o emitente informe onde ocorreu o consumo do serviço prestado.
@@ -214,18 +214,18 @@ type TCServ struct {
 //	0 - Consumo do serviço prestado ocorrido no município do local da prestação;
 //	1 - Consumo do serviço prestado ocorrido ocorrido no exterior ;
 type TCLocPrest struct {
-	CLocPrestacao	*string	`xml:"cLocPrestacao" json:"cLocPrestacao,omitempty"`
-	CPaisPrestacao	*string	`xml:"cPaisPrestacao" json:"cPaisPrestacao,omitempty"`
-	OpConsumServ	*string	`xml:"opConsumServ" json:"opConsumServ,omitempty"`
+	CLocPrestacao  *string `xml:"cLocPrestacao" json:"cLocPrestacao,omitempty"`
+	CPaisPrestacao *string `xml:"cPaisPrestacao" json:"cPaisPrestacao,omitempty"`
+	OpConsumServ   *string `xml:"opConsumServ" json:"opConsumServ,omitempty"`
 }
 
 // TCCServ is Código interno do contribuinte
 type TCCServ struct {
-	CTribNac	string	`xml:"cTribNac" json:"cTribNac,omitempty"`
-	CTribMun	*string	`xml:"cTribMun" json:"cTribMun,omitempty"`
-	XDescServ	string	`xml:"xDescServ" json:"xDescServ,omitempty"`
-	CNBS		*string	`xml:"cNBS" json:"cNBS,omitempty"`
-	CIntContrib	*string	`xml:"cIntContrib" json:"cIntContrib,omitempty"`
+	CTribNac    string  `xml:"cTribNac" json:"cTribNac,omitempty"`
+	CTribMun    *string `xml:"cTribMun" json:"cTribMun,omitempty"`
+	XDescServ   string  `xml:"xDescServ" json:"xDescServ,omitempty"`
+	CNBS        *string `xml:"cNBS" json:"cNBS,omitempty"`
+	CIntContrib *string `xml:"cIntContrib" json:"cIntContrib,omitempty"`
 }
 
 // TCComExterior is Compartilhar as informações da NFS-e gerada a partir desta DPS com a Secretaria de Comércio Exterior:
@@ -233,92 +233,92 @@ type TCCServ struct {
 //	0 - Não enviar para o MDIC;
 //	1 - Enviar para o MDIC;
 type TCComExterior struct {
-	MdPrestacao	string	`xml:"mdPrestacao" json:"mdPrestacao,omitempty"`
-	VincPrest	string	`xml:"vincPrest" json:"vincPrest,omitempty"`
-	TpMoeda		string	`xml:"tpMoeda" json:"tpMoeda,omitempty"`
-	VServMoeda	string	`xml:"vServMoeda" json:"vServMoeda,omitempty"`
-	MecAFComexP	string	`xml:"mecAFComexP" json:"mecAFComexP,omitempty"`
-	MecAFComexT	string	`xml:"mecAFComexT" json:"mecAFComexT,omitempty"`
-	MovTempBens	string	`xml:"movTempBens" json:"movTempBens,omitempty"`
-	NDI		*string	`xml:"nDI" json:"nDI,omitempty"`
-	NRE		*string	`xml:"nRE" json:"nRE,omitempty"`
-	Mdic		string	`xml:"mdic" json:"mdic,omitempty"`
+	MdPrestacao string  `xml:"mdPrestacao" json:"mdPrestacao,omitempty"`
+	VincPrest   string  `xml:"vincPrest" json:"vincPrest,omitempty"`
+	TpMoeda     string  `xml:"tpMoeda" json:"tpMoeda,omitempty"`
+	VServMoeda  string  `xml:"vServMoeda" json:"vServMoeda,omitempty"`
+	MecAFComexP string  `xml:"mecAFComexP" json:"mecAFComexP,omitempty"`
+	MecAFComexT string  `xml:"mecAFComexT" json:"mecAFComexT,omitempty"`
+	MovTempBens string  `xml:"movTempBens" json:"movTempBens,omitempty"`
+	NDI         *string `xml:"nDI" json:"nDI,omitempty"`
+	NRE         *string `xml:"nRE" json:"nRE,omitempty"`
+	Mdic        string  `xml:"mdic" json:"mdic,omitempty"`
 }
 
 // TCExploracaoRodoviaria is Código de contrato gerado automaticamente pelo sistema nacional no cadastro da concessionária.
 type TCExploracaoRodoviaria struct {
-	CategVeic	string	`xml:"categVeic" json:"categVeic,omitempty"`
-	NEixos		string	`xml:"nEixos" json:"nEixos,omitempty"`
-	Rodagem		string	`xml:"rodagem" json:"rodagem,omitempty"`
-	Sentido		string	`xml:"sentido" json:"sentido,omitempty"`
-	Placa		string	`xml:"placa" json:"placa,omitempty"`
-	CodAcessoPed	string	`xml:"codAcessoPed" json:"codAcessoPed,omitempty"`
-	CodContrato	string	`xml:"codContrato" json:"codContrato,omitempty"`
+	CategVeic    string `xml:"categVeic" json:"categVeic,omitempty"`
+	NEixos       string `xml:"nEixos" json:"nEixos,omitempty"`
+	Rodagem      string `xml:"rodagem" json:"rodagem,omitempty"`
+	Sentido      string `xml:"sentido" json:"sentido,omitempty"`
+	Placa        string `xml:"placa" json:"placa,omitempty"`
+	CodAcessoPed string `xml:"codAcessoPed" json:"codAcessoPed,omitempty"`
+	CodContrato  string `xml:"codContrato" json:"codContrato,omitempty"`
 }
 
 // TCLocacaoSublocacao is Número total de postes
 type TCLocacaoSublocacao struct {
-	Categ		string	`xml:"categ" json:"categ,omitempty"`
-	Objeto		string	`xml:"objeto" json:"objeto,omitempty"`
-	Extensao	string	`xml:"extensao" json:"extensao,omitempty"`
-	NPostes		string	`xml:"nPostes" json:"nPostes,omitempty"`
+	Categ    string `xml:"categ" json:"categ,omitempty"`
+	Objeto   string `xml:"objeto" json:"objeto,omitempty"`
+	Extensao string `xml:"extensao" json:"extensao,omitempty"`
+	NPostes  string `xml:"nPostes" json:"nPostes,omitempty"`
 }
 
 // TCAtvEvento is Grupo de informações relativas ao endereço da atividade, evento ou local do serviço prestado
 type TCAtvEvento struct {
-	Desc	string			`xml:"desc" json:"desc,omitempty"`
-	DtIni	string			`xml:"dtIni" json:"dtIni,omitempty"`
-	DtFim	string			`xml:"dtFim" json:"dtFim,omitempty"`
-	Id	*string			`xml:"id" json:"id,omitempty"`
-	End	*TCEnderecoSimples	`xml:"end" json:"end,omitempty"`
+	Desc  string             `xml:"desc" json:"desc,omitempty"`
+	DtIni string             `xml:"dtIni" json:"dtIni,omitempty"`
+	DtFim string             `xml:"dtFim" json:"dtFim,omitempty"`
+	Id    *string            `xml:"id" json:"id,omitempty"`
+	End   *TCEnderecoSimples `xml:"end" json:"end,omitempty"`
 }
 
 // TCInfoObra is Grupo de informações do endereço da obra do serviço prestado
 type TCInfoObra struct {
-	CObra		*string			`xml:"cObra" json:"cObra,omitempty"`
-	InscImobFisc	*string			`xml:"inscImobFisc" json:"inscImobFisc,omitempty"`
-	End		*TCEnderecoSimples	`xml:"end" json:"end,omitempty"`
+	CObra        *string            `xml:"cObra" json:"cObra,omitempty"`
+	InscImobFisc *string            `xml:"inscImobFisc" json:"inscImobFisc,omitempty"`
+	End          *TCEnderecoSimples `xml:"end" json:"end,omitempty"`
 }
 
 // TCInfoCompl is Informações complementares
 type TCInfoCompl struct {
-	IdDocTec	*string	`xml:"idDocTec" json:"idDocTec,omitempty"`
-	DocRef		*string	`xml:"docRef" json:"docRef,omitempty"`
-	XInfComp	*string	`xml:"xInfComp" json:"xInfComp,omitempty"`
+	IdDocTec *string `xml:"idDocTec" json:"idDocTec,omitempty"`
+	DocRef   *string `xml:"docRef" json:"docRef,omitempty"`
+	XInfComp *string `xml:"xInfComp" json:"xInfComp,omitempty"`
 }
 
 // TCInfoValores is Grupo de informações relacionados aos tributos relacionados ao serviço prestado
 type TCInfoValores struct {
-	VServPrest	*TCVServPrest		`xml:"vServPrest" json:"vServPrest,omitempty"`
-	VDescCondIncond	*TCVDescCondIncond	`xml:"vDescCondIncond" json:"vDescCondIncond,omitempty"`
-	VDedRed		*TCInfoDedRed		`xml:"vDedRed" json:"vDedRed,omitempty"`
-	Trib		*TCInfoTributacao	`xml:"trib" json:"trib,omitempty"`
+	VServPrest      *TCVServPrest      `xml:"vServPrest" json:"vServPrest,omitempty"`
+	VDescCondIncond *TCVDescCondIncond `xml:"vDescCondIncond" json:"vDescCondIncond,omitempty"`
+	VDedRed         *TCInfoDedRed      `xml:"vDedRed" json:"vDedRed,omitempty"`
+	Trib            *TCInfoTributacao  `xml:"trib" json:"trib,omitempty"`
 }
 
 // TCInfoTributacao is Grupo de informações para totais aproximados dos tributos relacionados ao serviço prestado
 type TCInfoTributacao struct {
-	TribMun	*TCTribMunicipal	`xml:"tribMun" json:"tribMun,omitempty"`
-	TribFed	*TCTribNacional		`xml:"tribFed" json:"tribFed,omitempty"`
-	TotTrib	*TCTribTotal		`xml:"totTrib" json:"totTrib,omitempty"`
+	TribMun *TCTribMunicipal `xml:"tribMun" json:"tribMun,omitempty"`
+	TribFed *TCTribNacional  `xml:"tribFed" json:"tribFed,omitempty"`
+	TotTrib *TCTribTotal     `xml:"totTrib" json:"totTrib,omitempty"`
 }
 
 // TCVServPrest is Valor dos serviços em R$
 type TCVServPrest struct {
-	VReceb	*string	`xml:"vReceb" json:"vReceb,omitempty"`
-	VServ	string	`xml:"vServ" json:"vServ,omitempty"`
+	VReceb *string `xml:"vReceb" json:"vReceb,omitempty"`
+	VServ  string  `xml:"vServ" json:"vServ,omitempty"`
 }
 
 // TCVDescCondIncond is Valor monetário do desconto condicionado (R$)
 type TCVDescCondIncond struct {
-	VDescIncond	*string	`xml:"vDescIncond" json:"vDescIncond,omitempty"`
-	VDescCond	*string	`xml:"vDescCond" json:"vDescCond,omitempty"`
+	VDescIncond *string `xml:"vDescIncond" json:"vDescIncond,omitempty"`
+	VDescCond   *string `xml:"vDescCond" json:"vDescCond,omitempty"`
 }
 
 // TCInfoDedRed is Grupo de informações de documento utilizado para Dedução/Redução do valor do serviço
 type TCInfoDedRed struct {
-	PDR		*string			`xml:"pDR" json:"pDR,omitempty"`
-	VDR		*string			`xml:"vDR" json:"vDR,omitempty"`
-	Documentos	*TCListaDocDedRed	`xml:"documentos" json:"documentos,omitempty"`
+	PDR        *string           `xml:"pDR" json:"pDR,omitempty"`
+	VDR        *string           `xml:"vDR" json:"vDR,omitempty"`
+	Documentos *TCListaDocDedRed `xml:"documentos" json:"documentos,omitempty"`
 }
 
 // TCListaDocDedRed is Grupo de informações de documento utilizado para Dedução/Redução do valor do serviço
@@ -328,32 +328,32 @@ type TCListaDocDedRed struct {
 
 // TCDocDedRed is Grupo de informações do Fornecedor em Deduções de Serviços
 type TCDocDedRed struct {
-	ChNFSe			*string		`xml:"chNFSe" json:"chNFSe,omitempty"`
-	ChNFe			*string		`xml:"chNFe" json:"chNFe,omitempty"`
-	NFSeMun			*TCDocOutNFSe	`xml:"NFSeMun" json:"NFSeMun,omitempty"`
-	NFNFS			*TCDocNFNFS	`xml:"NFNFS" json:"NFNFS,omitempty"`
-	NDocFisc		*string		`xml:"nDocFisc" json:"nDocFisc,omitempty"`
-	NDoc			*string		`xml:"nDoc" json:"nDoc,omitempty"`
-	TpDedRed		string		`xml:"tpDedRed" json:"tpDedRed,omitempty"`
-	XDescOutDed		*string		`xml:"xDescOutDed" json:"xDescOutDed,omitempty"`
-	DtEmiDoc		string		`xml:"dtEmiDoc" json:"dtEmiDoc,omitempty"`
-	VDedutivelRedutivel	string		`xml:"vDedutivelRedutivel" json:"vDedutivelRedutivel,omitempty"`
-	VDeducaoReducao		string		`xml:"vDeducaoReducao" json:"vDeducaoReducao,omitempty"`
-	Fornec			*TCInfoPessoa	`xml:"fornec" json:"fornec,omitempty"`
+	ChNFSe              *string       `xml:"chNFSe" json:"chNFSe,omitempty"`
+	ChNFe               *string       `xml:"chNFe" json:"chNFe,omitempty"`
+	NFSeMun             *TCDocOutNFSe `xml:"NFSeMun" json:"NFSeMun,omitempty"`
+	NFNFS               *TCDocNFNFS   `xml:"NFNFS" json:"NFNFS,omitempty"`
+	NDocFisc            *string       `xml:"nDocFisc" json:"nDocFisc,omitempty"`
+	NDoc                *string       `xml:"nDoc" json:"nDoc,omitempty"`
+	TpDedRed            string        `xml:"tpDedRed" json:"tpDedRed,omitempty"`
+	XDescOutDed         *string       `xml:"xDescOutDed" json:"xDescOutDed,omitempty"`
+	DtEmiDoc            string        `xml:"dtEmiDoc" json:"dtEmiDoc,omitempty"`
+	VDedutivelRedutivel string        `xml:"vDedutivelRedutivel" json:"vDedutivelRedutivel,omitempty"`
+	VDeducaoReducao     string        `xml:"vDeducaoReducao" json:"vDeducaoReducao,omitempty"`
+	Fornec              *TCInfoPessoa `xml:"fornec" json:"fornec,omitempty"`
 }
 
 // TCDocOutNFSe is Código de Verificação da nota eletrônica municipal
 type TCDocOutNFSe struct {
-	CMunNFSeMun	string	`xml:"cMunNFSeMun" json:"cMunNFSeMun,omitempty"`
-	NNFSeMun	string	`xml:"nNFSeMun" json:"nNFSeMun,omitempty"`
-	CVerifNFSeMun	string	`xml:"cVerifNFSeMun" json:"cVerifNFSeMun,omitempty"`
+	CMunNFSeMun   string `xml:"cMunNFSeMun" json:"cMunNFSeMun,omitempty"`
+	NNFSeMun      string `xml:"nNFSeMun" json:"nNFSeMun,omitempty"`
+	CVerifNFSeMun string `xml:"cVerifNFSeMun" json:"cVerifNFSeMun,omitempty"`
 }
 
 // TCDocNFNFS is Série Nota Fiscal NF ou NFS
 type TCDocNFNFS struct {
-	NNFS		string	`xml:"nNFS" json:"nNFS,omitempty"`
-	ModNFS		string	`xml:"modNFS" json:"modNFS,omitempty"`
-	SerieNFS	string	`xml:"serieNFS" json:"serieNFS,omitempty"`
+	NNFS     string `xml:"nNFS" json:"nNFS,omitempty"`
+	ModNFS   string `xml:"modNFS" json:"modNFS,omitempty"`
+	SerieNFS string `xml:"serieNFS" json:"serieNFS,omitempty"`
 }
 
 // TCTribMunicipal is Tipo de retencao do ISSQN:
@@ -362,35 +362,35 @@ type TCDocNFNFS struct {
 //	2 - Retido pelo Tomador;
 //	3 - Retido pelo Intermediario;
 type TCTribMunicipal struct {
-	TribISSQN	string			`xml:"tribISSQN" json:"tribISSQN,omitempty"`
-	CPaisResult	*string			`xml:"cPaisResult" json:"cPaisResult,omitempty"`
-	BM		*TCBeneficioMunicipal	`xml:"BM" json:"BM,omitempty"`
-	ExigSusp	*TCExigSuspensa		`xml:"exigSusp" json:"exigSusp,omitempty"`
-	TpImunidade	*string			`xml:"tpImunidade" json:"tpImunidade,omitempty"`
-	PAliq		*string			`xml:"pAliq" json:"pAliq,omitempty"`
-	TpRetISSQN	string			`xml:"tpRetISSQN" json:"tpRetISSQN,omitempty"`
+	TribISSQN   string                `xml:"tribISSQN" json:"tribISSQN,omitempty"`
+	CPaisResult *string               `xml:"cPaisResult" json:"cPaisResult,omitempty"`
+	BM          *TCBeneficioMunicipal `xml:"BM" json:"BM,omitempty"`
+	ExigSusp    *TCExigSuspensa       `xml:"exigSusp" json:"exigSusp,omitempty"`
+	TpImunidade *string               `xml:"tpImunidade" json:"tpImunidade,omitempty"`
+	PAliq       *string               `xml:"pAliq" json:"pAliq,omitempty"`
+	TpRetISSQN  string                `xml:"tpRetISSQN" json:"tpRetISSQN,omitempty"`
 }
 
 // TCBeneficioMunicipal is Valor percentual informado pelo emitente para redução da base de cálculo (BC) do ISSQN devido a um Benefício Municipal (BM).
 type TCBeneficioMunicipal struct {
-	TpBM		string	`xml:"tpBM" json:"tpBM,omitempty"`
-	NBM		string	`xml:"nBM" json:"nBM,omitempty"`
-	VRedBCBM	*string	`xml:"vRedBCBM" json:"vRedBCBM,omitempty"`
-	PRedBCBM	*string	`xml:"pRedBCBM" json:"pRedBCBM,omitempty"`
+	TpBM     string  `xml:"tpBM" json:"tpBM,omitempty"`
+	NBM      string  `xml:"nBM" json:"nBM,omitempty"`
+	VRedBCBM *string `xml:"vRedBCBM" json:"vRedBCBM,omitempty"`
+	PRedBCBM *string `xml:"pRedBCBM" json:"pRedBCBM,omitempty"`
 }
 
 // TCExigSuspensa is Número do processo judicial ou administrativo de suspensão da exigibilidade
 type TCExigSuspensa struct {
-	TpSusp		string	`xml:"tpSusp" json:"tpSusp,omitempty"`
-	NProcesso	string	`xml:"nProcesso" json:"nProcesso,omitempty"`
+	TpSusp    string `xml:"tpSusp" json:"tpSusp,omitempty"`
+	NProcesso string `xml:"nProcesso" json:"nProcesso,omitempty"`
 }
 
 // TCTribNacional is Valor monetário do CSLL (R$).
 type TCTribNacional struct {
-	Piscofins	*TCTribOutrosPisCofins	`xml:"piscofins" json:"piscofins,omitempty"`
-	VRetCP		*string			`xml:"vRetCP" json:"vRetCP,omitempty"`
-	VRetIRRF	*string			`xml:"vRetIRRF" json:"vRetIRRF,omitempty"`
-	VRetCSLL	*string			`xml:"vRetCSLL" json:"vRetCSLL,omitempty"`
+	Piscofins *TCTribOutrosPisCofins `xml:"piscofins" json:"piscofins,omitempty"`
+	VRetCP    *string                `xml:"vRetCP" json:"vRetCP,omitempty"`
+	VRetIRRF  *string                `xml:"vRetIRRF" json:"vRetIRRF,omitempty"`
+	VRetCSLL  *string                `xml:"vRetCSLL" json:"vRetCSLL,omitempty"`
 }
 
 // TCTribOutrosPisCofins is Tipo de retencao do Pis/Cofins:
@@ -398,33 +398,33 @@ type TCTribNacional struct {
 //	1 - Retido;
 //	2 - Não Retido;
 type TCTribOutrosPisCofins struct {
-	CST		string	`xml:"CST" json:"CST,omitempty"`
-	VBCPisCofins	*string	`xml:"vBCPisCofins" json:"vBCPisCofins,omitempty"`
-	PAliqPis	*string	`xml:"pAliqPis" json:"pAliqPis,omitempty"`
-	PAliqCofins	*string	`xml:"pAliqCofins" json:"pAliqCofins,omitempty"`
-	VPis		*string	`xml:"vPis" json:"vPis,omitempty"`
-	VCofins		*string	`xml:"vCofins" json:"vCofins,omitempty"`
-	TpRetPisCofins	*string	`xml:"tpRetPisCofins" json:"tpRetPisCofins,omitempty"`
+	CST            string  `xml:"CST" json:"CST,omitempty"`
+	VBCPisCofins   *string `xml:"vBCPisCofins" json:"vBCPisCofins,omitempty"`
+	PAliqPis       *string `xml:"pAliqPis" json:"pAliqPis,omitempty"`
+	PAliqCofins    *string `xml:"pAliqCofins" json:"pAliqCofins,omitempty"`
+	VPis           *string `xml:"vPis" json:"vPis,omitempty"`
+	VCofins        *string `xml:"vCofins" json:"vCofins,omitempty"`
+	TpRetPisCofins *string `xml:"tpRetPisCofins" json:"tpRetPisCofins,omitempty"`
 }
 
 // TCTribTotal is Valor percentual aproximado do total dos tributos da alíquota do Simples Nacional (%)
 type TCTribTotal struct {
-	VTotTrib	*TCTribTotalMonet	`xml:"vTotTrib" json:"vTotTrib,omitempty"`
-	PTotTrib	*TCTribTotalPercent	`xml:"pTotTrib" json:"pTotTrib,omitempty"`
-	IndTotTrib	*string			`xml:"indTotTrib" json:"indTotTrib,omitempty"`
-	PTotTribSN	*string			`xml:"pTotTribSN" json:"pTotTribSN,omitempty"`
+	VTotTrib   *TCTribTotalMonet   `xml:"vTotTrib" json:"vTotTrib,omitempty"`
+	PTotTrib   *TCTribTotalPercent `xml:"pTotTrib" json:"pTotTrib,omitempty"`
+	IndTotTrib *string             `xml:"indTotTrib" json:"indTotTrib,omitempty"`
+	PTotTribSN *string             `xml:"pTotTribSN" json:"pTotTribSN,omitempty"`
 }
 
 // TCTribTotalMonet is Valor monetário total aproximado dos tributos municipais (R$).
 type TCTribTotalMonet struct {
-	VTotTribFed	string	`xml:"vTotTribFed" json:"vTotTribFed,omitempty"`
-	VTotTribEst	string	`xml:"vTotTribEst" json:"vTotTribEst,omitempty"`
-	VTotTribMun	string	`xml:"vTotTribMun" json:"vTotTribMun,omitempty"`
+	VTotTribFed string `xml:"vTotTribFed" json:"vTotTribFed,omitempty"`
+	VTotTribEst string `xml:"vTotTribEst" json:"vTotTribEst,omitempty"`
+	VTotTribMun string `xml:"vTotTribMun" json:"vTotTribMun,omitempty"`
 }
 
 // TCTribTotalPercent is Valor percentual total aproximado dos tributos municipais (%).
 type TCTribTotalPercent struct {
-	PTotTribFed	string	`xml:"pTotTribFed" json:"pTotTribFed,omitempty"`
-	PTotTribEst	string	`xml:"pTotTribEst" json:"pTotTribEst,omitempty"`
-	PTotTribMun	string	`xml:"pTotTribMun" json:"pTotTribMun,omitempty"`
+	PTotTribFed string `xml:"pTotTribFed" json:"pTotTribFed,omitempty"`
+	PTotTribEst string `xml:"pTotTribEst" json:"pTotTribEst,omitempty"`
+	PTotTribMun string `xml:"pTotTribMun" json:"pTotTribMun,omitempty"`
 }

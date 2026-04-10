@@ -29,6 +29,8 @@ const (
 	dsNamespace  = "http://www.w3.org/2000/09/xmldsig#"
 )
 
+var CNPJ = "12345678000195"
+
 func TestParse_Fixtures(t *testing.T) {
 	t.Parallel()
 
@@ -289,6 +291,10 @@ func TestParse_InvalidInputs(t *testing.T) {
 func TestParse_NewEventRoots(t *testing.T) {
 	t.Parallel()
 
+	xJust := "Mercadoria recusada"
+	xJustMotivo := "Endereco fechado"
+	nTentativa := "1"
+
 	tests := []struct {
 		name   string
 		value  any
@@ -309,7 +315,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 						IdAttr:     "ID1101503518080310245200017255001000047605169551186001",
 						COrgao:     "91",
 						TpAmb:      "1",
-						CNPJ:       stringPtr("12345678000195"),
+						CNPJ:       &CNPJ,
 						ChNFe:      "35180803102452000172550010000476051695511860",
 						DhEvento:   "2024-01-02T03:04:05-03:00",
 						TpEvento:   "110150",
@@ -320,12 +326,13 @@ func TestParse_NewEventRoots(t *testing.T) {
 							DescEvento:  "Ator interessado na NF-e",
 							COrgaoAutor: "91",
 							TpAutor:     "1",
-							AutXML:      &atorSchema.TAnonComplexAutXML1{CNPJ: stringPtr("12345678000195")},
+							AutXML:      &atorSchema.TAnonComplexAutXML1{CNPJ: &CNPJ},
 						},
 					},
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoAtorInteressado)
 				require.Equal(t, "110150", doc.EventoAtorInteressado.InfEvento.TpEvento)
 			},
@@ -345,7 +352,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 						IdAttr:     "ID2102403518080310245200017255001000047605169551186001",
 						COrgao:     "91",
 						TpAmb:      "1",
-						CNPJ:       stringPtr("12345678000195"),
+						CNPJ:       &CNPJ,
 						ChNFe:      "35180803102452000172550010000476051695511860",
 						DhEvento:   "2024-01-02T03:04:05-03:00",
 						TpEvento:   "210240",
@@ -354,12 +361,13 @@ func TestParse_NewEventRoots(t *testing.T) {
 						DetEvento: &mdeSchema.TAnonComplexDetEvento1{
 							VersaoAttr: "1.00",
 							DescEvento: "Operacao nao Realizada",
-							XJust:      stringPtr("Mercadoria recusada"),
+							XJust:      &xJust,
 						},
 					},
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoMDE)
 				require.Equal(t, "210240", doc.EventoMDE.InfEvento.TpEvento)
 				require.Equal(t, "Mercadoria recusada", requirePtr(t, doc.EventoMDE.InfEvento.DetEvento.XJust))
@@ -380,7 +388,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 						IdAttr:     "ID1101923518080310245200017255001000047605169551186001",
 						COrgao:     "91",
 						TpAmb:      "1",
-						CNPJ:       stringPtr("12345678000195"),
+						CNPJ:       &CNPJ,
 						ChNFe:      "35180803102452000172550010000476051695511860",
 						DhEvento:   "2024-01-02T03:04:05-03:00",
 						TpEvento:   "110192",
@@ -391,15 +399,16 @@ func TestParse_NewEventRoots(t *testing.T) {
 							DescEvento:           "Insucesso na Entrega da NF-e",
 							COrgaoAutor:          "91",
 							DhTentativaEntrega:   "2024-01-02T03:04:05-03:00",
-							NTentativa:           stringPtr("1"),
+							NTentativa:           &nTentativa,
 							TpMotivo:             "4",
-							XJustMotivo:          stringPtr("Endereco fechado"),
+							XJustMotivo:          &xJustMotivo,
 							HashTentativaEntrega: "ABCDEF0123456789",
 						},
 					},
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoInsucesso)
 				require.Equal(t, "110192", doc.EventoInsucesso.InfEvento.TpEvento)
 				require.Equal(t, "4", doc.EventoInsucesso.InfEvento.DetEvento.TpMotivo)
@@ -420,7 +429,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 						IdAttr:     "ID1101933518080310245200017255001000047605169551186001",
 						COrgao:     "91",
 						TpAmb:      "1",
-						CNPJ:       stringPtr("12345678000195"),
+						CNPJ:       &CNPJ,
 						ChNFe:      "35180803102452000172550010000476051695511860",
 						DhEvento:   "2024-01-02T03:04:05-03:00",
 						TpEvento:   "110193",
@@ -436,6 +445,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoCancInsucesso)
 				require.Equal(t, "110193", doc.EventoCancInsucesso.InfEvento.TpEvento)
 				require.Equal(t, "135240000000001", doc.EventoCancInsucesso.InfEvento.DetEvento.NProtEvento)
@@ -456,7 +466,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 						IdAttr:     "ID9999993518080310245200017255001000047605169551186001",
 						COrgao:     "91",
 						TpAmb:      "1",
-						CNPJ:       stringPtr("12345678000195"),
+						CNPJ:       &CNPJ,
 						ChNFe:      "35180803102452000172550010000476051695511860",
 						DhEvento:   "2024-01-02T03:04:05-03:00",
 						TpEvento:   "999999",
@@ -467,6 +477,7 @@ func TestParse_NewEventRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoGenerico)
 				require.Equal(t, "999999", doc.EventoGenerico.InfEvento.TpEvento)
 			},
@@ -516,6 +527,7 @@ func TestParse_ConsRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ConsSitNFe)
 				require.Equal(t, "CONSULTAR", doc.ConsSitNFe.XServ)
 			},
@@ -554,6 +566,7 @@ func TestParse_ConsRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsSitNFe)
 				require.Equal(t, "100", doc.RetConsSitNFe.CStat)
 				require.NotNil(t, doc.RetConsSitNFe.ProtNFe)
@@ -599,11 +612,12 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				TAnonComplexDistDFeInt1: &distSchema.TAnonComplexDistDFeInt1{
 					VersaoAttr: "1.01",
 					TpAmb:      "1",
-					CNPJ:       stringPtr("12345678000195"),
+					CNPJ:       &CNPJ,
 					DistNSU:    &distSchema.TAnonComplexDistNSU1{UltNSU: "000000000000001"},
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.DistDFeInt)
 				require.Equal(t, "000000000000001", doc.DistDFeInt.DistNSU.UltNSU)
 			},
@@ -632,6 +646,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetDistDFeInt)
 				require.Len(t, doc.RetDistDFeInt.LoteDistDFeInt.DocZip, 1)
 			},
@@ -648,7 +663,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				TAnonComplexResNFe1: &distSchema.TAnonComplexResNFe1{
 					VersaoAttr: "1.01",
 					ChNFe:      "35180803102452000172550010000476051695511860",
-					CNPJ:       stringPtr("12345678000195"),
+					CNPJ:       &CNPJ,
 					XNome:      "Emitente Teste",
 					IE:         "ISENTO",
 					DhEmi:      "2024-01-02T03:04:05-03:00",
@@ -660,6 +675,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ResNFe)
 				require.Equal(t, "Emitente Teste", doc.ResNFe.XNome)
 			},
@@ -676,7 +692,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				TAnonComplexResEvento1: &distSchema.TAnonComplexResEvento1{
 					VersaoAttr: "1.01",
 					COrgao:     "91",
-					CNPJ:       stringPtr("12345678000195"),
+					CNPJ:       &CNPJ,
 					ChNFe:      "35180803102452000172550010000476051695511860",
 					DhEvento:   "2024-01-02T03:04:05-03:00",
 					TpEvento:   "110111",
@@ -687,6 +703,7 @@ func TestParse_DistDFeRoots(t *testing.T) {
 				},
 			},
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ResEvento)
 				require.Equal(t, "110111", doc.ResEvento.TpEvento)
 			},
@@ -1126,6 +1143,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "evento entrega",
 			data: `<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><infEvento Id="ID1101303518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>110130</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento versao="1.00"></detEvento></infEvento></evento>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoEntrega)
 				require.Equal(t, "110130", doc.EventoEntrega.InfEvento.TpEvento)
 			},
@@ -1134,6 +1152,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "evento cancel entrega",
 			data: `<evento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><infEvento Id="ID1101313518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>110131</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento versao="1.00"></detEvento></infEvento></evento>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EventoCancEntrega)
 				require.Equal(t, "110131", doc.EventoCancEntrega.InfEvento.TpEvento)
 			},
@@ -1142,6 +1161,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "envEvento",
 			data: `<envEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><idLote>1</idLote><evento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento></detEvento></infEvento></evento></envEvento>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EnvEvento)
 				require.Equal(t, "1", doc.EnvEvento.IdLote)
 				require.Len(t, doc.EnvEvento.Evento, 1)
@@ -1151,6 +1171,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "retEnvEvento",
 			data: `<retEnvEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><idLote>1</idLote><tpAmb>1</tpAmb><verAplic>SVRS202401</verAplic><cOrgao>91</cOrgao><cStat>128</cStat><xMotivo>Lote de Evento Processado</xMotivo><retEvento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><tpAmb>1</tpAmb><verAplic>SVRS202401</verAplic><cOrgao>91</cOrgao><cStat>135</cStat><xMotivo>Evento registrado</xMotivo><chNFe>35180803102452000172550010000476051695511860</chNFe><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento></infEvento></retEvento></retEnvEvento>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetEnvEvento)
 				require.Equal(t, "128", doc.RetEnvEvento.CStat)
 			},
@@ -1159,6 +1180,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "procEventoNFe",
 			data: `<procEventoNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00"><evento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><cOrgao>91</cOrgao><tpAmb>1</tpAmb><CNPJ>12345678000195</CNPJ><chNFe>35180803102452000172550010000476051695511860</chNFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento><verEvento>1.00</verEvento><detEvento></detEvento></infEvento></evento><retEvento versao="1.00"><infEvento Id="ID9999993518080310245200017255001000047605169551186001"><tpAmb>1</tpAmb><verAplic>SVRS202401</verAplic><cOrgao>91</cOrgao><cStat>135</cStat><xMotivo>Evento registrado</xMotivo><chNFe>35180803102452000172550010000476051695511860</chNFe><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento></infEvento></retEvento></procEventoNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ProcEventoNFe)
 				require.NotNil(t, doc.ProcEventoNFe.Evento)
 				require.NotNil(t, doc.ProcEventoNFe.RetEvento)
@@ -1168,6 +1190,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "consStatServ",
 			data: `<consStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><cUF>35</cUF><xServ>STATUS</xServ></consStatServ>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ConsStatServ)
 				require.Equal(t, "STATUS", doc.ConsStatServ.XServ)
 			},
@@ -1176,6 +1199,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "retConsStatServ",
 			data: `<retConsStatServ xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><verAplic>SVRS202401</verAplic><cStat>107</cStat><xMotivo>Servico em Operacao</xMotivo><cUF>35</cUF><dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto></retConsStatServ>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsStatServ)
 				require.Equal(t, "107", doc.RetConsStatServ.CStat)
 			},
@@ -1184,6 +1208,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "enviNFe",
 			data: `<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><idLote>1</idLote><indSinc>1</indSinc><NFe></NFe></enviNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.EnviNFe)
 				require.Equal(t, "1", doc.EnviNFe.IdLote)
 				require.Len(t, doc.EnviNFe.NFe, 1)
@@ -1193,6 +1218,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "retEnviNFe",
 			data: `<retEnviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><verAplic>SVRS202401</verAplic><cStat>103</cStat><xMotivo>Lote recebido com sucesso</xMotivo><cUF>35</cUF><dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto></retEnviNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetEnviNFe)
 				require.Equal(t, "103", doc.RetEnviNFe.CStat)
 			},
@@ -1201,6 +1227,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "consReciNFe",
 			data: `<consReciNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><nRec>351000000000001</nRec></consReciNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ConsReciNFe)
 				require.Equal(t, "351000000000001", doc.ConsReciNFe.NRec)
 			},
@@ -1209,6 +1236,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "retConsReciNFe",
 			data: `<retConsReciNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><tpAmb>2</tpAmb><verAplic>SVRS202401</verAplic><nRec>351000000000001</nRec><cStat>104</cStat><xMotivo>Lote processado</xMotivo><cUF>35</cUF><dhRecbto>2024-01-02T03:04:05-03:00</dhRecbto></retConsReciNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetConsReciNFe)
 				require.Equal(t, "104", doc.RetConsReciNFe.CStat)
 			},
@@ -1217,6 +1245,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "inutNFe",
 			data: `<inutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa nao utilizada</xJust></infInut></inutNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.InutNFe)
 				require.Equal(t, "12345678000195", doc.InutNFe.InfInut.CNPJ)
 			},
@@ -1225,6 +1254,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "retInutNFe",
 			data: `<retInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa inutilizada</xJust></infInut></retInutNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.RetInutNFe)
 				require.Equal(t, "12345678000195", requirePtr(t, doc.RetInutNFe.InfInut.CNPJ))
 			},
@@ -1233,6 +1263,7 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 			name: "procInutNFe",
 			data: `<procInutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><inutNFe versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa nao utilizada</xJust></infInut></inutNFe><retInutNFe versao="4.00"><infInut Id="ID352401123456780001955500100000010000000010"><tpAmb>2</tpAmb><xServ>INUTILIZAR</xServ><cUF>35</cUF><ano>24</ano><CNPJ>12345678000195</CNPJ><mod>55</mod><serie>1</serie><nNFIni>100</nNFIni><nNFFin>100</nNFFin><xJust>Faixa inutilizada</xJust></infInut></retInutNFe></procInutNFe>`,
 			assert: func(t *testing.T, doc *nfe.Document) {
+				t.Helper()
 				require.NotNil(t, doc.ProcInutNFe)
 				require.NotNil(t, doc.ProcInutNFe.InutNFe)
 				require.NotNil(t, doc.ProcInutNFe.RetInutNFe)
@@ -1284,10 +1315,6 @@ func requirePtr[T any](t *testing.T, v *T) T {
 	return *v
 }
 
-func stringPtr(v string) *string {
-	return &v
-}
-
 func nfeConsTStringPtr(v string) *consSchema.TString {
 	value := consSchema.TString(v)
 	return &value
@@ -1325,7 +1352,7 @@ func minimalNFe() *schema.TNFe {
 				VerProc:  "test",
 			},
 			Emit: &schema.TAnonComplexEmit1{
-				CNPJ:      ptr("12345678000195"),
+				CNPJ:      &CNPJ,
 				XNome:     "Emitente",
 				EnderEmit: &schema.TEnderEmi{XLgr: "Rua A", Nro: "1", CMun: "3550308", XMun: "Sao Paulo", UF: "SP", CEP: "01001000"},
 				IE:        "123",
@@ -1354,10 +1381,6 @@ func minimalNFe() *schema.TNFe {
 			},
 		},
 	}
-}
-
-func ptr[T any](v T) *T {
-	return &v
 }
 
 func minimalInfProt() *schema.TAnonComplexInfProt1 {

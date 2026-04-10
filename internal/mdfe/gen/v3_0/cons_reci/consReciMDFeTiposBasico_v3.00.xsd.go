@@ -14,16 +14,16 @@ type TAnonCStat1 string
 
 // TAnonComplexInfProt1 is Descrição literal do status do MDF-e.
 type TAnonComplexInfProt1 struct {
-	XMLName		xml.Name	`xml:"infProt" json:"-"`
-	IdAttr		*string		`xml:"Id,attr" json:"Id,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	ChMDFe		string		`xml:"chMDFe" json:"chMDFe,omitempty"`
-	DhRecbto	string		`xml:"dhRecbto" json:"dhRecbto,omitempty"`
-	NProt		*string		`xml:"nProt" json:"nProt,omitempty"`
-	DigVal		*string		`xml:"digVal" json:"digVal,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
+	XMLName  xml.Name `xml:"infProt" json:"-"`
+	IdAttr   *string  `xml:"Id,attr" json:"Id,omitempty"`
+	TpAmb    string   `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic *TString `xml:"verAplic" json:"verAplic,omitempty"`
+	ChMDFe   string   `xml:"chMDFe" json:"chMDFe,omitempty"`
+	DhRecbto string   `xml:"dhRecbto" json:"dhRecbto,omitempty"`
+	NProt    *string  `xml:"nProt" json:"nProt,omitempty"`
+	DigVal   *string  `xml:"digVal" json:"digVal,omitempty"`
+	CStat    string   `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo  *TString `xml:"xMotivo" json:"xMotivo,omitempty"`
 }
 
 // TAnonCMsg1 ...
@@ -31,36 +31,36 @@ type TAnonCMsg1 string
 
 // TAnonComplexInfFisco1 is Mensagem do Fisco
 type TAnonComplexInfFisco1 struct {
-	XMLName	xml.Name	`xml:"infFisco" json:"-"`
-	CMsg	string		`xml:"cMsg" json:"cMsg,omitempty"`
-	XMsg	*TString	`xml:"xMsg" json:"xMsg,omitempty"`
+	XMLName xml.Name `xml:"infFisco" json:"-"`
+	CMsg    string   `xml:"cMsg" json:"cMsg,omitempty"`
+	XMsg    *TString `xml:"xMsg" json:"xMsg,omitempty"`
 }
 
 // TProtMDFe is Mensagem do Fisco
 type TProtMDFe struct {
-	VersaoAttr	string			`xml:"versao,attr" json:"versao,omitempty"`
-	InfProt		*TAnonComplexInfProt1	`xml:"infProt" json:"infProt,omitempty"`
-	InfFisco	*TAnonComplexInfFisco1	`xml:"infFisco" json:"infFisco,omitempty"`
-	DsSignature	*SignatureType		`xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
+	VersaoAttr  string                 `xml:"versao,attr" json:"versao,omitempty"`
+	InfProt     *TAnonComplexInfProt1  `xml:"infProt" json:"infProt,omitempty"`
+	InfFisco    *TAnonComplexInfFisco1 `xml:"infFisco" json:"infFisco,omitempty"`
+	DsSignature *SignatureType         `xml:"http://www.w3.org/2000/09/xmldsig# Signature" json:"Signature,omitempty"`
 }
 
 // TConsReciMDFe is Número do Recibo do arquivo a ser consultado
 type TConsReciMDFe struct {
-	VersaoAttr	string	`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string	`xml:"tpAmb" json:"tpAmb,omitempty"`
-	NRec		string	`xml:"nRec" json:"nRec,omitempty"`
+	VersaoAttr string `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string `xml:"tpAmb" json:"tpAmb,omitempty"`
+	NRec       string `xml:"nRec" json:"nRec,omitempty"`
 }
 
 // TRetConsReciMDFe is Resultado do processamento do MDF-e
 type TRetConsReciMDFe struct {
-	VersaoAttr	string		`xml:"versao,attr" json:"versao,omitempty"`
-	TpAmb		string		`xml:"tpAmb" json:"tpAmb,omitempty"`
-	VerAplic	*TString	`xml:"verAplic" json:"verAplic,omitempty"`
-	NRec		string		`xml:"nRec" json:"nRec,omitempty"`
-	CStat		string		`xml:"cStat" json:"cStat,omitempty"`
-	XMotivo		*TString	`xml:"xMotivo" json:"xMotivo,omitempty"`
-	CUF		string		`xml:"cUF" json:"cUF,omitempty"`
-	ProtMDFe	*TProtMDFe	`xml:"protMDFe" json:"protMDFe,omitempty"`
+	VersaoAttr string     `xml:"versao,attr" json:"versao,omitempty"`
+	TpAmb      string     `xml:"tpAmb" json:"tpAmb,omitempty"`
+	VerAplic   *TString   `xml:"verAplic" json:"verAplic,omitempty"`
+	NRec       string     `xml:"nRec" json:"nRec,omitempty"`
+	CStat      string     `xml:"cStat" json:"cStat,omitempty"`
+	XMotivo    *TString   `xml:"xMotivo" json:"xMotivo,omitempty"`
+	CUF        string     `xml:"cUF" json:"cUF,omitempty"`
+	ProtMDFe   *TProtMDFe `xml:"protMDFe" json:"protMDFe,omitempty"`
 }
 
 // TVerConsReciMDFe is Tipo Versão do Consulta de MDF-e - 3.00

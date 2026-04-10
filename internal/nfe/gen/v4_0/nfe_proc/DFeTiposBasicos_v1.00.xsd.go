@@ -47,254 +47,254 @@ type TAnonDFeUTrib1 string
 
 // TAnonComplexGIBSUF1 is Valor total do IBS Estadual
 type TAnonComplexGIBSUF1 struct {
-	XMLName		xml.Name	`xml:"gIBSUF" json:"-"`
-	VDif		string		`xml:"vDif" json:"vDif,omitempty"`
-	VDevTrib	string		`xml:"vDevTrib" json:"vDevTrib,omitempty"`
-	VIBSUF		string		`xml:"vIBSUF" json:"vIBSUF,omitempty"`
+	XMLName  xml.Name `xml:"gIBSUF" json:"-"`
+	VDif     string   `xml:"vDif" json:"vDif,omitempty"`
+	VDevTrib string   `xml:"vDevTrib" json:"vDevTrib,omitempty"`
+	VIBSUF   string   `xml:"vIBSUF" json:"vIBSUF,omitempty"`
 }
 
 // TAnonComplexGIBSMun1 is Valor total do IBS Municipal
 type TAnonComplexGIBSMun1 struct {
-	XMLName		xml.Name	`xml:"gIBSMun" json:"-"`
-	VDif		string		`xml:"vDif" json:"vDif,omitempty"`
-	VDevTrib	string		`xml:"vDevTrib" json:"vDevTrib,omitempty"`
-	VIBSMun		string		`xml:"vIBSMun" json:"vIBSMun,omitempty"`
+	XMLName  xml.Name `xml:"gIBSMun" json:"-"`
+	VDif     string   `xml:"vDif" json:"vDif,omitempty"`
+	VDevTrib string   `xml:"vDevTrib" json:"vDevTrib,omitempty"`
+	VIBSMun  string   `xml:"vIBSMun" json:"vIBSMun,omitempty"`
 }
 
 // TAnonComplexGIBSUF2 is Valor total do IBS Estadual
 type TAnonComplexGIBSUF2 struct {
-	XMLName		xml.Name	`xml:"gIBSUF" json:"-"`
-	VDif		string		`xml:"vDif" json:"vDif,omitempty"`
-	VDevTrib	string		`xml:"vDevTrib" json:"vDevTrib,omitempty"`
-	VIBSUF		string		`xml:"vIBSUF" json:"vIBSUF,omitempty"`
+	XMLName  xml.Name `xml:"gIBSUF" json:"-"`
+	VDif     string   `xml:"vDif" json:"vDif,omitempty"`
+	VDevTrib string   `xml:"vDevTrib" json:"vDevTrib,omitempty"`
+	VIBSUF   string   `xml:"vIBSUF" json:"vIBSUF,omitempty"`
 }
 
 // TAnonComplexGIBSMun2 is Valor total do IBS Municipal
 type TAnonComplexGIBSMun2 struct {
-	XMLName		xml.Name	`xml:"gIBSMun" json:"-"`
-	VDif		string		`xml:"vDif" json:"vDif,omitempty"`
-	VDevTrib	string		`xml:"vDevTrib" json:"vDevTrib,omitempty"`
-	VIBSMun		string		`xml:"vIBSMun" json:"vIBSMun,omitempty"`
+	XMLName  xml.Name `xml:"gIBSMun" json:"-"`
+	VDif     string   `xml:"vDif" json:"vDif,omitempty"`
+	VDevTrib string   `xml:"vDevTrib" json:"vDevTrib,omitempty"`
+	VIBSMun  string   `xml:"vIBSMun" json:"vIBSMun,omitempty"`
 }
 
 // TAnonComplexGIBS1 is Valor total do IBS
 type TAnonComplexGIBS1 struct {
-	XMLName	xml.Name		`xml:"gIBS" json:"-"`
-	GIBSUF	*TAnonComplexGIBSUF1	`xml:"gIBSUF" json:"gIBSUF,omitempty"`
-	GIBSMun	*TAnonComplexGIBSMun1	`xml:"gIBSMun" json:"gIBSMun,omitempty"`
-	VIBS	string			`xml:"vIBS" json:"vIBS,omitempty"`
+	XMLName xml.Name              `xml:"gIBS" json:"-"`
+	GIBSUF  *TAnonComplexGIBSUF1  `xml:"gIBSUF" json:"gIBSUF,omitempty"`
+	GIBSMun *TAnonComplexGIBSMun1 `xml:"gIBSMun" json:"gIBSMun,omitempty"`
+	VIBS    string                `xml:"vIBS" json:"vIBS,omitempty"`
 }
 
 // TAnonComplexGCBS1 is Valor total da CBS
 type TAnonComplexGCBS1 struct {
-	XMLName		xml.Name	`xml:"gCBS" json:"-"`
-	VDif		string		`xml:"vDif" json:"vDif,omitempty"`
-	VDevTrib	string		`xml:"vDevTrib" json:"vDevTrib,omitempty"`
-	VCBS		string		`xml:"vCBS" json:"vCBS,omitempty"`
+	XMLName  xml.Name `xml:"gCBS" json:"-"`
+	VDif     string   `xml:"vDif" json:"vDif,omitempty"`
+	VDevTrib string   `xml:"vDevTrib" json:"vDevTrib,omitempty"`
+	VCBS     string   `xml:"vCBS" json:"vCBS,omitempty"`
 }
 
 // TAnonComplexGEstornoCred1 is Valor total da CBS estornada
 type TAnonComplexGEstornoCred1 struct {
-	XMLName		xml.Name	`xml:"gEstornoCred" json:"-"`
-	VIBSEstCred	string		`xml:"vIBSEstCred" json:"vIBSEstCred,omitempty"`
-	VCBSEstCred	string		`xml:"vCBSEstCred" json:"vCBSEstCred,omitempty"`
+	XMLName     xml.Name `xml:"gEstornoCred" json:"-"`
+	VIBSEstCred string   `xml:"vIBSEstCred" json:"vIBSEstCred,omitempty"`
+	VCBSEstCred string   `xml:"vCBSEstCred" json:"vCBSEstCred,omitempty"`
 }
 
 // TAnonComplexGIBS2 is Total do Crédito Presumido Condição Suspensiva
 type TAnonComplexGIBS2 struct {
-	XMLName			xml.Name		`xml:"gIBS" json:"-"`
-	GIBSUF			*TAnonComplexGIBSUF2	`xml:"gIBSUF" json:"gIBSUF,omitempty"`
-	GIBSMun			*TAnonComplexGIBSMun2	`xml:"gIBSMun" json:"gIBSMun,omitempty"`
-	VIBS			string			`xml:"vIBS" json:"vIBS,omitempty"`
-	VCredPres		string			`xml:"vCredPres" json:"vCredPres,omitempty"`
-	VCredPresCondSus	string			`xml:"vCredPresCondSus" json:"vCredPresCondSus,omitempty"`
+	XMLName          xml.Name              `xml:"gIBS" json:"-"`
+	GIBSUF           *TAnonComplexGIBSUF2  `xml:"gIBSUF" json:"gIBSUF,omitempty"`
+	GIBSMun          *TAnonComplexGIBSMun2 `xml:"gIBSMun" json:"gIBSMun,omitempty"`
+	VIBS             string                `xml:"vIBS" json:"vIBS,omitempty"`
+	VCredPres        string                `xml:"vCredPres" json:"vCredPres,omitempty"`
+	VCredPresCondSus string                `xml:"vCredPresCondSus" json:"vCredPresCondSus,omitempty"`
 }
 
 // TAnonComplexGCBS2 is Total do Crédito Presumido Condição Suspensiva
 type TAnonComplexGCBS2 struct {
-	XMLName			xml.Name	`xml:"gCBS" json:"-"`
-	VDif			string		`xml:"vDif" json:"vDif,omitempty"`
-	VDevTrib		string		`xml:"vDevTrib" json:"vDevTrib,omitempty"`
-	VCBS			string		`xml:"vCBS" json:"vCBS,omitempty"`
-	VCredPres		string		`xml:"vCredPres" json:"vCredPres,omitempty"`
-	VCredPresCondSus	string		`xml:"vCredPresCondSus" json:"vCredPresCondSus,omitempty"`
+	XMLName          xml.Name `xml:"gCBS" json:"-"`
+	VDif             string   `xml:"vDif" json:"vDif,omitempty"`
+	VDevTrib         string   `xml:"vDevTrib" json:"vDevTrib,omitempty"`
+	VCBS             string   `xml:"vCBS" json:"vCBS,omitempty"`
+	VCredPres        string   `xml:"vCredPres" json:"vCredPres,omitempty"`
+	VCredPresCondSus string   `xml:"vCredPresCondSus" json:"vCredPresCondSus,omitempty"`
 }
 
 // TAnonComplexGMono1 is Valor da CBS monofásica retida anteriormente
 type TAnonComplexGMono1 struct {
-	XMLName		xml.Name	`xml:"gMono" json:"-"`
-	VIBSMono	string		`xml:"vIBSMono" json:"vIBSMono,omitempty"`
-	VCBSMono	string		`xml:"vCBSMono" json:"vCBSMono,omitempty"`
-	VIBSMonoReten	string		`xml:"vIBSMonoReten" json:"vIBSMonoReten,omitempty"`
-	VCBSMonoReten	string		`xml:"vCBSMonoReten" json:"vCBSMonoReten,omitempty"`
-	VIBSMonoRet	string		`xml:"vIBSMonoRet" json:"vIBSMonoRet,omitempty"`
-	VCBSMonoRet	string		`xml:"vCBSMonoRet" json:"vCBSMonoRet,omitempty"`
+	XMLName       xml.Name `xml:"gMono" json:"-"`
+	VIBSMono      string   `xml:"vIBSMono" json:"vIBSMono,omitempty"`
+	VCBSMono      string   `xml:"vCBSMono" json:"vCBSMono,omitempty"`
+	VIBSMonoReten string   `xml:"vIBSMonoReten" json:"vIBSMonoReten,omitempty"`
+	VCBSMonoReten string   `xml:"vCBSMonoReten" json:"vCBSMonoReten,omitempty"`
+	VIBSMonoRet   string   `xml:"vIBSMonoRet" json:"vIBSMonoRet,omitempty"`
+	VCBSMonoRet   string   `xml:"vCBSMonoRet" json:"vCBSMonoRet,omitempty"`
 }
 
 // TAnonComplexGEstornoCred2 is Valor total da CBS estornada
 type TAnonComplexGEstornoCred2 struct {
-	XMLName		xml.Name	`xml:"gEstornoCred" json:"-"`
-	VIBSEstCred	string		`xml:"vIBSEstCred" json:"vIBSEstCred,omitempty"`
-	VCBSEstCred	string		`xml:"vCBSEstCred" json:"vCBSEstCred,omitempty"`
+	XMLName     xml.Name `xml:"gEstornoCred" json:"-"`
+	VIBSEstCred string   `xml:"vIBSEstCred" json:"vIBSEstCred,omitempty"`
+	VCBSEstCred string   `xml:"vCBSEstCred" json:"vCBSEstCred,omitempty"`
 }
 
 // TAnonComplexGMonoPadrao1 is Valor da CBS monofásica
 type TAnonComplexGMonoPadrao1 struct {
-	XMLName		xml.Name	`xml:"gMonoPadrao" json:"-"`
-	QBCMono		string		`xml:"qBCMono" json:"qBCMono,omitempty"`
-	AdRemIBS	string		`xml:"adRemIBS" json:"adRemIBS,omitempty"`
-	AdRemCBS	string		`xml:"adRemCBS" json:"adRemCBS,omitempty"`
-	VIBSMono	string		`xml:"vIBSMono" json:"vIBSMono,omitempty"`
-	VCBSMono	string		`xml:"vCBSMono" json:"vCBSMono,omitempty"`
+	XMLName  xml.Name `xml:"gMonoPadrao" json:"-"`
+	QBCMono  string   `xml:"qBCMono" json:"qBCMono,omitempty"`
+	AdRemIBS string   `xml:"adRemIBS" json:"adRemIBS,omitempty"`
+	AdRemCBS string   `xml:"adRemCBS" json:"adRemCBS,omitempty"`
+	VIBSMono string   `xml:"vIBSMono" json:"vIBSMono,omitempty"`
+	VCBSMono string   `xml:"vCBSMono" json:"vCBSMono,omitempty"`
 }
 
 // TAnonComplexGMonoReten1 is Valor da CBS monofásica sujeita a retenção
 type TAnonComplexGMonoReten1 struct {
-	XMLName		xml.Name	`xml:"gMonoReten" json:"-"`
-	QBCMonoReten	string		`xml:"qBCMonoReten" json:"qBCMonoReten,omitempty"`
-	AdRemIBSReten	string		`xml:"adRemIBSReten" json:"adRemIBSReten,omitempty"`
-	VIBSMonoReten	string		`xml:"vIBSMonoReten" json:"vIBSMonoReten,omitempty"`
-	AdRemCBSReten	string		`xml:"adRemCBSReten" json:"adRemCBSReten,omitempty"`
-	VCBSMonoReten	string		`xml:"vCBSMonoReten" json:"vCBSMonoReten,omitempty"`
+	XMLName       xml.Name `xml:"gMonoReten" json:"-"`
+	QBCMonoReten  string   `xml:"qBCMonoReten" json:"qBCMonoReten,omitempty"`
+	AdRemIBSReten string   `xml:"adRemIBSReten" json:"adRemIBSReten,omitempty"`
+	VIBSMonoReten string   `xml:"vIBSMonoReten" json:"vIBSMonoReten,omitempty"`
+	AdRemCBSReten string   `xml:"adRemCBSReten" json:"adRemCBSReten,omitempty"`
+	VCBSMonoReten string   `xml:"vCBSMonoReten" json:"vCBSMonoReten,omitempty"`
 }
 
 // TAnonComplexGMonoRet1 is Valor da CBS retida anteriormente
 type TAnonComplexGMonoRet1 struct {
-	XMLName		xml.Name	`xml:"gMonoRet" json:"-"`
-	QBCMonoRet	string		`xml:"qBCMonoRet" json:"qBCMonoRet,omitempty"`
-	AdRemIBSRet	string		`xml:"adRemIBSRet" json:"adRemIBSRet,omitempty"`
-	VIBSMonoRet	string		`xml:"vIBSMonoRet" json:"vIBSMonoRet,omitempty"`
-	AdRemCBSRet	string		`xml:"adRemCBSRet" json:"adRemCBSRet,omitempty"`
-	VCBSMonoRet	string		`xml:"vCBSMonoRet" json:"vCBSMonoRet,omitempty"`
+	XMLName     xml.Name `xml:"gMonoRet" json:"-"`
+	QBCMonoRet  string   `xml:"qBCMonoRet" json:"qBCMonoRet,omitempty"`
+	AdRemIBSRet string   `xml:"adRemIBSRet" json:"adRemIBSRet,omitempty"`
+	VIBSMonoRet string   `xml:"vIBSMonoRet" json:"vIBSMonoRet,omitempty"`
+	AdRemCBSRet string   `xml:"adRemCBSRet" json:"adRemCBSRet,omitempty"`
+	VCBSMonoRet string   `xml:"vCBSMonoRet" json:"vCBSMonoRet,omitempty"`
 }
 
 // TAnonComplexGMonoDif1 is Valor da CBS monofásica diferida
 type TAnonComplexGMonoDif1 struct {
-	XMLName		xml.Name	`xml:"gMonoDif" json:"-"`
-	PDifIBS		string		`xml:"pDifIBS" json:"pDifIBS,omitempty"`
-	VIBSMonoDif	string		`xml:"vIBSMonoDif" json:"vIBSMonoDif,omitempty"`
-	PDifCBS		string		`xml:"pDifCBS" json:"pDifCBS,omitempty"`
-	VCBSMonoDif	string		`xml:"vCBSMonoDif" json:"vCBSMonoDif,omitempty"`
+	XMLName     xml.Name `xml:"gMonoDif" json:"-"`
+	PDifIBS     string   `xml:"pDifIBS" json:"pDifIBS,omitempty"`
+	VIBSMonoDif string   `xml:"vIBSMonoDif" json:"vIBSMonoDif,omitempty"`
+	PDifCBS     string   `xml:"pDifCBS" json:"pDifCBS,omitempty"`
+	VCBSMonoDif string   `xml:"vCBSMonoDif" json:"vCBSMonoDif,omitempty"`
 }
 
 // TAnonComplexGIBSUF3 is Valor do IBS de competência das UF
 type TAnonComplexGIBSUF3 struct {
-	XMLName		xml.Name	`xml:"gIBSUF" json:"-"`
-	PIBSUF		string		`xml:"pIBSUF" json:"pIBSUF,omitempty"`
-	GDif		*TDif		`xml:"gDif" json:"gDif,omitempty"`
-	GDevTrib	*TDevTrib	`xml:"gDevTrib" json:"gDevTrib,omitempty"`
-	GRed		*TRed		`xml:"gRed" json:"gRed,omitempty"`
-	VIBSUF		string		`xml:"vIBSUF" json:"vIBSUF,omitempty"`
+	XMLName  xml.Name  `xml:"gIBSUF" json:"-"`
+	PIBSUF   string    `xml:"pIBSUF" json:"pIBSUF,omitempty"`
+	GDif     *TDif     `xml:"gDif" json:"gDif,omitempty"`
+	GDevTrib *TDevTrib `xml:"gDevTrib" json:"gDevTrib,omitempty"`
+	GRed     *TRed     `xml:"gRed" json:"gRed,omitempty"`
+	VIBSUF   string    `xml:"vIBSUF" json:"vIBSUF,omitempty"`
 }
 
 // TAnonComplexGIBSMun3 is Valor do IBS Municipal
 type TAnonComplexGIBSMun3 struct {
-	XMLName		xml.Name	`xml:"gIBSMun" json:"-"`
-	PIBSMun		string		`xml:"pIBSMun" json:"pIBSMun,omitempty"`
-	GDif		*TDif		`xml:"gDif" json:"gDif,omitempty"`
-	GDevTrib	*TDevTrib	`xml:"gDevTrib" json:"gDevTrib,omitempty"`
-	GRed		*TRed		`xml:"gRed" json:"gRed,omitempty"`
-	VIBSMun		string		`xml:"vIBSMun" json:"vIBSMun,omitempty"`
+	XMLName  xml.Name  `xml:"gIBSMun" json:"-"`
+	PIBSMun  string    `xml:"pIBSMun" json:"pIBSMun,omitempty"`
+	GDif     *TDif     `xml:"gDif" json:"gDif,omitempty"`
+	GDevTrib *TDevTrib `xml:"gDevTrib" json:"gDevTrib,omitempty"`
+	GRed     *TRed     `xml:"gRed" json:"gRed,omitempty"`
+	VIBSMun  string    `xml:"vIBSMun" json:"vIBSMun,omitempty"`
 }
 
 // TAnonComplexGCBS3 is Valor da CBS
 type TAnonComplexGCBS3 struct {
-	XMLName		xml.Name	`xml:"gCBS" json:"-"`
-	PCBS		string		`xml:"pCBS" json:"pCBS,omitempty"`
-	GDif		*TDif		`xml:"gDif" json:"gDif,omitempty"`
-	GDevTrib	*TDevTrib	`xml:"gDevTrib" json:"gDevTrib,omitempty"`
-	GRed		*TRed		`xml:"gRed" json:"gRed,omitempty"`
-	VCBS		string		`xml:"vCBS" json:"vCBS,omitempty"`
+	XMLName  xml.Name  `xml:"gCBS" json:"-"`
+	PCBS     string    `xml:"pCBS" json:"pCBS,omitempty"`
+	GDif     *TDif     `xml:"gDif" json:"gDif,omitempty"`
+	GDevTrib *TDevTrib `xml:"gDevTrib" json:"gDevTrib,omitempty"`
+	GRed     *TRed     `xml:"gRed" json:"gRed,omitempty"`
+	VCBS     string    `xml:"vCBS" json:"vCBS,omitempty"`
 }
 
 // TTribNFCom is Informado conforme indicador no cClassTrib
 type TTribNFCom struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GEstornoCred	*TEstornoCred	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	CST          string        `xml:"CST" json:"CST,omitempty"`
+	CClassTrib   string        `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao    *string       `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS      *TCIBS        `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GEstornoCred *TEstornoCred `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TTribNF3e is Informado conforme indicador no cClassTrib
 type TTribNF3e struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GEstornoCred	*TEstornoCred	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	CST          string        `xml:"CST" json:"CST,omitempty"`
+	CClassTrib   string        `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao    *string       `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS      *TCIBS        `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GEstornoCred *TEstornoCred `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TTribNFAg is Informado conforme indicador no cClassTrib
 type TTribNFAg struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GEstornoCred	*TEstornoCred	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	CST          string        `xml:"CST" json:"CST,omitempty"`
+	CClassTrib   string        `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao    *string       `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS      *TCIBS        `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GEstornoCred *TEstornoCred `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TTribCTe is Informado conforme indicador no cClassTrib
 type TTribCTe struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GEstornoCred	*TEstornoCred	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	CST          string        `xml:"CST" json:"CST,omitempty"`
+	CClassTrib   string        `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao    *string       `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS      *TCIBS        `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GEstornoCred *TEstornoCred `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TTribBPe is Informado conforme indicador no cClassTrib
 type TTribBPe struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GEstornoCred	*TEstornoCred	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	CST          string        `xml:"CST" json:"CST,omitempty"`
+	CClassTrib   string        `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao    *string       `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS      *TCIBS        `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GEstornoCred *TEstornoCred `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TTribNFCe is Indica se a operação é de doação
 type TTribNFCe struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GIBSCBSMono	*TMonofasia	`xml:"gIBSCBSMono" json:"gIBSCBSMono,omitempty"`
+	CST         string      `xml:"CST" json:"CST,omitempty"`
+	CClassTrib  string      `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao   *string     `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS     *TCIBS      `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GIBSCBSMono *TMonofasia `xml:"gIBSCBSMono" json:"gIBSCBSMono,omitempty"`
 }
 
 // TTribNFe is Classificação de acordo com o art. 450, § 1º, da LC 214/25 para o cálculo do crédito presumido na ZFM. Informado conforme indicador no cClassTrib.
 type TTribNFe struct {
-	CST		string			`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string			`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string			`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS			`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GIBSCBSMono	*TMonofasia		`xml:"gIBSCBSMono" json:"gIBSCBSMono,omitempty"`
-	GTransfCred	*TTransfCred		`xml:"gTransfCred" json:"gTransfCred,omitempty"`
-	GAjusteCompet	*TAjusteCompet		`xml:"gAjusteCompet" json:"gAjusteCompet,omitempty"`
-	GEstornoCred	*TEstornoCred		`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
-	GCredPresOper	*TCredPresOper		`xml:"gCredPresOper" json:"gCredPresOper,omitempty"`
-	GCredPresIBSZFM	*TCredPresIBSZFM	`xml:"gCredPresIBSZFM" json:"gCredPresIBSZFM,omitempty"`
+	CST             string           `xml:"CST" json:"CST,omitempty"`
+	CClassTrib      string           `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao       *string          `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS         *TCIBS           `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GIBSCBSMono     *TMonofasia      `xml:"gIBSCBSMono" json:"gIBSCBSMono,omitempty"`
+	GTransfCred     *TTransfCred     `xml:"gTransfCred" json:"gTransfCred,omitempty"`
+	GAjusteCompet   *TAjusteCompet   `xml:"gAjusteCompet" json:"gAjusteCompet,omitempty"`
+	GEstornoCred    *TEstornoCred    `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	GCredPresOper   *TCredPresOper   `xml:"gCredPresOper" json:"gCredPresOper,omitempty"`
+	GCredPresIBSZFM *TCredPresIBSZFM `xml:"gCredPresIBSZFM" json:"gCredPresIBSZFM,omitempty"`
 }
 
 // TTribNFGas is Informado conforme indicador no cClassTrib
 type TTribNFGas struct {
-	CST		string		`xml:"CST" json:"CST,omitempty"`
-	CClassTrib	string		`xml:"cClassTrib" json:"cClassTrib,omitempty"`
-	IndDoacao	*string		`xml:"indDoacao" json:"indDoacao,omitempty"`
-	GIBSCBS		*TCIBS		`xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
-	GIBSCBSMono	*TMonofasia	`xml:"gIBSCBSMono" json:"gIBSCBSMono,omitempty"`
-	GEstornoCred	*TEstornoCred	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	CST          string        `xml:"CST" json:"CST,omitempty"`
+	CClassTrib   string        `xml:"cClassTrib" json:"cClassTrib,omitempty"`
+	IndDoacao    *string       `xml:"indDoacao" json:"indDoacao,omitempty"`
+	GIBSCBS      *TCIBS        `xml:"gIBSCBS" json:"gIBSCBS,omitempty"`
+	GIBSCBSMono  *TMonofasia   `xml:"gIBSCBSMono" json:"gIBSCBSMono,omitempty"`
+	GEstornoCred *TEstornoCred `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TIS is Valor do Imposto Seletivo calculado
 type TIS struct {
-	CSTIS		string	`xml:"CSTIS" json:"CSTIS,omitempty"`
-	CClassTribIS	string	`xml:"cClassTribIS" json:"cClassTribIS,omitempty"`
-	VBCIS		*string	`xml:"vBCIS" json:"vBCIS,omitempty"`
-	PIS		*string	`xml:"pIS" json:"pIS,omitempty"`
-	PISEspec	*string	`xml:"pISEspec" json:"pISEspec,omitempty"`
-	UTrib		*string	`xml:"uTrib" json:"uTrib,omitempty"`
-	QTrib		*string	`xml:"qTrib" json:"qTrib,omitempty"`
-	VIS		*string	`xml:"vIS" json:"vIS,omitempty"`
+	CSTIS        string  `xml:"CSTIS" json:"CSTIS,omitempty"`
+	CClassTribIS string  `xml:"cClassTribIS" json:"cClassTribIS,omitempty"`
+	VBCIS        *string `xml:"vBCIS" json:"vBCIS,omitempty"`
+	PIS          *string `xml:"pIS" json:"pIS,omitempty"`
+	PISEspec     *string `xml:"pISEspec" json:"pISEspec,omitempty"`
+	UTrib        *string `xml:"uTrib" json:"uTrib,omitempty"`
+	QTrib        *string `xml:"qTrib" json:"qTrib,omitempty"`
+	VIS          *string `xml:"vIS" json:"vIS,omitempty"`
 }
 
 // TISTot is Valor Total do Imposto Seletivo
@@ -304,59 +304,59 @@ type TISTot struct {
 
 // TIBSCBSTot is Totalização do estorno de crédito
 type TIBSCBSTot struct {
-	VBCIBSCBS	string				`xml:"vBCIBSCBS" json:"vBCIBSCBS,omitempty"`
-	GIBS		*TAnonComplexGIBS1		`xml:"gIBS" json:"gIBS,omitempty"`
-	GCBS		*TAnonComplexGCBS1		`xml:"gCBS" json:"gCBS,omitempty"`
-	GEstornoCred	*TAnonComplexGEstornoCred1	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	VBCIBSCBS    string                     `xml:"vBCIBSCBS" json:"vBCIBSCBS,omitempty"`
+	GIBS         *TAnonComplexGIBS1         `xml:"gIBS" json:"gIBS,omitempty"`
+	GCBS         *TAnonComplexGCBS1         `xml:"gCBS" json:"gCBS,omitempty"`
+	GEstornoCred *TAnonComplexGEstornoCred1 `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TIBSCBSMonoTot is Totalização do estorno de crédito
 type TIBSCBSMonoTot struct {
-	VBCIBSCBS	string				`xml:"vBCIBSCBS" json:"vBCIBSCBS,omitempty"`
-	GIBS		*TAnonComplexGIBS2		`xml:"gIBS" json:"gIBS,omitempty"`
-	GCBS		*TAnonComplexGCBS2		`xml:"gCBS" json:"gCBS,omitempty"`
-	GMono		*TAnonComplexGMono1		`xml:"gMono" json:"gMono,omitempty"`
-	GEstornoCred	*TAnonComplexGEstornoCred2	`xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
+	VBCIBSCBS    string                     `xml:"vBCIBSCBS" json:"vBCIBSCBS,omitempty"`
+	GIBS         *TAnonComplexGIBS2         `xml:"gIBS" json:"gIBS,omitempty"`
+	GCBS         *TAnonComplexGCBS2         `xml:"gCBS" json:"gCBS,omitempty"`
+	GMono        *TAnonComplexGMono1        `xml:"gMono" json:"gMono,omitempty"`
+	GEstornoCred *TAnonComplexGEstornoCred2 `xml:"gEstornoCred" json:"gEstornoCred,omitempty"`
 }
 
 // TMonofasia is Total da CBS monofásica do item
 type TMonofasia struct {
-	GMonoPadrao	*TAnonComplexGMonoPadrao1	`xml:"gMonoPadrao" json:"gMonoPadrao,omitempty"`
-	GMonoReten	*TAnonComplexGMonoReten1	`xml:"gMonoReten" json:"gMonoReten,omitempty"`
-	GMonoRet	*TAnonComplexGMonoRet1		`xml:"gMonoRet" json:"gMonoRet,omitempty"`
-	GMonoDif	*TAnonComplexGMonoDif1		`xml:"gMonoDif" json:"gMonoDif,omitempty"`
-	VTotIBSMonoItem	string				`xml:"vTotIBSMonoItem" json:"vTotIBSMonoItem,omitempty"`
-	VTotCBSMonoItem	string				`xml:"vTotCBSMonoItem" json:"vTotCBSMonoItem,omitempty"`
+	GMonoPadrao     *TAnonComplexGMonoPadrao1 `xml:"gMonoPadrao" json:"gMonoPadrao,omitempty"`
+	GMonoReten      *TAnonComplexGMonoReten1  `xml:"gMonoReten" json:"gMonoReten,omitempty"`
+	GMonoRet        *TAnonComplexGMonoRet1    `xml:"gMonoRet" json:"gMonoRet,omitempty"`
+	GMonoDif        *TAnonComplexGMonoDif1    `xml:"gMonoDif" json:"gMonoDif,omitempty"`
+	VTotIBSMonoItem string                    `xml:"vTotIBSMonoItem" json:"vTotIBSMonoItem,omitempty"`
+	VTotCBSMonoItem string                    `xml:"vTotCBSMonoItem" json:"vTotCBSMonoItem,omitempty"`
 }
 
 // TCIBS is Grupo de informações da composição do valor do IBS e da CBS em compras governamental
 type TCIBS struct {
-	VBC		string			`xml:"vBC" json:"vBC,omitempty"`
-	GIBSUF		*TAnonComplexGIBSUF3	`xml:"gIBSUF" json:"gIBSUF,omitempty"`
-	GIBSMun		*TAnonComplexGIBSMun3	`xml:"gIBSMun" json:"gIBSMun,omitempty"`
-	VIBS		string			`xml:"vIBS" json:"vIBS,omitempty"`
-	GCBS		*TAnonComplexGCBS3	`xml:"gCBS" json:"gCBS,omitempty"`
-	GTribRegular	*TTribRegular		`xml:"gTribRegular" json:"gTribRegular,omitempty"`
-	GTribCompraGov	*TTribCompraGov		`xml:"gTribCompraGov" json:"gTribCompraGov,omitempty"`
+	VBC            string                `xml:"vBC" json:"vBC,omitempty"`
+	GIBSUF         *TAnonComplexGIBSUF3  `xml:"gIBSUF" json:"gIBSUF,omitempty"`
+	GIBSMun        *TAnonComplexGIBSMun3 `xml:"gIBSMun" json:"gIBSMun,omitempty"`
+	VIBS           string                `xml:"vIBS" json:"vIBS,omitempty"`
+	GCBS           *TAnonComplexGCBS3    `xml:"gCBS" json:"gCBS,omitempty"`
+	GTribRegular   *TTribRegular         `xml:"gTribRegular" json:"gTribRegular,omitempty"`
+	GTribCompraGov *TTribCompraGov       `xml:"gTribCompraGov" json:"gTribCompraGov,omitempty"`
 }
 
 // TRed is Aliquota Efetiva que será aplicada a Base de Calculo (em percentual)
 type TRed struct {
-	PRedAliq	string	`xml:"pRedAliq" json:"pRedAliq,omitempty"`
-	PAliqEfet	string	`xml:"pAliqEfet" json:"pAliqEfet,omitempty"`
+	PRedAliq  string `xml:"pRedAliq" json:"pRedAliq,omitempty"`
+	PAliqEfet string `xml:"pAliqEfet" json:"pAliqEfet,omitempty"`
 }
 
 // TCredPres is Valor do Crédito Presumido Condição Suspensiva, preencher apenas para cCredPres que possui indicação de Condição Suspensiva
 type TCredPres struct {
-	PCredPres		string	`xml:"pCredPres" json:"pCredPres,omitempty"`
-	VCredPres		*string	`xml:"vCredPres" json:"vCredPres,omitempty"`
-	VCredPresCondSus	*string	`xml:"vCredPresCondSus" json:"vCredPresCondSus,omitempty"`
+	PCredPres        string  `xml:"pCredPres" json:"pCredPres,omitempty"`
+	VCredPres        *string `xml:"vCredPres" json:"vCredPres,omitempty"`
+	VCredPresCondSus *string `xml:"vCredPresCondSus" json:"vCredPresCondSus,omitempty"`
 }
 
 // TDif is Valor do diferimento
 type TDif struct {
-	PDif	string	`xml:"pDif" json:"pDif,omitempty"`
-	VDif	string	`xml:"vDif" json:"vDif,omitempty"`
+	PDif string `xml:"pDif" json:"pDif,omitempty"`
+	VDif string `xml:"vDif" json:"vDif,omitempty"`
 }
 
 // TDevTrib is Valor do tributo devolvido. No fornecimento de energia elétrica, água, esgoto e
@@ -367,51 +367,51 @@ type TDevTrib struct {
 
 // TTribRegular is Informar como seria o valor do Tributo caso não cumprida a condição resolutória/suspensiva
 type TTribRegular struct {
-	CSTReg			string	`xml:"CSTReg" json:"CSTReg,omitempty"`
-	CClassTribReg		string	`xml:"cClassTribReg" json:"cClassTribReg,omitempty"`
-	PAliqEfetRegIBSUF	string	`xml:"pAliqEfetRegIBSUF" json:"pAliqEfetRegIBSUF,omitempty"`
-	VTribRegIBSUF		string	`xml:"vTribRegIBSUF" json:"vTribRegIBSUF,omitempty"`
-	PAliqEfetRegIBSMun	string	`xml:"pAliqEfetRegIBSMun" json:"pAliqEfetRegIBSMun,omitempty"`
-	VTribRegIBSMun		string	`xml:"vTribRegIBSMun" json:"vTribRegIBSMun,omitempty"`
-	PAliqEfetRegCBS		string	`xml:"pAliqEfetRegCBS" json:"pAliqEfetRegCBS,omitempty"`
-	VTribRegCBS		string	`xml:"vTribRegCBS" json:"vTribRegCBS,omitempty"`
+	CSTReg             string `xml:"CSTReg" json:"CSTReg,omitempty"`
+	CClassTribReg      string `xml:"cClassTribReg" json:"cClassTribReg,omitempty"`
+	PAliqEfetRegIBSUF  string `xml:"pAliqEfetRegIBSUF" json:"pAliqEfetRegIBSUF,omitempty"`
+	VTribRegIBSUF      string `xml:"vTribRegIBSUF" json:"vTribRegIBSUF,omitempty"`
+	PAliqEfetRegIBSMun string `xml:"pAliqEfetRegIBSMun" json:"pAliqEfetRegIBSMun,omitempty"`
+	VTribRegIBSMun     string `xml:"vTribRegIBSMun" json:"vTribRegIBSMun,omitempty"`
+	PAliqEfetRegCBS    string `xml:"pAliqEfetRegCBS" json:"pAliqEfetRegCBS,omitempty"`
+	VTribRegCBS        string `xml:"vTribRegCBS" json:"vTribRegCBS,omitempty"`
 }
 
 // TTribCompraGov is Valor que seria devido a CBS, sem aplicação do Art. 473. da LC 214/2025
 type TTribCompraGov struct {
-	PAliqIBSUF	string	`xml:"pAliqIBSUF" json:"pAliqIBSUF,omitempty"`
-	VTribIBSUF	string	`xml:"vTribIBSUF" json:"vTribIBSUF,omitempty"`
-	PAliqIBSMun	string	`xml:"pAliqIBSMun" json:"pAliqIBSMun,omitempty"`
-	VTribIBSMun	string	`xml:"vTribIBSMun" json:"vTribIBSMun,omitempty"`
-	PAliqCBS	string	`xml:"pAliqCBS" json:"pAliqCBS,omitempty"`
-	VTribCBS	string	`xml:"vTribCBS" json:"vTribCBS,omitempty"`
+	PAliqIBSUF  string `xml:"pAliqIBSUF" json:"pAliqIBSUF,omitempty"`
+	VTribIBSUF  string `xml:"vTribIBSUF" json:"vTribIBSUF,omitempty"`
+	PAliqIBSMun string `xml:"pAliqIBSMun" json:"pAliqIBSMun,omitempty"`
+	VTribIBSMun string `xml:"vTribIBSMun" json:"vTribIBSMun,omitempty"`
+	PAliqCBS    string `xml:"pAliqCBS" json:"pAliqCBS,omitempty"`
+	VTribCBS    string `xml:"vTribCBS" json:"vTribCBS,omitempty"`
 }
 
 // TCompraGovReduzido is Percentual de redução de aliquota em compra governamental
 type TCompraGovReduzido struct {
-	TpEnteGov	string	`xml:"tpEnteGov" json:"tpEnteGov,omitempty"`
-	PRedutor	string	`xml:"pRedutor" json:"pRedutor,omitempty"`
+	TpEnteGov string `xml:"tpEnteGov" json:"tpEnteGov,omitempty"`
+	PRedutor  string `xml:"pRedutor" json:"pRedutor,omitempty"`
 }
 
 // TCompraGov is Tipo da operação com ente governamental:
 // 1 - Fornecimento
 // 2 - Recebimento do Pagamento
 type TCompraGov struct {
-	TpEnteGov	string	`xml:"tpEnteGov" json:"tpEnteGov,omitempty"`
-	PRedutor	string	`xml:"pRedutor" json:"pRedutor,omitempty"`
-	TpOperGov	string	`xml:"tpOperGov" json:"tpOperGov,omitempty"`
+	TpEnteGov string `xml:"tpEnteGov" json:"tpEnteGov,omitempty"`
+	PRedutor  string `xml:"pRedutor" json:"pRedutor,omitempty"`
+	TpOperGov string `xml:"tpOperGov" json:"tpOperGov,omitempty"`
 }
 
 // TTransfCred is Valor da CBS a ser transferida
 type TTransfCred struct {
-	VIBS	string	`xml:"vIBS" json:"vIBS,omitempty"`
-	VCBS	string	`xml:"vCBS" json:"vCBS,omitempty"`
+	VIBS string `xml:"vIBS" json:"vIBS,omitempty"`
+	VCBS string `xml:"vCBS" json:"vCBS,omitempty"`
 }
 
 // TEstornoCred is Valor da CBS a ser estornada
 type TEstornoCred struct {
-	VIBSEstCred	string	`xml:"vIBSEstCred" json:"vIBSEstCred,omitempty"`
-	VCBSEstCred	string	`xml:"vCBSEstCred" json:"vCBSEstCred,omitempty"`
+	VIBSEstCred string `xml:"vIBSEstCred" json:"vIBSEstCred,omitempty"`
+	VCBSEstCred string `xml:"vCBSEstCred" json:"vCBSEstCred,omitempty"`
 }
 
 // TCompetApur is Ano e mês referência do período de apuração (AAAA-MM)
@@ -419,22 +419,22 @@ type TCompetApur string
 
 // TAjusteCompet is Valor da CBS
 type TAjusteCompet struct {
-	CompetApur	string	`xml:"competApur" json:"competApur,omitempty"`
-	VIBS		string	`xml:"vIBS" json:"vIBS,omitempty"`
-	VCBS		string	`xml:"vCBS" json:"vCBS,omitempty"`
+	CompetApur string `xml:"competApur" json:"competApur,omitempty"`
+	VIBS       string `xml:"vIBS" json:"vIBS,omitempty"`
+	VCBS       string `xml:"vCBS" json:"vCBS,omitempty"`
 }
 
 // TCredPresOper is Grupo de Informações do Crédito Presumido referente a CBS, quando aproveitado pelo emitente do documento.
 type TCredPresOper struct {
-	VBCCredPres	string		`xml:"vBCCredPres" json:"vBCCredPres,omitempty"`
-	CCredPres	string		`xml:"cCredPres" json:"cCredPres,omitempty"`
-	GIBSCredPres	*TCredPres	`xml:"gIBSCredPres" json:"gIBSCredPres,omitempty"`
-	GCBSCredPres	*TCredPres	`xml:"gCBSCredPres" json:"gCBSCredPres,omitempty"`
+	VBCCredPres  string     `xml:"vBCCredPres" json:"vBCCredPres,omitempty"`
+	CCredPres    string     `xml:"cCredPres" json:"cCredPres,omitempty"`
+	GIBSCredPres *TCredPres `xml:"gIBSCredPres" json:"gIBSCredPres,omitempty"`
+	GCBSCredPres *TCredPres `xml:"gCBSCredPres" json:"gCBSCredPres,omitempty"`
 }
 
 // TCredPresIBSZFM is Valor do crédito presumido calculado sobre o saldo devedor apurado
 type TCredPresIBSZFM struct {
-	CompetApur		string	`xml:"competApur" json:"competApur,omitempty"`
-	TpCredPresIBSZFM	string	`xml:"tpCredPresIBSZFM" json:"tpCredPresIBSZFM,omitempty"`
-	VCredPresIBSZFM		string	`xml:"vCredPresIBSZFM" json:"vCredPresIBSZFM,omitempty"`
+	CompetApur       string `xml:"competApur" json:"competApur,omitempty"`
+	TpCredPresIBSZFM string `xml:"tpCredPresIBSZFM" json:"tpCredPresIBSZFM,omitempty"`
+	VCredPresIBSZFM  string `xml:"vCredPresIBSZFM" json:"vCredPresIBSZFM,omitempty"`
 }
