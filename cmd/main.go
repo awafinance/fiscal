@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -56,7 +57,7 @@ A Fast and Flexible fiscal document parser and converter.`,
 func printSummary(w io.Writer, doc *fiscal.Document) error {
 	info := doc.Info()
 	if info == nil {
-		return fmt.Errorf("document has no info")
+		return errors.New("document has no info")
 	}
 
 	tw := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
