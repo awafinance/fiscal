@@ -257,23 +257,26 @@ JSON output also includes `rootName` so parsed documents can preserve their orig
 
 ## CLI
 
-The repository also includes a small CLI for parsing fiscal XML documents and writing the parsed document as JSON.
+The repository also includes a small CLI for parsing fiscal XML documents. The family is detected automatically from the root namespace.
 
 Run it from the repository root with:
 
 ```bash
 go run ./cmd --help
-go run ./cmd nfe <xml>
-go run ./cmd nfse <xml>
-go run ./cmd cte <xml>
-go run ./cmd mdfe <xml>
-go run ./cmd bpe <xml>
+go run ./cmd <xml>           # human-readable summary
+go run ./cmd <xml> --json    # full typed document as JSON
 ```
 
-Each document command takes one XML file path. For example:
+The default output prints a summary built from the shared accessors
+(access key, version, number/series, issuer, recipient, amount,
+status, etc.) plus any extra sections the family exposes (amounts,
+parties, route, related documents).
+
+For example:
 
 ```bash
-go run ./cmd nfe testdata/nfe/35180834128745000152550010000476121675985748-nfe.xml
+go run ./cmd testdata/nfe/35180834128745000152550010000476121675985748-nfe.xml
+go run ./cmd --json testdata/cte/v4_0/43120178408960000182570010000000041000000047-cte.xml | jq '.cte'
 ```
 
 ## Project structure
