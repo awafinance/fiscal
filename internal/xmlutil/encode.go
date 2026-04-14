@@ -22,20 +22,50 @@ const (
 // - use a stable prefix for XMLDSig nodes
 // - keep xmlns declarations ahead of regular attributes
 func EncodeCanonical(enc *xml.Encoder, value any) error {
+	return encodeCanonical(enc, value, "", "")
+}
+
+// EncodeNamespacedRoot marshals value, renames its root element to rootLocal,
+// and declares namespace as the default namespace on it. Remaining canonical
+// behavior matches EncodeCanonical. Useful to avoid per-root anonymous wrapper
+// structs when the inner type carries no XMLName tag.
+func EncodeNamespacedRoot(enc *xml.Encoder, rootLocal, namespace string, value any) error {
+	return encodeCanonical(enc, value, rootLocal, namespace)
+}
+
+func encodeCanonical(enc *xml.Encoder, value any, rootLocal, rootNS string) error {
 	data, err := xml.Marshal(value)
 	if err != nil {
 		return err
+	}
+
+	// xml.Marshal of a nil pointer yields empty output. When a root override is
+	// set, we still need to emit the empty root element with its namespace so
+	// callers get `<root xmlns="ns"></root>` rather than nothing.
+	if len(data) == 0 && rootLocal != "" {
+		start := xml.StartElement{Name: xml.Name{Local: rootLocal}}
+		if rootNS != "" {
+			start.Attr = []xml.Attr{{Name: xml.Name{Local: "xmlns"}, Value: rootNS}}
+		}
+		if err := enc.EncodeToken(start); err != nil {
+			return err
+		}
+		return enc.EncodeToken(xml.EndElement{Name: start.Name})
 	}
 
 	defaultNS, prefixByURI, err := collectNamespaces(data)
 	if err != nil {
 		return err
 	}
+	if rootNS != "" {
+		defaultNS = rootNS
+	}
 
 	state := &canonicalWriter{
 		enc:         enc,
 		defaultNS:   defaultNS,
 		prefixByURI: prefixByURI,
+		rootLocal:   rootLocal,
 	}
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	for {
@@ -58,6 +88,7 @@ type canonicalWriter struct {
 	prefixByURI  map[string]string
 	elementStack []xml.Name
 	rootWritten  bool
+	rootLocal    string
 }
 
 func (w *canonicalWriter) writeToken(tok xml.Token) error {
@@ -79,8 +110,12 @@ func (w *canonicalWriter) writeToken(tok xml.Token) error {
 }
 
 func (w *canonicalWriter) writeStart(tok xml.StartElement) error {
+	name := canonicalName(tok.Name, w.defaultNS, w.prefixByURI)
+	if !w.rootWritten && w.rootLocal != "" {
+		name = xml.Name{Local: w.rootLocal}
+	}
 	start := xml.StartElement{
-		Name: canonicalName(tok.Name, w.defaultNS, w.prefixByURI),
+		Name: name,
 		Attr: canonicalAttrs(tok.Attr, w.defaultNS, w.prefixByURI, !w.rootWritten),
 	}
 	if err := w.enc.EncodeToken(start); err != nil {

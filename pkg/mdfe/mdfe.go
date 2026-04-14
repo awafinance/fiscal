@@ -189,45 +189,21 @@ func marshalEnviMDFe(e *xml.Encoder, d *Document) error {
 	if d.EnviMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"enviMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*mdfeSchema.TEnviMDFe
-	}{
-		XMLName:   xml.Name{Local: "enviMDFe"},
-		XMLNS:     namespace,
-		TEnviMDFe: d.EnviMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "enviMDFe", namespace, d.EnviMDFe)
 }
 
 func marshalRetEnviMDFe(e *xml.Encoder, d *Document) error {
 	if d.RetEnviMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retEnviMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*mdfeSchema.TRetEnviMDFe
-	}{
-		XMLName:      xml.Name{Local: "retEnviMDFe"},
-		XMLNS:        namespace,
-		TRetEnviMDFe: d.RetEnviMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retEnviMDFe", namespace, d.RetEnviMDFe)
 }
 
 func marshalRetMDFe(e *xml.Encoder, d *Document) error {
 	if d.RetMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*mdfeSchema.TRetMDFe
-	}{
-		XMLName:  xml.Name{Local: "retMDFe"},
-		XMLNS:    namespace,
-		TRetMDFe: d.RetMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retMDFe", namespace, d.RetMDFe)
 }
 
 func marshalConsNaoEnc(e *xml.Encoder, d *Document) error {
@@ -258,15 +234,7 @@ func marshalRetConsNaoEnc(e *xml.Encoder, d *Document) error {
 	if d.RetConsNaoEnc == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsMDFeNaoEnc"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consNaoEncSchema.TRetConsMDFeNaoEnc
-	}{
-		XMLName:            xml.Name{Local: "retConsMDFeNaoEnc"},
-		XMLNS:              namespace,
-		TRetConsMDFeNaoEnc: d.RetConsNaoEnc,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsMDFeNaoEnc", namespace, d.RetConsNaoEnc)
 }
 
 func marshalConsReciMDFe(e *xml.Encoder, d *Document) error {
@@ -293,75 +261,35 @@ func marshalRetConsReciMDFe(e *xml.Encoder, d *Document) error {
 	if d.RetConsReciMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsReciMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consReciSchema.TRetConsReciMDFe
-	}{
-		XMLName:          xml.Name{Local: "retConsReciMDFe"},
-		XMLNS:            namespace,
-		TRetConsReciMDFe: d.RetConsReciMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsReciMDFe", namespace, d.RetConsReciMDFe)
 }
 
 func marshalConsSitMDFe(e *xml.Encoder, d *Document) error {
 	if d.ConsSitMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consSitMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consSitSchema.TConsSitMDFe
-	}{
-		XMLName:      xml.Name{Local: "consSitMDFe"},
-		XMLNS:        namespace,
-		TConsSitMDFe: d.ConsSitMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consSitMDFe", namespace, d.ConsSitMDFe)
 }
 
 func marshalRetConsSitMDFe(e *xml.Encoder, d *Document) error {
 	if d.RetConsSitMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsSitMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consSitSchema.TRetConsSitMDFe
-	}{
-		XMLName:         xml.Name{Local: "retConsSitMDFe"},
-		XMLNS:           namespace,
-		TRetConsSitMDFe: d.RetConsSitMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsSitMDFe", namespace, d.RetConsSitMDFe)
 }
 
 func marshalConsStatServMDFe(e *xml.Encoder, d *Document) error {
 	if d.ConsStatServMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consStatServMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*statusSchema.TConsStatServ
-	}{
-		XMLName:       xml.Name{Local: "consStatServMDFe"},
-		XMLNS:         namespace,
-		TConsStatServ: d.ConsStatServMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consStatServMDFe", namespace, d.ConsStatServMDFe)
 }
 
 func marshalRetConsStatServMDFe(e *xml.Encoder, d *Document) error {
 	if d.RetConsStatServMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsStatServMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*statusSchema.TRetConsStatServ
-	}{
-		XMLName:          xml.Name{Local: "retConsStatServMDFe"},
-		XMLNS:            namespace,
-		TRetConsStatServ: d.RetConsStatServMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsStatServMDFe", namespace, d.RetConsStatServMDFe)
 }
 
 func marshalDistDFeInt(e *xml.Encoder, d *Document) error {
@@ -426,60 +354,28 @@ func marshalDistMDFe(e *xml.Encoder, d *Document) error {
 	if d.DistMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"distMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*distMDFeSchema.TDistDFe
-	}{
-		XMLName:  xml.Name{Local: "distMDFe"},
-		XMLNS:    namespace,
-		TDistDFe: d.DistMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "distMDFe", namespace, d.DistMDFe)
 }
 
 func marshalRetDistMDFe(e *xml.Encoder, d *Document) error {
 	if d.RetDistMDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retDistMDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*distMDFeSchema.TRetDistDFe
-	}{
-		XMLName:     xml.Name{Local: "retDistMDFe"},
-		XMLNS:       namespace,
-		TRetDistDFe: d.RetDistMDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retDistMDFe", namespace, d.RetDistMDFe)
 }
 
 func marshalMDFeConsultaDFe(e *xml.Encoder, d *Document) error {
 	if d.MDFeConsultaDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"mdfeConsultaDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consultaDFESchema.TMDFeConsultaDFe
-	}{
-		XMLName:          xml.Name{Local: "mdfeConsultaDFe"},
-		XMLNS:            namespace,
-		TMDFeConsultaDFe: d.MDFeConsultaDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "mdfeConsultaDFe", namespace, d.MDFeConsultaDFe)
 }
 
 func marshalRetMDFeConsultaDFe(e *xml.Encoder, d *Document) error {
 	if d.RetMDFeConsultaDFe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retMDFeConsultaDFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consultaDFESchema.TRetMDFeConsultaDFe
-	}{
-		XMLName:             xml.Name{Local: "retMDFeConsultaDFe"},
-		XMLNS:               namespace,
-		TRetMDFeConsultaDFe: d.RetMDFeConsultaDFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retMDFeConsultaDFe", namespace, d.RetMDFeConsultaDFe)
 }
 
 func Parse(data []byte) (*Document, error) {

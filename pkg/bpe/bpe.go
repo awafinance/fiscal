@@ -208,60 +208,28 @@ func marshalConsSitBPe(e *xml.Encoder, d *Document) error {
 	if d.ConsSitBPe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consSitBPe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TConsSitBPe
-	}{
-		XMLName:     xml.Name{Local: "consSitBPe"},
-		XMLNS:       namespace,
-		TConsSitBPe: d.ConsSitBPe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consSitBPe", namespace, d.ConsSitBPe)
 }
 
 func marshalRetConsSitBPe(e *xml.Encoder, d *Document) error {
 	if d.RetConsSitBPe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsSitBPe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TRetConsSitBPe
-	}{
-		XMLName:        xml.Name{Local: "retConsSitBPe"},
-		XMLNS:          namespace,
-		TRetConsSitBPe: d.RetConsSitBPe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsSitBPe", namespace, d.RetConsSitBPe)
 }
 
 func marshalConsStatServBPe(e *xml.Encoder, d *Document) error {
 	if d.ConsStatServBPe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consStatServBPe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TConsStatServ
-	}{
-		XMLName:       xml.Name{Local: "consStatServBPe"},
-		XMLNS:         namespace,
-		TConsStatServ: d.ConsStatServBPe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consStatServBPe", namespace, d.ConsStatServBPe)
 }
 
 func marshalRetConsStatServBPe(e *xml.Encoder, d *Document) error {
 	if d.RetConsStatServBPe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsStatServBPe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TRetConsStatServ
-	}{
-		XMLName:          xml.Name{Local: "retConsStatServBPe"},
-		XMLNS:            namespace,
-		TRetConsStatServ: d.RetConsStatServBPe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsStatServBPe", namespace, d.RetConsStatServBPe)
 }
 
 func Parse(data []byte) (*Document, error) {

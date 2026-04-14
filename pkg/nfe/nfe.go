@@ -170,16 +170,7 @@ func encodeNFeEvent(e *xml.Encoder, versao string, infEvento any, signature any)
 }
 
 func encodeBareNFe(e *xml.Encoder, invoice *schema.TNFe) error {
-	type bareNFe struct {
-		XMLName xml.Name `xml:"NFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TNFe
-	}
-	return xmlutil.EncodeCanonical(e, bareNFe{
-		XMLName: xml.Name{Local: "NFe"},
-		XMLNS:   namespace,
-		TNFe:    invoice,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "NFe", namespace, invoice)
 }
 
 func encodeNFeProc(e *xml.Encoder, d *Document) error {
@@ -200,87 +191,31 @@ func encodeNFeProc(e *xml.Encoder, d *Document) error {
 }
 
 func encodeEnviNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"enviNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TEnviNFe
-	}{
-		XMLName:  xml.Name{Local: "enviNFe"},
-		XMLNS:    namespace,
-		TEnviNFe: d.EnviNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "enviNFe", namespace, d.EnviNFe)
 }
 
 func encodeRetEnviNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retEnviNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TRetEnviNFe
-	}{
-		XMLName:     xml.Name{Local: "retEnviNFe"},
-		XMLNS:       namespace,
-		TRetEnviNFe: d.RetEnviNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retEnviNFe", namespace, d.RetEnviNFe)
 }
 
 func encodeConsReciNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consReciNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TConsReciNFe
-	}{
-		XMLName:      xml.Name{Local: "consReciNFe"},
-		XMLNS:        namespace,
-		TConsReciNFe: d.ConsReciNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consReciNFe", namespace, d.ConsReciNFe)
 }
 
 func encodeRetConsReciNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsReciNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*schema.TRetConsReciNFe
-	}{
-		XMLName:         xml.Name{Local: "retConsReciNFe"},
-		XMLNS:           namespace,
-		TRetConsReciNFe: d.RetConsReciNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsReciNFe", namespace, d.RetConsReciNFe)
 }
 
 func encodeEnvEvento(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"envEvento"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*genericSchema.TEnvEvento
-	}{
-		XMLName:    xml.Name{Local: "envEvento"},
-		XMLNS:      namespace,
-		TEnvEvento: d.EnvEvento,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "envEvento", namespace, d.EnvEvento)
 }
 
 func encodeRetEnvEvento(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retEnvEvento"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*genericSchema.TRetEnvEvento
-	}{
-		XMLName:       xml.Name{Local: "retEnvEvento"},
-		XMLNS:         namespace,
-		TRetEnvEvento: d.RetEnvEvento,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retEnvEvento", namespace, d.RetEnvEvento)
 }
 
 func encodeProcEventoNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"procEventoNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*genericSchema.TProcEvento
-	}{
-		XMLName:     xml.Name{Local: "procEventoNFe"},
-		XMLNS:       namespace,
-		TProcEvento: d.ProcEventoNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "procEventoNFe", namespace, d.ProcEventoNFe)
 }
 
 func encodeConsSitNFe(e *xml.Encoder, d *Document) error {
@@ -332,63 +267,23 @@ func encodeRetConsSitNFe(e *xml.Encoder, d *Document) error {
 }
 
 func encodeConsStatServ(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consStatServ"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*statusSchema.TConsStatServ
-	}{
-		XMLName:       xml.Name{Local: "consStatServ"},
-		XMLNS:         namespace,
-		TConsStatServ: d.ConsStatServ,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consStatServ", namespace, d.ConsStatServ)
 }
 
 func encodeRetConsStatServ(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsStatServ"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*statusSchema.TRetConsStatServ
-	}{
-		XMLName:          xml.Name{Local: "retConsStatServ"},
-		XMLNS:            namespace,
-		TRetConsStatServ: d.RetConsStatServ,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsStatServ", namespace, d.RetConsStatServ)
 }
 
 func encodeInutNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"inutNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*inutSchema.TInutNFe
-	}{
-		XMLName:  xml.Name{Local: "inutNFe"},
-		XMLNS:    namespace,
-		TInutNFe: d.InutNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "inutNFe", namespace, d.InutNFe)
 }
 
 func encodeRetInutNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retInutNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*inutSchema.TRetInutNFe
-	}{
-		XMLName:     xml.Name{Local: "retInutNFe"},
-		XMLNS:       namespace,
-		TRetInutNFe: d.RetInutNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retInutNFe", namespace, d.RetInutNFe)
 }
 
 func encodeProcInutNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"procInutNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*inutSchema.TProcInutNFe
-	}{
-		XMLName:      xml.Name{Local: "procInutNFe"},
-		XMLNS:        namespace,
-		TProcInutNFe: d.ProcInutNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "procInutNFe", namespace, d.ProcInutNFe)
 }
 
 func encodeDistDFeInt(e *xml.Encoder, d *Document) error {
@@ -448,27 +343,11 @@ func encodeRetDistDFeInt(e *xml.Encoder, d *Document) error {
 }
 
 func encodeResNFe(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"resNFe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*distSchema.TAnonComplexResNFe1
-	}{
-		XMLName:             xml.Name{Local: "resNFe"},
-		XMLNS:               namespace,
-		TAnonComplexResNFe1: d.ResNFe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "resNFe", namespace, d.ResNFe)
 }
 
 func encodeResEvento(e *xml.Encoder, d *Document) error {
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"resEvento"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*distSchema.TAnonComplexResEvento1
-	}{
-		XMLName:                xml.Name{Local: "resEvento"},
-		XMLNS:                  namespace,
-		TAnonComplexResEvento1: d.ResEvento,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "resEvento", namespace, d.ResEvento)
 }
 
 var parsersByRoot = map[string]func([]byte, string) (*Document, error){

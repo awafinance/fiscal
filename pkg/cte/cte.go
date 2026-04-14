@@ -197,15 +197,7 @@ func marshalRetCTe(e *xml.Encoder, d *Document) error {
 	if d.RetCTe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retCTe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*cteSchema.TRetCTe
-	}{
-		XMLName: xml.Name{Local: "retCTe"},
-		XMLNS:   namespace,
-		TRetCTe: d.RetCTe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retCTe", namespace, d.RetCTe)
 }
 
 func marshalCTeOS(e *xml.Encoder, d *Document) error {
@@ -260,15 +252,7 @@ func marshalRetCTeOS(e *xml.Encoder, d *Document) error {
 	if d.RetCTeOS == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retCTeOS"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*cteOSSchema.TRetCTeOS
-	}{
-		XMLName:   xml.Name{Local: "retCTeOS"},
-		XMLNS:     namespace,
-		TRetCTeOS: d.RetCTeOS,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retCTeOS", namespace, d.RetCTeOS)
 }
 
 func marshalCTeSimp(e *xml.Encoder, d *Document) error {
@@ -321,15 +305,7 @@ func marshalRetCTeSimp(e *xml.Encoder, d *Document) error {
 	if d.RetCTeSimp == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retCTeSimp"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*cteSimpSchema.TRetCTeSimp
-	}{
-		XMLName:     xml.Name{Local: "retCTeSimp"},
-		XMLNS:       namespace,
-		TRetCTeSimp: d.RetCTeSimp,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retCTeSimp", namespace, d.RetCTeSimp)
 }
 
 func marshalGTVe(e *xml.Encoder, d *Document) error {
@@ -384,75 +360,35 @@ func marshalRetGTVe(e *xml.Encoder, d *Document) error {
 	if d.RetGTVe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retGTVe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*gtveSchema.TRetGTVe
-	}{
-		XMLName:  xml.Name{Local: "retGTVe"},
-		XMLNS:    namespace,
-		TRetGTVe: d.RetGTVe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retGTVe", namespace, d.RetGTVe)
 }
 
 func marshalConsSitCTe(e *xml.Encoder, d *Document) error {
 	if d.ConsSitCTe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consSitCTe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consSitSchema.TConsSitCTe
-	}{
-		XMLName:     xml.Name{Local: "consSitCTe"},
-		XMLNS:       namespace,
-		TConsSitCTe: d.ConsSitCTe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consSitCTe", namespace, d.ConsSitCTe)
 }
 
 func marshalRetConsSitCTe(e *xml.Encoder, d *Document) error {
 	if d.RetConsSitCTe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsSitCTe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*consSitSchema.TRetConsSitCTe
-	}{
-		XMLName:        xml.Name{Local: "retConsSitCTe"},
-		XMLNS:          namespace,
-		TRetConsSitCTe: d.RetConsSitCTe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsSitCTe", namespace, d.RetConsSitCTe)
 }
 
 func marshalConsStatServCTe(e *xml.Encoder, d *Document) error {
 	if d.ConsStatServCTe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"consStatServCTe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*statusSchema.TConsStatServ
-	}{
-		XMLName:       xml.Name{Local: "consStatServCTe"},
-		XMLNS:         namespace,
-		TConsStatServ: d.ConsStatServCTe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "consStatServCTe", namespace, d.ConsStatServCTe)
 }
 
 func marshalRetConsStatServCTe(e *xml.Encoder, d *Document) error {
 	if d.RetConsStatServCTe == nil || activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-	return xmlutil.EncodeCanonical(e, struct {
-		XMLName xml.Name `xml:"retConsStatServCTe"`
-		XMLNS   string   `xml:"xmlns,attr,omitempty"`
-		*statusSchema.TRetConsStatServ
-	}{
-		XMLName:          xml.Name{Local: "retConsStatServCTe"},
-		XMLNS:            namespace,
-		TRetConsStatServ: d.RetConsStatServCTe,
-	})
+	return xmlutil.EncodeNamespacedRoot(e, "retConsStatServCTe", namespace, d.RetConsStatServCTe)
 }
 
 func marshalDistDFeInt(e *xml.Encoder, d *Document) error {
