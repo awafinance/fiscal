@@ -26,7 +26,39 @@ mise trust && mise install
 
 ## Packages
 
-Each document family is exposed through its own package:
+The root package can parse any supported fiscal XML by detecting the root
+namespace:
+
+```go
+import "github.com/awafinance/fiscal"
+```
+
+It exposes the main entrypoint:
+
+```go
+Parse(data []byte) (*Document, error)
+ParseReader(r io.Reader) (*Document, error)
+```
+
+The returned `fiscal.Document` is a tagged container with `Family`,
+`RootName`, and one populated family document field:
+
+```go
+doc, err := fiscal.Parse(data)
+if err != nil {
+ panic(err)
+}
+
+switch doc.Family {
+case fiscal.NFe:
+ fmt.Println(doc.NFe.GetAccessKey())
+case fiscal.MDFe:
+ fmt.Println(doc.MDFe.GetRelatedDocuments())
+}
+```
+
+Each document family is also exposed through its own package when callers
+already know the family or need the family-specific typed API:
 
 ```go
 import "github.com/awafinance/fiscal/pkg/nfe"
@@ -61,31 +93,35 @@ doc := &nfe.Document{NFe: inf}
 package main
 
 import (
- "encoding/xml"
  "fmt"
  "os"
 
- "github.com/awafinance/fiscal/pkg/nfe"
+ "github.com/awafinance/fiscal"
 )
 
 func main() {
- data, err := os.ReadFile("nfe.xml")
+ data, err := os.ReadFile("document.xml")
  if err != nil {
   panic(err)
  }
 
- doc, err := nfe.Parse(data)
+ doc, err := fiscal.Parse(data)
  if err != nil {
   panic(err)
  }
 
- ...
+ info := doc.Info()
+ fmt.Println(info.GetAccessKey())
+ fmt.Println(info.GetIssuer())
+ fmt.Println(info.GetAmount())
 }
 ```
 
 ## Document dispatch
 
-`Parse` first detects the XML root element and then unmarshals into the corresponding schema-generated type.
+`fiscal.Parse` first reads the XML root element namespace, routes the document
+to the matching family package, and then unmarshals into the corresponding
+schema-generated type.
 
 For families that use generic event envelopes, parsing also dispatches by `tpEvento`, so event documents can be represented with concrete event-specific structs instead of a single generic event shape.
 
@@ -95,6 +131,110 @@ Examples of supported dispatch patterns:
 - CT-e: document variants, processed wrappers, modal/event variants, distribution
 - MDF-e: consultation roots, processed roots, distribution roots, concrete events
 - BP-e: base documents and concrete event variants
+
+## Convenience accessors
+
+All supported family documents implement a common `DocumentInfo` interface.
+The root `fiscal.Document.Info()` method returns that interface:
+
+```go
+type DocumentInfo interface {
+ GetAccessKey() string
+ GetVersion() string
+ GetEnvironment() string
+ GetNumber() string
+ GetSeries() string
+ GetModel() string
+ GetIssueDate() string
+ GetAmount() string
+ GetIssuer() string
+ GetIssuerDocument() string
+ GetRecipient() string
+ GetRecipientDocument() string
+ GetProtocolNumber() string
+ GetStatusCode() string
+ GetStatusReason() string
+ IsAuthorized() bool
+}
+```
+
+These methods return the XML values as strings. The library does not parse,
+round, sum, or normalize monetary values.
+
+```go
+doc, err := fiscal.Parse(data)
+if err != nil {
+ panic(err)
+}
+
+info := doc.Info()
+fmt.Println(info.GetAccessKey())
+fmt.Println(info.GetVersion())
+fmt.Println(info.GetEnvironment())
+fmt.Println(info.GetAmount())
+fmt.Println(info.GetIssuerDocument())
+```
+
+Some fiscal concepts are not universal. For those, the library exposes small
+optional interfaces. Consumers can type-assert only the detail they need:
+
+```go
+if amounts, ok := doc.Info().(fiscal.AmountsInfo); ok {
+ for _, amount := range amounts.GetAmounts() {
+  fmt.Println(amount.Type, amount.Value)
+ }
+}
+
+if parties, ok := doc.Info().(fiscal.PartiesInfo); ok {
+ for _, party := range parties.GetParties() {
+  fmt.Println(party.Role, party.Name, party.Document)
+ }
+}
+
+if related, ok := doc.Info().(fiscal.RelatedDocumentsInfo); ok {
+ for _, ref := range related.GetRelatedDocuments() {
+  fmt.Println(ref.Type, ref.AccessKey)
+ }
+}
+
+if route, ok := doc.Info().(fiscal.RouteInfo); ok {
+ fmt.Println(route.GetModal())
+ fmt.Println(route.GetOrigin())
+ fmt.Println(route.GetDestination())
+}
+```
+
+Optional interface support is intentionally grouped by concept:
+
+- `AmountsInfo` returns raw amount fields such as NFe total, CTe service value,
+  MDFe cargo value, BPe ticket value, and NFSe service/net values.
+- `PartiesInfo` returns known parties with roles, such as issuer, recipient,
+  provider, taker, sender, dispatcher, receiver, and buyer.
+- `RelatedDocumentsInfo` returns document references such as linked NFe, CTe,
+  MDF-e, or DCe access keys where the schema carries them.
+- `RouteInfo` returns modal, origin, and destination fields for transport and
+  service documents where those concepts exist.
+
+The `pkg/info` package contains the shared structs and optional interface
+definitions. The root package re-exports them as aliases, so callers can use
+`fiscal.Amount`, `fiscal.Party`, `fiscal.RelatedDocument`, and
+`fiscal.Location`.
+
+### NFe Details
+
+NFe also exposes convenience methods for line items and payments:
+
+```go
+for _, item := range doc.NFe.GetItems() {
+ fmt.Println(item.Number, item.Code, item.Description, item.Amount)
+}
+
+for _, payment := range doc.NFe.GetPayments() {
+ fmt.Println(payment.Method, payment.Amount)
+}
+```
+
+These methods also return the raw XML string values.
 
 ## Round-trip behavior
 
