@@ -122,6 +122,21 @@ func ParseRootName(data []byte) (string, error) {
 	}
 }
 
+func ParseRootElement(data []byte) (xml.Name, error) {
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+
+	for {
+		tok, err := decoder.Token()
+		if err != nil {
+			return xml.Name{}, err
+		}
+
+		if start, ok := tok.(xml.StartElement); ok {
+			return start.Name, nil
+		}
+	}
+}
+
 func FirstNonEmpty(values ...string) string {
 	for _, value := range values {
 		if value != "" {
