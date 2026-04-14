@@ -2,8 +2,9 @@ package fiscal
 
 import (
 	"os"
-	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestParseRoutesByNamespace(t *testing.T) {
@@ -48,45 +49,50 @@ func TestParseRoutesByNamespace(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			data, err := os.ReadFile(tt.path)
-			if err != nil {
-				t.Fatal(err)
-			}
+			require.NoError(t, err)
 
 			doc, err := Parse(data)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if doc.Family != tt.family {
-				t.Fatalf("Family = %q, want %q", doc.Family, tt.family)
-			}
-			if doc.RootName != tt.rootName {
-				t.Fatalf("RootName = %q, want %q", doc.RootName, tt.rootName)
-			}
+			require.NoError(t, err)
+			require.Equal(t, tt.family, doc.Family)
+			require.Equal(t, tt.rootName, doc.RootName)
+			require.NotNil(t, doc.Info())
+			require.Implements(t, (*AmountsInfo)(nil), doc.Info())
+			require.Implements(t, (*PartiesInfo)(nil), doc.Info())
 		})
 	}
+}
+
+func TestDocumentNFeConvenienceAccessors(t *testing.T) {
+	data, err := os.ReadFile("testdata/nfe/42220575277525000178550030000292481295366801-procNFe.xml")
+	require.NoError(t, err)
+
+	doc, err := Parse(data)
+	require.NoError(t, err)
+
+	info := doc.Info()
+	require.NotNil(t, info)
+	require.Equal(t, "42220575277525000178550030000292481295366801", info.GetAccessKey())
+	require.Equal(t, "4.00", info.GetVersion())
+	require.Equal(t, "1", info.GetEnvironment())
+	require.Equal(t, "64237.04", info.GetAmount())
+	require.Equal(t, "FORNOS LTDA", info.GetIssuer())
+	require.Equal(t, "75277525000178", info.GetIssuerDocument())
+	require.Equal(t, "Jung Usa Corporation", info.GetRecipient())
+	require.Equal(t, "342220106391922", info.GetProtocolNumber())
+	require.True(t, info.IsAuthorized())
 }
 
 func TestParseDetectsPrefixedRootNamespace(t *testing.T) {
 	data := []byte(`<x:NFe xmlns:x="http://www.portalfiscal.inf.br/nfe"></x:NFe>`)
 
 	_, err := Parse(data)
-	if err == nil {
-		t.Fatal("Parse succeeded, want NFe validation error")
-	}
-	if !strings.Contains(err.Error(), "parse nfe:") {
-		t.Fatalf("error = %q, want NFe parser error", err)
-	}
-	if strings.Contains(err.Error(), "unsupported namespace") {
-		t.Fatalf("error = %q, want namespace to be supported", err)
-	}
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "parse nfe:")
+	require.NotContains(t, err.Error(), "unsupported namespace")
 }
 
 func TestParseRejectsUnsupportedNamespace(t *testing.T) {
 	_, err := Parse([]byte(`<doc xmlns="urn:example"></doc>`))
-	if err == nil {
-		t.Fatal("Parse succeeded, want unsupported namespace error")
-	}
-	if !strings.Contains(err.Error(), `unsupported namespace "urn:example" root "doc"`) {
-		t.Fatalf("error = %q, want unsupported namespace error", err)
-	}
+	require.Error(t, err)
+	require.Contains(t, err.Error(), `unsupported namespace "urn:example" root "doc"`)
 }

@@ -34,6 +34,8 @@ type Document struct {
 	Family   Family `json:"family"`
 	RootName string `json:"rootName,omitempty"`
 
+	info DocumentInfo
+
 	NFe  *nfe.Document  `json:"nfe,omitempty"`
 	NFSe *nfse.Document `json:"nfse,omitempty"`
 	CTe  *cte.Document  `json:"cte,omitempty"`
@@ -80,33 +82,33 @@ func wrapNFe(doc *nfe.Document, err error) (*Document, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Document{Family: NFe, RootName: doc.RootName, NFe: doc}, nil
+	return &Document{Family: NFe, RootName: doc.RootName, info: doc, NFe: doc}, nil
 }
 
 func wrapNFSe(doc *nfse.Document, err error) (*Document, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Document{Family: NFSe, RootName: doc.RootName, NFSe: doc}, nil
+	return &Document{Family: NFSe, RootName: doc.RootName, info: doc, NFSe: doc}, nil
 }
 
 func wrapCTe(doc *cte.Document, err error) (*Document, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Document{Family: CTe, RootName: doc.RootName, CTe: doc}, nil
+	return &Document{Family: CTe, RootName: doc.RootName, info: doc, CTe: doc}, nil
 }
 
 func wrapMDFe(doc *mdfe.Document, err error) (*Document, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Document{Family: MDFe, RootName: doc.RootName, MDFe: doc}, nil
+	return &Document{Family: MDFe, RootName: doc.RootName, info: doc, MDFe: doc}, nil
 }
 
 func wrapBPe(doc *bpe.Document, err error) (*Document, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Document{Family: BPe, RootName: doc.RootName, BPe: doc}, nil
+	return &Document{Family: BPe, RootName: doc.RootName, info: doc, BPe: doc}, nil
 }
