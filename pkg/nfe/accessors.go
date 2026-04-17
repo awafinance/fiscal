@@ -43,7 +43,7 @@ type Duplicata struct {
 
 type Billing struct {
 	Invoice    *Invoice    `json:"invoice,omitempty"`
-	Duplicatas []Duplicata `json:"duplicatas,omitempty"`
+	Duplicates []Duplicata `json:"duplicates,omitempty"`
 }
 
 func (d *Document) GetAccessKey() string {
@@ -273,7 +273,7 @@ func (d *Document) GetBilling() *Billing {
 		if entry == (Duplicata{}) {
 			continue
 		}
-		billing.Duplicatas = append(billing.Duplicatas, entry)
+		billing.Duplicates = append(billing.Duplicates, entry)
 	}
 
 	return billing
@@ -284,7 +284,7 @@ func (d *Document) GetDuplicatas() []Duplicata {
 	if billing == nil {
 		return nil
 	}
-	return billing.Duplicatas
+	return billing.Duplicates
 }
 
 func (d *Document) GetAmounts() []info.Amount {

@@ -149,7 +149,7 @@ func TestParse_SpecialFixtures(t *testing.T) {
 func TestDocumentGetDuplicatas(t *testing.T) {
 	t.Parallel()
 
-	t.Run("exposes duplicatas and invoice from cobr block", func(t *testing.T) {
+	t.Run("exposes duplicates and invoice from cobr block", func(t *testing.T) {
 		t.Parallel()
 
 		doc := parseFixture(t, "42220575277525000178550030000292481295366801-procNFe.xml")
