@@ -28,6 +28,24 @@ type Payment struct {
 	ReceiverDocument string `json:"receiverDocument,omitempty"`
 }
 
+type Invoice struct {
+	Number     string `json:"number,omitempty"`
+	OrigAmount string `json:"origAmount,omitempty"`
+	Discount   string `json:"discount,omitempty"`
+	NetAmount  string `json:"netAmount,omitempty"`
+}
+
+type Duplicata struct {
+	Number  string `json:"number,omitempty"`
+	DueDate string `json:"dueDate,omitempty"`
+	Amount  string `json:"amount,omitempty"`
+}
+
+type Billing struct {
+	Invoice    *Invoice    `json:"invoice,omitempty"`
+	Duplicatas []Duplicata `json:"duplicatas,omitempty"`
+}
+
 func (d *Document) GetAccessKey() string {
 	if d == nil {
 		return ""
@@ -222,6 +240,51 @@ func (d *Document) GetPayments() []Payment {
 		payments = append(payments, payment)
 	}
 	return payments
+}
+
+func (d *Document) GetBilling() *Billing {
+	inf := d.infNFe()
+	if inf == nil || inf.Cobr == nil {
+		return nil
+	}
+
+	billing := &Billing{}
+	if fat := inf.Cobr.Fat; fat != nil {
+		invoice := Invoice{
+			Number:     stringPtrValue(fat.NFat),
+			OrigAmount: stringPtrValue(fat.VOrig),
+			Discount:   stringPtrValue(fat.VDesc),
+			NetAmount:  stringPtrValue(fat.VLiq),
+		}
+		if invoice != (Invoice{}) {
+			billing.Invoice = &invoice
+		}
+	}
+
+	for _, dup := range inf.Cobr.Dup {
+		if dup == nil {
+			continue
+		}
+		entry := Duplicata{
+			Number:  stringPtrValue(dup.NDup),
+			DueDate: stringPtrValue(dup.DVenc),
+			Amount:  dup.VDup,
+		}
+		if entry == (Duplicata{}) {
+			continue
+		}
+		billing.Duplicatas = append(billing.Duplicatas, entry)
+	}
+
+	return billing
+}
+
+func (d *Document) GetDuplicatas() []Duplicata {
+	billing := d.GetBilling()
+	if billing == nil {
+		return nil
+	}
+	return billing.Duplicatas
 }
 
 func (d *Document) GetAmounts() []info.Amount {
