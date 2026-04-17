@@ -1,6 +1,9 @@
 package cte_test
 
-import "github.com/awafinance/fiscal/pkg/cte"
+import (
+	"github.com/awafinance/fiscal/pkg/cte"
+	"github.com/awafinance/fiscal/pkg/info"
+)
 
 func acceptsCTe(*cte.CTeCTe)                        {}
 func acceptsEventoCancCTe(*cte.EventoCancCTeEvento) {}
@@ -11,3 +14,9 @@ var _ = func(doc cte.Document) {
 	acceptsEventoCancCTe(doc.EventoCancCTe)
 	acceptsCTeOS(doc.CTeOS)
 }
+
+var (
+	_ info.BillingInfo           = (*cte.Document)(nil)
+	_ info.AdditionalInformation = (*cte.Document)(nil)
+	_ info.AmountsInfo           = (*cte.Document)(nil)
+)

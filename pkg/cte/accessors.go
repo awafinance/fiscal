@@ -198,6 +198,61 @@ func (d *Document) GetParties() []info.Party {
 	return compactParties(parties...)
 }
 
+func (d *Document) GetBilling() *info.Billing {
+	fat, dups := d.billingSource()
+	if fat == nil && len(dups) == 0 {
+		return nil
+	}
+
+	billing := &info.Billing{}
+	if fat != nil {
+		invoice := info.Invoice{
+			Number:     stringPtrValue(fat.NFat),
+			OrigAmount: stringPtrValue(fat.VOrig),
+			Discount:   stringPtrValue(fat.VDesc),
+			NetAmount:  stringPtrValue(fat.VLiq),
+		}
+		if invoice != (info.Invoice{}) {
+			billing.Invoice = &invoice
+		}
+	}
+	for _, dup := range dups {
+		if dup.Number == "" && dup.DueDate == "" && dup.Amount == "" {
+			continue
+		}
+		billing.Duplicates = append(billing.Duplicates, dup)
+	}
+	return billing
+}
+
+func (d *Document) GetDuplicatas() []info.Duplicata {
+	billing := d.GetBilling()
+	if billing == nil {
+		return nil
+	}
+	return billing.Duplicates
+}
+
+func (d *Document) GetAdditionalInfo() string {
+	if inf := d.infCTe(); inf != nil && inf.Compl != nil {
+		return joinNonEmpty("\n",
+			stringPtrValue(inf.Compl.XObs),
+			stringPtrValue(inf.Compl.XEmi),
+			stringPtrValue(inf.Compl.XCaracAd),
+			stringPtrValue(inf.Compl.XCaracSer),
+		)
+	}
+	if inf := d.infCTeOS(); inf != nil && inf.Compl != nil {
+		return joinNonEmpty("\n",
+			stringPtrValue(inf.Compl.XObs),
+			stringPtrValue(inf.Compl.XEmi),
+			stringPtrValue(inf.Compl.XCaracAd),
+			stringPtrValue(inf.Compl.XCaracSer),
+		)
+	}
+	return ""
+}
+
 func (d *Document) GetRelatedDocuments() []info.RelatedDocument {
 	inf := d.infCTe()
 	if inf == nil || inf.InfCTeNorm == nil {
@@ -292,6 +347,57 @@ func (d *Document) cteOSProt() *CTeOSAnonComplexInfProt2 {
 		return d.CTeOSProc.ProtCTe.InfProt
 	}
 	return nil
+}
+
+func (d *Document) billingSource() (*billingFat, []info.Duplicata) {
+	if inf := d.infCTe(); inf != nil && inf.InfCTeNorm != nil && inf.InfCTeNorm.Cobr != nil {
+		cobr := inf.InfCTeNorm.Cobr
+		var fat *billingFat
+		if cobr.Fat != nil {
+			fat = &billingFat{NFat: cobr.Fat.NFat, VOrig: cobr.Fat.VOrig, VDesc: cobr.Fat.VDesc, VLiq: cobr.Fat.VLiq}
+		}
+		dups := make([]info.Duplicata, 0, len(cobr.Dup))
+		for _, dup := range cobr.Dup {
+			if dup == nil {
+				continue
+			}
+			dups = append(dups, info.Duplicata{Number: stringPtrValue(dup.NDup), DueDate: stringPtrValue(dup.DVenc), Amount: stringPtrValue(dup.VDup)})
+		}
+		return fat, dups
+	}
+	if inf := d.infCTeOS(); inf != nil && inf.InfCTeNorm != nil && inf.InfCTeNorm.Cobr != nil {
+		cobr := inf.InfCTeNorm.Cobr
+		var fat *billingFat
+		if cobr.Fat != nil {
+			fat = &billingFat{NFat: cobr.Fat.NFat, VOrig: cobr.Fat.VOrig, VDesc: cobr.Fat.VDesc, VLiq: cobr.Fat.VLiq}
+		}
+		dups := make([]info.Duplicata, 0, len(cobr.Dup))
+		for _, dup := range cobr.Dup {
+			if dup == nil {
+				continue
+			}
+			dups = append(dups, info.Duplicata{Number: stringPtrValue(dup.NDup), DueDate: stringPtrValue(dup.DVenc), Amount: stringPtrValue(dup.VDup)})
+		}
+		return fat, dups
+	}
+	return nil, nil
+}
+
+type billingFat struct {
+	NFat  *string
+	VOrig *string
+	VDesc *string
+	VLiq  *string
+}
+
+func joinNonEmpty(sep string, values ...string) string {
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		if value != "" {
+			out = append(out, value)
+		}
+	}
+	return strings.Join(out, sep)
 }
 
 func firstStringPtr(values ...*string) string {

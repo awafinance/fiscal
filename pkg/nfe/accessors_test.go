@@ -67,9 +67,32 @@ func TestDocumentGetPayments(t *testing.T) {
 	doc, err := nfe.Parse(data)
 	require.NoError(t, err)
 
-	require.Equal(t, []nfe.Payment{
+	require.Equal(t, []info.Payment{
 		{Method: "90", Amount: "0.00"},
 	}, doc.GetPayments())
+}
+
+func TestDocumentGetAdditionalInfo(t *testing.T) {
+	data := []byte(`<NFe xmlns="http://www.portalfiscal.inf.br/nfe"><infNFe versao="4.00" Id="NFe35180834128745000152550010000476121675985748"><ide><cUF>35</cUF><cNF>1</cNF><natOp>Venda</natOp><mod>55</mod><serie>1</serie><nNF>1</nNF><dhEmi>2020-01-01T12:00:00-03:00</dhEmi><tpNF>1</tpNF><idDest>1</idDest><cMunFG>3550308</cMunFG><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>1</cDV><tpAmb>2</tpAmb><finNFe>1</finNFe><indFinal>1</indFinal><indPres>0</indPres><procEmi>0</procEmi><verProc>x</verProc></ide><emit><CNPJ>12345678000195</CNPJ><xNome>E</xNome><enderEmit><xLgr>R</xLgr><nro>1</nro><xBairro>B</xBairro><cMun>3550308</cMun><xMun>Sao Paulo</xMun><UF>SP</UF><CEP>01001000</CEP></enderEmit><IE>123</IE><CRT>1</CRT></emit><det nItem="1"><prod><cProd>1</cProd><cEAN>SEM GTIN</cEAN><xProd>P</xProd><NCM>00000000</NCM><CFOP>5102</CFOP><uCom>UN</uCom><qCom>1</qCom><vUnCom>1</vUnCom><vProd>1</vProd><cEANTrib>SEM GTIN</cEANTrib><uTrib>UN</uTrib><qTrib>1</qTrib><vUnTrib>1</vUnTrib><indTot>1</indTot></prod></det><infAdic><infAdFisco>fiscal observation</infAdFisco><infCpl>boleto linha digitavel 12345</infCpl></infAdic></infNFe></NFe>`)
+
+	doc, err := nfe.Parse(data)
+	require.NoError(t, err)
+
+	require.Equal(t, "boleto linha digitavel 12345\nfiscal observation", doc.GetAdditionalInfo())
+}
+
+func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
+	data := []byte(`<NFe xmlns="http://www.portalfiscal.inf.br/nfe"><infNFe versao="4.00" Id="NFe35180834128745000152550010000476121675985748"><ide><cUF>35</cUF><cNF>1</cNF><natOp>Venda</natOp><mod>55</mod><serie>1</serie><nNF>1</nNF><dhEmi>2020-01-01T12:00:00-03:00</dhEmi><tpNF>1</tpNF><idDest>1</idDest><cMunFG>3550308</cMunFG><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>1</cDV><tpAmb>2</tpAmb><finNFe>1</finNFe><indFinal>1</indFinal><indPres>0</indPres><procEmi>0</procEmi><verProc>x</verProc></ide><emit><CNPJ>12345678000195</CNPJ><xNome>E</xNome><enderEmit><xLgr>R</xLgr><nro>1</nro><xBairro>B</xBairro><cMun>3550308</cMun><xMun>Sao Paulo</xMun><UF>SP</UF><CEP>01001000</CEP></enderEmit><IE>123</IE><CRT>1</CRT></emit><det nItem="1"><prod><cProd>1</cProd><cEAN>SEM GTIN</cEAN><xProd>P</xProd><NCM>00000000</NCM><CFOP>5102</CFOP><uCom>UN</uCom><qCom>1</qCom><vUnCom>1</vUnCom><vProd>1000.00</vProd><cEANTrib>SEM GTIN</cEANTrib><uTrib>UN</uTrib><qTrib>1</qTrib><vUnTrib>1</vUnTrib><indTot>1</indTot></prod></det><total><ICMSTot><vBC>0</vBC><vICMS>0</vICMS><vICMSDeson>0</vICMSDeson><vFCP>0</vFCP><vBCST>0</vBCST><vST>0</vST><vFCPST>0</vFCPST><vFCPSTRet>0</vFCPSTRet><vProd>1000.00</vProd><vFrete>0</vFrete><vSeg>0</vSeg><vDesc>0</vDesc><vII>0</vII><vIPI>0</vIPI><vIPIDevol>0</vIPIDevol><vPIS>0</vPIS><vCOFINS>0</vCOFINS><vOutro>0</vOutro><vNF>1000.00</vNF></ICMSTot><retTrib><vRetPIS>6.50</vRetPIS><vRetCOFINS>30.00</vRetCOFINS><vRetCSLL>10.00</vRetCSLL><vIRRF>15.00</vIRRF><vRetPrev>110.00</vRetPrev></retTrib></total></infNFe></NFe>`)
+
+	doc, err := nfe.Parse(data)
+	require.NoError(t, err)
+
+	amounts := doc.GetAmounts()
+	require.Contains(t, amounts, info.Amount{Type: "retained_pis", Value: "6.50"})
+	require.Contains(t, amounts, info.Amount{Type: "retained_cofins", Value: "30.00"})
+	require.Contains(t, amounts, info.Amount{Type: "retained_csll", Value: "10.00"})
+	require.Contains(t, amounts, info.Amount{Type: "retained_irrf", Value: "15.00"})
+	require.Contains(t, amounts, info.Amount{Type: "retained_inss", Value: "110.00"})
 }
 
 func TestDocumentConvenienceAccessorsHandleResNFe(t *testing.T) {
