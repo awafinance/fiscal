@@ -145,19 +145,68 @@ func (d *Document) IsAuthorized() bool {
 }
 
 func (d *Document) GetAmounts() []info.Amount {
-	switch {
-	case d == nil:
-		return nil
-	case d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil:
-		return compactAmounts(
-			info.Amount{Type: "net", Value: d.NFSe.InfNFSe.Valores.VLiq},
-			info.Amount{Type: "retained", Value: stringPtrValue(d.NFSe.InfNFSe.Valores.VTotalRet)},
-		)
-	case d.DPS != nil && d.DPS.InfDPS != nil && d.DPS.InfDPS.Valores != nil && d.DPS.InfDPS.Valores.VServPrest != nil:
-		return compactAmounts(info.Amount{Type: "service", Value: d.DPS.InfDPS.Valores.VServPrest.VServ})
-	default:
+	if d == nil {
 		return nil
 	}
+
+	amounts := d.headlineAmounts()
+	amounts = append(amounts, d.retentionAmounts()...)
+
+	if len(amounts) == 0 {
+		return nil
+	}
+	return compactAmounts(amounts...)
+}
+
+func (d *Document) headlineAmounts() []info.Amount {
+	if d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
+		v := d.NFSe.InfNFSe.Valores
+		return []info.Amount{
+			{Type: "net", Value: v.VLiq},
+			{Type: "iss", Value: stringPtrValue(v.VISSQN)},
+			{Type: "retained", Value: stringPtrValue(v.VTotalRet)},
+		}
+	}
+	if d.DPS != nil && d.DPS.InfDPS != nil && d.DPS.InfDPS.Valores != nil && d.DPS.InfDPS.Valores.VServPrest != nil {
+		return []info.Amount{{Type: "service", Value: d.DPS.InfDPS.Valores.VServPrest.VServ}}
+	}
+	return nil
+}
+
+func (d *Document) retentionAmounts() []info.Amount {
+	inf := d.infDPS()
+	if inf == nil || inf.Valores == nil || inf.Valores.Trib == nil || inf.Valores.Trib.TribFed == nil {
+		return nil
+	}
+	fed := inf.Valores.Trib.TribFed
+	amounts := []info.Amount{
+		{Type: "retained_irrf", Value: stringPtrValue(fed.VRetIRRF)},
+		{Type: "retained_csll", Value: stringPtrValue(fed.VRetCSLL)},
+		{Type: "retained_inss", Value: stringPtrValue(fed.VRetCP)},
+	}
+	if pc := fed.Piscofins; pc != nil && stringPtrValue(pc.TpRetPisCofins) == "1" {
+		amounts = append(amounts,
+			info.Amount{Type: "retained_pis", Value: stringPtrValue(pc.VPis)},
+			info.Amount{Type: "retained_cofins", Value: stringPtrValue(pc.VCofins)},
+		)
+	}
+	return amounts
+}
+
+func (d *Document) GetAdditionalInfo() string {
+	values := make([]string, 0, 3)
+	if inf := d.infDPS(); inf != nil && inf.Serv != nil {
+		if inf.Serv.InfoCompl != nil {
+			values = append(values, stringPtrValue(inf.Serv.InfoCompl.XInfComp))
+		}
+		if inf.Serv.CServ != nil {
+			values = append(values, inf.Serv.CServ.XDescServ)
+		}
+	}
+	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
+		values = append(values, stringPtrValue(d.NFSe.InfNFSe.Valores.XOutInf))
+	}
+	return joinNonEmpty("\n", values...)
 }
 
 func (d *Document) GetParties() []info.Party {
@@ -232,4 +281,14 @@ func compactParties(parties ...info.Party) []info.Party {
 		}
 	}
 	return out
+}
+
+func joinNonEmpty(sep string, values ...string) string {
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		if value != "" {
+			out = append(out, value)
+		}
+	}
+	return strings.Join(out, sep)
 }

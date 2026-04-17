@@ -47,3 +47,13 @@ func TestDocumentConvenienceAccessorsHandleIssuedNFSe(t *testing.T) {
 	require.Equal(t, "100", doc.GetStatusCode())
 	require.True(t, doc.IsAuthorized())
 }
+
+func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-regime-normal.xml")
+	require.NoError(t, err)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "retained_inss", Value: "0.40"})
+}

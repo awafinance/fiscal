@@ -20,6 +20,7 @@ import (
 	mdeSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/evento_mde"
 	consSchema "github.com/awafinance/fiscal/internal/nfe/gen/v2_0/cons"
 	schema "github.com/awafinance/fiscal/internal/nfe/gen/v4_0/nfe_proc"
+	"github.com/awafinance/fiscal/pkg/info"
 	"github.com/awafinance/fiscal/pkg/nfe"
 	"github.com/stretchr/testify/require"
 )
@@ -144,6 +145,33 @@ func TestParse_SpecialFixtures(t *testing.T) {
 			tt.assert(t, doc)
 		})
 	}
+}
+
+func TestDocumentGetDuplicatas(t *testing.T) {
+	t.Parallel()
+
+	t.Run("exposes duplicates and invoice from cobr block", func(t *testing.T) {
+		t.Parallel()
+
+		doc := parseFixture(t, "42220575277525000178550030000292481295366801-procNFe.xml")
+
+		require.Equal(t, []info.Duplicata{
+			{Number: "001", DueDate: "2023-05-22", Amount: "64237.04"},
+		}, doc.GetDuplicatas())
+
+		billing := doc.GetBilling()
+		require.NotNil(t, billing)
+		require.NotNil(t, billing.Invoice)
+	})
+
+	t.Run("returns nil when cobr is absent", func(t *testing.T) {
+		t.Parallel()
+
+		doc := parseFixture(t, "35180834128745000152550010000476121675985748-nfe.xml")
+
+		require.Nil(t, doc.GetBilling())
+		require.Nil(t, doc.GetDuplicatas())
+	})
 }
 
 func TestParse_SignedFixture(t *testing.T) {

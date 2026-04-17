@@ -25,6 +25,32 @@ type Location struct {
 	CityName    string `json:"cityName,omitempty"`
 }
 
+type Payment struct {
+	Method           string `json:"method,omitempty"`
+	Amount           string `json:"amount,omitempty"`
+	Date             string `json:"date,omitempty"`
+	PayerDocument    string `json:"payerDocument,omitempty"`
+	ReceiverDocument string `json:"receiverDocument,omitempty"`
+}
+
+type Invoice struct {
+	Number     string `json:"number,omitempty"`
+	OrigAmount string `json:"origAmount,omitempty"`
+	Discount   string `json:"discount,omitempty"`
+	NetAmount  string `json:"netAmount,omitempty"`
+}
+
+type Duplicata struct {
+	Number  string `json:"number,omitempty"`
+	DueDate string `json:"dueDate,omitempty"`
+	Amount  string `json:"amount,omitempty"`
+}
+
+type Billing struct {
+	Invoice    *Invoice    `json:"invoice,omitempty"`
+	Duplicates []Duplicata `json:"duplicates,omitempty"`
+}
+
 type AmountsInfo interface {
 	GetAmounts() []Amount
 }
@@ -41,4 +67,17 @@ type RouteInfo interface {
 	GetModal() string
 	GetOrigin() Location
 	GetDestination() Location
+}
+
+type PaymentsInfo interface {
+	GetPayments() []Payment
+}
+
+type BillingInfo interface {
+	GetBilling() *Billing
+	GetDuplicatas() []Duplicata
+}
+
+type AdditionalInformation interface {
+	GetAdditionalInfo() string
 }

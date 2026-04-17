@@ -20,14 +20,6 @@ type Item struct {
 	Amount      string `json:"amount,omitempty"`
 }
 
-type Payment struct {
-	Method           string `json:"method,omitempty"`
-	Amount           string `json:"amount,omitempty"`
-	Date             string `json:"date,omitempty"`
-	PayerDocument    string `json:"payerDocument,omitempty"`
-	ReceiverDocument string `json:"receiverDocument,omitempty"`
-}
-
 func (d *Document) GetAccessKey() string {
 	if d == nil {
 		return ""
@@ -199,18 +191,18 @@ func (d *Document) GetItems() []Item {
 	return items
 }
 
-func (d *Document) GetPayments() []Payment {
+func (d *Document) GetPayments() []info.Payment {
 	inf := d.infNFe()
 	if inf == nil || inf.Pag == nil || len(inf.Pag.DetPag) == 0 {
 		return nil
 	}
 
-	payments := make([]Payment, 0, len(inf.Pag.DetPag))
+	payments := make([]info.Payment, 0, len(inf.Pag.DetPag))
 	for _, detPag := range inf.Pag.DetPag {
 		if detPag == nil {
 			continue
 		}
-		payment := Payment{
+		payment := info.Payment{
 			Method:        detPag.TPag,
 			Amount:        detPag.VPag,
 			Date:          stringPtrValue(detPag.DPag),
@@ -224,16 +216,86 @@ func (d *Document) GetPayments() []Payment {
 	return payments
 }
 
+func (d *Document) GetBilling() *info.Billing {
+	inf := d.infNFe()
+	if inf == nil || inf.Cobr == nil {
+		return nil
+	}
+
+	billing := &info.Billing{}
+	if fat := inf.Cobr.Fat; fat != nil {
+		invoice := info.Invoice{
+			Number:     stringPtrValue(fat.NFat),
+			OrigAmount: stringPtrValue(fat.VOrig),
+			Discount:   stringPtrValue(fat.VDesc),
+			NetAmount:  stringPtrValue(fat.VLiq),
+		}
+		if invoice != (info.Invoice{}) {
+			billing.Invoice = &invoice
+		}
+	}
+
+	for _, dup := range inf.Cobr.Dup {
+		if dup == nil {
+			continue
+		}
+		entry := info.Duplicata{
+			Number:  stringPtrValue(dup.NDup),
+			DueDate: stringPtrValue(dup.DVenc),
+			Amount:  dup.VDup,
+		}
+		if entry == (info.Duplicata{}) {
+			continue
+		}
+		billing.Duplicates = append(billing.Duplicates, entry)
+	}
+
+	return billing
+}
+
+func (d *Document) GetDuplicatas() []info.Duplicata {
+	billing := d.GetBilling()
+	if billing == nil {
+		return nil
+	}
+	return billing.Duplicates
+}
+
+func (d *Document) GetAdditionalInfo() string {
+	inf := d.infNFe()
+	if inf == nil || inf.InfAdic == nil {
+		return ""
+	}
+	return joinNonEmpty("\n", stringPtrValue(inf.InfAdic.InfCpl), stringPtrValue(inf.InfAdic.InfAdFisco))
+}
+
 func (d *Document) GetAmounts() []info.Amount {
-	if inf := d.infNFe(); inf != nil && inf.Total != nil && inf.Total.ICMSTot != nil {
-		total := inf.Total.ICMSTot
-		return compactAmounts(
-			info.Amount{Type: "total", Value: total.VNF},
-			info.Amount{Type: "products", Value: total.VProd},
-			info.Amount{Type: "freight", Value: total.VFrete},
-			info.Amount{Type: "discount", Value: total.VDesc},
-			info.Amount{Type: "taxes", Value: stringPtrValue(total.VTotTrib)},
-		)
+	inf := d.infNFe()
+	if inf != nil && inf.Total != nil {
+		total := inf.Total
+		amounts := make([]info.Amount, 0, 12)
+		if total.ICMSTot != nil {
+			amounts = append(amounts,
+				info.Amount{Type: "total", Value: total.ICMSTot.VNF},
+				info.Amount{Type: "products", Value: total.ICMSTot.VProd},
+				info.Amount{Type: "freight", Value: total.ICMSTot.VFrete},
+				info.Amount{Type: "discount", Value: total.ICMSTot.VDesc},
+				info.Amount{Type: "taxes", Value: stringPtrValue(total.ICMSTot.VTotTrib)},
+			)
+		}
+		if total.RetTrib != nil {
+			amounts = append(amounts,
+				info.Amount{Type: "retained_pis", Value: stringPtrValue(total.RetTrib.VRetPIS)},
+				info.Amount{Type: "retained_cofins", Value: stringPtrValue(total.RetTrib.VRetCOFINS)},
+				info.Amount{Type: "retained_csll", Value: stringPtrValue(total.RetTrib.VRetCSLL)},
+				info.Amount{Type: "retained_irrf", Value: stringPtrValue(total.RetTrib.VIRRF)},
+				info.Amount{Type: "retained_inss", Value: stringPtrValue(total.RetTrib.VRetPrev)},
+			)
+		}
+		if total.ISSQNtot != nil {
+			amounts = append(amounts, info.Amount{Type: "retained_iss", Value: stringPtrValue(total.ISSQNtot.VISSRet)})
+		}
+		return compactAmounts(amounts...)
 	}
 	if d != nil && d.ResNFe != nil {
 		return compactAmounts(info.Amount{Type: "total", Value: d.ResNFe.VNF})
@@ -317,4 +379,14 @@ func compactParties(parties ...info.Party) []info.Party {
 		}
 	}
 	return out
+}
+
+func joinNonEmpty(sep string, values ...string) string {
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		if value != "" {
+			out = append(out, value)
+		}
+	}
+	return strings.Join(out, sep)
 }
