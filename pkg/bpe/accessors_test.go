@@ -51,8 +51,8 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Contains(t, doc.GetParties(), info.Party{Role: "buyer", Name: "PASSAGEIRO TESTE", Document: "12345678000195"})
 }
 
-func TestDocumentGetEmitterDetailFromFixture(t *testing.T) {
-	data, err := os.ReadFile("../../testdata/bpe/v1_0/43190812345678000195630010000000011000000011-bpeProc.xml")
+func TestDocumentGetEmitterDetail(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/bpe/v1_0/43180107364617000135630000000000081000000087-bpe.xml")
 	require.NoError(t, err)
 
 	doc, err := bpe.Parse(data)
@@ -60,54 +60,21 @@ func TestDocumentGetEmitterDetailFromFixture(t *testing.T) {
 
 	detail := doc.GetEmitterDetail()
 	require.NotNil(t, detail)
-	require.Equal(t, "12345678000195", doc.GetIssuerDocument())
-	require.Nil(t, detail.Address)
-}
-
-func TestDocumentGetEmitterDetail(t *testing.T) {
-	xFant := "TRANSPORTE RAPIDO"
-	fone := "11999887766"
-	email := "contato@transporte.com"
-	doc := &bpe.Document{
-		BPe: &bpe.TBPe{
-			InfBPe: &bpe.TAnonComplexInfBPe2{
-				Emit: &bpe.TAnonComplexEmit2{
-					CNPJ:  "12345678000195",
-					XNome: "TRANSPORTADORA TESTE",
-					XFant: &xFant,
-					IE:    "123456789",
-					IM:    "54321",
-					CNAE:  "4930202",
-					CRT:   "3",
-					EnderEmit: &bpe.TEndeEmi{
-						XLgr:    "AV BRASIL",
-						Nro:     "100",
-						XBairro: "CENTRO",
-						CMun:    "3550308",
-						XMun:    "SAO PAULO",
-						UF:      "SP",
-						Fone:    &fone,
-						Email:   &email,
-					},
-				},
-			},
-		},
-	}
-
-	detail := doc.GetEmitterDetail()
-	require.NotNil(t, detail)
-	require.Equal(t, "TRANSPORTE RAPIDO", detail.TradeName)
-	require.Equal(t, "123456789", detail.IE)
-	require.Equal(t, "54321", detail.IM)
-	require.Equal(t, "4930202", detail.CNAE)
-	require.Equal(t, "3", detail.CRT)
-	require.Equal(t, "11999887766", detail.Phone)
-	require.Equal(t, "contato@transporte.com", detail.Email)
+	require.Empty(t, detail.TradeName)
+	require.Equal(t, "1111111111", detail.IE)
+	require.Equal(t, "516830", detail.IM)
+	require.Equal(t, "1234567", detail.CNAE)
+	require.Equal(t, "1", detail.CRT)
+	require.Empty(t, detail.Phone)
+	require.Empty(t, detail.Email)
 
 	require.NotNil(t, detail.Address)
-	require.Equal(t, "AV BRASIL", detail.Address.Street)
-	require.Equal(t, "SAO PAULO", detail.Address.CityName)
-	require.Equal(t, "SP", detail.Address.State)
+	require.Equal(t, "RUA ANTONIO DURO", detail.Address.Street)
+	require.Equal(t, "870", detail.Address.Number)
+	require.Equal(t, "CENTRO", detail.Address.Neighborhood)
+	require.Equal(t, "4303509", detail.Address.CityCode)
+	require.Equal(t, "CAMAQUA", detail.Address.CityName)
+	require.Equal(t, "RS", detail.Address.State)
 }
 
 func TestDocumentGetEmitterDetailHandlesNilDocument(t *testing.T) {

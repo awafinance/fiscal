@@ -434,6 +434,14 @@ func assertFixtureShape(t *testing.T, fixture string, doc *bpe.Document) {
 	t.Helper()
 
 	switch fixture {
+	case "43180107364617000135630000000000081000000087-bpe.xml":
+		require.NotNil(t, doc.BPe)
+		require.Equal(t, "1.00", doc.BPe.InfBPe.VersaoAttr)
+		require.Equal(t, "BPe43180107364617000135630000000000081000000087", doc.BPe.InfBPe.IdAttr)
+		require.Equal(t, "43", doc.BPe.InfBPe.Ide.CUF)
+		require.Equal(t, "11111111111111", doc.BPe.InfBPe.Emit.CNPJ)
+		require.NotNil(t, doc.BPe.InfBPe.Emit.EnderEmit)
+		require.Len(t, doc.BPe.InfBPe.InfViagem, 1)
 	case "43190812345678000195630010000000011000000011-bpe.xml":
 		require.NotNil(t, doc.BPe)
 		require.Equal(t, "1.00", doc.BPe.InfBPe.VersaoAttr)
