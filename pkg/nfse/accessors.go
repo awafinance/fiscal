@@ -219,16 +219,18 @@ func (d *Document) GetEmitterDetail() *info.EmitterDetail {
 			Email:     stringPtrValue(emit.Email),
 		}
 		if emit.EnderNac != nil {
-			detail.Address = &info.Address{
-				CityCode: emit.EnderNac.CMun,
-				State:    emit.EnderNac.UF,
-				ZipCode:  emit.EnderNac.CEP,
-			}
+			var addr info.Address
+			addr.CityCode = emit.EnderNac.CMun
+			addr.State = emit.EnderNac.UF
+			addr.ZipCode = emit.EnderNac.CEP
 			if emit.EnderNac.XLgr != "" {
-				detail.Address.Street = emit.EnderNac.XLgr
-				detail.Address.Number = emit.EnderNac.Nro
-				detail.Address.Complement = stringPtrValue(emit.EnderNac.XCpl)
-				detail.Address.Neighborhood = emit.EnderNac.XBairro
+				addr.Street = emit.EnderNac.XLgr
+				addr.Number = emit.EnderNac.Nro
+				addr.Complement = stringPtrValue(emit.EnderNac.XCpl)
+				addr.Neighborhood = emit.EnderNac.XBairro
+			}
+			if addr != (info.Address{}) {
+				detail.Address = &addr
 			}
 		}
 		return detail
@@ -241,7 +243,7 @@ func (d *Document) GetEmitterDetail() *info.EmitterDetail {
 			Email: stringPtrValue(prest.Email),
 		}
 		if prest.End != nil {
-			addr := &info.Address{}
+			var addr info.Address
 			if prest.End.XLgr != "" {
 				addr.Street = prest.End.XLgr
 				addr.Number = prest.End.Nro
@@ -252,7 +254,9 @@ func (d *Document) GetEmitterDetail() *info.EmitterDetail {
 				addr.CityCode = prest.End.EndNac.CMun
 				addr.ZipCode = prest.End.EndNac.CEP
 			}
-			detail.Address = addr
+			if addr != (info.Address{}) {
+				detail.Address = &addr
+			}
 		}
 		return detail
 	}

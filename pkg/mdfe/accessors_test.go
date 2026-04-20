@@ -35,6 +35,13 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Equal(t, info.Location{State: "SC"}, doc.GetDestination())
 }
 
+func TestDocumentGetEmitterDetailHandlesNilDocument(t *testing.T) {
+	var doc *mdfe.Document
+	require.Nil(t, doc.GetEmitterDetail())
+
+	require.Nil(t, (&mdfe.Document{}).GetEmitterDetail())
+}
+
 func TestDocumentGetEmitterDetail(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/mdfe/v3_0/41190876676436000167580010000500001000437558-mdfe.xml")
 	require.NoError(t, err)

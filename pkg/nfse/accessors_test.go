@@ -71,6 +71,13 @@ func TestDocumentGetEmitterDetailIssuedNFSe(t *testing.T) {
 	require.Equal(t, "69380000", detail.Address.ZipCode)
 }
 
+func TestDocumentGetEmitterDetailHandlesNilDocument(t *testing.T) {
+	var doc *nfse.Document
+	require.Nil(t, doc.GetEmitterDetail())
+
+	require.Nil(t, (&nfse.Document{}).GetEmitterDetail())
+}
+
 func TestDocumentGetEmitterDetailDPS(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-regime-normal.xml")
 	require.NoError(t, err)
@@ -83,6 +90,52 @@ func TestDocumentGetEmitterDetailDPS(t *testing.T) {
 	require.Equal(t, "152422", detail.IM)
 	require.Empty(t, detail.IE)
 	require.Nil(t, detail.Address)
+}
+
+func TestDocumentGetEmitterDetailDPSWithAddress(t *testing.T) {
+	data := []byte(`<DPS versao="1.00" xmlns="http://www.sped.fazenda.gov.br/nfse">
+		<infDPS Id="DPS420240420000000000000000007000000000000099">
+			<tpAmb>1</tpAmb>
+			<dhEmi>2023-09-09T09:42:06-03:00</dhEmi>
+			<verAplic>20220719</verAplic>
+			<serie>00007</serie>
+			<nDPS>99</nDPS>
+			<dCompet>2023-09-09</dCompet>
+			<tpEmit>1</tpEmit>
+			<cLocEmi>4202404</cLocEmi>
+			<prest>
+				<CNPJ>00000000000000</CNPJ>
+				<IM>152422</IM>
+				<end>
+					<endNac><cMun>4202404</cMun><CEP>88000000</CEP></endNac>
+					<xLgr>RUA CENTRAL</xLgr>
+					<nro>42</nro>
+					<xBairro>CENTRO</xBairro>
+				</end>
+				<fone>48999990000</fone>
+				<email>prest@example.com</email>
+				<regTrib><opSimpNac>2</opSimpNac><regEspTrib>0</regEspTrib></regTrib>
+			</prest>
+			<serv><locPrest><cLocPrestacao>4202404</cLocPrestacao></locPrest><cServ><cTribNac>010101</cTribNac><xDescServ>Servico</xDescServ></cServ></serv>
+			<valores><vServPrest><vServ>100.00</vServ></vServPrest><trib><tribMun><tribISSQN>1</tribISSQN><tpRetISSQN>1</tpRetISSQN></tribMun><totTrib><indTotTrib>0</indTotTrib></totTrib></trib></valores>
+		</infDPS>
+	</DPS>`)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "152422", detail.IM)
+	require.Equal(t, "48999990000", detail.Phone)
+	require.Equal(t, "prest@example.com", detail.Email)
+
+	require.NotNil(t, detail.Address)
+	require.Equal(t, "RUA CENTRAL", detail.Address.Street)
+	require.Equal(t, "42", detail.Address.Number)
+	require.Equal(t, "CENTRO", detail.Address.Neighborhood)
+	require.Equal(t, "4202404", detail.Address.CityCode)
+	require.Equal(t, "88000000", detail.Address.ZipCode)
 }
 
 func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {

@@ -223,7 +223,7 @@ Optional interface support is intentionally grouped by concept:
 - `RouteInfo` returns modal, origin, and destination fields for transport and
   service documents where those concepts exist.
 - `EmitterDetailInfo` returns emitter metadata beyond name and document: trade
-  name (xFant), tax registrations (IE, IEST, IM), economic activity (CNAE),
+  name, tax registrations (IE, IEST, IM), economic activity (CNAE),
   tax regime (CRT), phone, email, and full address. Field availability varies
   by document type — NF-e carries most fields (no email), BPe carries all,
   while NFS-e and CT-e expose a subset.

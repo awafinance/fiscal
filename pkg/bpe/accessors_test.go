@@ -1,6 +1,7 @@
 package bpe_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/awafinance/fiscal/pkg/bpe"
@@ -50,6 +51,19 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Contains(t, doc.GetParties(), info.Party{Role: "buyer", Name: "PASSAGEIRO TESTE", Document: "12345678000195"})
 }
 
+func TestDocumentGetEmitterDetailFromFixture(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/bpe/v1_0/43190812345678000195630010000000011000000011-bpeProc.xml")
+	require.NoError(t, err)
+
+	doc, err := bpe.Parse(data)
+	require.NoError(t, err)
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "12345678000195", doc.GetIssuerDocument())
+	require.Nil(t, detail.Address)
+}
+
 func TestDocumentGetEmitterDetail(t *testing.T) {
 	xFant := "TRANSPORTE RAPIDO"
 	fone := "11999887766"
@@ -94,4 +108,11 @@ func TestDocumentGetEmitterDetail(t *testing.T) {
 	require.Equal(t, "AV BRASIL", detail.Address.Street)
 	require.Equal(t, "SAO PAULO", detail.Address.CityName)
 	require.Equal(t, "SP", detail.Address.State)
+}
+
+func TestDocumentGetEmitterDetailHandlesNilDocument(t *testing.T) {
+	var doc *bpe.Document
+	require.Nil(t, doc.GetEmitterDetail())
+
+	require.Nil(t, (&bpe.Document{}).GetEmitterDetail())
 }

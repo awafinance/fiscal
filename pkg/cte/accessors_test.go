@@ -109,6 +109,13 @@ func TestDocumentGetEmitterDetail(t *testing.T) {
 	require.Equal(t, "89400000", detail.Address.ZipCode)
 }
 
+func TestDocumentGetEmitterDetailHandlesNilDocument(t *testing.T) {
+	var doc *cte.Document
+	require.Nil(t, doc.GetEmitterDetail())
+
+	require.Nil(t, (&cte.Document{}).GetEmitterDetail())
+}
+
 func TestDocumentGetEmitterDetailCTeOS(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/cte/v4_0/35170799999999999999670000000000261309301440-cte-of.xml")
 	require.NoError(t, err)
