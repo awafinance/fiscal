@@ -128,6 +128,33 @@ func (d *Document) GetAmounts() []info.Amount {
 	return nil
 }
 
+func (d *Document) GetEmitterDetail() *info.EmitterDetail {
+	inf := d.infMDFe()
+	if inf == nil || inf.Emit == nil {
+		return nil
+	}
+	emit := inf.Emit
+	detail := &info.EmitterDetail{
+		TradeName: stringPtrValue(emit.XFant),
+		IE:        stringPtrValue(emit.IE),
+	}
+	if emit.EnderEmit != nil {
+		detail.Phone = stringPtrValue(emit.EnderEmit.Fone)
+		detail.Email = stringPtrValue(emit.EnderEmit.Email)
+		detail.Address = &info.Address{
+			Street:       emit.EnderEmit.XLgr,
+			Number:       emit.EnderEmit.Nro,
+			Complement:   stringPtrValue(emit.EnderEmit.XCpl),
+			Neighborhood: emit.EnderEmit.XBairro,
+			CityCode:     emit.EnderEmit.CMun,
+			CityName:     emit.EnderEmit.XMun,
+			State:        emit.EnderEmit.UF,
+			ZipCode:      stringPtrValue(emit.EnderEmit.CEP),
+		}
+	}
+	return detail
+}
+
 func (d *Document) GetParties() []info.Party {
 	return compactParties(info.Party{Role: "issuer", Name: d.GetIssuer(), Document: d.GetIssuerDocument()})
 }

@@ -81,3 +81,32 @@ type BillingInfo interface {
 type AdditionalInformation interface {
 	GetAdditionalInfo() string
 }
+
+type Address struct {
+	Street       string `json:"street,omitempty"`
+	Number       string `json:"number,omitempty"`
+	Complement   string `json:"complement,omitempty"`
+	Neighborhood string `json:"neighborhood,omitempty"`
+	CityCode     string `json:"cityCode,omitempty"`
+	CityName     string `json:"cityName,omitempty"`
+	State        string `json:"state,omitempty"`
+	ZipCode      string `json:"zipCode,omitempty"`
+	CountryCode  string `json:"countryCode,omitempty"`
+	CountryName  string `json:"countryName,omitempty"`
+}
+
+type EmitterDetail struct {
+	TradeName string   `json:"tradeName,omitempty"`
+	IE        string   `json:"ie,omitempty"`
+	IEST      string   `json:"iest,omitempty"`
+	IM        string   `json:"im,omitempty"`
+	CNAE      string   `json:"cnae,omitempty"`
+	CRT       string   `json:"crt,omitempty"`
+	Phone     string   `json:"phone,omitempty"`
+	Email     string   `json:"email,omitempty"`
+	Address   *Address `json:"address,omitempty"`
+}
+
+type EmitterDetailInfo interface {
+	GetEmitterDetail() *EmitterDetail
+}

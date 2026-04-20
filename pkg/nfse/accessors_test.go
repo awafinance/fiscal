@@ -48,6 +48,42 @@ func TestDocumentConvenienceAccessorsHandleIssuedNFSe(t *testing.T) {
 	require.True(t, doc.IsAuthorized())
 }
 
+func TestDocumentGetEmitterDetailIssuedNFSe(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/ConsultarNFSeEnvio-ped-sitnfse.xml")
+	require.NoError(t, err)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "01761135000132", detail.IM)
+	require.Empty(t, detail.IE)
+	require.Empty(t, detail.CRT)
+	require.Empty(t, detail.CNAE)
+
+	require.NotNil(t, detail.Address)
+	require.Equal(t, "RUA A", detail.Address.Street)
+	require.Equal(t, "10", detail.Address.Number)
+	require.Equal(t, "CENTRO", detail.Address.Neighborhood)
+	require.Equal(t, "1400159", detail.Address.CityCode)
+	require.Equal(t, "RR", detail.Address.State)
+	require.Equal(t, "69380000", detail.Address.ZipCode)
+}
+
+func TestDocumentGetEmitterDetailDPS(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-regime-normal.xml")
+	require.NoError(t, err)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "152422", detail.IM)
+	require.Empty(t, detail.IE)
+}
+
 func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-regime-normal.xml")
 	require.NoError(t, err)

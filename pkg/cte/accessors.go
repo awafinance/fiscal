@@ -179,6 +179,56 @@ func (d *Document) GetAmounts() []info.Amount {
 	return compactAmounts(info.Amount{Type: "service", Value: d.GetAmount()})
 }
 
+func (d *Document) GetEmitterDetail() *info.EmitterDetail {
+	if inf := d.infCTe(); inf != nil && inf.Emit != nil {
+		emit := inf.Emit
+		detail := &info.EmitterDetail{
+			TradeName: stringPtrValue(emit.XFant),
+			IE:        stringPtrValue(emit.IE),
+			IEST:      stringPtrValue(emit.IEST),
+			CRT:       stringPtrValue(emit.CRT),
+		}
+		if emit.EnderEmit != nil {
+			detail.Phone = stringPtrValue(emit.EnderEmit.Fone)
+			detail.Address = &info.Address{
+				Street:       emit.EnderEmit.XLgr,
+				Number:       emit.EnderEmit.Nro,
+				Complement:   stringPtrValue(emit.EnderEmit.XCpl),
+				Neighborhood: emit.EnderEmit.XBairro,
+				CityCode:     emit.EnderEmit.CMun,
+				CityName:     emit.EnderEmit.XMun,
+				State:        emit.EnderEmit.UF,
+				ZipCode:      stringPtrValue(emit.EnderEmit.CEP),
+			}
+		}
+		return detail
+	}
+	if inf := d.infCTeOS(); inf != nil && inf.Emit != nil {
+		emit := inf.Emit
+		detail := &info.EmitterDetail{
+			TradeName: stringPtrValue(emit.XFant),
+			IE:        emit.IE,
+			IEST:      stringPtrValue(emit.IEST),
+			CRT:       stringPtrValue(emit.CRT),
+		}
+		if emit.EnderEmit != nil {
+			detail.Phone = stringPtrValue(emit.EnderEmit.Fone)
+			detail.Address = &info.Address{
+				Street:       emit.EnderEmit.XLgr,
+				Number:       emit.EnderEmit.Nro,
+				Complement:   stringPtrValue(emit.EnderEmit.XCpl),
+				Neighborhood: emit.EnderEmit.XBairro,
+				CityCode:     emit.EnderEmit.CMun,
+				CityName:     emit.EnderEmit.XMun,
+				State:        emit.EnderEmit.UF,
+				ZipCode:      stringPtrValue(emit.EnderEmit.CEP),
+			}
+		}
+		return detail
+	}
+	return nil
+}
+
 func (d *Document) GetParties() []info.Party {
 	parties := compactParties(
 		info.Party{Role: "issuer", Name: d.GetIssuer(), Document: d.GetIssuerDocument()},

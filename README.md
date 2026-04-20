@@ -202,6 +202,14 @@ if route, ok := doc.Info().(fiscal.RouteInfo); ok {
  fmt.Println(route.GetOrigin())
  fmt.Println(route.GetDestination())
 }
+
+if emitter, ok := doc.Info().(fiscal.EmitterDetailInfo); ok {
+ detail := emitter.GetEmitterDetail()
+ fmt.Println(detail.TradeName, detail.IE, detail.CRT)
+ if detail.Address != nil {
+  fmt.Println(detail.Address.CityName, detail.Address.State)
+ }
+}
 ```
 
 Optional interface support is intentionally grouped by concept:
@@ -214,11 +222,16 @@ Optional interface support is intentionally grouped by concept:
   MDF-e, or DCe access keys where the schema carries them.
 - `RouteInfo` returns modal, origin, and destination fields for transport and
   service documents where those concepts exist.
+- `EmitterDetailInfo` returns emitter metadata beyond name and document: trade
+  name (xFant), tax registrations (IE, IEST, IM), economic activity (CNAE),
+  tax regime (CRT), phone, email, and full address. Field availability varies
+  by document type — NF-e carries all fields, while NFS-e and CT-e expose a
+  subset.
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use
-`fiscal.Amount`, `fiscal.Party`, `fiscal.RelatedDocument`, and
-`fiscal.Location`.
+`fiscal.Amount`, `fiscal.Party`, `fiscal.RelatedDocument`,
+`fiscal.Location`, `fiscal.EmitterDetail`, and `fiscal.Address`.
 
 ### NFe Details
 

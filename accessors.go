@@ -11,6 +11,9 @@ type AmountsInfo = info.AmountsInfo
 type PartiesInfo = info.PartiesInfo
 type RelatedDocumentsInfo = info.RelatedDocumentsInfo
 type RouteInfo = info.RouteInfo
+type Address = info.Address
+type EmitterDetail = info.EmitterDetail
+type EmitterDetailInfo = info.EmitterDetailInfo
 
 type DocumentInfo interface {
 	GetAccessKey() string

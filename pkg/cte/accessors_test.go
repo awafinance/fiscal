@@ -82,6 +82,33 @@ func TestDocumentGetAdditionalInfo(t *testing.T) {
 	require.Equal(t, "observation text\nissuer notes\nadditional chars", doc.GetAdditionalInfo())
 }
 
+func TestDocumentGetEmitterDetail(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/cte/v4_0/43120178408960000182570010000000041000000047-cte.xml")
+	require.NoError(t, err)
+
+	doc, err := cte.Parse(data)
+	require.NoError(t, err)
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "PEDREIRA", detail.TradeName)
+	require.Equal(t, "251079554", detail.IE)
+	require.Empty(t, detail.IM)
+	require.Empty(t, detail.CNAE)
+	require.Empty(t, detail.CRT)
+	require.Equal(t, "4235224933", detail.Phone)
+
+	require.NotNil(t, detail.Address)
+	require.Equal(t, "ESTRADA VELHA DE PALMAS", detail.Address.Street)
+	require.Equal(t, "S/N", detail.Address.Number)
+	require.Equal(t, "CAIXA POSTAL 268", detail.Address.Complement)
+	require.Equal(t, "RIO DA AREIA", detail.Address.Neighborhood)
+	require.Equal(t, "4213609", detail.Address.CityCode)
+	require.Equal(t, "PORTO UNIAO", detail.Address.CityName)
+	require.Equal(t, "SC", detail.Address.State)
+	require.Equal(t, "89400000", detail.Address.ZipCode)
+}
+
 const cteWithCobrXML = `<CTe xmlns="http://www.portalfiscal.inf.br/cte"><infCte Id="CTe43120178408960000182570010000000041000000047" versao="4.00"><ide><cUF>43</cUF><cCT>00000004</cCT><CFOP>6353</CFOP><natOp>SERV</natOp><mod>57</mod><serie>1</serie><nCT>4</nCT><dhEmi>2012-01-06T17:25:56-02:00</dhEmi><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>7</cDV><tpAmb>2</tpAmb><tpCTe>0</tpCTe><procEmi>0</procEmi><verProc>104</verProc><cMunEnv>4213609</cMunEnv><xMunEnv>PORTO UNIAO</xMunEnv><UFEnv>SC</UFEnv><modal>01</modal><tpServ>0</tpServ><cMunIni>4213609</cMunIni><xMunIni>PORTO UNIAO</xMunIni><UFIni>SC</UFIni><cMunFim>4213609</cMunFim><xMunFim>PORTO UNIAO</xMunFim><UFFim>SC</UFFim><retira>0</retira><indIEToma>9</indIEToma></ide><emit><CNPJ>78408960000182</CNPJ><IE>ISENTO</IE><xNome>KERBER</xNome><enderEmit><xLgr>R</xLgr><nro>1</nro><xBairro>B</xBairro><cMun>4213609</cMun><xMun>PORTO UNIAO</xMun><CEP>89400000</CEP><UF>SC</UF></enderEmit></emit><infCTeNorm><cobr><fat><nFat>42</nFat><vOrig>2000.00</vOrig><vLiq>2000.00</vLiq></fat><dup><nDup>001</nDup><dVenc>2024-12-01</dVenc><vDup>1500.00</vDup></dup><dup><nDup>002</nDup><dVenc>2025-01-01</dVenc><vDup>500.00</vDup></dup></cobr></infCTeNorm></infCte></CTe>`
 
 var cteWithComplXML = fmt.Sprintf(`<CTe xmlns="http://www.portalfiscal.inf.br/cte"><infCte Id="CTe43120178408960000182570010000000041000000047" versao="4.00"><ide><cUF>43</cUF><cCT>00000004</cCT><CFOP>6353</CFOP><natOp>SERV</natOp><mod>57</mod><serie>1</serie><nCT>4</nCT><dhEmi>2012-01-06T17:25:56-02:00</dhEmi><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>7</cDV><tpAmb>2</tpAmb><tpCTe>0</tpCTe><procEmi>0</procEmi><verProc>104</verProc><cMunEnv>4213609</cMunEnv><xMunEnv>PORTO UNIAO</xMunEnv><UFEnv>SC</UFEnv><modal>01</modal><tpServ>0</tpServ><cMunIni>4213609</cMunIni><xMunIni>PORTO UNIAO</xMunIni><UFIni>SC</UFIni><cMunFim>4213609</cMunFim><xMunFim>PORTO UNIAO</xMunFim><UFFim>SC</UFFim><retira>0</retira><indIEToma>9</indIEToma></ide><compl><xObs>%s</xObs><xEmi>%s</xEmi><xCaracAd>%s</xCaracAd></compl><emit><CNPJ>78408960000182</CNPJ><IE>ISENTO</IE><xNome>KERBER</xNome><enderEmit><xLgr>R</xLgr><nro>1</nro><xBairro>B</xBairro><cMun>4213609</cMun><xMun>PORTO UNIAO</xMun><CEP>89400000</CEP><UF>SC</UF></enderEmit></emit></infCte></CTe>`, "observation text", "issuer notes", "additional chars")

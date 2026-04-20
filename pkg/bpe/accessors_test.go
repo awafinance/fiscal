@@ -49,3 +49,49 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "ticket", Value: "120.50"})
 	require.Contains(t, doc.GetParties(), info.Party{Role: "buyer", Name: "PASSAGEIRO TESTE", Document: "12345678000195"})
 }
+
+func TestDocumentGetEmitterDetail(t *testing.T) {
+	xFant := "TRANSPORTE RAPIDO"
+	fone := "11999887766"
+	email := "contato@transporte.com"
+	doc := &bpe.Document{
+		BPe: &bpe.TBPe{
+			InfBPe: &bpe.TAnonComplexInfBPe2{
+				Emit: &bpe.TAnonComplexEmit2{
+					CNPJ:  "12345678000195",
+					XNome: "TRANSPORTADORA TESTE",
+					XFant: &xFant,
+					IE:    "123456789",
+					IM:    "54321",
+					CNAE:  "4930202",
+					CRT:   "3",
+					EnderEmit: &bpe.TEndeEmi{
+						XLgr:    "AV BRASIL",
+						Nro:     "100",
+						XBairro: "CENTRO",
+						CMun:    "3550308",
+						XMun:    "SAO PAULO",
+						UF:      "SP",
+						Fone:    &fone,
+						Email:   &email,
+					},
+				},
+			},
+		},
+	}
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "TRANSPORTE RAPIDO", detail.TradeName)
+	require.Equal(t, "123456789", detail.IE)
+	require.Equal(t, "54321", detail.IM)
+	require.Equal(t, "4930202", detail.CNAE)
+	require.Equal(t, "3", detail.CRT)
+	require.Equal(t, "11999887766", detail.Phone)
+	require.Equal(t, "contato@transporte.com", detail.Email)
+
+	require.NotNil(t, detail.Address)
+	require.Equal(t, "AV BRASIL", detail.Address.Street)
+	require.Equal(t, "SAO PAULO", detail.Address.CityName)
+	require.Equal(t, "SP", detail.Address.State)
+}

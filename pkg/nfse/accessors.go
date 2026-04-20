@@ -209,6 +209,42 @@ func (d *Document) GetAdditionalInfo() string {
 	return joinNonEmpty("\n", values...)
 }
 
+func (d *Document) GetEmitterDetail() *info.EmitterDetail {
+	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Emit != nil {
+		emit := d.NFSe.InfNFSe.Emit
+		detail := &info.EmitterDetail{
+			TradeName: stringPtrValue(emit.XFant),
+			IM:        stringPtrValue(emit.IM),
+			Phone:     stringPtrValue(emit.Fone),
+			Email:     stringPtrValue(emit.Email),
+		}
+		if emit.EnderNac != nil {
+			detail.Address = &info.Address{
+				CityCode: emit.EnderNac.CMun,
+				State:    emit.EnderNac.UF,
+				ZipCode:  emit.EnderNac.CEP,
+			}
+			if emit.EnderNac.XLgr != "" {
+				detail.Address.Street = emit.EnderNac.XLgr
+				detail.Address.Number = emit.EnderNac.Nro
+				detail.Address.Complement = stringPtrValue(emit.EnderNac.XCpl)
+				detail.Address.Neighborhood = emit.EnderNac.XBairro
+			}
+		}
+		return detail
+	}
+	if inf := d.infDPS(); inf != nil && inf.Prest != nil {
+		prest := inf.Prest
+		detail := &info.EmitterDetail{
+			IM:    stringPtrValue(prest.IM),
+			Phone: stringPtrValue(prest.Fone),
+			Email: stringPtrValue(prest.Email),
+		}
+		return detail
+	}
+	return nil
+}
+
 func (d *Document) GetParties() []info.Party {
 	return compactParties(
 		info.Party{Role: "provider", Name: d.GetIssuer(), Document: d.GetIssuerDocument()},

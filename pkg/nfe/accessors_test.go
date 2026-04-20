@@ -123,6 +123,35 @@ func TestDocumentConvenienceAccessorsHandleResNFe(t *testing.T) {
 	require.False(t, doc.IsAuthorized())
 }
 
+func TestDocumentGetEmitterDetail(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "nfe", "41170706117473000150550010000463202612756525-procNFe.xml"))
+	require.NoError(t, err)
+
+	doc, err := nfe.Parse(data)
+	require.NoError(t, err)
+
+	detail := doc.GetEmitterDetail()
+	require.NotNil(t, detail)
+	require.Equal(t, "UNIMAKE - PARANAVAI", detail.TradeName)
+	require.Equal(t, "9032000301", detail.IE)
+	require.Equal(t, "14018", detail.IM)
+	require.Equal(t, "6202300", detail.CNAE)
+	require.Equal(t, "1", detail.CRT)
+	require.Equal(t, "04431414900", detail.Phone)
+	require.Empty(t, detail.Email)
+
+	require.NotNil(t, detail.Address)
+	require.Equal(t, "RUA ANTONIO FELIPE", detail.Address.Street)
+	require.Equal(t, "01500", detail.Address.Number)
+	require.Equal(t, "CENTRO", detail.Address.Neighborhood)
+	require.Equal(t, "4118402", detail.Address.CityCode)
+	require.Equal(t, "PARANAVAI", detail.Address.CityName)
+	require.Equal(t, "PR", detail.Address.State)
+	require.Equal(t, "87704030", detail.Address.ZipCode)
+	require.Equal(t, "1058", detail.Address.CountryCode)
+	require.Equal(t, "BRASIL", detail.Address.CountryName)
+}
+
 func TestDocumentConvenienceAccessorsHandleNilDocument(t *testing.T) {
 	var doc *nfe.Document
 
@@ -139,4 +168,5 @@ func TestDocumentConvenienceAccessorsHandleNilDocument(t *testing.T) {
 	require.False(t, doc.IsAuthorized())
 	require.Nil(t, doc.GetItems())
 	require.Nil(t, doc.GetPayments())
+	require.Nil(t, doc.GetEmitterDetail())
 }

@@ -58,6 +58,7 @@ func TestParseRoutesByNamespace(t *testing.T) {
 			require.NotNil(t, doc.Info())
 			require.Implements(t, (*AmountsInfo)(nil), doc.Info())
 			require.Implements(t, (*PartiesInfo)(nil), doc.Info())
+			require.Implements(t, (*EmitterDetailInfo)(nil), doc.Info())
 		})
 	}
 }
