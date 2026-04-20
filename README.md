@@ -225,8 +225,8 @@ Optional interface support is intentionally grouped by concept:
 - `EmitterDetailInfo` returns emitter metadata beyond name and document: trade
   name (xFant), tax registrations (IE, IEST, IM), economic activity (CNAE),
   tax regime (CRT), phone, email, and full address. Field availability varies
-  by document type — NF-e carries all fields, while NFS-e and CT-e expose a
-  subset.
+  by document type — NF-e carries most fields (no email), BPe carries all,
+  while NFS-e and CT-e expose a subset.
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use

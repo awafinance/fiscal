@@ -240,6 +240,20 @@ func (d *Document) GetEmitterDetail() *info.EmitterDetail {
 			Phone: stringPtrValue(prest.Fone),
 			Email: stringPtrValue(prest.Email),
 		}
+		if prest.End != nil {
+			addr := &info.Address{}
+			if prest.End.XLgr != "" {
+				addr.Street = prest.End.XLgr
+				addr.Number = prest.End.Nro
+				addr.Complement = stringPtrValue(prest.End.XCpl)
+				addr.Neighborhood = prest.End.XBairro
+			}
+			if prest.End.EndNac != nil {
+				addr.CityCode = prest.End.EndNac.CMun
+				addr.ZipCode = prest.End.EndNac.CEP
+			}
+			detail.Address = addr
+		}
 		return detail
 	}
 	return nil

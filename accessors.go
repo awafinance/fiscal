@@ -7,12 +7,20 @@ type Party = info.Party
 type RelatedDocument = info.RelatedDocument
 type Location = info.Location
 
+type Payment = info.Payment
+type Invoice = info.Invoice
+type Duplicata = info.Duplicata
+type Billing = info.Billing
+type Address = info.Address
+type EmitterDetail = info.EmitterDetail
+
 type AmountsInfo = info.AmountsInfo
 type PartiesInfo = info.PartiesInfo
 type RelatedDocumentsInfo = info.RelatedDocumentsInfo
 type RouteInfo = info.RouteInfo
-type Address = info.Address
-type EmitterDetail = info.EmitterDetail
+type PaymentsInfo = info.PaymentsInfo
+type BillingInfo = info.BillingInfo
+type AdditionalInformation = info.AdditionalInformation
 type EmitterDetailInfo = info.EmitterDetailInfo
 
 type DocumentInfo interface {

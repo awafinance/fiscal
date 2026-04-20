@@ -121,6 +121,7 @@ func TestDocumentConvenienceAccessorsHandleResNFe(t *testing.T) {
 	require.Empty(t, doc.GetRecipient())
 	require.Empty(t, doc.GetStatusCode())
 	require.False(t, doc.IsAuthorized())
+	require.Nil(t, doc.GetEmitterDetail())
 }
 
 func TestDocumentGetEmitterDetail(t *testing.T) {

@@ -82,6 +82,7 @@ func TestDocumentGetEmitterDetailDPS(t *testing.T) {
 	require.NotNil(t, detail)
 	require.Equal(t, "152422", detail.IM)
 	require.Empty(t, detail.IE)
+	require.Nil(t, detail.Address)
 }
 
 func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
