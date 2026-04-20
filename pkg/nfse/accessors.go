@@ -211,56 +211,62 @@ func (d *Document) GetAdditionalInfo() string {
 
 func (d *Document) GetEmitterDetail() *info.EmitterDetail {
 	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Emit != nil {
-		emit := d.NFSe.InfNFSe.Emit
-		detail := &info.EmitterDetail{
-			TradeName: stringPtrValue(emit.XFant),
-			IM:        stringPtrValue(emit.IM),
-			Phone:     stringPtrValue(emit.Fone),
-			Email:     stringPtrValue(emit.Email),
-		}
-		if emit.EnderNac != nil {
-			var addr info.Address
-			addr.CityCode = emit.EnderNac.CMun
-			addr.State = emit.EnderNac.UF
-			addr.ZipCode = emit.EnderNac.CEP
-			if emit.EnderNac.XLgr != "" {
-				addr.Street = emit.EnderNac.XLgr
-				addr.Number = emit.EnderNac.Nro
-				addr.Complement = stringPtrValue(emit.EnderNac.XCpl)
-				addr.Neighborhood = emit.EnderNac.XBairro
-			}
-			if addr != (info.Address{}) {
-				detail.Address = &addr
-			}
-		}
-		return detail
+		return d.emitterDetailFromNFSe(d.NFSe.InfNFSe.Emit)
 	}
 	if inf := d.infDPS(); inf != nil && inf.Prest != nil {
-		prest := inf.Prest
-		detail := &info.EmitterDetail{
-			IM:    stringPtrValue(prest.IM),
-			Phone: stringPtrValue(prest.Fone),
-			Email: stringPtrValue(prest.Email),
-		}
-		if prest.End != nil {
-			var addr info.Address
-			if prest.End.XLgr != "" {
-				addr.Street = prest.End.XLgr
-				addr.Number = prest.End.Nro
-				addr.Complement = stringPtrValue(prest.End.XCpl)
-				addr.Neighborhood = prest.End.XBairro
-			}
-			if prest.End.EndNac != nil {
-				addr.CityCode = prest.End.EndNac.CMun
-				addr.ZipCode = prest.End.EndNac.CEP
-			}
-			if addr != (info.Address{}) {
-				detail.Address = &addr
-			}
-		}
-		return detail
+		return d.emitterDetailFromDPS(inf.Prest)
 	}
 	return nil
+}
+
+func (d *Document) emitterDetailFromNFSe(emit *TCEmitente) *info.EmitterDetail {
+	detail := &info.EmitterDetail{
+		TradeName: stringPtrValue(emit.XFant),
+		IM:        stringPtrValue(emit.IM),
+		Phone:     stringPtrValue(emit.Fone),
+		Email:     stringPtrValue(emit.Email),
+	}
+	if emit.EnderNac != nil {
+		var addr info.Address
+		addr.CityCode = emit.EnderNac.CMun
+		addr.State = emit.EnderNac.UF
+		addr.ZipCode = emit.EnderNac.CEP
+		if emit.EnderNac.XLgr != "" {
+			addr.Street = emit.EnderNac.XLgr
+			addr.Number = emit.EnderNac.Nro
+			addr.Complement = stringPtrValue(emit.EnderNac.XCpl)
+			addr.Neighborhood = emit.EnderNac.XBairro
+		}
+		if addr != (info.Address{}) {
+			detail.Address = &addr
+		}
+	}
+	return detail
+}
+
+func (d *Document) emitterDetailFromDPS(prest *TCInfoPrestador) *info.EmitterDetail {
+	detail := &info.EmitterDetail{
+		IM:    stringPtrValue(prest.IM),
+		Phone: stringPtrValue(prest.Fone),
+		Email: stringPtrValue(prest.Email),
+	}
+	if prest.End != nil {
+		var addr info.Address
+		if prest.End.XLgr != "" {
+			addr.Street = prest.End.XLgr
+			addr.Number = prest.End.Nro
+			addr.Complement = stringPtrValue(prest.End.XCpl)
+			addr.Neighborhood = prest.End.XBairro
+		}
+		if prest.End.EndNac != nil {
+			addr.CityCode = prest.End.EndNac.CMun
+			addr.ZipCode = prest.End.EndNac.CEP
+		}
+		if addr != (info.Address{}) {
+			detail.Address = &addr
+		}
+	}
+	return detail
 }
 
 func (d *Document) GetParties() []info.Party {
