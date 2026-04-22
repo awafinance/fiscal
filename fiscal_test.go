@@ -1,7 +1,6 @@
 package fiscal
 
 import (
-	"errors"
 	"os"
 	"testing"
 
@@ -98,7 +97,7 @@ func TestParseRejectsUnsupportedNamespace(t *testing.T) {
 	require.ErrorIs(t, err, ErrUnsupportedNamespace)
 
 	var nsErr *UnsupportedNamespaceError
-	require.True(t, errors.As(err, &nsErr))
+	require.ErrorAs(t, err, &nsErr)
 	require.Equal(t, "urn:example", nsErr.Namespace)
 	require.Equal(t, "doc", nsErr.Root)
 }
@@ -109,7 +108,7 @@ func TestParseRejectsUnsupportedRoot(t *testing.T) {
 	require.ErrorIs(t, err, ErrUnsupportedRoot)
 
 	var rootErr *UnsupportedRootError
-	require.True(t, errors.As(err, &rootErr))
+	require.ErrorAs(t, err, &rootErr)
 	require.Equal(t, "nfe", rootErr.Family)
 	require.Equal(t, "foo", rootErr.Root)
 }
