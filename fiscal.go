@@ -1,12 +1,14 @@
 package fiscal
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 
 	"github.com/awafinance/fiscal/internal/xmlutil"
 	"github.com/awafinance/fiscal/pkg/bpe"
 	"github.com/awafinance/fiscal/pkg/cte"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 	"github.com/awafinance/fiscal/pkg/mdfe"
 	"github.com/awafinance/fiscal/pkg/nfe"
 	"github.com/awafinance/fiscal/pkg/nfse"
@@ -44,6 +46,9 @@ type Document struct {
 }
 
 func Parse(data []byte) (*Document, error) {
+	if len(bytes.TrimSpace(data)) == 0 {
+		return nil, fmt.Errorf("parse fiscal: %w", fiscalerr.ErrEmptyDocument)
+	}
 	root, err := xmlutil.ParseRootElement(data)
 	if err != nil {
 		return nil, fmt.Errorf("parse fiscal: read root: %w", err)
@@ -66,7 +71,7 @@ func Parse(data []byte) (*Document, error) {
 		doc, err := bpe.Parse(data)
 		return wrapBPe(doc, err)
 	default:
-		return nil, fmt.Errorf("parse fiscal: unsupported namespace %q root %q", root.Space, root.Local)
+		return nil, &fiscalerr.UnsupportedNamespaceError{Namespace: root.Space, Root: root.Local}
 	}
 }
 

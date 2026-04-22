@@ -1,6 +1,7 @@
 package fiscal
 
 import (
+	"errors"
 	"os"
 	"testing"
 
@@ -88,11 +89,33 @@ func TestParseDetectsPrefixedRootNamespace(t *testing.T) {
 	_, err := Parse(data)
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "parse nfe:")
-	require.NotContains(t, err.Error(), "unsupported namespace")
+	require.NotErrorIs(t, err, ErrUnsupportedNamespace)
 }
 
 func TestParseRejectsUnsupportedNamespace(t *testing.T) {
 	_, err := Parse([]byte(`<doc xmlns="urn:example"></doc>`))
 	require.Error(t, err)
-	require.Contains(t, err.Error(), `unsupported namespace "urn:example" root "doc"`)
+	require.ErrorIs(t, err, ErrUnsupportedNamespace)
+
+	var nsErr *UnsupportedNamespaceError
+	require.True(t, errors.As(err, &nsErr))
+	require.Equal(t, "urn:example", nsErr.Namespace)
+	require.Equal(t, "doc", nsErr.Root)
+}
+
+func TestParseRejectsUnsupportedRoot(t *testing.T) {
+	_, err := Parse([]byte(`<foo xmlns="http://www.portalfiscal.inf.br/nfe"></foo>`))
+	require.Error(t, err)
+	require.ErrorIs(t, err, ErrUnsupportedRoot)
+
+	var rootErr *UnsupportedRootError
+	require.True(t, errors.As(err, &rootErr))
+	require.Equal(t, "nfe", rootErr.Family)
+	require.Equal(t, "foo", rootErr.Root)
+}
+
+func TestParseRejectsEmptyDocument(t *testing.T) {
+	_, err := Parse(nil)
+	require.Error(t, err)
+	require.ErrorIs(t, err, ErrEmptyDocument)
 }
