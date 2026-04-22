@@ -9,6 +9,7 @@ import (
 
 	schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
 	"github.com/awafinance/fiscal/internal/xmlutil"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 )
 
 const namespace = "http://www.sped.fazenda.gov.br/nfse"
@@ -90,7 +91,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 func Parse(data []byte) (*Document, error) {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
-		return nil, errors.New("parse nfse: empty xml document")
+		return nil, fmt.Errorf("parse nfse: %w", fiscalerr.ErrEmptyDocument)
 	}
 
 	RootName, rootErr := xmlutil.ParseRootName(data)
@@ -133,7 +134,7 @@ func Parse(data []byte) (*Document, error) {
 		if rootErr != nil {
 			return nil, fmt.Errorf("parse nfse: read root: %w", rootErr)
 		}
-		return nil, fmt.Errorf("parse nfse: unsupported root element %q", RootName)
+		return nil, fmt.Errorf("parse nfse: %w", &fiscalerr.UnsupportedRootError{Family: fiscalerr.NFSe, Root: RootName})
 	}
 }
 

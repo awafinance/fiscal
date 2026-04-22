@@ -26,6 +26,7 @@ import (
 	gtveSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/gtve"
 	statusSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/status_servico"
 	"github.com/awafinance/fiscal/internal/xmlutil"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/cte"
@@ -454,7 +455,7 @@ func marshalRetDistDFeInt(e *xml.Encoder, d *Document) error {
 func Parse(data []byte) (*Document, error) {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
-		return nil, errors.New("parse cte: empty xml document")
+		return nil, fmt.Errorf("parse cte: %w", fiscalerr.ErrEmptyDocument)
 	}
 
 	RootName, rootErr := xmlutil.ParseRootName(data)
@@ -468,7 +469,7 @@ func Parse(data []byte) (*Document, error) {
 	if rootErr != nil {
 		return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
 	}
-	return nil, fmt.Errorf("parse cte: unsupported root element %q", RootName)
+	return nil, fmt.Errorf("parse cte: %w", &fiscalerr.UnsupportedRootError{Family: fiscalerr.CTe, Root: RootName})
 }
 
 func ParseReader(r io.Reader) (*Document, error) {

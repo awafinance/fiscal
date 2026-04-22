@@ -13,6 +13,7 @@ import (
 	excessoBagagemEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
 	naoEmbEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
 	"github.com/awafinance/fiscal/internal/xmlutil"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/bpe"
@@ -235,7 +236,7 @@ func marshalRetConsStatServBPe(e *xml.Encoder, d *Document) error {
 func Parse(data []byte) (*Document, error) {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
-		return nil, errors.New("parse bpe: empty xml document")
+		return nil, fmt.Errorf("parse bpe: %w", fiscalerr.ErrEmptyDocument)
 	}
 
 	RootName, rootErr := xmlutil.ParseRootName(data)
@@ -249,7 +250,7 @@ func Parse(data []byte) (*Document, error) {
 	if rootErr != nil {
 		return nil, fmt.Errorf("parse bpe: read root: %w", rootErr)
 	}
-	return nil, fmt.Errorf("parse bpe: unsupported root element %q", RootName)
+	return nil, fmt.Errorf("parse bpe: %w", &fiscalerr.UnsupportedRootError{Family: fiscalerr.BPe, Root: RootName})
 }
 
 func ParseReader(r io.Reader) (*Document, error) {

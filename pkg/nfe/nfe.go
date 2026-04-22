@@ -23,6 +23,7 @@ import (
 	schema "github.com/awafinance/fiscal/internal/nfe/gen/v4_0/nfe_proc"
 	statusSchema "github.com/awafinance/fiscal/internal/nfe/gen/v4_0/status_servico"
 	"github.com/awafinance/fiscal/internal/xmlutil"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 )
 
 const (
@@ -377,7 +378,7 @@ var parsersByRoot = map[string]func([]byte, string) (*Document, error){
 func Parse(data []byte) (*Document, error) {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
-		return nil, errors.New("parse nfe: empty xml document")
+		return nil, fmt.Errorf("parse nfe: %w", fiscalerr.ErrEmptyDocument)
 	}
 
 	rootName, rootErr := xmlutil.ParseRootName(data)
@@ -391,7 +392,7 @@ func Parse(data []byte) (*Document, error) {
 	if rootErr != nil {
 		return nil, fmt.Errorf("parse nfe: read root: %w", rootErr)
 	}
-	return nil, fmt.Errorf("parse nfe: unsupported root element %q", rootName)
+	return nil, fmt.Errorf("parse nfe: %w", &fiscalerr.UnsupportedRootError{Family: fiscalerr.NFe, Root: rootName})
 }
 
 func finalizeDoc(doc *Document) (*Document, error) {

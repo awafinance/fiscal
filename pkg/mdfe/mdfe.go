@@ -24,6 +24,7 @@ import (
 	mdfeSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/mdfe"
 	statusSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/status_servico"
 	"github.com/awafinance/fiscal/internal/xmlutil"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 )
 
 const namespace = "http://www.portalfiscal.inf.br/mdfe"
@@ -381,7 +382,7 @@ func marshalRetMDFeConsultaDFe(e *xml.Encoder, d *Document) error {
 func Parse(data []byte) (*Document, error) {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
-		return nil, errors.New("parse mdfe: empty xml document")
+		return nil, fmt.Errorf("parse mdfe: %w", fiscalerr.ErrEmptyDocument)
 	}
 
 	RootName, rootErr := xmlutil.ParseRootName(data)
@@ -395,7 +396,7 @@ func Parse(data []byte) (*Document, error) {
 	if rootErr != nil {
 		return nil, fmt.Errorf("parse mdfe: read root: %w", rootErr)
 	}
-	return nil, fmt.Errorf("parse mdfe: unsupported root element %q", RootName)
+	return nil, fmt.Errorf("parse mdfe: %w", &fiscalerr.UnsupportedRootError{Family: fiscalerr.MDFe, Root: RootName})
 }
 
 func ParseReader(r io.Reader) (*Document, error) {

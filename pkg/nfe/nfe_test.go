@@ -20,6 +20,7 @@ import (
 	mdeSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/evento_mde"
 	consSchema "github.com/awafinance/fiscal/internal/nfe/gen/v2_0/cons"
 	schema "github.com/awafinance/fiscal/internal/nfe/gen/v4_0/nfe_proc"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 	"github.com/awafinance/fiscal/pkg/info"
 	"github.com/awafinance/fiscal/pkg/nfe"
 	"github.com/stretchr/testify/require"
@@ -287,13 +288,14 @@ func TestParse_InvalidInputs(t *testing.T) {
 		name        string
 		data        []byte
 		errContains string
+		errIs       error
 	}{
-		{name: "nil", data: nil, errContains: "empty xml document"},
-		{name: "empty slice", data: []byte{}, errContains: "empty xml document"},
-		{name: "whitespace only", data: []byte(" \n\t "), errContains: "empty xml document"},
+		{name: "nil", data: nil, errIs: fiscalerr.ErrEmptyDocument},
+		{name: "empty slice", data: []byte{}, errIs: fiscalerr.ErrEmptyDocument},
+		{name: "whitespace only", data: []byte(" \n\t "), errIs: fiscalerr.ErrEmptyDocument},
 		{name: "malformed xml", data: []byte(`<nfeProc>`), errContains: "decode nfeProc"},
 		{name: "malformed xml with unclosed nested tag", data: []byte(`<nfeProc><NFe></nfeProc>`), errContains: "decode nfeProc"},
-		{name: "unsupported root", data: []byte(`<not-nfe></not-nfe>`), errContains: `unsupported root element "not-nfe"`},
+		{name: "unsupported root", data: []byte(`<not-nfe></not-nfe>`), errIs: fiscalerr.ErrUnsupportedRoot},
 		{name: "unsupported root with malformed xml", data: []byte(`<not-nfe><oops>`), errContains: "read root"},
 		{name: "nfeProc missing NFe", data: []byte(`<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"></nfeProc>`), errContains: "missing NFe"},
 		{name: "nfeProc missing infNFe", data: []byte(`<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00"><NFe></NFe></nfeProc>`), errContains: "missing infNFe"},
@@ -310,7 +312,11 @@ func TestParse_InvalidInputs(t *testing.T) {
 			doc, err := nfe.Parse(tt.data)
 
 			require.Error(t, err)
-			require.ErrorContains(t, err, tt.errContains)
+			if tt.errIs != nil {
+				require.ErrorIs(t, err, tt.errIs)
+			} else {
+				require.ErrorContains(t, err, tt.errContains)
+			}
 			require.Nil(t, doc)
 		})
 	}
