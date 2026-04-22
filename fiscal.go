@@ -14,14 +14,16 @@ import (
 	"github.com/awafinance/fiscal/pkg/nfse"
 )
 
-type Family string
+// Family is aliased to fiscalerr.Family so the typed-error Family field and
+// the Document.Family field share a single underlying type.
+type Family = fiscalerr.Family
 
 const (
-	NFe  Family = "nfe"
-	NFSe Family = "nfse"
-	CTe  Family = "cte"
-	MDFe Family = "mdfe"
-	BPe  Family = "bpe"
+	NFe  = fiscalerr.NFe
+	NFSe = fiscalerr.NFSe
+	CTe  = fiscalerr.CTe
+	MDFe = fiscalerr.MDFe
+	BPe  = fiscalerr.BPe
 )
 
 const (
@@ -71,7 +73,7 @@ func Parse(data []byte) (*Document, error) {
 		doc, err := bpe.Parse(data)
 		return wrapBPe(doc, err)
 	default:
-		return nil, &fiscalerr.UnsupportedNamespaceError{Namespace: root.Space, Root: root.Local}
+		return nil, fmt.Errorf("parse fiscal: %w", &fiscalerr.UnsupportedNamespaceError{Namespace: root.Space, Root: root.Local})
 	}
 }
 

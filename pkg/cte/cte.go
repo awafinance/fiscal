@@ -469,7 +469,7 @@ func Parse(data []byte) (*Document, error) {
 	if rootErr != nil {
 		return nil, fmt.Errorf("parse cte: read root: %w", rootErr)
 	}
-	return nil, &fiscalerr.UnsupportedRootError{Family: "cte", Root: RootName}
+	return nil, fmt.Errorf("parse cte: %w", &fiscalerr.UnsupportedRootError{Family: fiscalerr.CTe, Root: RootName})
 }
 
 func ParseReader(r io.Reader) (*Document, error) {

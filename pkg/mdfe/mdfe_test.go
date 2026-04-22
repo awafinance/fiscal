@@ -21,6 +21,7 @@ import (
 	distMDFeSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/dist_mdfe"
 	mdfeSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/mdfe"
 	statusSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/status_servico"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 	"github.com/awafinance/fiscal/pkg/mdfe"
 	"github.com/stretchr/testify/require"
 )
@@ -171,9 +172,10 @@ func TestParse_InvalidInputs(t *testing.T) {
 		name        string
 		data        []byte
 		errContains string
+		errIs       error
 	}{
-		{name: "empty", data: nil, errContains: "empty xml document"},
-		{name: "unsupported root", data: []byte(`<foo></foo>`), errContains: `unsupported root element "foo"`},
+		{name: "empty", data: nil, errIs: fiscalerr.ErrEmptyDocument},
+		{name: "unsupported root", data: []byte(`<foo></foo>`), errIs: fiscalerr.ErrUnsupportedRoot},
 		{name: "invalid mdfe", data: []byte(`<MDFe xmlns="http://www.portalfiscal.inf.br/mdfe"></MDFe>`), errContains: "missing infMDFe"},
 		{name: "invalid consult nao encerrado", data: []byte(`<consMDFeNaoEnc xmlns="http://www.portalfiscal.inf.br/mdfe" versao="3.00"></consMDFeNaoEnc>`), errContains: "missing tpAmb"},
 		{name: "invalid consult recibo", data: []byte(`<consReciMDFe xmlns="http://www.portalfiscal.inf.br/mdfe" versao="3.00"><tpAmb>1</tpAmb></consReciMDFe>`), errContains: "missing nRec"},
@@ -187,7 +189,11 @@ func TestParse_InvalidInputs(t *testing.T) {
 			doc, err := mdfe.Parse(tt.data)
 			require.Error(t, err)
 			require.Nil(t, doc)
-			require.ErrorContains(t, err, tt.errContains)
+			if tt.errIs != nil {
+				require.ErrorIs(t, err, tt.errIs)
+			} else {
+				require.ErrorContains(t, err, tt.errContains)
+			}
 		})
 	}
 }

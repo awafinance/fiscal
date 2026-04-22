@@ -109,7 +109,7 @@ func TestParseRejectsUnsupportedRoot(t *testing.T) {
 
 	var rootErr *UnsupportedRootError
 	require.ErrorAs(t, err, &rootErr)
-	require.Equal(t, "nfe", rootErr.Family)
+	require.Equal(t, NFe, rootErr.Family)
 	require.Equal(t, "foo", rootErr.Root)
 }
 

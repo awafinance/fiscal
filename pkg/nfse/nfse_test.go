@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 	"github.com/awafinance/fiscal/pkg/nfse"
 	"github.com/stretchr/testify/require"
 )
@@ -52,9 +53,10 @@ func TestParse_InvalidInputs(t *testing.T) {
 		name        string
 		data        []byte
 		errContains string
+		errIs       error
 	}{
-		{name: "empty", data: nil, errContains: "empty xml document"},
-		{name: "unsupported root", data: []byte(`<foo></foo>`), errContains: `unsupported root element "foo"`},
+		{name: "empty", data: nil, errIs: fiscalerr.ErrEmptyDocument},
+		{name: "unsupported root", data: []byte(`<foo></foo>`), errIs: fiscalerr.ErrUnsupportedRoot},
 		{name: "invalid dps", data: []byte(`<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></DPS>`), errContains: "missing infDPS"},
 		{name: "invalid nfse", data: []byte(`<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></NFSe>`), errContains: "missing infNFSe"},
 		{name: "invalid event", data: []byte(`<pedRegEvento xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></pedRegEvento>`), errContains: "missing infPedReg"},
@@ -67,7 +69,11 @@ func TestParse_InvalidInputs(t *testing.T) {
 			doc, err := nfse.Parse(tt.data)
 			require.Error(t, err)
 			require.Nil(t, doc)
-			require.ErrorContains(t, err, tt.errContains)
+			if tt.errIs != nil {
+				require.ErrorIs(t, err, tt.errIs)
+			} else {
+				require.ErrorContains(t, err, tt.errContains)
+			}
 		})
 	}
 }

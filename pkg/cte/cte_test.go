@@ -15,6 +15,7 @@ import (
 
 	distSchema "github.com/awafinance/fiscal/internal/cte/gen/v1_0/dist_dfe"
 	"github.com/awafinance/fiscal/pkg/cte"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 	"github.com/stretchr/testify/require"
 )
 
@@ -54,9 +55,10 @@ func TestParse_InvalidInputs(t *testing.T) {
 		name        string
 		data        []byte
 		errContains string
+		errIs       error
 	}{
-		{name: "empty", data: nil, errContains: "empty xml document"},
-		{name: "unsupported root", data: []byte(`<foo></foo>`), errContains: `unsupported root element "foo"`},
+		{name: "empty", data: nil, errIs: fiscalerr.ErrEmptyDocument},
+		{name: "unsupported root", data: []byte(`<foo></foo>`), errIs: fiscalerr.ErrUnsupportedRoot},
 		{name: "invalid cte", data: []byte(`<CTe xmlns="http://www.portalfiscal.inf.br/cte"></CTe>`), errContains: "missing infCte"},
 		{name: "invalid cteos", data: []byte(`<CTeOS xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"></CTeOS>`), errContains: "missing infCte"},
 		{name: "invalid event", data: []byte(`<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"></eventoCTe>`), errContains: "missing infEvento"},
@@ -70,7 +72,11 @@ func TestParse_InvalidInputs(t *testing.T) {
 			doc, err := cte.Parse(tt.data)
 			require.Error(t, err)
 			require.Nil(t, doc)
-			require.ErrorContains(t, err, tt.errContains)
+			if tt.errIs != nil {
+				require.ErrorIs(t, err, tt.errIs)
+			} else {
+				require.ErrorContains(t, err, tt.errContains)
+			}
 		})
 	}
 }

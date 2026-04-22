@@ -18,6 +18,7 @@ import (
 	excessoBagagemSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_excesso_bagagem"
 	naoEmbSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_nao_emb"
 	"github.com/awafinance/fiscal/pkg/bpe"
+	"github.com/awafinance/fiscal/pkg/fiscalerr"
 	"github.com/stretchr/testify/require"
 )
 
@@ -334,9 +335,10 @@ func TestParse_InvalidInputs(t *testing.T) {
 		name        string
 		data        []byte
 		errContains string
+		errIs       error
 	}{
-		{name: "empty", data: nil, errContains: "empty xml document"},
-		{name: "unsupported root", data: []byte(`<foo></foo>`), errContains: `unsupported root element "foo"`},
+		{name: "empty", data: nil, errIs: fiscalerr.ErrEmptyDocument},
+		{name: "unsupported root", data: []byte(`<foo></foo>`), errIs: fiscalerr.ErrUnsupportedRoot},
 		{name: "invalid bpe", data: []byte(`<BPe xmlns="http://www.portalfiscal.inf.br/bpe"></BPe>`), errContains: "missing infBPe"},
 		{name: "invalid event", data: []byte(`<eventoBPe xmlns="http://www.portalfiscal.inf.br/bpe" versao="1.00"></eventoBPe>`), errContains: "missing infEvento"},
 	}
@@ -348,7 +350,11 @@ func TestParse_InvalidInputs(t *testing.T) {
 			doc, err := bpe.Parse(tt.data)
 			require.Error(t, err)
 			require.Nil(t, doc)
-			require.ErrorContains(t, err, tt.errContains)
+			if tt.errIs != nil {
+				require.ErrorIs(t, err, tt.errIs)
+			} else {
+				require.ErrorContains(t, err, tt.errContains)
+			}
 		})
 	}
 }
