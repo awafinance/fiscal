@@ -202,18 +202,26 @@ if route, ok := doc.Info().(fiscal.RouteInfo); ok {
  fmt.Println(route.GetOrigin())
  fmt.Println(route.GetDestination())
 }
+
+if cd, ok := doc.Info().(fiscal.CompetenceDateInfo); ok {
+ fmt.Println(cd.GetCompetenceDate())
+}
 ```
 
 Optional interface support is intentionally grouped by concept:
 
 - `AmountsInfo` returns raw amount fields such as NFe total, CTe service value,
-  MDFe cargo value, BPe ticket value, and NFSe service/net values.
+  MDFe cargo value, BPe ticket value, and NFSe service/net values. Amounts
+  may include an `Aliquot` field when the source XML carries one alongside the
+  value (e.g. ISS, PIS, COFINS aliquots in NFS-e).
 - `PartiesInfo` returns known parties with roles, such as issuer, recipient,
   provider, taker, sender, dispatcher, receiver, and buyer.
 - `RelatedDocumentsInfo` returns document references such as linked NFe, CTe,
   MDF-e, or DCe access keys where the schema carries them.
 - `RouteInfo` returns modal, origin, and destination fields for transport and
   service documents where those concepts exist.
+- `CompetenceDateInfo` returns the accounting competence date for document
+  families where it is distinct from the issue date (currently NFS-e).
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use

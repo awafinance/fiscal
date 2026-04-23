@@ -1,0 +1,50 @@
+<?xml 
+version="1.0" 
+encoding="utf-8"?>
+<NFSe versao="1.01" xmlns="http://www.sped.fazenda.gov.br/nfse">
+<infNFSe Id="NFS33045572214043710000103000000000001826016989420950">
+<xLocEmi>Rio de Janeiro</xLocEmi>
+<xLocPrestacao>Rio de Janeiro</xLocPrestacao>
+<nNFSe>18</nNFSe>
+<cLocIncid>3304557</cLocIncid>
+<xLocIncid>Rio de Janeiro</xLocIncid>
+<xTribNac>Serviços técnicos em telecomunicações e congêneres.</xTribNac>
+<xTribMun>Serviços técnicos em telecomunicações.</xTribMun>
+<verAplic>EmissorWeb_1.5.0.0</verAplic>
+<ambGer>2</ambGer><tpEmis>1</tpEmis>
+<procEmi>2</procEmi><cStat>101</cStat>
+<dhProc>2026-01-12T13:50:48-03:00</dhProc>
+<nDFSe>8669458</nDFSe><emit>
+<CNPJ>14043710000103</CNPJ>
+<xNome>SINCROSAT TELEMETRIA LTDA</xNome>
+<enderNac>
+<xLgr>SALVADOR ALLENDE</xLgr><nro>6700</nro>
+<xBairro>RECREIO DOS BANDEIRANTES</xBairro>
+<cMun>3304557</cMun>
+<UF>RJ</UF>
+<CEP>22780160</CEP>
+</enderNac>
+<fone>2133259718</fone>
+</emit>
+<valores>
+<vBC>198.00</vBC>
+<pAliqAplic>5.00</pAliqAplic>
+<vISSQN>9.90</vISSQN>
+<vLiq>198.00</vLiq>
+</valores>
+<DPS versao="1.01" xmlns="http://www.sped.fazenda.gov.br/nfse">
+<infDPS Id="DPS330455721404371000010300900000000000000035">
+<tpAmb>1</tpAmb><dhEmi>2026-01-12T13:50:48-03:00</dhEmi><verAplic>EmissorWeb_1.4.0.26</verAplic>
+<serie>900</serie><nDPS>35</nDPS><dCompet>2026-01-01</dCompet><tpEmit>1</tpEmit>
+<cLocEmi>3304557</cLocEmi>
+<subst>
+<chSubstda>33045572214043710000103000000000001726012751532718</chSubstda>
+<cMotivo>99</cMotivo><xMotivo>ALIQUOTA APROXIMADA INCORRETA</xMotivo></subst>
+<prest><CNPJ>14043710000103</CNPJ><fone>2133259718</fone><regTrib>
+<opSimpNac>1</opSimpNac>
+<regEspTrib>0</regEspTrib>
+</regTrib></prest><toma>
+<CNPJ>09467474000112</CNPJ>
+<xNome>GPD LOCACOES LTDA</xNome><end><endNac><cMun>3147006</cMun>
+<CEP>38608120</CEP></endNac><xLgr>CAETANO SILVA NEIVA</xLgr><nro>388</nro
+><xBairro>NOSSA SENHORA APARECIDA</xBairro></end></toma><serv><locPrest><cLocPrestacao>3304557</cLocPrestacao></locPrest><cServ><cTribNac>310104</cTribNac><cTribMun>001</cTribMun><xDescServ>serviço de telemetria</xDescServ></cServ></serv><valores><vServPrest><vServ>198.00</vServ></vServPrest><trib><tribMun><tribISSQN>1</tribISSQN><tpRetISSQN>1</tpRetISSQN></tribMun><totTrib><pTotTrib><pTotTribFed>11.33</pTotTribFed><pTotTribEst>0.00</pTotTribEst><pTotTribMun>0.00</pTotTribMun></pTotTrib></totTrib></trib></valores></infDPS></DPS></infNFSe><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI="#NFS33045572214043710000103000000000001826016989420950"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>yLZBS1uPWV5EtRS7Wlh+8VokOZhneMTqu7RE/npQc+k=</DigestValue></Reference></SignedInfo><SignatureValue>HjDUOEBCiPSwmzjkLg7aCoOpaLCiz9qP2KYbJl2vTA5pe5QJV/TN2gHnbx+cpbGCH63UVe8Ln+RMpBHRkQFVOS40NhqMp31mwcBLz3Udlfr0aACSSuuxRl5phkB/Mps7y3I3fRH3p7hLGN/cEYCC6EbjoygnuFtyTtybWgIGbNZptlFHhv+OxJEeaQ0BVR1GLHQZW9UmpWVQZ2/QazQFVPzChGG8o4ogoiamIwmEF6sG2zjlbsG4f+E/s9Gh+DH8tVoqazLI6yoKq8KxHvqf7mKo1pNNSBRpD0V6sLnqRCvu6mxm03M0B3K4OKBD0rtiJmcb5Vwrc+soYnOul9MKuw==</SignatureValue><KeyInfo><X509Data><X509Certificate>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</X509Certificate></X509Data></KeyInfo></Signature></NFSe>
