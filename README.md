@@ -207,7 +207,9 @@ if route, ok := doc.Info().(fiscal.RouteInfo); ok {
 Optional interface support is intentionally grouped by concept:
 
 - `AmountsInfo` returns raw amount fields such as NFe total, CTe service value,
-  MDFe cargo value, BPe ticket value, and NFSe service/net values.
+  MDFe cargo value, BPe ticket value, and NFSe service/net values. Amounts
+  may include an `Aliquot` field when the source XML carries one alongside the
+  value (e.g. ISS, PIS, COFINS aliquots in NFS-e).
 - `PartiesInfo` returns known parties with roles, such as issuer, recipient,
   provider, taker, sender, dispatcher, receiver, and buyer.
 - `RelatedDocumentsInfo` returns document references such as linked NFe, CTe,
@@ -235,6 +237,15 @@ for _, payment := range doc.NFe.GetPayments() {
 ```
 
 These methods also return the raw XML string values.
+
+### NFS-e Details
+
+NFS-e exposes the accounting competence date, which determines which
+period the invoice belongs to (distinct from the issue date):
+
+```go
+fmt.Println(doc.NFSe.GetCompetenceDate())
+```
 
 ## Round-trip behavior
 

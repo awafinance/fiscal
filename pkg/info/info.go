@@ -1,8 +1,9 @@
 package info
 
 type Amount struct {
-	Type  string `json:"type,omitempty"`
-	Value string `json:"value,omitempty"`
+	Type    string `json:"type,omitempty"`
+	Value   string `json:"value,omitempty"`
+	Aliquot string `json:"aliquot,omitempty"`
 }
 
 type Party struct {

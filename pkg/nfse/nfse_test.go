@@ -127,12 +127,38 @@ func assertFixtureShape(t *testing.T, fixture string, doc *nfse.Document) {
 		require.Equal(t, "900", doc.DPS.InfDPS.Serie)
 		require.Equal(t, "6", doc.DPS.InfDPS.NDPS)
 		require.NotNil(t, doc.DPS.InfDPS.Prest.RegTrib)
+	case "dps-cpf-taker-piscofins.xml":
+		require.NotNil(t, doc.DPS)
+		require.Equal(t, "1.00", doc.DPS.VersaoAttr)
+		require.Equal(t, "31", doc.DPS.InfDPS.NDPS)
+		require.Equal(t, "2025-12-04", doc.DPS.InfDPS.DCompet)
+		require.NotNil(t, doc.DPS.InfDPS.Toma)
+		require.NotNil(t, doc.DPS.InfDPS.Toma.CPF)
+		require.Equal(t, "98216457200", *doc.DPS.InfDPS.Toma.CPF)
 	case "ConsultarNFSeEnvio-ped-sitnfse.xml":
 		require.NotNil(t, doc.NFSe)
 		require.Equal(t, "1.00", doc.NFSe.VersaoAttr)
 		require.Equal(t, "2", doc.NFSe.InfNFSe.NNFSe)
 		require.Equal(t, "100", doc.NFSe.InfNFSe.CStat)
 		require.NotNil(t, doc.NFSe.InfNFSe.DPS)
+	case "nfse-prod-iss-retido-cooperativa.xml":
+		require.NotNil(t, doc.NFSe)
+		require.Equal(t, "76", doc.NFSe.InfNFSe.NNFSe)
+		require.Equal(t, "100", doc.NFSe.InfNFSe.CStat)
+		require.Equal(t, "2026-02-03", doc.NFSe.InfNFSe.DPS.InfDPS.DCompet)
+		require.Equal(t, "2", doc.NFSe.InfNFSe.DPS.InfDPS.Valores.Trib.TribMun.TpRetISSQN)
+	case "nfse-prod-iss-retido-piscofins.xml":
+		require.NotNil(t, doc.NFSe)
+		require.Equal(t, "99", doc.NFSe.InfNFSe.NNFSe)
+		require.Equal(t, "100", doc.NFSe.InfNFSe.CStat)
+		require.Equal(t, "2", doc.NFSe.InfNFSe.DPS.InfDPS.Valores.Trib.TribMun.TpRetISSQN)
+		require.NotNil(t, doc.NFSe.InfNFSe.DPS.InfDPS.Valores.Trib.TribFed.Piscofins)
+	case "nfse-prod-substituicao.xml":
+		require.NotNil(t, doc.NFSe)
+		require.Equal(t, "18", doc.NFSe.InfNFSe.NNFSe)
+		require.Equal(t, "101", doc.NFSe.InfNFSe.CStat)
+		require.NotNil(t, doc.NFSe.InfNFSe.DPS.InfDPS.Subst)
+		require.Equal(t, "99", doc.NFSe.InfNFSe.DPS.InfDPS.Subst.CMotivo)
 	case "CancelarNFSe-ped-cannfse.xml":
 		require.NotNil(t, doc.PedRegEvento)
 		require.Equal(t, "1.00", doc.PedRegEvento.VersaoAttr)

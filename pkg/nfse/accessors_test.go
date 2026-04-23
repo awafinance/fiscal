@@ -57,3 +57,97 @@ func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
 
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "retained_inss", Value: "0.40"})
 }
+
+func TestDocumentGetAmountsRetainedISS(t *testing.T) {
+	t.Run("real production cooperativa with ISS retention", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/nfse-prod-iss-retido-cooperativa.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+
+		amounts := doc.GetAmounts()
+		require.Contains(t, amounts, info.Amount{Type: "net", Value: "9878.06"})
+		require.Contains(t, amounts, info.Amount{Type: "iss", Value: "519.90", Aliquot: "5.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained", Value: "519.90"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "519.90", Aliquot: "5.00"})
+	})
+
+	t.Run("ISS retention with IRRF and CSLL", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/third_party/nfse-iss-retido-irrf-csll.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+
+		amounts := doc.GetAmounts()
+		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "500.00", Aliquot: "5.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_irrf", Value: "150.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_csll", Value: "465.00"})
+	})
+
+	t.Run("ISS retention with INSS on transport service", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/third_party/nfse-iss-retido-transporte.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+
+		amounts := doc.GetAmounts()
+		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "150.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_inss", Value: "550.00"})
+	})
+
+	t.Run("no retained_iss when tpRetISSQN=1", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/ConsultarNFSeEnvio-ped-sitnfse.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+
+		for _, a := range doc.GetAmounts() {
+			require.NotEqual(t, "retained_iss", a.Type)
+		}
+	})
+
+	t.Run("substituted NFSe has no ISS retention", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/nfse-prod-substituicao.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+
+		for _, a := range doc.GetAmounts() {
+			require.NotEqual(t, "retained_iss", a.Type)
+		}
+	})
+}
+
+func TestDocumentGetCompetenceDate(t *testing.T) {
+	t.Run("standalone DPS", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-simples.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+		require.Equal(t, "2022-09-28", doc.GetCompetenceDate())
+	})
+
+	t.Run("authorized NFSe with nested DPS", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/nfse-prod-iss-retido-cooperativa.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+		require.Equal(t, "2026-02-03", doc.GetCompetenceDate())
+	})
+
+	t.Run("CPF taker DPS", func(t *testing.T) {
+		data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-cpf-taker-piscofins.xml")
+		require.NoError(t, err)
+
+		doc, err := nfse.Parse(data)
+		require.NoError(t, err)
+		require.Equal(t, "2025-12-04", doc.GetCompetenceDate())
+	})
+}
