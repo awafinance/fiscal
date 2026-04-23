@@ -82,7 +82,3 @@ type BillingInfo interface {
 type AdditionalInformation interface {
 	GetAdditionalInfo() string
 }
-
-type CompetenceDateInfo interface {
-	GetCompetenceDate() string
-}

@@ -202,10 +202,6 @@ if route, ok := doc.Info().(fiscal.RouteInfo); ok {
  fmt.Println(route.GetOrigin())
  fmt.Println(route.GetDestination())
 }
-
-if cd, ok := doc.Info().(fiscal.CompetenceDateInfo); ok {
- fmt.Println(cd.GetCompetenceDate())
-}
 ```
 
 Optional interface support is intentionally grouped by concept:
@@ -220,8 +216,6 @@ Optional interface support is intentionally grouped by concept:
   MDF-e, or DCe access keys where the schema carries them.
 - `RouteInfo` returns modal, origin, and destination fields for transport and
   service documents where those concepts exist.
-- `CompetenceDateInfo` returns the accounting competence date for document
-  families where it is distinct from the issue date (currently NFS-e).
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use
@@ -243,6 +237,15 @@ for _, payment := range doc.NFe.GetPayments() {
 ```
 
 These methods also return the raw XML string values.
+
+### NFS-e Details
+
+NFS-e exposes the accounting competence date, which determines which
+period the invoice belongs to (distinct from the issue date):
+
+```go
+fmt.Println(doc.NFSe.GetCompetenceDate())
+```
 
 ## Round-trip behavior
 
