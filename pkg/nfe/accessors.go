@@ -271,68 +271,81 @@ func (d *Document) GetAdditionalInfo() string {
 }
 
 func (d *Document) GetAmounts() []info.Amount {
-	inf := d.infNFe()
-	if inf != nil && inf.Total != nil {
-		total := inf.Total
+	if inf := d.infNFe(); inf != nil && inf.Total != nil {
 		amounts := make([]info.Amount, 0, 24)
-		if total.ICMSTot != nil {
-			t := total.ICMSTot
-			amounts = append(amounts,
-				info.Amount{Type: "total", Value: t.VNF},
-				info.Amount{Type: "products", Value: t.VProd},
-				info.Amount{Type: "freight", Value: t.VFrete},
-				info.Amount{Type: "discount", Value: t.VDesc},
-				info.Amount{Type: "taxes", Value: stringPtrValue(t.VTotTrib)},
-			)
-			amounts = append(amounts, nonZeroAmounts(
-				info.Amount{Type: "tax_icms", Value: t.VICMS},
-				info.Amount{Type: "tax_icms_st", Value: t.VST},
-				info.Amount{Type: "tax_icms_deson", Value: t.VICMSDeson},
-				info.Amount{Type: "tax_fcp", Value: t.VFCP},
-				info.Amount{Type: "tax_fcp_st", Value: t.VFCPST},
-				info.Amount{Type: "tax_fcp_st_ret", Value: t.VFCPSTRet},
-				info.Amount{Type: "tax_ipi", Value: t.VIPI},
-				info.Amount{Type: "tax_ipi_devol", Value: t.VIPIDevol},
-				info.Amount{Type: "tax_ii", Value: t.VII},
-				info.Amount{Type: "tax_pis", Value: t.VPIS},
-				info.Amount{Type: "tax_cofins", Value: t.VCOFINS},
-			)...)
-		}
-		if total.ISSQNtot != nil {
-			amounts = append(amounts, nonZeroAmounts(
-				info.Amount{Type: "tax_iss", Value: stringPtrValue(total.ISSQNtot.VISS)},
-			)...)
-		}
-		if total.IBSCBSTot != nil {
-			ibscbs := total.IBSCBSTot
-			if ibscbs.GIBS != nil {
-				amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_ibs", Value: ibscbs.GIBS.VIBS})...)
-			}
-			if ibscbs.GCBS != nil {
-				amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_cbs", Value: ibscbs.GCBS.VCBS})...)
-			}
-		}
-		if total.ISTot != nil {
-			amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_is", Value: total.ISTot.VIS})...)
-		}
-		if total.RetTrib != nil {
-			amounts = append(amounts,
-				info.Amount{Type: "retained_pis", Value: stringPtrValue(total.RetTrib.VRetPIS)},
-				info.Amount{Type: "retained_cofins", Value: stringPtrValue(total.RetTrib.VRetCOFINS)},
-				info.Amount{Type: "retained_csll", Value: stringPtrValue(total.RetTrib.VRetCSLL)},
-				info.Amount{Type: "retained_irrf", Value: stringPtrValue(total.RetTrib.VIRRF)},
-				info.Amount{Type: "retained_inss", Value: stringPtrValue(total.RetTrib.VRetPrev)},
-			)
-		}
-		if total.ISSQNtot != nil {
-			amounts = append(amounts, info.Amount{Type: "retained_iss", Value: stringPtrValue(total.ISSQNtot.VISSRet)})
-		}
+		amounts = append(amounts, headlineAmounts(inf.Total.ICMSTot)...)
+		amounts = append(amounts, taxAmounts(inf.Total)...)
+		amounts = append(amounts, retentionAmounts(inf.Total)...)
 		return compactAmounts(amounts...)
 	}
 	if d != nil && d.ResNFe != nil {
 		return compactAmounts(info.Amount{Type: "total", Value: d.ResNFe.VNF})
 	}
 	return nil
+}
+
+func headlineAmounts(t *schema.TAnonComplexICMSTot1) []info.Amount {
+	if t == nil {
+		return nil
+	}
+	return []info.Amount{
+		{Type: "total", Value: t.VNF},
+		{Type: "products", Value: t.VProd},
+		{Type: "freight", Value: t.VFrete},
+		{Type: "discount", Value: t.VDesc},
+		{Type: "taxes", Value: stringPtrValue(t.VTotTrib)},
+	}
+}
+
+func taxAmounts(total *schema.TAnonComplexTotal1) []info.Amount {
+	var amounts []info.Amount
+	if t := total.ICMSTot; t != nil {
+		amounts = append(amounts, nonZeroAmounts(
+			info.Amount{Type: "tax_icms", Value: t.VICMS},
+			info.Amount{Type: "tax_icms_st", Value: t.VST},
+			info.Amount{Type: "tax_icms_deson", Value: t.VICMSDeson},
+			info.Amount{Type: "tax_fcp", Value: t.VFCP},
+			info.Amount{Type: "tax_fcp_st", Value: t.VFCPST},
+			info.Amount{Type: "tax_fcp_st_ret", Value: t.VFCPSTRet},
+			info.Amount{Type: "tax_ipi", Value: t.VIPI},
+			info.Amount{Type: "tax_ipi_devol", Value: t.VIPIDevol},
+			info.Amount{Type: "tax_ii", Value: t.VII},
+			info.Amount{Type: "tax_pis", Value: t.VPIS},
+			info.Amount{Type: "tax_cofins", Value: t.VCOFINS},
+		)...)
+	}
+	if t := total.ISSQNtot; t != nil {
+		amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_iss", Value: stringPtrValue(t.VISS)})...)
+	}
+	if t := total.IBSCBSTot; t != nil {
+		if t.GIBS != nil {
+			amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_ibs", Value: t.GIBS.VIBS})...)
+		}
+		if t.GCBS != nil {
+			amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_cbs", Value: t.GCBS.VCBS})...)
+		}
+	}
+	if t := total.ISTot; t != nil {
+		amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_is", Value: t.VIS})...)
+	}
+	return amounts
+}
+
+func retentionAmounts(total *schema.TAnonComplexTotal1) []info.Amount {
+	var amounts []info.Amount
+	if r := total.RetTrib; r != nil {
+		amounts = append(amounts,
+			info.Amount{Type: "retained_pis", Value: stringPtrValue(r.VRetPIS)},
+			info.Amount{Type: "retained_cofins", Value: stringPtrValue(r.VRetCOFINS)},
+			info.Amount{Type: "retained_csll", Value: stringPtrValue(r.VRetCSLL)},
+			info.Amount{Type: "retained_irrf", Value: stringPtrValue(r.VIRRF)},
+			info.Amount{Type: "retained_inss", Value: stringPtrValue(r.VRetPrev)},
+		)
+	}
+	if t := total.ISSQNtot; t != nil {
+		amounts = append(amounts, info.Amount{Type: "retained_iss", Value: stringPtrValue(t.VISSRet)})
+	}
+	return amounts
 }
 
 func (d *Document) GetParties() []info.Party {
