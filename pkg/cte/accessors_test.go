@@ -27,16 +27,62 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Equal(t, "2300.00", doc.GetAmount())
 	require.Equal(t, "KERBER E CIA. LTDA.", doc.GetIssuer())
 	require.Equal(t, "78408960000182", doc.GetIssuerDocument())
-	require.Equal(t, "HOBI E CIA LTDA. - MATRIZ", doc.GetRecipient())
-	require.Equal(t, "81639791000104", doc.GetRecipientDocument())
+	// Fixture has <toma3><toma>0</toma></toma3>, so the tomador (recipient) is the remetente.
+	require.Equal(t, "KERBER E CIA. LTDA.", doc.GetRecipient())
+	require.Equal(t, "78408960000182", doc.GetRecipientDocument())
 	require.Empty(t, doc.GetProtocolNumber())
 	require.Empty(t, doc.GetStatusCode())
 	require.False(t, doc.IsAuthorized())
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "service", Value: "2300.00"})
 	require.Contains(t, doc.GetParties(), info.Party{Role: "sender", Name: "KERBER E CIA. LTDA.", Document: "78408960000182"})
+	require.Contains(t, doc.GetParties(), info.Party{Role: "addressee", Name: "HOBI E CIA LTDA. - MATRIZ", Document: "81639791000104"})
 	require.Equal(t, "01", doc.GetModal())
 	require.Equal(t, info.Location{State: "SC", CityCode: "4213609", CityName: "PORTO UNIAO"}, doc.GetOrigin())
 }
+
+func TestDocumentResolvesTomadorViaToma3(t *testing.T) {
+	t.Parallel()
+
+	cases := []struct {
+		name         string
+		toma         string
+		wantName     string
+		wantDocument string
+	}{
+		{"remetente", "0", "REM LTDA", "11111111000111"},
+		{"expedidor", "1", "EXPED LTDA", "22222222000122"},
+		{"recebedor", "2", "RECEB LTDA", "33333333000133"},
+		{"destinatario", "3", "DEST LTDA", "44444444000144"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			doc, err := cte.Parse([]byte(cteWithTomadorXML(tc.toma)))
+			require.NoError(t, err)
+
+			require.Equal(t, tc.wantName, doc.GetRecipient())
+			require.Equal(t, tc.wantDocument, doc.GetRecipientDocument())
+		})
+	}
+}
+
+func TestDocumentResolvesTomadorViaToma4(t *testing.T) {
+	t.Parallel()
+
+	doc, err := cte.Parse([]byte(cteWithToma4XML))
+	require.NoError(t, err)
+
+	require.Equal(t, "OUTRO PAGADOR LTDA", doc.GetRecipient())
+	require.Equal(t, "55555555000155", doc.GetRecipientDocument())
+}
+
+func cteWithTomadorXML(toma string) string {
+	return fmt.Sprintf(`<CTe xmlns="http://www.portalfiscal.inf.br/cte"><infCte Id="CTe43120178408960000182570010000000041000000047" versao="4.00"><ide><cUF>43</cUF><cCT>00000004</cCT><CFOP>6353</CFOP><natOp>SERV</natOp><mod>57</mod><serie>1</serie><nCT>4</nCT><dhEmi>2012-01-06T17:25:56-02:00</dhEmi><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>7</cDV><tpAmb>2</tpAmb><tpCTe>0</tpCTe><procEmi>0</procEmi><verProc>104</verProc><cMunEnv>4213609</cMunEnv><xMunEnv>PORTO UNIAO</xMunEnv><UFEnv>SC</UFEnv><modal>01</modal><tpServ>0</tpServ><cMunIni>4213609</cMunIni><xMunIni>PORTO UNIAO</xMunIni><UFIni>SC</UFIni><cMunFim>4213609</cMunFim><xMunFim>PORTO UNIAO</xMunFim><UFFim>SC</UFFim><retira>0</retira><indIEToma>9</indIEToma><toma3><toma>%s</toma></toma3></ide><emit><CNPJ>78408960000182</CNPJ><IE>ISENTO</IE><xNome>EMIT LTDA</xNome></emit><rem><CNPJ>11111111000111</CNPJ><xNome>REM LTDA</xNome></rem><exped><CNPJ>22222222000122</CNPJ><xNome>EXPED LTDA</xNome></exped><receb><CNPJ>33333333000133</CNPJ><xNome>RECEB LTDA</xNome></receb><dest><CNPJ>44444444000144</CNPJ><xNome>DEST LTDA</xNome></dest></infCte></CTe>`, toma)
+}
+
+const cteWithToma4XML = `<CTe xmlns="http://www.portalfiscal.inf.br/cte"><infCte Id="CTe43120178408960000182570010000000041000000047" versao="4.00"><ide><cUF>43</cUF><cCT>00000004</cCT><CFOP>6353</CFOP><natOp>SERV</natOp><mod>57</mod><serie>1</serie><nCT>4</nCT><dhEmi>2012-01-06T17:25:56-02:00</dhEmi><tpImp>1</tpImp><tpEmis>1</tpEmis><cDV>7</cDV><tpAmb>2</tpAmb><tpCTe>0</tpCTe><procEmi>0</procEmi><verProc>104</verProc><cMunEnv>4213609</cMunEnv><xMunEnv>PORTO UNIAO</xMunEnv><UFEnv>SC</UFEnv><modal>01</modal><tpServ>0</tpServ><cMunIni>4213609</cMunIni><xMunIni>PORTO UNIAO</xMunIni><UFIni>SC</UFIni><cMunFim>4213609</cMunFim><xMunFim>PORTO UNIAO</xMunFim><UFFim>SC</UFFim><retira>0</retira><indIEToma>9</indIEToma><toma4><toma>4</toma><CNPJ>55555555000155</CNPJ><xNome>OUTRO PAGADOR LTDA</xNome></toma4></ide><emit><CNPJ>78408960000182</CNPJ><IE>ISENTO</IE><xNome>EMIT LTDA</xNome></emit><rem><CNPJ>11111111000111</CNPJ><xNome>REM LTDA</xNome></rem><dest><CNPJ>44444444000144</CNPJ><xNome>DEST LTDA</xNome></dest></infCte></CTe>`
 
 func TestDocumentGetDuplicatas(t *testing.T) {
 	t.Parallel()
