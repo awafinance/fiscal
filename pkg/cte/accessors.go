@@ -122,8 +122,8 @@ func (d *Document) GetIssuerDocument() string {
 }
 
 func (d *Document) GetRecipient() string {
-	if inf := d.infCTe(); inf != nil && inf.Dest != nil {
-		return inf.Dest.XNome
+	if name, _, ok := d.tomadorParty(); ok {
+		return name
 	}
 	if inf := d.infCTeOS(); inf != nil && inf.Toma != nil {
 		return inf.Toma.XNome
@@ -132,13 +132,48 @@ func (d *Document) GetRecipient() string {
 }
 
 func (d *Document) GetRecipientDocument() string {
-	if inf := d.infCTe(); inf != nil && inf.Dest != nil {
-		return firstStringPtr(inf.Dest.CNPJ, inf.Dest.CPF)
+	if _, doc, ok := d.tomadorParty(); ok {
+		return doc
 	}
 	if inf := d.infCTeOS(); inf != nil && inf.Toma != nil {
 		return firstStringPtr(inf.Toma.CNPJ, inf.Toma.CPF)
 	}
 	return ""
+}
+
+// tomadorParty resolves the regular-CTe tomador (the party paying for the
+// service). Ide.Toma3 carries an indicator (0=Rem, 1=Exped, 2=Receb, 3=Dest)
+// pointing at one of the document's existing party blocks; Ide.Toma4 is the
+// "outros" fallback block which carries its own identification.
+func (d *Document) tomadorParty() (name, document string, ok bool) {
+	inf := d.infCTe()
+	if inf == nil || inf.Ide == nil {
+		return "", "", false
+	}
+	if t := inf.Ide.Toma3; t != nil {
+		switch t.Toma {
+		case "0":
+			if inf.Rem != nil {
+				return inf.Rem.XNome, firstStringPtr(inf.Rem.CNPJ, inf.Rem.CPF), true
+			}
+		case "1":
+			if inf.Exped != nil {
+				return inf.Exped.XNome, firstStringPtr(inf.Exped.CNPJ, inf.Exped.CPF), true
+			}
+		case "2":
+			if inf.Receb != nil {
+				return inf.Receb.XNome, firstStringPtr(inf.Receb.CNPJ, inf.Receb.CPF), true
+			}
+		case "3":
+			if inf.Dest != nil {
+				return inf.Dest.XNome, firstStringPtr(inf.Dest.CNPJ, inf.Dest.CPF), true
+			}
+		}
+	}
+	if t := inf.Ide.Toma4; t != nil {
+		return t.XNome, firstStringPtr(t.CNPJ, t.CPF), true
+	}
+	return "", "", false
 }
 
 func (d *Document) GetProtocolNumber() string {
@@ -193,6 +228,9 @@ func (d *Document) GetParties() []info.Party {
 		}
 		if inf.Receb != nil {
 			parties = append(parties, info.Party{Role: "receiver", Name: inf.Receb.XNome, Document: firstStringPtr(inf.Receb.CNPJ, inf.Receb.CPF)})
+		}
+		if inf.Dest != nil {
+			parties = append(parties, info.Party{Role: "addressee", Name: inf.Dest.XNome, Document: firstStringPtr(inf.Dest.CNPJ, inf.Dest.CPF)})
 		}
 	}
 	return compactParties(parties...)
