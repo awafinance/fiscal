@@ -40,6 +40,21 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Equal(t, info.Location{State: "SC", CityCode: "4213609", CityName: "PORTO UNIAO"}, doc.GetOrigin())
 }
 
+func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/cte/v4_0/35170799999999999999670000000000261309301440-cte-of.xml")
+	require.NoError(t, err)
+
+	doc, err := cte.Parse(data)
+	require.NoError(t, err)
+
+	amounts := doc.GetAmounts()
+	require.Contains(t, amounts, info.Amount{Type: "service", Value: "2500.00"})
+	require.Contains(t, amounts, info.Amount{Type: "tax_icms", Value: "450.00"})
+	for _, a := range amounts {
+		require.NotEqual(t, "tax_pis", a.Type, "zero-valued tax_pis should be filtered out")
+	}
+}
+
 func TestDocumentResolvesTomadorViaToma3(t *testing.T) {
 	t.Parallel()
 

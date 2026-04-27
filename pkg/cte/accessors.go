@@ -1,6 +1,7 @@
 package cte
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/awafinance/fiscal/pkg/info"
@@ -211,7 +212,104 @@ func (d *Document) IsAuthorized() bool {
 }
 
 func (d *Document) GetAmounts() []info.Amount {
-	return compactAmounts(info.Amount{Type: "service", Value: d.GetAmount()})
+	amounts := []info.Amount{{Type: "service", Value: d.GetAmount()}}
+	amounts = append(amounts, d.taxAmounts()...)
+	return compactAmounts(amounts...)
+}
+
+func (d *Document) taxAmounts() []info.Amount {
+	if inf := d.infCTe(); inf != nil && inf.Imp != nil {
+		imp := inf.Imp
+		amounts := []info.Amount{{Type: "taxes", Value: stringPtrValue(imp.VTotTrib)}}
+		amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_icms", Value: cteImpICMSValue(imp.ICMS)})...)
+		if imp.ICMSUFFim != nil {
+			amounts = append(amounts, nonZeroAmounts(
+				info.Amount{Type: "tax_icms_uf_fim", Value: imp.ICMSUFFim.VICMSUFFim},
+				info.Amount{Type: "tax_icms_uf_ini", Value: imp.ICMSUFFim.VICMSUFIni},
+				info.Amount{Type: "tax_fcp_uf_fim", Value: imp.ICMSUFFim.VFCPUFFim},
+			)...)
+		}
+		amounts = append(amounts, cteIBSCBSAmounts(imp.IBSCBS)...)
+		return amounts
+	}
+	if inf := d.infCTeOS(); inf != nil && inf.Imp != nil {
+		imp := inf.Imp
+		amounts := []info.Amount{{Type: "taxes", Value: stringPtrValue(imp.VTotTrib)}}
+		amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_icms", Value: cteOSImpICMSValue(imp.ICMS)})...)
+		if imp.ICMSUFFim != nil {
+			amounts = append(amounts, nonZeroAmounts(
+				info.Amount{Type: "tax_icms_uf_fim", Value: imp.ICMSUFFim.VICMSUFFim},
+				info.Amount{Type: "tax_icms_uf_ini", Value: imp.ICMSUFFim.VICMSUFIni},
+				info.Amount{Type: "tax_fcp_uf_fim", Value: imp.ICMSUFFim.VFCPUFFim},
+			)...)
+		}
+		if fed := imp.InfTribFed; fed != nil {
+			amounts = append(amounts, nonZeroAmounts(
+				info.Amount{Type: "tax_pis", Value: stringPtrValue(fed.VPIS)},
+				info.Amount{Type: "tax_cofins", Value: stringPtrValue(fed.VCOFINS)},
+				info.Amount{Type: "tax_ir", Value: stringPtrValue(fed.VIR)},
+				info.Amount{Type: "tax_inss", Value: stringPtrValue(fed.VINSS)},
+				info.Amount{Type: "tax_csll", Value: stringPtrValue(fed.VCSLL)},
+			)...)
+		}
+		amounts = append(amounts, cteOSIBSCBSAmounts(imp.IBSCBS)...)
+		return amounts
+	}
+	return nil
+}
+
+func cteImpICMSValue(t *CTeImp) string {
+	if t == nil {
+		return ""
+	}
+	switch {
+	case t.ICMS00 != nil:
+		return t.ICMS00.VICMS
+	case t.ICMS20 != nil:
+		return t.ICMS20.VICMS
+	case t.ICMS90 != nil:
+		return t.ICMS90.VICMS
+	case t.ICMS60 != nil:
+		return t.ICMS60.VICMSSTRet
+	}
+	return ""
+}
+
+func cteOSImpICMSValue(t *CTeOSImpOS) string {
+	if t == nil {
+		return ""
+	}
+	switch {
+	case t.ICMS00 != nil:
+		return t.ICMS00.VICMS
+	case t.ICMS20 != nil:
+		return t.ICMS20.VICMS
+	case t.ICMS90 != nil:
+		return t.ICMS90.VICMS
+	}
+	return ""
+}
+
+func cteIBSCBSAmounts(t *CTeTribCTe) []info.Amount {
+	if t == nil || t.GIBSCBS == nil {
+		return nil
+	}
+	amounts := []info.Amount{{Type: "tax_ibs", Value: t.GIBSCBS.VIBS}}
+	if t.GIBSCBS.GCBS != nil {
+		amounts = append(amounts, info.Amount{Type: "tax_cbs", Value: t.GIBSCBS.GCBS.VCBS})
+	}
+	return nonZeroAmounts(amounts...)
+}
+
+func cteOSIBSCBSAmounts(t *CTeOSTribCTe) []info.Amount {
+	if t == nil || t.GIBSCBS == nil {
+		return nil
+	}
+	amounts := []info.Amount{{Type: "tax_ibs", Value: t.GIBSCBS.VIBS}}
+	if t.GIBSCBS.GCBS != nil {
+		amounts = append(amounts, info.Amount{Type: "tax_cbs", Value: t.GIBSCBS.GCBS.VCBS})
+	}
+	return nonZeroAmounts(amounts...)
 }
 
 func (d *Document) GetParties() []info.Party {
@@ -462,6 +560,28 @@ func compactAmounts(amounts ...info.Amount) []info.Amount {
 		}
 	}
 	return out
+}
+
+func nonZeroAmounts(amounts ...info.Amount) []info.Amount {
+	out := make([]info.Amount, 0, len(amounts))
+	for _, amount := range amounts {
+		if isZeroAmount(amount.Value) {
+			continue
+		}
+		out = append(out, amount)
+	}
+	return out
+}
+
+func isZeroAmount(value string) bool {
+	if value == "" {
+		return true
+	}
+	f, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return false
+	}
+	return f == 0
 }
 
 func compactParties(parties ...info.Party) []info.Party {

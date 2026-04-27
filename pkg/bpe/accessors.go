@@ -1,6 +1,7 @@
 package bpe
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/awafinance/fiscal/pkg/info"
@@ -125,15 +126,49 @@ func (d *Document) IsAuthorized() bool {
 }
 
 func (d *Document) GetAmounts() []info.Amount {
-	if inf := d.infBPe(); inf != nil && inf.InfValorBPe != nil {
-		return compactAmounts(
+	inf := d.infBPe()
+	if inf == nil {
+		return nil
+	}
+	amounts := make([]info.Amount, 0, 8)
+	if inf.InfValorBPe != nil {
+		amounts = append(amounts,
 			info.Amount{Type: "ticket", Value: inf.InfValorBPe.VBP},
 			info.Amount{Type: "discount", Value: inf.InfValorBPe.VDesconto},
 			info.Amount{Type: "paid", Value: inf.InfValorBPe.VPgto},
 			info.Amount{Type: "change", Value: inf.InfValorBPe.VTroco},
 		)
 	}
-	return nil
+	if inf.Imp != nil {
+		amounts = append(amounts, info.Amount{Type: "taxes", Value: stringPtrValue(inf.Imp.VTotTrib)})
+		amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_icms", Value: bpeImpICMSValue(inf.Imp.ICMS)})...)
+		if uf := inf.Imp.ICMSUFFim; uf != nil {
+			amounts = append(amounts, nonZeroAmounts(
+				info.Amount{Type: "tax_icms_uf_fim", Value: uf.VICMSUFFim},
+				info.Amount{Type: "tax_icms_uf_ini", Value: uf.VICMSUFIni},
+				info.Amount{Type: "tax_fcp_uf_fim", Value: uf.VFCPUFFim},
+			)...)
+		}
+	}
+	if len(amounts) == 0 {
+		return nil
+	}
+	return compactAmounts(amounts...)
+}
+
+func bpeImpICMSValue(t *TImp) string {
+	if t == nil {
+		return ""
+	}
+	switch {
+	case t.ICMS00 != nil:
+		return t.ICMS00.VICMS
+	case t.ICMS20 != nil:
+		return t.ICMS20.VICMS
+	case t.ICMS90 != nil:
+		return t.ICMS90.VICMS
+	}
+	return ""
 }
 
 func (d *Document) GetParties() []info.Party {
@@ -214,6 +249,28 @@ func compactAmounts(amounts ...info.Amount) []info.Amount {
 		}
 	}
 	return out
+}
+
+func nonZeroAmounts(amounts ...info.Amount) []info.Amount {
+	out := make([]info.Amount, 0, len(amounts))
+	for _, amount := range amounts {
+		if isZeroAmount(amount.Value) {
+			continue
+		}
+		out = append(out, amount)
+	}
+	return out
+}
+
+func isZeroAmount(value string) bool {
+	if value == "" {
+		return true
+	}
+	f, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return false
+	}
+	return f == 0
 }
 
 func compactParties(parties ...info.Party) []info.Party {

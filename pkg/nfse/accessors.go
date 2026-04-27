@@ -1,6 +1,7 @@
 package nfse
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/awafinance/fiscal/pkg/info"
@@ -150,6 +151,7 @@ func (d *Document) GetAmounts() []info.Amount {
 	}
 
 	amounts := d.headlineAmounts()
+	amounts = append(amounts, d.taxAmounts()...)
 	amounts = append(amounts, d.retentionAmounts()...)
 
 	if len(amounts) == 0 {
@@ -163,7 +165,7 @@ func (d *Document) headlineAmounts() []info.Amount {
 		v := d.NFSe.InfNFSe.Valores
 		return []info.Amount{
 			{Type: "net", Value: v.VLiq},
-			{Type: "iss", Value: stringPtrValue(v.VISSQN)},
+			{Type: "tax_iss", Value: stringPtrValue(v.VISSQN)},
 			{Type: "retained", Value: stringPtrValue(v.VTotalRet)},
 		}
 	}
@@ -171,6 +173,29 @@ func (d *Document) headlineAmounts() []info.Amount {
 		return []info.Amount{{Type: "service", Value: d.DPS.InfDPS.Valores.VServPrest.VServ}}
 	}
 	return nil
+}
+
+func (d *Document) taxAmounts() []info.Amount {
+	inf := d.infDPS()
+	if inf == nil || inf.Valores == nil || inf.Valores.Trib == nil {
+		return nil
+	}
+	trib := inf.Valores.Trib
+	var amounts []info.Amount
+	if fed := trib.TribFed; fed != nil && fed.Piscofins != nil {
+		amounts = append(amounts, nonZeroAmounts(
+			info.Amount{Type: "tax_pis", Value: stringPtrValue(fed.Piscofins.VPis)},
+			info.Amount{Type: "tax_cofins", Value: stringPtrValue(fed.Piscofins.VCofins)},
+		)...)
+	}
+	if tot := trib.TotTrib; tot != nil && tot.VTotTrib != nil {
+		amounts = append(amounts, nonZeroAmounts(
+			info.Amount{Type: "taxes_fed", Value: tot.VTotTrib.VTotTribFed},
+			info.Amount{Type: "taxes_est", Value: tot.VTotTrib.VTotTribEst},
+			info.Amount{Type: "taxes_mun", Value: tot.VTotTrib.VTotTribMun},
+		)...)
+	}
+	return amounts
 }
 
 func (d *Document) retentionAmounts() []info.Amount {
@@ -271,6 +296,28 @@ func compactAmounts(amounts ...info.Amount) []info.Amount {
 		}
 	}
 	return out
+}
+
+func nonZeroAmounts(amounts ...info.Amount) []info.Amount {
+	out := make([]info.Amount, 0, len(amounts))
+	for _, amount := range amounts {
+		if isZeroAmount(amount.Value) {
+			continue
+		}
+		out = append(out, amount)
+	}
+	return out
+}
+
+func isZeroAmount(value string) bool {
+	if value == "" {
+		return true
+	}
+	f, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return false
+	}
+	return f == 0
 }
 
 func compactParties(parties ...info.Party) []info.Party {

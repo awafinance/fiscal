@@ -57,3 +57,21 @@ func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
 
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "retained_inss", Value: "0.40"})
 }
+
+func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
+	data := []byte(`<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"><infNFSe Id="NFS00000000000000000000000000000000000000000001"><nNFSe>1</nNFSe><verAplic>1.0</verAplic><ambGer>2</ambGer><tpEmis>1</tpEmis><procEmi>1</procEmi><cStat>100</cStat><dhProc>2024-01-02T03:04:05-03:00</dhProc><nDFSe>1</nDFSe><emit><CNPJ>12345678000195</CNPJ><xNome>PROVIDER LTDA</xNome></emit><valores><vBC>1000.00</vBC><pAliqAplic>5.00</pAliqAplic><vISSQN>50.00</vISSQN><vTotalRet>23.50</vTotalRet><vLiq>950.00</vLiq></valores><DPS versao="1.00"><infDPS Id="DPS00000000000000000000000000000000000000000001"><tpAmb>2</tpAmb><dhEmi>2024-01-02T03:04:05-03:00</dhEmi><verAplic>1.0</verAplic><serie>1</serie><nDPS>1</nDPS><dCompet>2024-01-02</dCompet><tpEmit>1</tpEmit><cLocEmi>3550308</cLocEmi><subst><chSubstda>00000000000000000000000000000000000000000000</chSubstda><cMotivo>1</cMotivo></subst><prest><CNPJ>12345678000195</CNPJ><xNome>PROVIDER LTDA</xNome><regTrib><opSimpNac>1</opSimpNac><regApTribSN>1</regApTribSN></regTrib></prest><serv><locPrest><cLocPrestacao>3550308</cLocPrestacao></locPrest><cServ><cTribNac>0101010101</cTribNac><cTribMun>0101010101</cTribMun><xDescServ>desc</xDescServ><cNBS>110000000</cNBS></cServ></serv><valores><vServPrest><vServ>1000.00</vServ></vServPrest><trib><tribMun><tribISSQN>1</tribISSQN><tpRetISSQN>1</tpRetISSQN></tribMun><tribFed><piscofins><CST>01</CST><vBCPisCofins>1000.00</vBCPisCofins><pAliqPis>0.65</pAliqPis><pAliqCofins>3.00</pAliqCofins><vPis>6.50</vPis><vCofins>30.00</vCofins><tpRetPisCofins>2</tpRetPisCofins></piscofins><vRetCP>0.00</vRetCP><vRetIRRF>0.00</vRetIRRF><vRetCSLL>0.00</vRetCSLL></tribFed><totTrib><vTotTrib><vTotTribFed>36.50</vTotTribFed><vTotTribEst>0.00</vTotTribEst><vTotTribMun>50.00</vTotTribMun></vTotTrib><indTotTrib>1</indTotTrib></totTrib></trib></valores></infDPS></DPS></infNFSe></NFSe>`)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	amounts := doc.GetAmounts()
+	require.Contains(t, amounts, info.Amount{Type: "tax_iss", Value: "50.00"})
+	require.Contains(t, amounts, info.Amount{Type: "tax_pis", Value: "6.50"})
+	require.Contains(t, amounts, info.Amount{Type: "tax_cofins", Value: "30.00"})
+	require.Contains(t, amounts, info.Amount{Type: "taxes_fed", Value: "36.50"})
+	require.Contains(t, amounts, info.Amount{Type: "taxes_mun", Value: "50.00"})
+	for _, a := range amounts {
+		require.NotEqual(t, "retained_pis", a.Type, "non-retained pis should not appear as retention")
+		require.NotEqual(t, "taxes_est", a.Type, "zero-valued taxes_est should be filtered out")
+	}
+}
