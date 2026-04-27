@@ -1,6 +1,7 @@
 package nfe
 
 import (
+	"strconv"
 	"strings"
 
 	schema "github.com/awafinance/fiscal/internal/nfe/gen/v4_0/nfe_proc"
@@ -273,15 +274,46 @@ func (d *Document) GetAmounts() []info.Amount {
 	inf := d.infNFe()
 	if inf != nil && inf.Total != nil {
 		total := inf.Total
-		amounts := make([]info.Amount, 0, 12)
+		amounts := make([]info.Amount, 0, 24)
 		if total.ICMSTot != nil {
+			t := total.ICMSTot
 			amounts = append(amounts,
-				info.Amount{Type: "total", Value: total.ICMSTot.VNF},
-				info.Amount{Type: "products", Value: total.ICMSTot.VProd},
-				info.Amount{Type: "freight", Value: total.ICMSTot.VFrete},
-				info.Amount{Type: "discount", Value: total.ICMSTot.VDesc},
-				info.Amount{Type: "taxes", Value: stringPtrValue(total.ICMSTot.VTotTrib)},
+				info.Amount{Type: "total", Value: t.VNF},
+				info.Amount{Type: "products", Value: t.VProd},
+				info.Amount{Type: "freight", Value: t.VFrete},
+				info.Amount{Type: "discount", Value: t.VDesc},
+				info.Amount{Type: "taxes", Value: stringPtrValue(t.VTotTrib)},
 			)
+			amounts = append(amounts, nonZeroAmounts(
+				info.Amount{Type: "tax_icms", Value: t.VICMS},
+				info.Amount{Type: "tax_icms_st", Value: t.VST},
+				info.Amount{Type: "tax_icms_deson", Value: t.VICMSDeson},
+				info.Amount{Type: "tax_fcp", Value: t.VFCP},
+				info.Amount{Type: "tax_fcp_st", Value: t.VFCPST},
+				info.Amount{Type: "tax_fcp_st_ret", Value: t.VFCPSTRet},
+				info.Amount{Type: "tax_ipi", Value: t.VIPI},
+				info.Amount{Type: "tax_ipi_devol", Value: t.VIPIDevol},
+				info.Amount{Type: "tax_ii", Value: t.VII},
+				info.Amount{Type: "tax_pis", Value: t.VPIS},
+				info.Amount{Type: "tax_cofins", Value: t.VCOFINS},
+			)...)
+		}
+		if total.ISSQNtot != nil {
+			amounts = append(amounts, nonZeroAmounts(
+				info.Amount{Type: "tax_iss", Value: stringPtrValue(total.ISSQNtot.VISS)},
+			)...)
+		}
+		if total.IBSCBSTot != nil {
+			ibscbs := total.IBSCBSTot
+			if ibscbs.GIBS != nil {
+				amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_ibs", Value: ibscbs.GIBS.VIBS})...)
+			}
+			if ibscbs.GCBS != nil {
+				amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_cbs", Value: ibscbs.GCBS.VCBS})...)
+			}
+		}
+		if total.ISTot != nil {
+			amounts = append(amounts, nonZeroAmounts(info.Amount{Type: "tax_is", Value: total.ISTot.VIS})...)
 		}
 		if total.RetTrib != nil {
 			amounts = append(amounts,
@@ -369,6 +401,28 @@ func compactAmounts(amounts ...info.Amount) []info.Amount {
 		}
 	}
 	return out
+}
+
+func nonZeroAmounts(amounts ...info.Amount) []info.Amount {
+	out := make([]info.Amount, 0, len(amounts))
+	for _, amount := range amounts {
+		if isZeroAmount(amount.Value) {
+			continue
+		}
+		out = append(out, amount)
+	}
+	return out
+}
+
+func isZeroAmount(value string) bool {
+	if value == "" {
+		return true
+	}
+	f, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return false
+	}
+	return f == 0
 }
 
 func compactParties(parties ...info.Party) []info.Party {

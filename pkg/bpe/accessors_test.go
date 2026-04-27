@@ -10,6 +10,7 @@ import (
 
 func TestDocumentConvenienceAccessors(t *testing.T) {
 	cnpj := "12345678000195"
+	vTotTrib := "12.34"
 	doc := &bpe.Document{
 		BPe: &bpe.TBPe{
 			InfBPe: &bpe.TAnonComplexInfBPe2{
@@ -29,6 +30,12 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 					CNPJ:  &cnpj,
 				},
 				InfValorBPe: &bpe.TAnonComplexInfValorBPe1{VBP: "120.50"},
+				Imp: &bpe.TAnonComplexImp2{
+					VTotTrib: &vTotTrib,
+					ICMS: &bpe.TImp{
+						ICMS00: &bpe.TAnonComplexICMS001{CST: "00", VBC: "120.50", PICMS: "10.00", VICMS: "12.05"},
+					},
+				},
 			},
 		},
 	}
@@ -46,6 +53,9 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Equal(t, "PASSAGEIRO TESTE", doc.GetRecipient())
 	require.Equal(t, "12345678000195", doc.GetRecipientDocument())
 	require.False(t, doc.IsAuthorized())
-	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "ticket", Value: "120.50"})
+	amounts := doc.GetAmounts()
+	require.Contains(t, amounts, info.Amount{Type: "ticket", Value: "120.50"})
+	require.Contains(t, amounts, info.Amount{Type: "taxes", Value: "12.34"})
+	require.Contains(t, amounts, info.Amount{Type: "tax_icms", Value: "12.05"})
 	require.Contains(t, doc.GetParties(), info.Party{Role: "buyer", Name: "PASSAGEIRO TESTE", Document: "12345678000195"})
 }
