@@ -163,16 +163,25 @@ func (d *Document) GetAmounts() []info.Amount {
 func (d *Document) headlineAmounts() []info.Amount {
 	if d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
 		v := d.NFSe.InfNFSe.Valores
-		return []info.Amount{
+		amounts := []info.Amount{
+			{Type: "service", Value: nfseServiceAmount(d.infDPS())},
 			{Type: "net", Value: v.VLiq},
 			{Type: "tax_iss", Value: stringPtrValue(v.VISSQN)},
 			{Type: "retained", Value: stringPtrValue(v.VTotalRet)},
 		}
+		return amounts
 	}
 	if d.DPS != nil && d.DPS.InfDPS != nil && d.DPS.InfDPS.Valores != nil && d.DPS.InfDPS.Valores.VServPrest != nil {
 		return []info.Amount{{Type: "service", Value: d.DPS.InfDPS.Valores.VServPrest.VServ}}
 	}
 	return nil
+}
+
+func nfseServiceAmount(inf *TCInfDPS) string {
+	if inf == nil || inf.Valores == nil || inf.Valores.VServPrest == nil {
+		return ""
+	}
+	return inf.Valores.VServPrest.VServ
 }
 
 func (d *Document) taxAmounts() []info.Amount {

@@ -46,6 +46,8 @@ func TestDocumentConvenienceAccessorsHandleIssuedNFSe(t *testing.T) {
 	require.Equal(t, "01761135000132", doc.GetIssuerDocument())
 	require.Equal(t, "100", doc.GetStatusCode())
 	require.True(t, doc.IsAuthorized())
+	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "service", Value: "999999999.99"})
+	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "net", Value: "989999961.04"})
 }
 
 func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
@@ -65,6 +67,9 @@ func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 	require.NoError(t, err)
 
 	amounts := doc.GetAmounts()
+	require.Contains(t, amounts, info.Amount{Type: "service", Value: "1000.00"})
+	require.Contains(t, amounts, info.Amount{Type: "net", Value: "950.00"})
+	require.Contains(t, amounts, info.Amount{Type: "retained", Value: "23.50"})
 	require.Contains(t, amounts, info.Amount{Type: "tax_iss", Value: "50.00"})
 	require.Contains(t, amounts, info.Amount{Type: "tax_pis", Value: "6.50"})
 	require.Contains(t, amounts, info.Amount{Type: "tax_cofins", Value: "30.00"})
