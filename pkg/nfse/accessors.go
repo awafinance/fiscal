@@ -208,22 +208,46 @@ func (d *Document) taxAmounts() []info.Amount {
 
 func (d *Document) retentionAmounts() []info.Amount {
 	inf := d.infDPS()
-	if inf == nil || inf.Valores == nil || inf.Valores.Trib == nil || inf.Valores.Trib.TribFed == nil {
+	if inf == nil || inf.Valores == nil || inf.Valores.Trib == nil {
 		return nil
 	}
-	fed := inf.Valores.Trib.TribFed
-	amounts := []info.Amount{
-		{Type: "retained_irrf", Value: stringPtrValue(fed.VRetIRRF)},
-		{Type: "retained_csll", Value: stringPtrValue(fed.VRetCSLL)},
-		{Type: "retained_inss", Value: stringPtrValue(fed.VRetCP)},
+	trib := inf.Valores.Trib
+
+	var amounts []info.Amount
+
+	// Municipal ISS retention: tpRetISSQN 2=retained by taker, 3=retained by intermediary.
+	// The retained amount is vISSQN on the authorized NFSe's valores (computed by Sefin Nacional).
+	if mun := trib.TribMun; mun != nil && (mun.TpRetISSQN == "2" || mun.TpRetISSQN == "3") {
+		if d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
+			amounts = append(amounts, info.Amount{
+				Type:  "retained_iss",
+				Value: stringPtrValue(d.NFSe.InfNFSe.Valores.VISSQN),
+			})
+		}
 	}
-	if pc := fed.Piscofins; pc != nil && stringPtrValue(pc.TpRetPisCofins) == "1" {
+
+	if fed := trib.TribFed; fed != nil {
 		amounts = append(amounts,
-			info.Amount{Type: "retained_pis", Value: stringPtrValue(pc.VPis)},
-			info.Amount{Type: "retained_cofins", Value: stringPtrValue(pc.VCofins)},
+			info.Amount{Type: "retained_irrf", Value: stringPtrValue(fed.VRetIRRF)},
+			info.Amount{Type: "retained_csll", Value: stringPtrValue(fed.VRetCSLL)},
+			info.Amount{Type: "retained_inss", Value: stringPtrValue(fed.VRetCP)},
 		)
+		if pc := fed.Piscofins; pc != nil && stringPtrValue(pc.TpRetPisCofins) == "1" {
+			amounts = append(amounts,
+				info.Amount{Type: "retained_pis", Value: stringPtrValue(pc.VPis)},
+				info.Amount{Type: "retained_cofins", Value: stringPtrValue(pc.VCofins)},
+			)
+		}
 	}
+
 	return amounts
+}
+
+func (d *Document) GetCompetenceDate() string {
+	if inf := d.infDPS(); inf != nil {
+		return inf.DCompet
+	}
+	return ""
 }
 
 func (d *Document) GetAdditionalInfo() string {
