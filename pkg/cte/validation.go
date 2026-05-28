@@ -5,18 +5,6 @@ import (
 
 	cteSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/cte"
 	cteOSSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/cte_os"
-	cancelEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel"
-	cancelCEEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel_ce"
-	cancelIEEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel_ie"
-	cancelPrestDesacordoEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cancel_prest_desacordo"
-	eventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cce"
-	ceEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_ce"
-	epecEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_epec"
-	genericEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_generico"
-	gtvEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_gtv"
-	ieEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_ie"
-	prestDesacordoEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_prest_desacordo"
-	regMultimodalEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_reg_multimodal"
 )
 
 var rootValidators = []func(*Document) error{
@@ -281,84 +269,84 @@ func validateEventoCTeRoot(doc *Document) error {
 	if doc.EventoCTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoCTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoCTe)
 }
 
 func validateEventoCancCTeRoot(doc *Document) error {
 	if doc.EventoCancCTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoCancCTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoCancCTe)
 }
 
 func validateEventoCECTeRoot(doc *Document) error {
 	if doc.EventoCECTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoCECTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoCECTe)
 }
 
 func validateEventoCancCECTeRoot(doc *Document) error {
 	if doc.EventoCancCECTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoCancCECTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoCancCECTe)
 }
 
 func validateEventoEPECCTeRoot(doc *Document) error {
 	if doc.EventoEPECCTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoEPECCTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoEPECCTe)
 }
 
 func validateEventoRegMultimodalRoot(doc *Document) error {
 	if doc.EventoRegMultimodal == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoRegMultimodal.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoRegMultimodal)
 }
 
 func validateEventoGTVRoot(doc *Document) error {
 	if doc.EventoGTV == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoGTV.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoGTV)
 }
 
 func validateEventoIECTeRoot(doc *Document) error {
 	if doc.EventoIECTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoIECTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoIECTe)
 }
 
 func validateEventoCancIECTeRoot(doc *Document) error {
 	if doc.EventoCancIECTe == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoCancIECTe.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoCancIECTe)
 }
 
 func validateEventoPrestDesacordoRoot(doc *Document) error {
 	if doc.EventoPrestDesacordo == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoPrestDesacordo.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoPrestDesacordo)
 }
 
 func validateEventoCancPrestDesacordoRoot(doc *Document) error {
 	if doc.EventoCancPrestDesacordo == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoCancPrestDesacordo.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoCancPrestDesacordo)
 }
 
 func validateEventoGenericoRoot(doc *Document) error {
 	if doc.EventoGenerico == nil {
 		return nil
 	}
-	return validateCTeEvent(doc.EventoGenerico.InfEvento)
+	return validateCTeSentEventRoot(doc.EventoGenerico)
 }
 
 func missingEventoCTeIfNil(present, eventoNil bool) error {
@@ -551,137 +539,19 @@ func validateCTeProcessedEvent(evento, retEvento any) error {
 }
 
 func validateCTeSentEventRoot(evento any) error {
-	switch v := evento.(type) {
-	case *eventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *cancelEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *ceEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *cancelCEEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *epecEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *regMultimodalEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *gtvEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *ieEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *cancelIEEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *prestDesacordoEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *cancelPrestDesacordoEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	case *genericEventSchema.TEvento:
-		if v == nil {
-			return missingEventoCTeIfNil(true, true)
-		}
-		return validateCTeEvent(v.InfEvento)
-	default:
+	env, ok := readCTeSentEventEnvelope(evento)
+	if !ok || !env.RootPresent {
 		return missingEventoCTeIfNil(true, true)
 	}
+	return validateInfEvento(env.InfPresent, env.AccessKey, env.HasDetail)
 }
 
 func validateCTeRetEventRoot(retEvento any) error {
-	switch v := retEvento.(type) {
-	case *eventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *cancelEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *ceEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *cancelCEEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *epecEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *regMultimodalEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *gtvEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *ieEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *cancelIEEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *prestDesacordoEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *cancelPrestDesacordoEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	case *genericEventSchema.TRetEvento:
-		if v == nil {
-			return missingRetEventoCTeIfNil(true, true)
-		}
-		return validateCTeRetEvent(v.InfEvento)
-	default:
+	env, ok := readCTeRetEventEnvelope(retEvento)
+	if !ok || !env.RootPresent {
 		return missingRetEventoCTeIfNil(true, true)
 	}
+	return validateRetInfEvento(env.InfPresent, env.Environment, env.StatusCode)
 }
 
 func validateInfCte(inf *cteSchema.TAnonComplexInfCte3) error {
@@ -714,140 +584,6 @@ func validateInfCteOS(inf *cteOSSchema.TAnonComplexInfCte4) error {
 		return errors.New("parse cte: missing emit document")
 	}
 	return nil
-}
-
-func validateCTeEvent(inf any) error {
-	switch v := inf.(type) {
-	case *eventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *cancelEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *ceEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *cancelCEEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *epecEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *regMultimodalEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *gtvEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *ieEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *cancelIEEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *prestDesacordoEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *cancelPrestDesacordoEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	case *genericEventSchema.TAnonComplexInfEvento1:
-		if v == nil {
-			return validateInfEvento(false, "", false)
-		}
-		return validateInfEvento(v != nil, v.ChCTe, v.DetEvento != nil)
-	default:
-		return errors.New("parse cte: missing infEvento")
-	}
-}
-
-func validateCTeRetEvent(inf any) error {
-	switch v := inf.(type) {
-	case *eventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *cancelEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *ceEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *cancelCEEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *epecEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *regMultimodalEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *gtvEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *ieEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *cancelIEEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *prestDesacordoEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *cancelPrestDesacordoEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	case *genericEventSchema.TAnonComplexInfEvento2:
-		if v == nil {
-			return validateRetInfEvento(false, "", "")
-		}
-		return validateRetInfEvento(v != nil, v.TpAmb, v.CStat)
-	default:
-		return errors.New("parse cte: missing infEvento")
-	}
 }
 
 func validateInfEvento(ok bool, chCTe string, hasDet bool) error {
