@@ -236,6 +236,15 @@ for _, payment := range doc.NFe.GetPayments() {
 
 These methods also return the raw XML string values.
 
+### NFS-e Details
+
+NFS-e exposes the accounting competence date, which determines which
+period the invoice belongs to (distinct from the issue date):
+
+```go
+fmt.Println(doc.NFSe.GetCompetenceDate())
+```
+
 ## Round-trip behavior
 
 Parsed documents can be marshaled back through the standard library encoder:

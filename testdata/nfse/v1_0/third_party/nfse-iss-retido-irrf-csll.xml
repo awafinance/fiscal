@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse">
+    <infNFSe versao="1.01" Id="NFS42046082240248250000160000000000099999999999999999">
+        <xLocEmi>Sao Vicente</xLocEmi>
+        <xLocPrestacao>Sao Vicente</xLocPrestacao>
+        <nNFSe>999</nNFSe>
+        <cLocIncid>42433602</cLocIncid>
+        <xLocIncid>Sao Paulo</xLocIncid>
+        <xTribNac>Servicos de Publicidade</xTribNac>
+        <verAplic>SefinNacional_1.6.0</verAplic>
+        <ambGer>2</ambGer>
+        <tpEmis>1</tpEmis>
+        <procEmi>1</procEmi>
+        <cStat>100</cStat>
+        <dhProc>2026-02-11T10:00:00-03:00</dhProc>
+        <nDFSe>117998</nDFSe>
+        <emit>
+            <CNPJ>90449244000149</CNPJ>
+            <xNome>Renata e Leandro Publicidade e Propaganda ME</xNome>
+            <enderNac>
+                <xLgr>Rua Adolfo Cavalcanti</xLgr>
+                <nro>686</nro>
+                <xBairro>Vila Cascatinha</xBairro>
+                <cMun>1234265</cMun>
+                <UF>SP</UF>
+                <CEP>11370140</CEP>
+            </enderNac>
+            <fone>1328023254</fone>
+            <email>estoque@renataeleandropublicidadeepropagandame.com.br</email>
+        </emit>
+        <valores>
+            <vBC>10000.00</vBC>
+            <pAliqAplic>5.00</pAliqAplic>
+            <vISSQN>500.00</vISSQN>
+            <vTotalRet>1115.00</vTotalRet>
+            <vLiq>8885.00</vLiq>
+        </valores>
+        <DPS versao="1.00" xmlns="http://www.sped.fazenda.gov.br/nfse">
+            <infDPS Id="DPS999">
+                <tpAmb>1</tpAmb>
+                <dhEmi>2026-02-11T09:00:00-03:00</dhEmi>
+                <nDPS>999</nDPS>
+                <serie>1</serie>
+                <dCompet>2026-04-07</dCompet>
+                <prest>
+                    <CNPJ>11222333000144</CNPJ>
+                    <xNome>Servicos de Publicidade e Propaganda</xNome>
+                    <end>
+                        <xLgr>Rua Adolfo Cavalcanti</xLgr>
+                        <nro>686</nro>
+                        <xBairro>Vila Cascatinha</xBairro>
+                    </end>
+                    <regTrib>
+                        <opSimpNac>1</opSimpNac>
+                        <regApTribSN>3</regApTribSN>
+                        <regEspTrib>0</regEspTrib>
+                    </regTrib>
+                </prest>
+                <toma>
+                    <CNPJ>96572806000123</CNPJ>
+                    <xNome>Bento e Silvana Doces e Salgados Ltda</xNome>
+                    <end>
+                        <endNac>
+                            <cMun>123448</cMun>
+                            <CEP>18047607</CEP>
+                        </endNac>
+                        <xLgr>Rua Jose Beraldo Rosa</xLgr>
+                        <nro>100</nro>
+                        <xBairro>Parque Campolim</xBairro>
+                    </end>
+                    <fone>15982295603</fone>
+                    <email>sistema@bentoesilvanadocessalgadosltda.com.br</email>
+                </toma>
+                <serv>
+                    <cServ>
+                        <cTribNac>010501</cTribNac>
+                        <xDescServ>Servico de Publicidade e Propaganda</xDescServ>
+                    </cServ>
+                </serv>
+                <valores>
+                    <vServPrest>
+                        <vServ>10000.00</vServ>
+                    </vServPrest>
+                    <trib>
+                        <tribMun>
+                            <tribISSQN>1</tribISSQN>
+                            <tpRetISSQN>2</tpRetISSQN>
+                        </tribMun>
+                        <tribFed>
+                            <vRetIRRF>150.00</vRetIRRF>
+                            <vRetCSLL>465.00</vRetCSLL>
+                        </tribFed>
+                    </trib>
+                </valores>
+            </infDPS>
+        </DPS>
+    </infNFSe>
+</NFSe>
