@@ -1,6 +1,7 @@
 package cte
 
 import (
+	"encoding/xml"
 	"strconv"
 	"strings"
 
@@ -19,6 +20,9 @@ func (d *Document) GetAccessKey() string {
 	}
 	if inf := d.infCTeOS(); inf != nil {
 		return strings.TrimPrefix(inf.IdAttr, "CTe")
+	}
+	if info := d.eventInfo(); info.AccessKey != "" {
+		return info.AccessKey
 	}
 	return ""
 }
@@ -48,6 +52,9 @@ func (d *Document) GetEnvironment() string {
 	}
 	if prot := d.cteOSProt(); prot != nil {
 		return prot.TpAmb
+	}
+	if info := d.eventInfo(); info.Environment != "" {
+		return info.Environment
 	}
 	return ""
 }
@@ -88,6 +95,9 @@ func (d *Document) GetIssueDate() string {
 	}
 	if inf := d.infCTeOS(); inf != nil && inf.Ide != nil {
 		return inf.Ide.DhEmi
+	}
+	if info := d.eventInfo(); info.IssueDate != "" {
+		return info.IssueDate
 	}
 	return ""
 }
@@ -184,6 +194,9 @@ func (d *Document) GetProtocolNumber() string {
 	if prot := d.cteOSProt(); prot != nil {
 		return stringPtrValue(prot.NProt)
 	}
+	if info := d.eventInfo(); info.ProtocolNumber != "" {
+		return info.ProtocolNumber
+	}
 	return ""
 }
 
@@ -194,6 +207,9 @@ func (d *Document) GetStatusCode() string {
 	if prot := d.cteOSProt(); prot != nil {
 		return prot.CStat
 	}
+	if info := d.eventInfo(); info.StatusCode != "" {
+		return info.StatusCode
+	}
 	return ""
 }
 
@@ -203,6 +219,9 @@ func (d *Document) GetStatusReason() string {
 	}
 	if prot := d.cteOSProt(); prot != nil && prot.XMotivo != nil {
 		return string(*prot.XMotivo)
+	}
+	if info := d.eventInfo(); info.StatusReason != "" {
+		return info.StatusReason
 	}
 	return ""
 }
@@ -390,6 +409,17 @@ func (d *Document) GetAdditionalInfo() string {
 }
 
 func (d *Document) GetRelatedDocuments() []info.RelatedDocument {
+	docs := d.cteRelatedDocuments()
+	if related := d.eventInfo().RelatedDocument; !isEmptyRelatedDocument(related) {
+		docs = append(docs, related)
+	}
+	if len(docs) == 0 {
+		return nil
+	}
+	return docs
+}
+
+func (d *Document) cteRelatedDocuments() []info.RelatedDocument {
 	inf := d.infCTe()
 	if inf == nil || inf.InfCTeNorm == nil {
 		return nil
@@ -483,6 +513,358 @@ func (d *Document) cteOSProt() *CTeOSAnonComplexInfProt2 {
 		return d.CTeOSProc.ProtCTe.InfProt
 	}
 	return nil
+}
+
+type cteEventInfo struct {
+	AccessKey       string
+	Environment     string
+	IssueDate       string
+	ProtocolNumber  string
+	StatusCode      string
+	StatusReason    string
+	RelatedDocument info.RelatedDocument
+}
+
+func (d *Document) eventInfo() cteEventInfo {
+	if d == nil {
+		return cteEventInfo{}
+	}
+	if d.ProcEventoCTe != nil {
+		return procEventInfo(d.ProcEventoCTe.EventoCTe, d.ProcEventoCTe.RetEventoCTe)
+	}
+	if d.ProcEventoCancCTe != nil {
+		return procEventInfo(d.ProcEventoCancCTe.EventoCTe, d.ProcEventoCancCTe.RetEventoCTe)
+	}
+	if d.ProcEventoCECTe != nil {
+		return procEventInfo(d.ProcEventoCECTe.EventoCTe, d.ProcEventoCECTe.RetEventoCTe)
+	}
+	if d.ProcEventoCancCECTe != nil {
+		return procEventInfo(d.ProcEventoCancCECTe.EventoCTe, d.ProcEventoCancCECTe.RetEventoCTe)
+	}
+	if d.ProcEventoEPECCTe != nil {
+		return procEventInfo(d.ProcEventoEPECCTe.EventoCTe, d.ProcEventoEPECCTe.RetEventoCTe)
+	}
+	if d.ProcEventoRegMultimodal != nil {
+		return procEventInfo(d.ProcEventoRegMultimodal.EventoCTe, d.ProcEventoRegMultimodal.RetEventoCTe)
+	}
+	if d.ProcEventoGTV != nil {
+		return procEventInfo(d.ProcEventoGTV.EventoCTe, d.ProcEventoGTV.RetEventoCTe)
+	}
+	if d.ProcEventoIECTe != nil {
+		return procEventInfo(d.ProcEventoIECTe.EventoCTe, d.ProcEventoIECTe.RetEventoCTe)
+	}
+	if d.ProcEventoCancIECTe != nil {
+		return procEventInfo(d.ProcEventoCancIECTe.EventoCTe, d.ProcEventoCancIECTe.RetEventoCTe)
+	}
+	if d.ProcEventoPrestDesacordo != nil {
+		return procEventInfo(d.ProcEventoPrestDesacordo.EventoCTe, d.ProcEventoPrestDesacordo.RetEventoCTe)
+	}
+	if d.ProcEventoCancPrestDesacordo != nil {
+		return procEventInfo(d.ProcEventoCancPrestDesacordo.EventoCTe, d.ProcEventoCancPrestDesacordo.RetEventoCTe)
+	}
+	if d.ProcEventoGenerico != nil {
+		return procEventInfo(d.ProcEventoGenerico.EventoCTe, d.ProcEventoGenerico.RetEventoCTe)
+	}
+
+	if d.EventoCTe != nil {
+		return sentEventInfoFromRoot(d.EventoCTe)
+	}
+	if d.EventoCancCTe != nil {
+		return sentEventInfoFromRoot(d.EventoCancCTe)
+	}
+	if d.EventoCECTe != nil {
+		return sentEventInfoFromRoot(d.EventoCECTe)
+	}
+	if d.EventoCancCECTe != nil {
+		return sentEventInfoFromRoot(d.EventoCancCECTe)
+	}
+	if d.EventoEPECCTe != nil {
+		return sentEventInfoFromRoot(d.EventoEPECCTe)
+	}
+	if d.EventoRegMultimodal != nil {
+		return sentEventInfoFromRoot(d.EventoRegMultimodal)
+	}
+	if d.EventoGTV != nil {
+		return sentEventInfoFromRoot(d.EventoGTV)
+	}
+	if d.EventoIECTe != nil {
+		return sentEventInfoFromRoot(d.EventoIECTe)
+	}
+	if d.EventoCancIECTe != nil {
+		return sentEventInfoFromRoot(d.EventoCancIECTe)
+	}
+	if d.EventoPrestDesacordo != nil {
+		return sentEventInfoFromRoot(d.EventoPrestDesacordo)
+	}
+	if d.EventoCancPrestDesacordo != nil {
+		return sentEventInfoFromRoot(d.EventoCancPrestDesacordo)
+	}
+	if d.EventoGenerico != nil {
+		return sentEventInfoFromRoot(d.EventoGenerico)
+	}
+
+	if d.RetEventoCTe != nil {
+		return retEventInfoFromRoot(d.RetEventoCTe)
+	}
+	if d.RetEventoCancCTe != nil {
+		return retEventInfoFromRoot(d.RetEventoCancCTe)
+	}
+	if d.RetEventoCECTe != nil {
+		return retEventInfoFromRoot(d.RetEventoCECTe)
+	}
+	if d.RetEventoCancCECTe != nil {
+		return retEventInfoFromRoot(d.RetEventoCancCECTe)
+	}
+	if d.RetEventoEPECCTe != nil {
+		return retEventInfoFromRoot(d.RetEventoEPECCTe)
+	}
+	if d.RetEventoRegMultimodal != nil {
+		return retEventInfoFromRoot(d.RetEventoRegMultimodal)
+	}
+	if d.RetEventoGTV != nil {
+		return retEventInfoFromRoot(d.RetEventoGTV)
+	}
+	if d.RetEventoIECTe != nil {
+		return retEventInfoFromRoot(d.RetEventoIECTe)
+	}
+	if d.RetEventoCancIECTe != nil {
+		return retEventInfoFromRoot(d.RetEventoCancIECTe)
+	}
+	if d.RetEventoPrestDesacordo != nil {
+		return retEventInfoFromRoot(d.RetEventoPrestDesacordo)
+	}
+	if d.RetEventoCancPrestDesacordo != nil {
+		return retEventInfoFromRoot(d.RetEventoCancPrestDesacordo)
+	}
+	if d.RetEventoGenerico != nil {
+		return retEventInfoFromRoot(d.RetEventoGenerico)
+	}
+	return cteEventInfo{}
+}
+
+func procEventInfo(evento, retEvento any) cteEventInfo {
+	return mergeCTeEventInfo(sentEventInfoFromRoot(evento), retEventInfoFromRoot(retEvento))
+}
+
+func sentEventInfoFromRoot(evento any) cteEventInfo {
+	switch v := evento.(type) {
+	case *EventoCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoCancCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoCECTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoCancCECTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoEPECCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoRegMultimodalCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoGTVCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoIECTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoCancIECTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoPrestDesacordoCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoCancPrestDesacordoCTeEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return sentEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.DhEvento)
+	case *EventoGenericoCTeEvento:
+		return genericSentEventInfo(v)
+	default:
+		return cteEventInfo{}
+	}
+}
+
+func retEventInfoFromRoot(retEvento any) cteEventInfo {
+	switch v := retEvento.(type) {
+	case *EventoCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoCancCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoCECTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoCancCECTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoEPECCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoRegMultimodalCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoGTVCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoIECTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoCancIECTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoPrestDesacordoCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoCancPrestDesacordoCTeRetEvento:
+		if v == nil || v.InfEvento == nil {
+			return cteEventInfo{}
+		}
+		return retEventInfo(v.InfEvento.ChCTe, v.InfEvento.TpAmb, v.InfEvento.NProt, v.InfEvento.CStat, v.InfEvento.XMotivo)
+	case *EventoGenericoCTeRetEvento:
+		return genericRetEventInfo(v)
+	default:
+		return cteEventInfo{}
+	}
+}
+
+func sentEventInfo(chCTe, tpAmb, dhEvento string) cteEventInfo {
+	return cteEventInfo{
+		AccessKey:   chCTe,
+		Environment: tpAmb,
+		IssueDate:   dhEvento,
+	}
+}
+
+func retEventInfo[T ~string](chCTe *string, tpAmb string, nProt *string, cStat string, xMotivo *T) cteEventInfo {
+	return cteEventInfo{
+		AccessKey:      stringPtrValue(chCTe),
+		Environment:    tpAmb,
+		ProtocolNumber: stringPtrValue(nProt),
+		StatusCode:     cStat,
+		StatusReason:   typedStringPtrValue(xMotivo),
+	}
+}
+
+func genericSentEventInfo(evento *EventoGenericoCTeEvento) cteEventInfo {
+	if evento == nil || evento.InfEvento == nil {
+		return cteEventInfo{}
+	}
+	inf := evento.InfEvento
+	eventInfo := sentEventInfo(inf.ChCTe, inf.TpAmb, inf.DhEvento)
+	if inf.TpEvento == "310610" {
+		eventInfo.RelatedDocument = mdfeDocumentFrom310610(inf.DetEvento)
+	}
+	return eventInfo
+}
+
+func genericRetEventInfo(retEvento *EventoGenericoCTeRetEvento) cteEventInfo {
+	if retEvento == nil || retEvento.InfEvento == nil {
+		return cteEventInfo{}
+	}
+	inf := retEvento.InfEvento
+	return retEventInfo(inf.ChCTe, inf.TpAmb, inf.NProt, inf.CStat, inf.XMotivo)
+}
+
+func mdfeDocumentFrom310610(detEvento *EventoGenericoCTeAnonComplexDetEvento1) info.RelatedDocument {
+	if detEvento == nil {
+		return info.RelatedDocument{}
+	}
+	raw := strings.TrimSpace(detEvento.InnerXML)
+	if raw == "" {
+		return info.RelatedDocument{}
+	}
+	var payload struct {
+		MDFe struct {
+			ChMDFe string `xml:"chMDFe"`
+		} `xml:"MDFe"`
+	}
+	if err := xml.Unmarshal([]byte(raw), &payload); err != nil || payload.MDFe.ChMDFe == "" {
+		return info.RelatedDocument{}
+	}
+	return info.RelatedDocument{Type: "mdfe", AccessKey: payload.MDFe.ChMDFe}
+}
+
+func mergeCTeEventInfo(primary, fallback cteEventInfo) cteEventInfo {
+	if primary.AccessKey == "" {
+		primary.AccessKey = fallback.AccessKey
+	}
+	if primary.Environment == "" {
+		primary.Environment = fallback.Environment
+	}
+	if primary.IssueDate == "" {
+		primary.IssueDate = fallback.IssueDate
+	}
+	if primary.ProtocolNumber == "" {
+		primary.ProtocolNumber = fallback.ProtocolNumber
+	}
+	if primary.StatusCode == "" {
+		primary.StatusCode = fallback.StatusCode
+	}
+	if primary.StatusReason == "" {
+		primary.StatusReason = fallback.StatusReason
+	}
+	if isEmptyRelatedDocument(primary.RelatedDocument) {
+		primary.RelatedDocument = fallback.RelatedDocument
+	}
+	return primary
+}
+
+func isEmptyRelatedDocument(doc info.RelatedDocument) bool {
+	return doc.Type == "" && doc.AccessKey == "" && doc.Number == "" && doc.Series == ""
+}
+
+func typedStringPtrValue[T ~string](value *T) string {
+	if value == nil {
+		return ""
+	}
+	return string(*value)
 }
 
 func (d *Document) billingSource() (*billingFat, []info.Duplicata) {

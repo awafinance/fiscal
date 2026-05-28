@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/cte" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema_v1.01.xsd"></import>
+  <include schemaLocation="tiposGeralCTe_v4.00.xsd"></include>
+  <simpleType name="TAnon_tpEvento_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{6}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TAnon_nSeqEvento_1">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{1,3}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType name="TAnonComplex_detEvento_1">
+    <sequence>
+      <any processContents="skip">
+        <annotation>
+          <documentation>XML do evento
+Insira neste local o XML específico do tipo de evento (cancelamento, encerramento, registro de passagem).</documentation>
+        </annotation>
+      </any>
+    </sequence>
+    <attribute name="versaoEvento" use="required">
+      <simpleType>
+        <restriction base="xs:string">
+          <whiteSpace value="preserve"></whiteSpace>
+          <pattern value="4\.(0[0-9]|[1-9][0-9])"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <simpleType name="TAnon_xSolic_1">
+    <restriction base="TString">
+      <minLength value="2"></minLength>
+      <maxLength value="8000"></maxLength>
+    </restriction>
+  </simpleType>
+  <complexType name="TAnonComplex_infSolicNFF_1">
+    <sequence>
+      <element name="xSolic" type="TAnon_xSolic_1">
+        <annotation>
+          <documentation>Solicitação do pedido de registro de evento da NFF.</documentation>
+          <documentation>Será preenchido com a totalidade de campos informados no aplicativo emissor serializado.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="TAnonComplex_PAASignature_1">
+    <sequence>
+      <element name="SignatureValue" type="xs:base64Binary">
+        <annotation>
+          <documentation>Assinatura digital padrão RSA</documentation>
+          <documentation>Converter o atributo Id do DFe para array de bytes e assinar com a chave privada do RSA com algoritmo SHA1 gerando um valor no formato base64.</documentation>
+        </annotation>
+      </element>
+      <element name="RSAKeyValue" type="TRSAKeyValueType">
+        <annotation>
+          <documentation>Chave Publica no padrão XML RSA Key</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="TAnonComplex_infPAA_1">
+    <sequence>
+      <element name="CNPJPAA" type="TCnpj">
+        <annotation>
+          <documentation>CNPJ do Provedor de Assinatura e Autorização</documentation>
+        </annotation>
+      </element>
+      <element name="PAASignature" type="TAnonComplex_PAASignature_1">
+        <annotation>
+          <documentation>Assinatura RSA do Emitente para DFe gerados por PAA</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="TAnonComplex_infEvento_1">
+    <sequence>
+      <element name="cOrgao" type="TCOrgaoIBGE">
+        <annotation>
+          <documentation>Código do órgão de recepção do Evento. Utilizar a Tabela do IBGE extendida, utilizar 90 para identificar SUFRAMA</documentation>
+        </annotation>
+      </element>
+      <element name="tpAmb" type="TAmb">
+        <annotation>
+          <documentation>Identificação do Ambiente:
+1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <choice>
+        <element name="CNPJ" type="TCnpj">
+          <annotation>
+            <documentation>CNPJ do emissor do evento</documentation>
+          </annotation>
+        </element>
+        <element name="CPF" type="TCpf">
+          <annotation>
+            <documentation>CPF do emissor do evento</documentation>
+            <documentation>Informar zeros não significativos.
+
+Usar com série específica 920-969 para emitente pessoa física com inscrição estadual</documentation>
+          </annotation>
+        </element>
+      </choice>
+      <element name="chCTe" type="TChDFe">
+        <annotation>
+          <documentation>Chave de Acesso do CT-e vinculado ao evento</documentation>
+        </annotation>
+      </element>
+      <element name="dhEvento" type="TDateTimeUTC">
+        <annotation>
+          <documentation>Data e Hora do Evento, formato UTC (AAAA-MM-DDThh:mm:ssTZD)</documentation>
+        </annotation>
+      </element>
+      <element name="tpEvento" type="TAnon_tpEvento_1">
+        <annotation>
+          <documentation>Tipo do Evento</documentation>
+        </annotation>
+      </element>
+      <element name="nSeqEvento" type="TAnon_nSeqEvento_1">
+        <annotation>
+          <documentation>Seqüencial do evento para o mesmo tipo de evento.  Para maioria dos eventos será 1, nos casos em que possa existir mais de um evento o autor do evento deve numerar de forma seqüencial.</documentation>
+        </annotation>
+      </element>
+      <element name="detEvento" type="TAnonComplex_detEvento_1">
+        <annotation>
+          <documentation>Detalhamento do evento específico</documentation>
+        </annotation>
+      </element>
+      <element name="infSolicNFF" minOccurs="0" type="TAnonComplex_infSolicNFF_1">
+        <annotation>
+          <documentation>Grupo de informações do pedido de registro de evento da Nota Fiscal Fácil</documentation>
+        </annotation>
+      </element>
+      <element name="infPAA" minOccurs="0" type="TAnonComplex_infPAA_1">
+        <annotation>
+          <documentation>Grupo de Informação do Provedor de Assinatura e Autorização</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="Id" use="required">
+      <annotation>
+        <documentation>Identificador da TAG a ser assinada, a regra de formação do Id é:
+“ID” + tpEvento +  chave do CT-e + nSeqEvento</documentation>
+      </annotation>
+      <simpleType>
+        <restriction base="xs:ID">
+          <pattern value="ID[0-9]{12}[A-Z0-9]{12}[0-9]{29}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <simpleType name="TAnon_tpEvento_2">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{6}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TAnon_xEvento_1">
+    <restriction base="TString">
+      <minLength value="4"></minLength>
+      <maxLength value="60"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType name="TAnon_nSeqEvento_2">
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{1,3}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType name="TAnonComplex_infEvento_2">
+    <sequence>
+      <element name="tpAmb" type="TAmb">
+        <annotation>
+          <documentation>Identificação do Ambiente:
+1 - Produção
+2 - Homologação</documentation>
+        </annotation>
+      </element>
+      <element name="verAplic" type="TVerAplic">
+        <annotation>
+          <documentation>Versão do Aplicativo que recebeu o Evento</documentation>
+        </annotation>
+      </element>
+      <element name="cOrgao" type="TCOrgaoIBGE">
+        <annotation>
+          <documentation>Código do órgão de recepção do Evento. Utilizar a Tabela do IBGE extendida, utilizar 90 para identificar SUFRAMA</documentation>
+        </annotation>
+      </element>
+      <element name="cStat" type="TStat">
+        <annotation>
+          <documentation>Código do status da registro do Evento</documentation>
+        </annotation>
+      </element>
+      <element name="xMotivo" type="TMotivo">
+        <annotation>
+          <documentation>Descrição literal do status do registro do Evento</documentation>
+        </annotation>
+      </element>
+      <element name="chCTe" type="TChDFe" minOccurs="0">
+        <annotation>
+          <documentation>Chave de Acesso CT-e vinculado</documentation>
+        </annotation>
+      </element>
+      <element name="tpEvento" minOccurs="0" type="TAnon_tpEvento_2">
+        <annotation>
+          <documentation>Tipo do Evento vinculado</documentation>
+        </annotation>
+      </element>
+      <element name="xEvento" minOccurs="0" type="TAnon_xEvento_1">
+        <annotation>
+          <documentation>Descrição do Evento</documentation>
+        </annotation>
+      </element>
+      <element name="nSeqEvento" minOccurs="0" type="TAnon_nSeqEvento_2">
+        <annotation>
+          <documentation>Seqüencial do evento</documentation>
+        </annotation>
+      </element>
+      <element name="dhRegEvento" type="TDateTimeUTC" minOccurs="0">
+        <annotation>
+          <documentation>Data e Hora de do recebimento do evento ou do registro do evento formato AAAA-MM-DDThh:mm:ssTZD</documentation>
+        </annotation>
+      </element>
+      <element name="nProt" type="TProt" minOccurs="0">
+        <annotation>
+          <documentation>Número do protocolo de registro do evento</documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="Id" use="optional">
+      <simpleType>
+        <restriction base="xs:ID">
+          <pattern value="ID[0-9]{15}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType name="TEvento">
+    <annotation>
+      <documentation>Tipo Evento</documentation>
+    </annotation>
+    <sequence>
+      <element name="infEvento" type="TAnonComplex_infEvento_1"></element>
+      <element ref="ds:Signature"></element>
+    </sequence>
+    <attribute name="versao" type="TVerEvento" use="required"></attribute>
+  </complexType>
+  <complexType name="TRetEvento">
+    <annotation>
+      <documentation>Tipo retorno do Evento</documentation>
+    </annotation>
+    <sequence>
+      <element name="infEvento" type="TAnonComplex_infEvento_2"></element>
+      <element ref="ds:Signature" minOccurs="0"></element>
+    </sequence>
+    <attribute name="versao" use="required">
+      <simpleType>
+        <restriction base="TVerEvento"></restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+  <complexType name="TProcEvento">
+    <annotation>
+      <documentation>Tipo procEvento</documentation>
+    </annotation>
+    <sequence>
+      <element name="eventoCTe" type="TEvento"></element>
+      <element name="retEventoCTe" type="TRetEvento"></element>
+    </sequence>
+    <attribute name="versao" type="TVerEvento" use="required"></attribute>
+    <attribute name="ipTransmissor" type="TIPv4" use="optional">
+      <annotation>
+        <documentation>IP do transmissor do documento fiscal para o ambiente autorizador</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="nPortaCon" use="optional">
+      <annotation>
+        <documentation>Porta de origem utilizada na conexão (De 0 a 65535)</documentation>
+      </annotation>
+      <simpleType>
+        <restriction base="xs:string">
+          <pattern value="[0-9]{1,5}"></pattern>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="dhConexao" type="TDateTimeUTC" use="optional">
+      <annotation>
+        <documentation>Data e Hora da Conexão de Origem</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+  <simpleType name="TVerEvento">
+    <annotation>
+      <documentation>Tipo Versão do Evento</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="4\.00"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TModTransp">
+    <annotation>
+      <documentation>Tipo Modal transporte</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="01"></enumeration>
+      <enumeration value="02"></enumeration>
+      <enumeration value="03"></enumeration>
+      <enumeration value="04"></enumeration>
+      <enumeration value="05"></enumeration>
+      <enumeration value="06"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TNSU">
+    <annotation>
+      <documentation>Tipo número sequencial único do AN</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <pattern value="[0-9]{15}"></pattern>
+    </restriction>
+  </simpleType>
+</schema>
