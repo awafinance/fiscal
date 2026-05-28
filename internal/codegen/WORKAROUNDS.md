@@ -35,6 +35,7 @@ the emitted Go has family-specific problems such as:
 ### CTe
 
 - Remove modal support files that are generated as duplicate or incomplete fragments.
+- Preserve `detEvento` as `innerxml` for the generic CT-e event package.
 - Rewrite `DhCont`, `XJust`, and `CRT` to optional `*string` fields.
 - Rewrite selected `NProt *TProt` and `NProtEvPrestDes *TProt` fields to `string`.
 - Replace placeholder event payload structs with typed modal/event payloads.

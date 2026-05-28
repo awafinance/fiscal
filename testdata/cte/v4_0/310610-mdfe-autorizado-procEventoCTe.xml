@@ -1,0 +1,45 @@
+<procEventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00">
+  <eventoCTe versao="4.00">
+    <infEvento Id="ID3106103526051234567800019557001000000001100000001101">
+      <cOrgao>35</cOrgao>
+      <tpAmb>2</tpAmb>
+      <CNPJ>12345678000195</CNPJ>
+      <chCTe>35260512345678000195570010000000011000000011</chCTe>
+      <dhEvento>2026-05-27T22:01:33-03:00</dhEvento>
+      <tpEvento>310610</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <detEvento versaoEvento="4.00">
+        <evCTeAutorizadoMDFe>
+          <descEvento>MDF-e Autorizado</descEvento>
+          <MDFe>
+            <chMDFe>35260512345678000195580010000000011000000012</chMDFe>
+            <modal>01</modal>
+            <dhEmi>2026-05-27T21:59:10-03:00</dhEmi>
+            <nProt>135260000000001</nProt>
+            <dhRecbto>2026-05-27T22:01:30-03:00</dhRecbto>
+          </MDFe>
+          <emit>
+            <CNPJ>12345678000195</CNPJ>
+            <IE>123456789012</IE>
+            <xNome>EMITENTE TESTE LTDA</xNome>
+          </emit>
+        </evCTeAutorizadoMDFe>
+      </detEvento>
+    </infEvento>
+  </eventoCTe>
+  <retEventoCTe versao="4.00">
+    <infEvento>
+      <tpAmb>2</tpAmb>
+      <verAplic>CTe-AN-4.00</verAplic>
+      <cOrgao>35</cOrgao>
+      <cStat>135</cStat>
+      <xMotivo>Evento registrado e vinculado a CT-e</xMotivo>
+      <chCTe>35260512345678000195570010000000011000000011</chCTe>
+      <tpEvento>310610</tpEvento>
+      <xEvento>Autorizado MDF-e</xEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <dhRegEvento>2026-05-27T22:01:34-03:00</dhRegEvento>
+      <nProt>135260000000002</nProt>
+    </infEvento>
+  </retEventoCTe>
+</procEventoCTe>

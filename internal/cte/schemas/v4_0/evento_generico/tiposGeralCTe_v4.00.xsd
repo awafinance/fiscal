@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/cte" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <simpleType name="TDateTimeUTC">
+    <annotation>
+      <documentation>Data e Hora, formato UTC (AAAA-MM-DDThh:mm:ssTZD, onde TZD = +hh:mm ou -hh:mm)</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="(((20(([02468][048])|([13579][26]))-02-29))|(20[0-9][0-9])-((((0[1-9])|(1[0-2]))-((0[1-9])|(1\d)|(2[0-8])))|((((0[13578])|(1[02]))-31)|(((0[1,3-9])|(1[0-2]))-(29|30)))))T(20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d([\-,\+](0[0-9]|10|11):00|([\+](12):00))"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TAmb">
+    <annotation>
+      <documentation>Tipo Ambiente</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="1"></enumeration>
+      <enumeration value="2"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="Tano">
+    <annotation>
+      <documentation>Tipo ano</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{2}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCodUfIBGE">
+    <annotation>
+      <documentation>Tipo Código da UF da tabela do IBGE</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="11"></enumeration>
+      <enumeration value="12"></enumeration>
+      <enumeration value="13"></enumeration>
+      <enumeration value="14"></enumeration>
+      <enumeration value="15"></enumeration>
+      <enumeration value="16"></enumeration>
+      <enumeration value="17"></enumeration>
+      <enumeration value="21"></enumeration>
+      <enumeration value="22"></enumeration>
+      <enumeration value="23"></enumeration>
+      <enumeration value="24"></enumeration>
+      <enumeration value="25"></enumeration>
+      <enumeration value="26"></enumeration>
+      <enumeration value="27"></enumeration>
+      <enumeration value="28"></enumeration>
+      <enumeration value="29"></enumeration>
+      <enumeration value="31"></enumeration>
+      <enumeration value="32"></enumeration>
+      <enumeration value="33"></enumeration>
+      <enumeration value="35"></enumeration>
+      <enumeration value="41"></enumeration>
+      <enumeration value="42"></enumeration>
+      <enumeration value="43"></enumeration>
+      <enumeration value="50"></enumeration>
+      <enumeration value="51"></enumeration>
+      <enumeration value="52"></enumeration>
+      <enumeration value="53"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCodMunIBGE">
+    <annotation>
+      <documentation>Tipo Código do Município da tabela do IBGE</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{7}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCOrgaoIBGE">
+    <annotation>
+      <documentation>Tipo Código de orgão (UF da tabela do IBGE + 90 SUFRAMA + 91 RFB +  94 SVC-RS + 95 SVC-SP + 96  Sinc. Chaves do RS para SVSP</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="11"></enumeration>
+      <enumeration value="12"></enumeration>
+      <enumeration value="13"></enumeration>
+      <enumeration value="14"></enumeration>
+      <enumeration value="15"></enumeration>
+      <enumeration value="16"></enumeration>
+      <enumeration value="17"></enumeration>
+      <enumeration value="21"></enumeration>
+      <enumeration value="22"></enumeration>
+      <enumeration value="23"></enumeration>
+      <enumeration value="24"></enumeration>
+      <enumeration value="25"></enumeration>
+      <enumeration value="26"></enumeration>
+      <enumeration value="27"></enumeration>
+      <enumeration value="28"></enumeration>
+      <enumeration value="29"></enumeration>
+      <enumeration value="31"></enumeration>
+      <enumeration value="32"></enumeration>
+      <enumeration value="33"></enumeration>
+      <enumeration value="35"></enumeration>
+      <enumeration value="41"></enumeration>
+      <enumeration value="42"></enumeration>
+      <enumeration value="43"></enumeration>
+      <enumeration value="50"></enumeration>
+      <enumeration value="51"></enumeration>
+      <enumeration value="52"></enumeration>
+      <enumeration value="53"></enumeration>
+      <enumeration value="90"></enumeration>
+      <enumeration value="91"></enumeration>
+      <enumeration value="93"></enumeration>
+      <enumeration value="94"></enumeration>
+      <enumeration value="95"></enumeration>
+      <enumeration value="96"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TChDFe">
+    <annotation>
+      <documentation>Tipo Chave de Documento Fiscal Eletrônico</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <maxLength value="44"></maxLength>
+      <pattern value="[0-9]{6}[A-Z0-9]{12}[0-9]{26}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCnpj">
+    <annotation>
+      <documentation>Tipo Número do CNPJ</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[A-Z0-9]{12}[0-9]{2}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TFone">
+    <annotation>
+      <documentation>Tipo Número do Telefone</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{6,14}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCnpjOpc">
+    <annotation>
+      <documentation>Tipo Número do CNPJ Opcional</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{0}|[A-Z0-9]{12}[0-9]{2}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCpf">
+    <annotation>
+      <documentation>Tipo Número do CPF</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{11}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TCpfVar">
+    <annotation>
+      <documentation>Tipo Número do CPF de tamanho variável (3-11)</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{3,11}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TData">
+    <annotation>
+      <documentation>Tipo data AAAA-MM-DD</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="(((20(([02468][048])|([13579][26]))-02-29))|(20[0-9][0-9])-((((0[1-9])|(1[0-2]))-((0[1-9])|(1\d)|(2[0-8])))|((((0[13578])|(1[02]))-31)|(((0[1,3-9])|(1[0-2]))-(29|30)))))"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0302">
+    <annotation>
+      <documentation>Tipo Decimal com 5 dígitos, sendo 3 de corpo e 2 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{2}|[1-9]{1}[0-9]{0,2}(\.[0-9]{2})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0303">
+    <annotation>
+      <documentation>Tipo Decimal com 6 dígitos, sendo 3 de corpo e 3 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{3}|[1-9]{1}[0-9]{0,2}(\.[0-9]{3})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0302_0303">
+    <annotation>
+      <documentation>Tipo Decimal com 6  ou 5 dígitos, sendo 3 de corpo e 3 ou 2 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{1,3}(\.[0-9]{2,3})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0302Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 5 dígitos, sendo 3 de corpo e 2 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[0-9]{1}[1-9]{1}|0\.[1-9]{1}[0-9]{1}|[1-9]{1}[0-9]{0,2}(\.[0-9]{2})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0803">
+    <annotation>
+      <documentation>Tipo Decimal com 11 dígitos, sendo 8 de corpo e 3 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{3}|[1-9]{1}[0-9]{0,7}(\.[0-9]{3})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0803Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 11 dígitos, sendo 8 de corpo e 3 decimais utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[1-9]{1}[0-9]{2}|0\.[0-9]{2}[1-9]{1}|0\.[0-9]{1}[1-9]{1}[0-9]{1}|[1-9]{1}[0-9]{0,7}(\.[0-9]{3})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0804">
+    <annotation>
+      <documentation>Tipo Decimal com 12 dígitos, sendo 8 de corpo e 4decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{4}|[1-9]{1}[0-9]{0,7}(\.[0-9]{4})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0804Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 12 dígitos, sendo 8 de corpo e 4 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[1-9]{1}[0-9]{3}|0\.[0-9]{3}[1-9]{1}|0\.[0-9]{2}[1-9]{1}[0-9]{1}|0\.[0-9]{1}[1-9]{1}[0-9]{2}|[1-9]{1}[0-9]{0,7}(\.[0-9]{4})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_0906Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 9 de corpo e 6 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[1-9]{1}[0-9]{5}|0\.[0-9]{1}[1-9]{1}[0-9]{4}|0\.[0-9]{2}[1-9]{1}[0-9]{3}|0\.[0-9]{3}[1-9]{1}[0-9]{2}|0\.[0-9]{4}[1-9]{1}[0-9]{1}|0\.[0-9]{5}[1-9]{1}|[1-9]{1}[0-9]{0,8}(\.[0-9]{6})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1104">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 11 de corpo e 4 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{4}|[1-9]{1}[0-9]{0,10}(\.[0-9]{4})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1104Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 11 de corpo e 4 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[1-9]{1}[0-9]{3}|0\.[0-9]{3}[1-9]{1}|0\.[0-9]{2}[1-9]{1}[0-9]{1}|0\.[0-9]{1}[1-9]{1}[0-9]{2}|[1-9]{1}[0-9]{0,10}(\.[0-9]{4})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1203">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 12 de corpo e 3 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{3}|[1-9]{1}[0-9]{0,11}(\.[0-9]{3})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1203Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 12 de corpo e 3 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[1-9]{1}[0-9]{2}|0\.[0-9]{2}[1-9]{1}|0\.[0-9]{1}[1-9]{1}[0-9]{1}|[1-9]{1}[0-9]{0,11}(\.[0-9]{3})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1204">
+    <annotation>
+      <documentation>Tipo Decimal com 16 dígitos, sendo 12 de corpo e 4 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{4}|[1-9]{1}[0-9]{0,11}(\.[0-9]{4})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1204Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 16 dígitos, sendo 12 de corpo e 4 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[1-9]{1}[0-9]{3}|0\.[0-9]{3}[1-9]{1}|0\.[0-9]{2}[1-9]{1}[0-9]{1}|0\.[0-9]{1}[1-9]{1}[0-9]{2}|[1-9]{1}[0-9]{0,11}(\.[0-9]{4})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1302">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 13 de corpo e 2 decimais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|0\.[0-9]{2}|[1-9]{1}[0-9]{0,12}(\.[0-9]{2})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TDec_1302Opc">
+    <annotation>
+      <documentation>Tipo Decimal com 15 dígitos, sendo 13 de corpo e 2 decimais, utilizado em tags opcionais</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0\.[0-9]{1}[1-9]{1}|0\.[1-9]{1}[0-9]{1}|[1-9]{1}[0-9]{0,12}(\.[0-9]{2})?"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TIe">
+    <annotation>
+      <documentation>Tipo Inscrição Estadual do Emitente</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <maxLength value="14"></maxLength>
+      <pattern value="[0-9]{2,14}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TIeDest">
+    <annotation>
+      <documentation>Tipo Inscrição Estadual do Destinatário</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <maxLength value="14"></maxLength>
+      <pattern value="[0-9]{0,14}|ISENTO"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TJust">
+    <annotation>
+      <documentation>Tipo Justificativa</documentation>
+    </annotation>
+    <restriction base="TString">
+      <minLength value="15"></minLength>
+      <maxLength value="255"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType name="TMed">
+    <annotation>
+      <documentation>Tipo temp médio em segundos</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{1,4}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TModCTOS">
+    <annotation>
+      <documentation>Tipo Modelo Documento Fiscal</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="67"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TModGTVe">
+    <annotation>
+      <documentation>Tipo Modelo Documento Fiscal</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="64"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TModCT_Carga_OS">
+    <annotation>
+      <documentation>Tipo Modelo Documento Fiscal</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="57"></enumeration>
+      <enumeration value="67"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TModCT">
+    <annotation>
+      <documentation>Tipo Modelo Documento Fiscal</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="57"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TModNF">
+    <annotation>
+      <documentation>Tipo Modelo Documento Fiscal - NF Remetente</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="01"></enumeration>
+      <enumeration value="04"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TtipoUnidTransp">
+    <annotation>
+      <documentation>Tipo da Unidade de Transporte</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="1"></enumeration>
+      <enumeration value="2"></enumeration>
+      <enumeration value="3"></enumeration>
+      <enumeration value="4"></enumeration>
+      <enumeration value="5"></enumeration>
+      <enumeration value="6"></enumeration>
+      <enumeration value="7"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TtipoUnidCarga">
+    <annotation>
+      <documentation>Tipo da Unidade de Carga</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="1"></enumeration>
+      <enumeration value="2"></enumeration>
+      <enumeration value="3"></enumeration>
+      <enumeration value="4"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TMotivo">
+    <annotation>
+      <documentation>Tipo Motivo</documentation>
+    </annotation>
+    <restriction base="TString">
+      <minLength value="1"></minLength>
+      <maxLength value="255"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType name="TNF">
+    <annotation>
+      <documentation>Tipo Número do Documento Fiscal</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[1-9]{1}[0-9]{0,8}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TProt">
+    <annotation>
+      <documentation>Tipo Número do Protocolo de Status</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{15}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TRec">
+    <annotation>
+      <documentation>Tipo Número do Recibo do envio de lote de NF-e</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{15}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TSerie">
+    <annotation>
+      <documentation>Tipo Série do Documento Fiscal</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="0|[1-9]{1}[0-9]{0,2}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TServ">
+    <annotation>
+      <documentation>Tipo Serviço solicitado</documentation>
+    </annotation>
+    <restriction base="TString"></restriction>
+  </simpleType>
+  <simpleType name="TStat">
+    <annotation>
+      <documentation>Tipo Código da Mensagem enviada</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[0-9]{3,4}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TString">
+    <annotation>
+      <documentation>Tipo string genérico</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[!-ÿ]{1}[ -ÿ]{0,}[!-ÿ]{1}|[!-ÿ]{1}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TUf">
+    <annotation>
+      <documentation>Tipo Sigla da UF</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="AC"></enumeration>
+      <enumeration value="AL"></enumeration>
+      <enumeration value="AM"></enumeration>
+      <enumeration value="AP"></enumeration>
+      <enumeration value="BA"></enumeration>
+      <enumeration value="CE"></enumeration>
+      <enumeration value="DF"></enumeration>
+      <enumeration value="ES"></enumeration>
+      <enumeration value="GO"></enumeration>
+      <enumeration value="MA"></enumeration>
+      <enumeration value="MG"></enumeration>
+      <enumeration value="MS"></enumeration>
+      <enumeration value="MT"></enumeration>
+      <enumeration value="PA"></enumeration>
+      <enumeration value="PB"></enumeration>
+      <enumeration value="PE"></enumeration>
+      <enumeration value="PI"></enumeration>
+      <enumeration value="PR"></enumeration>
+      <enumeration value="RJ"></enumeration>
+      <enumeration value="RN"></enumeration>
+      <enumeration value="RO"></enumeration>
+      <enumeration value="RR"></enumeration>
+      <enumeration value="RS"></enumeration>
+      <enumeration value="SC"></enumeration>
+      <enumeration value="SE"></enumeration>
+      <enumeration value="SP"></enumeration>
+      <enumeration value="TO"></enumeration>
+      <enumeration value="EX"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TUF_sem_EX">
+    <annotation>
+      <documentation>Tipo Sigla da UF, sem Exterior</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <enumeration value="AC"></enumeration>
+      <enumeration value="AL"></enumeration>
+      <enumeration value="AM"></enumeration>
+      <enumeration value="AP"></enumeration>
+      <enumeration value="BA"></enumeration>
+      <enumeration value="CE"></enumeration>
+      <enumeration value="DF"></enumeration>
+      <enumeration value="ES"></enumeration>
+      <enumeration value="GO"></enumeration>
+      <enumeration value="MA"></enumeration>
+      <enumeration value="MG"></enumeration>
+      <enumeration value="MS"></enumeration>
+      <enumeration value="MT"></enumeration>
+      <enumeration value="PA"></enumeration>
+      <enumeration value="PB"></enumeration>
+      <enumeration value="PE"></enumeration>
+      <enumeration value="PI"></enumeration>
+      <enumeration value="PR"></enumeration>
+      <enumeration value="RJ"></enumeration>
+      <enumeration value="RN"></enumeration>
+      <enumeration value="RO"></enumeration>
+      <enumeration value="RR"></enumeration>
+      <enumeration value="RS"></enumeration>
+      <enumeration value="SC"></enumeration>
+      <enumeration value="SE"></enumeration>
+      <enumeration value="SP"></enumeration>
+      <enumeration value="TO"></enumeration>
+    </restriction>
+  </simpleType>
+  <simpleType name="TVerAplic">
+    <annotation>
+      <documentation>Tipo Versão do Aplicativo</documentation>
+    </annotation>
+    <restriction base="TString">
+      <minLength value="1"></minLength>
+      <maxLength value="20"></maxLength>
+    </restriction>
+  </simpleType>
+  <simpleType name="TLatitude">
+    <annotation>
+      <documentation>Coordenada geográfica Latitude</documentation>
+    </annotation>
+    <restriction base="TString">
+      <pattern value="[0-9]\.[0-9]{6}|[1-8][0-9]\.[0-9]{6}|90\.[0-9]{6}|-[0-9]\.[0-9]{6}|-[1-8][0-9]\.[0-9]{6}|-90\.[0-9]{6}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TLongitude">
+    <annotation>
+      <documentation>Coordenada geográfica Longitude</documentation>
+    </annotation>
+    <restriction base="TString">
+      <pattern value="[0-9]\.[0-9]{6}|[1-9][0-9]\.[0-9]{6}|1[0-7][0-9]\.[0-9]{6}|180\.[0-9]{6}|-[0-9]\.[0-9]{6}|-[1-9][0-9]\.[0-9]{6}|-1[0-7][0-9]\.[0-9]{6}|-180\.[0-9]{6}"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TIPv4">
+    <annotation>
+      <documentation>Tipo IP versão 4</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"></pattern>
+    </restriction>
+  </simpleType>
+  <simpleType name="TPlaca">
+    <annotation>
+      <documentation>Tipo Placa</documentation>
+    </annotation>
+    <restriction base="xs:string">
+      <whiteSpace value="preserve"></whiteSpace>
+      <pattern value="[A-Z]{2,3}[0-9]{4}|[A-Z]{3,4}[0-9]{3}|[A-Z0-9]{7}"></pattern>
+    </restriction>
+  </simpleType>
+  <complexType name="TRSAKeyValueType">
+    <annotation>
+      <documentation>Tipo que representa uma chave publica padrão RSA</documentation>
+    </annotation>
+    <sequence>
+      <element name="Modulus" type="xs:base64Binary"></element>
+      <element name="Exponent" type="xs:base64Binary"></element>
+    </sequence>
+  </complexType>
+</schema>

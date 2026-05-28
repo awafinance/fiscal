@@ -12,6 +12,7 @@ import (
 	eventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_cce"
 	ceEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_ce"
 	epecEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_epec"
+	genericEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_generico"
 	gtvEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_gtv"
 	ieEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_ie"
 	prestDesacordoEventSchema "github.com/awafinance/fiscal/internal/cte/gen/v4_0/evento_prest_desacordo"
@@ -743,6 +744,33 @@ type EventoCTeRetEvento = eventSchema.TRetEvento
 type EventoCTeTransformType = eventSchema.TransformType
 type EventoCTeTransformsType = eventSchema.TransformsType
 type EventoCTeX509DataType = eventSchema.X509DataType
+
+// evento generico
+type EventoGenericoCTe = genericEventSchema.EventoCTe
+type ProcEventoGenericoCTe = genericEventSchema.ProcEventoCTe
+type RetEventoGenericoCTe = genericEventSchema.RetEventoCTe
+type EventoGenericoCTeKeyInfoType = genericEventSchema.KeyInfoType
+type EventoGenericoCTeReferenceType = genericEventSchema.ReferenceType
+type EventoGenericoCTeSignatureType = genericEventSchema.SignatureType
+type EventoGenericoCTeSignatureValueType = genericEventSchema.SignatureValueType
+type EventoGenericoCTeSignedInfoType = genericEventSchema.SignedInfoType
+type EventoGenericoCTeAnonComplexCanonicalizationMethod1 = genericEventSchema.TAnonComplexCanonicalizationMethod1
+type EventoGenericoCTeAnonComplexDetEvento1 = genericEventSchema.TAnonComplexDetEvento1
+type EventoGenericoCTeAnonComplexDigestMethod1 = genericEventSchema.TAnonComplexDigestMethod1
+type EventoGenericoCTeAnonComplexInfEvento1 = genericEventSchema.TAnonComplexInfEvento1
+type EventoGenericoCTeAnonComplexInfEvento2 = genericEventSchema.TAnonComplexInfEvento2
+type EventoGenericoCTeAnonComplexInfPAA1 = genericEventSchema.TAnonComplexInfPAA1
+type EventoGenericoCTeAnonComplexInfSolicNFF1 = genericEventSchema.TAnonComplexInfSolicNFF1
+type EventoGenericoCTeAnonComplexPAASignature1 = genericEventSchema.TAnonComplexPAASignature1
+type EventoGenericoCTeAnonComplexProcEventoCTe1 = genericEventSchema.TAnonComplexProcEventoCTe1
+type EventoGenericoCTeAnonComplexSignatureMethod1 = genericEventSchema.TAnonComplexSignatureMethod1
+type EventoGenericoCTeEvento = genericEventSchema.TEvento
+type EventoGenericoCTeProcEvento = genericEventSchema.TProcEvento
+type EventoGenericoCTeRSAKeyValueType = genericEventSchema.TRSAKeyValueType
+type EventoGenericoCTeRetEvento = genericEventSchema.TRetEvento
+type EventoGenericoCTeTransformType = genericEventSchema.TransformType
+type EventoGenericoCTeTransformsType = genericEventSchema.TransformsType
+type EventoGenericoCTeX509DataType = genericEventSchema.X509DataType
 
 // evento cancel
 type EvCancCTe = cancelEventSchema.EvCancCTe

@@ -96,6 +96,7 @@ func cteFamily() family {
 			"internal/cte/schemas/v4_0/evento_ie",
 			"internal/cte/schemas/v4_0/evento_prest_desacordo",
 			"internal/cte/schemas/v4_0/evento_reg_multimodal",
+			"internal/cte/schemas/v4_0/evento_generico",
 			"internal/cte/schemas/v1_0/dist_dfe",
 		},
 		xgenJobs: []xgenJob{
@@ -124,6 +125,7 @@ func cteFamily() family {
 			{"v4_0/evento_ie", "v4_0/evento_ie"},
 			{"v4_0/evento_prest_desacordo", "v4_0/evento_prest_desacordo"},
 			{"v4_0/evento_reg_multimodal", "v4_0/evento_reg_multimodal"},
+			{"v4_0/evento_generico", "v4_0/evento_generico"},
 		},
 		postprocess: postprocessCTe,
 	}
@@ -272,6 +274,13 @@ func postprocessCTe(verbose bool) error {
 		},
 		workarounds: []generatedWorkaround{
 			workaround("replace CTe event payload placeholders with typed modal payloads", replaceTypedCTeEventPayloads),
+			workaround("preserve raw detEvento payload XML for generic CTe events", postprocess.IfPath(
+				func(path string) bool {
+					return strings.Contains(path, string(filepath.Separator)+"evento_generico"+string(filepath.Separator)) &&
+						strings.HasSuffix(path, string(filepath.Separator)+"eventoCTeTiposBasico_v4.00.xsd.go")
+				},
+				postprocess.AddStructField(postprocess.TypeNamed("TAnonComplexDetEvento1"), "InnerXML", "string", `xml:",innerxml"`),
+			)),
 			workaround("replace pointer interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("*interface{}"), "*string")),
 			workaround("replace interface fields with strings", postprocess.ReplaceFieldType(postprocess.FieldTypeEquals("interface{}"), "string")),
 			workaround("restore typed UF on CTe EPEC toma4 payloads", postprocess.IfPath(

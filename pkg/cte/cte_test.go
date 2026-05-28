@@ -20,8 +20,13 @@ import (
 )
 
 const (
-	cteNamespace = "http://www.portalfiscal.inf.br/cte"
-	dsNamespace  = "http://www.w3.org/2000/09/xmldsig#"
+	cteNamespace            = "http://www.portalfiscal.inf.br/cte"
+	dsNamespace             = "http://www.w3.org/2000/09/xmldsig#"
+	testCTeEventAccessKey   = "43190812345678000195570010000000011000000011"
+	testCTeEventIssueDate   = "2024-01-02T03:04:05-03:00"
+	testCTeEventProtocol    = "135260000000001"
+	testCTeEventStatusCode  = "135"
+	testCTeEventStatusCause = "Evento registrado"
 )
 
 func TestParse_Fixtures(t *testing.T) {
@@ -62,7 +67,9 @@ func TestParse_InvalidInputs(t *testing.T) {
 		{name: "invalid cte", data: []byte(`<CTe xmlns="http://www.portalfiscal.inf.br/cte"></CTe>`), errContains: "missing infCte"},
 		{name: "invalid cteos", data: []byte(`<CTeOS xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"></CTeOS>`), errContains: "missing infCte"},
 		{name: "invalid event", data: []byte(`<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"></eventoCTe>`), errContains: "missing infEvento"},
-		{name: "unsupported event type", data: []byte(`<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"><infEvento><tpEvento>999999</tpEvento></infEvento></eventoCTe>`), errContains: `unsupported tpEvento "999999"`},
+		{name: "invalid generic event", data: []byte(`<eventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"><infEvento><tpEvento>999999</tpEvento><detEvento></detEvento></infEvento></eventoCTe>`), errContains: "missing chCTe"},
+		{name: "invalid generic event return", data: []byte(`<retEventoCTe xmlns="http://www.portalfiscal.inf.br/cte" versao="4.00"><infEvento><tpAmb>2</tpAmb><tpEvento>999999</tpEvento></infEvento></retEventoCTe>`), errContains: "missing cStat"},
+		{name: "invalid generic processed event", data: []byte(minimalCTeGenericProcEventWithoutReturnXML()), errContains: "missing retEventoCTe"},
 	}
 
 	for _, tt := range tests {
@@ -169,7 +176,11 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		data   string
 		assert func(t *testing.T, doc *cte.Document)
 	}{
-		{name: "ret cce", data: minimalCTeRetEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCTe) }},
+		{name: "ret cce", data: minimalCTeRetEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoCTe)
+			assertCTeEventReturnInfo(t, doc)
+		}},
 		{name: "ret cancel", data: minimalCTeRetEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancCTe) }},
 		{name: "ret epec", data: minimalCTeRetEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoEPECCTe) }},
 		{name: "ret reg multimodal", data: minimalCTeRetEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoRegMultimodal) }},
@@ -180,7 +191,17 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		{name: "ret cancel ie", data: minimalCTeRetEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancIECTe) }},
 		{name: "ret prest desacordo", data: minimalCTeRetEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoPrestDesacordo) }},
 		{name: "ret cancel prest desacordo", data: minimalCTeRetEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoCancPrestDesacordo) }},
-		{name: "proc cce", data: minimalCTeProcEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCTe) }},
+		{name: "ret generic unknown", data: minimalCTeRetEventXML("999999"), assert: func(t *testing.T, doc *cte.Document) {
+			t.Helper()
+			require.NotNil(t, doc.RetEventoGenerico)
+			assertCTeEventReturnInfo(t, doc)
+		}},
+		{name: "ret generic without tpEvento", data: minimalCTeRetEventWithoutTypeXML(), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.RetEventoGenerico) }},
+		{name: "proc cce", data: minimalCTeProcEventXML("110110"), assert: func(t *testing.T, doc *cte.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoCTe)
+			assertCTeProcessedEventInfo(t, doc)
+		}},
 		{name: "proc cancel", data: minimalCTeProcEventXML("110111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancCTe) }},
 		{name: "proc epec", data: minimalCTeProcEventXML("110113"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoEPECCTe) }},
 		{name: "proc reg multimodal", data: minimalCTeProcEventXML("110160"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoRegMultimodal) }},
@@ -191,6 +212,11 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		{name: "proc cancel ie", data: minimalCTeProcEventXML("110191"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancIECTe) }},
 		{name: "proc prest desacordo", data: minimalCTeProcEventXML("610110"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoPrestDesacordo) }},
 		{name: "proc cancel prest desacordo", data: minimalCTeProcEventXML("610111"), assert: func(t *testing.T, doc *cte.Document) { t.Helper(); require.NotNil(t, doc.ProcEventoCancPrestDesacordo) }},
+		{name: "proc generic unknown", data: minimalCTeProcEventXML("999999"), assert: func(t *testing.T, doc *cte.Document) {
+			t.Helper()
+			require.NotNil(t, doc.ProcEventoGenerico)
+			assertCTeProcessedEventInfo(t, doc)
+		}},
 	}
 
 	for _, tt := range tests {
@@ -211,6 +237,28 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 	}
 }
 
+func TestParse_GenericEventRoot(t *testing.T) {
+	t.Parallel()
+
+	doc, err := cte.Parse([]byte(minimalCTeGenericEventXML("999999")))
+	require.NoError(t, err)
+	require.NotNil(t, doc.EventoGenerico)
+	require.Equal(t, "999999", doc.EventoGenerico.InfEvento.TpEvento)
+	require.Contains(t, doc.EventoGenerico.InfEvento.DetEvento.InnerXML, "evEventoTeste")
+	require.Equal(t, testCTeEventAccessKey, doc.GetAccessKey())
+	require.Equal(t, "2", doc.GetEnvironment())
+	require.Equal(t, testCTeEventIssueDate, doc.GetIssueDate())
+
+	roundTripped, err := xml.MarshalIndent(doc, "", "  ")
+	require.NoError(t, err)
+	require.Contains(t, string(roundTripped), "evEventoTeste")
+
+	reparsed, err := cte.Parse(roundTripped)
+	require.NoError(t, err)
+	require.NotNil(t, reparsed.EventoGenerico)
+	require.Contains(t, reparsed.EventoGenerico.InfEvento.DetEvento.InnerXML, "evEventoTeste")
+}
+
 func TestMarshalXML_NilReceiver(t *testing.T) {
 	t.Parallel()
 
@@ -224,6 +272,19 @@ func assertFixtureShape(t *testing.T, fixture string, doc *cte.Document) {
 	t.Helper()
 
 	switch fixture {
+	case "310610-mdfe-autorizado-procEventoCTe.xml":
+		require.NotNil(t, doc.ProcEventoGenerico)
+		require.Equal(t, "4.00", doc.ProcEventoGenerico.VersaoAttr)
+		require.Equal(t, "310610", doc.ProcEventoGenerico.EventoCTe.InfEvento.TpEvento)
+		require.Equal(t, "35260512345678000195570010000000011000000011", doc.ProcEventoGenerico.EventoCTe.InfEvento.ChCTe)
+		require.Contains(t, doc.ProcEventoGenerico.EventoCTe.InfEvento.DetEvento.InnerXML, "evCTeAutorizadoMDFe")
+		require.Contains(t, doc.ProcEventoGenerico.EventoCTe.InfEvento.DetEvento.InnerXML, "35260512345678000195580010000000011000000012")
+		require.Equal(t, "135", doc.GetStatusCode())
+		require.Equal(t, "135260000000002", doc.GetProtocolNumber())
+		related := doc.GetRelatedDocuments()
+		require.Len(t, related, 1)
+		require.Equal(t, "mdfe", related[0].Type)
+		require.Equal(t, "35260512345678000195580010000000011000000012", related[0].AccessKey)
 	case "43120178408960000182570010000000041000000047-cte.xml":
 		require.NotNil(t, doc.CTe)
 		require.Equal(t, "3.00", doc.CTe.InfCte.VersaoAttr)
@@ -264,6 +325,9 @@ func assertSameRoot(t *testing.T, expected, actual *cte.Document) {
 	require.Equal(t, expected.CTeOS != nil, actual.CTeOS != nil)
 	require.Equal(t, expected.EventoCTe != nil, actual.EventoCTe != nil)
 	require.Equal(t, expected.EventoCancCTe != nil, actual.EventoCancCTe != nil)
+	require.Equal(t, expected.EventoGenerico != nil, actual.EventoGenerico != nil)
+	require.Equal(t, expected.RetEventoGenerico != nil, actual.RetEventoGenerico != nil)
+	require.Equal(t, expected.ProcEventoGenerico != nil, actual.ProcEventoGenerico != nil)
 }
 
 func allFixtureNames(t *testing.T) []string {
@@ -303,11 +367,40 @@ func readFixture(t *testing.T, name string) []byte {
 }
 
 func minimalCTeRetEventXML(tpEvento string) string {
-	return fmt.Sprintf(`<retEventoCTe xmlns="%s" versao="4.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoCTe>`, cteNamespace, tpEvento)
+	return fmt.Sprintf(`<retEventoCTe xmlns="%s" versao="4.00"><infEvento><tpAmb>2</tpAmb><verAplic>test</verAplic><cOrgao>43</cOrgao><cStat>%s</cStat><xMotivo>%s</xMotivo><chCTe>%s</chCTe><tpEvento>%s</tpEvento><xEvento>Evento Teste</xEvento><nSeqEvento>1</nSeqEvento><dhRegEvento>2024-01-02T03:05:06-03:00</dhRegEvento><nProt>%s</nProt></infEvento></retEventoCTe>`, cteNamespace, testCTeEventStatusCode, testCTeEventStatusCause, testCTeEventAccessKey, tpEvento, testCTeEventProtocol)
+}
+
+func minimalCTeRetEventWithoutTypeXML() string {
+	return fmt.Sprintf(`<retEventoCTe xmlns="%s" versao="4.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat></infEvento></retEventoCTe>`, cteNamespace)
+}
+
+func minimalCTeGenericEventXML(tpEvento string) string {
+	return fmt.Sprintf(`<eventoCTe xmlns="%s" versao="4.00"><infEvento Id="ID%s%s01"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chCTe>%s</chCTe><dhEvento>%s</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento versaoEvento="4.00"><evEventoTeste><descEvento>Evento Teste</descEvento></evEventoTeste></detEvento></infEvento></eventoCTe>`, cteNamespace, tpEvento, testCTeEventAccessKey, testCTeEventAccessKey, testCTeEventIssueDate, tpEvento)
 }
 
 func minimalCTeProcEventXML(tpEvento string) string {
-	return fmt.Sprintf(`<procEventoCTe xmlns="%s" versao="4.00"><eventoCTe versao="4.00"><infEvento Id="ID%s4319081234567800019557001000000001100000001101"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chCTe>43190812345678000195570010000000011000000011</chCTe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoCTe><retEventoCTe versao="4.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoCTe></procEventoCTe>`, cteNamespace, tpEvento, tpEvento, tpEvento)
+	return fmt.Sprintf(`<procEventoCTe xmlns="%s" versao="4.00"><eventoCTe versao="4.00"><infEvento Id="ID%s%s01"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chCTe>%s</chCTe><dhEvento>%s</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoCTe><retEventoCTe versao="4.00"><infEvento><tpAmb>2</tpAmb><verAplic>test</verAplic><cOrgao>43</cOrgao><cStat>%s</cStat><xMotivo>%s</xMotivo><chCTe>%s</chCTe><tpEvento>%s</tpEvento><xEvento>Evento Teste</xEvento><nSeqEvento>1</nSeqEvento><dhRegEvento>2024-01-02T03:05:06-03:00</dhRegEvento><nProt>%s</nProt></infEvento></retEventoCTe></procEventoCTe>`, cteNamespace, tpEvento, testCTeEventAccessKey, testCTeEventAccessKey, testCTeEventIssueDate, tpEvento, testCTeEventStatusCode, testCTeEventStatusCause, testCTeEventAccessKey, tpEvento, testCTeEventProtocol)
+}
+
+func minimalCTeGenericProcEventWithoutReturnXML() string {
+	return fmt.Sprintf(`<procEventoCTe xmlns="%s" versao="4.00"><eventoCTe versao="4.00"><infEvento Id="ID999999%s01"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chCTe>%s</chCTe><dhEvento>%s</dhEvento><tpEvento>999999</tpEvento><nSeqEvento>1</nSeqEvento><detEvento><evEventoTeste><descEvento>Evento Teste</descEvento></evEventoTeste></detEvento></infEvento></eventoCTe></procEventoCTe>`, cteNamespace, testCTeEventAccessKey, testCTeEventAccessKey, testCTeEventIssueDate)
+}
+
+func assertCTeEventReturnInfo(t *testing.T, doc *cte.Document) {
+	t.Helper()
+
+	require.Equal(t, testCTeEventAccessKey, doc.GetAccessKey())
+	require.Equal(t, "2", doc.GetEnvironment())
+	require.Equal(t, testCTeEventProtocol, doc.GetProtocolNumber())
+	require.Equal(t, testCTeEventStatusCode, doc.GetStatusCode())
+	require.Equal(t, testCTeEventStatusCause, doc.GetStatusReason())
+}
+
+func assertCTeProcessedEventInfo(t *testing.T, doc *cte.Document) {
+	t.Helper()
+
+	assertCTeEventReturnInfo(t, doc)
+	require.Equal(t, testCTeEventIssueDate, doc.GetIssueDate())
 }
 
 func normalizeXML(t *testing.T, data []byte) string {

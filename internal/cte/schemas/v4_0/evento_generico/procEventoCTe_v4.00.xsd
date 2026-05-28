@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.portalfiscal.inf.br/cte" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <include schemaLocation="eventoCTeTiposBasico_v4.00.xsd"></include>
+  <complexType name="TAnonComplex_procEventoCTe_1">
+    <complexContent>
+      <extension base="TProcEvento"></extension>
+    </complexContent>
+  </complexType>
+  <element name="procEventoCTe" type="TAnonComplex_procEventoCTe_1">
+    <annotation>
+      <documentation>Pedido de Registro de Eventos de CT-e processado</documentation>
+    </annotation>
+  </element>
+</schema>
