@@ -542,123 +542,27 @@ func (d *Document) eventInfo() cteEventInfo {
 }
 
 func (d *Document) processedEventInfo() (cteEventInfo, bool) {
-	if d.ProcEventoCTe != nil {
-		return procEventInfo(d.ProcEventoCTe.EventoCTe, d.ProcEventoCTe.RetEventoCTe), true
+	_, root, ok := cteEventSpecForDocument(d, cteProcEventRoot)
+	if !ok {
+		return cteEventInfo{}, false
 	}
-	if d.ProcEventoCancCTe != nil {
-		return procEventInfo(d.ProcEventoCancCTe.EventoCTe, d.ProcEventoCancCTe.RetEventoCTe), true
-	}
-	if d.ProcEventoCECTe != nil {
-		return procEventInfo(d.ProcEventoCECTe.EventoCTe, d.ProcEventoCECTe.RetEventoCTe), true
-	}
-	if d.ProcEventoCancCECTe != nil {
-		return procEventInfo(d.ProcEventoCancCECTe.EventoCTe, d.ProcEventoCancCECTe.RetEventoCTe), true
-	}
-	if d.ProcEventoEPECCTe != nil {
-		return procEventInfo(d.ProcEventoEPECCTe.EventoCTe, d.ProcEventoEPECCTe.RetEventoCTe), true
-	}
-	if d.ProcEventoRegMultimodal != nil {
-		return procEventInfo(d.ProcEventoRegMultimodal.EventoCTe, d.ProcEventoRegMultimodal.RetEventoCTe), true
-	}
-	if d.ProcEventoGTV != nil {
-		return procEventInfo(d.ProcEventoGTV.EventoCTe, d.ProcEventoGTV.RetEventoCTe), true
-	}
-	if d.ProcEventoIECTe != nil {
-		return procEventInfo(d.ProcEventoIECTe.EventoCTe, d.ProcEventoIECTe.RetEventoCTe), true
-	}
-	if d.ProcEventoCancIECTe != nil {
-		return procEventInfo(d.ProcEventoCancIECTe.EventoCTe, d.ProcEventoCancIECTe.RetEventoCTe), true
-	}
-	if d.ProcEventoPrestDesacordo != nil {
-		return procEventInfo(d.ProcEventoPrestDesacordo.EventoCTe, d.ProcEventoPrestDesacordo.RetEventoCTe), true
-	}
-	if d.ProcEventoCancPrestDesacordo != nil {
-		return procEventInfo(d.ProcEventoCancPrestDesacordo.EventoCTe, d.ProcEventoCancPrestDesacordo.RetEventoCTe), true
-	}
-	if d.ProcEventoGenerico != nil {
-		return procEventInfo(d.ProcEventoGenerico.EventoCTe, d.ProcEventoGenerico.RetEventoCTe), true
-	}
-	return cteEventInfo{}, false
+	return procEventInfo(cteAnyField(root, "EventoCTe"), cteAnyField(root, "RetEventoCTe")), true
 }
 
 func (d *Document) standaloneSentEventInfo() (cteEventInfo, bool) {
-	if d.EventoCTe != nil {
-		return sentEventInfoFromRoot(d.EventoCTe), true
+	_, root, ok := cteEventSpecForDocument(d, cteSentEventRoot)
+	if !ok {
+		return cteEventInfo{}, false
 	}
-	if d.EventoCancCTe != nil {
-		return sentEventInfoFromRoot(d.EventoCancCTe), true
-	}
-	if d.EventoCECTe != nil {
-		return sentEventInfoFromRoot(d.EventoCECTe), true
-	}
-	if d.EventoCancCECTe != nil {
-		return sentEventInfoFromRoot(d.EventoCancCECTe), true
-	}
-	if d.EventoEPECCTe != nil {
-		return sentEventInfoFromRoot(d.EventoEPECCTe), true
-	}
-	if d.EventoRegMultimodal != nil {
-		return sentEventInfoFromRoot(d.EventoRegMultimodal), true
-	}
-	if d.EventoGTV != nil {
-		return sentEventInfoFromRoot(d.EventoGTV), true
-	}
-	if d.EventoIECTe != nil {
-		return sentEventInfoFromRoot(d.EventoIECTe), true
-	}
-	if d.EventoCancIECTe != nil {
-		return sentEventInfoFromRoot(d.EventoCancIECTe), true
-	}
-	if d.EventoPrestDesacordo != nil {
-		return sentEventInfoFromRoot(d.EventoPrestDesacordo), true
-	}
-	if d.EventoCancPrestDesacordo != nil {
-		return sentEventInfoFromRoot(d.EventoCancPrestDesacordo), true
-	}
-	if d.EventoGenerico != nil {
-		return sentEventInfoFromRoot(d.EventoGenerico), true
-	}
-	return cteEventInfo{}, false
+	return sentEventInfoFromRoot(root.Interface()), true
 }
 
 func (d *Document) standaloneRetEventInfo() (cteEventInfo, bool) {
-	if d.RetEventoCTe != nil {
-		return retEventInfoFromRoot(d.RetEventoCTe), true
+	_, root, ok := cteEventSpecForDocument(d, cteRetEventRoot)
+	if !ok {
+		return cteEventInfo{}, false
 	}
-	if d.RetEventoCancCTe != nil {
-		return retEventInfoFromRoot(d.RetEventoCancCTe), true
-	}
-	if d.RetEventoCECTe != nil {
-		return retEventInfoFromRoot(d.RetEventoCECTe), true
-	}
-	if d.RetEventoCancCECTe != nil {
-		return retEventInfoFromRoot(d.RetEventoCancCECTe), true
-	}
-	if d.RetEventoEPECCTe != nil {
-		return retEventInfoFromRoot(d.RetEventoEPECCTe), true
-	}
-	if d.RetEventoRegMultimodal != nil {
-		return retEventInfoFromRoot(d.RetEventoRegMultimodal), true
-	}
-	if d.RetEventoGTV != nil {
-		return retEventInfoFromRoot(d.RetEventoGTV), true
-	}
-	if d.RetEventoIECTe != nil {
-		return retEventInfoFromRoot(d.RetEventoIECTe), true
-	}
-	if d.RetEventoCancIECTe != nil {
-		return retEventInfoFromRoot(d.RetEventoCancIECTe), true
-	}
-	if d.RetEventoPrestDesacordo != nil {
-		return retEventInfoFromRoot(d.RetEventoPrestDesacordo), true
-	}
-	if d.RetEventoCancPrestDesacordo != nil {
-		return retEventInfoFromRoot(d.RetEventoCancPrestDesacordo), true
-	}
-	if d.RetEventoGenerico != nil {
-		return retEventInfoFromRoot(d.RetEventoGenerico), true
-	}
-	return cteEventInfo{}, false
+	return retEventInfoFromRoot(root.Interface()), true
 }
 
 func procEventInfo(evento, retEvento any) cteEventInfo {
@@ -746,13 +650,6 @@ func mergeCTeEventInfo(primary, fallback cteEventInfo) cteEventInfo {
 
 func isEmptyRelatedDocument(doc info.RelatedDocument) bool {
 	return doc.Type == "" && doc.AccessKey == "" && doc.Number == "" && doc.Series == ""
-}
-
-func typedStringPtrValue[T ~string](value *T) string {
-	if value == nil {
-		return ""
-	}
-	return string(*value)
 }
 
 func (d *Document) billingSource() (*billingFat, []info.Duplicata) {

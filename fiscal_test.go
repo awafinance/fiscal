@@ -82,6 +82,72 @@ func TestDocumentNFeConvenienceAccessors(t *testing.T) {
 	require.True(t, info.IsAuthorized())
 }
 
+func TestDocumentEventConvenienceAccessors(t *testing.T) {
+	tests := []struct {
+		name           string
+		path           string
+		family         Family
+		rootName       string
+		version        string
+		accessKey      string
+		environment    string
+		issueDate      string
+		protocolNumber string
+		statusCode     string
+		statusReason   string
+	}{
+		{
+			name:           "bpe processed event",
+			path:           "testdata/bpe/web/procEventoBPe-nao-embarque.xml",
+			family:         BPe,
+			rootName:       "procEventoBPe",
+			version:        "1.00",
+			accessKey:      "43180207364617000135630000000000301000000081",
+			environment:    "2",
+			issueDate:      "2018-02-21T14:58:46-03:00",
+			protocolNumber: "143180000002623",
+			statusCode:     "135",
+			statusReason:   "Evento registrado e vinculado a BP-e",
+		},
+		{
+			name:           "mdfe processed event",
+			path:           "testdata/mdfe/web/procEventoMDFe-encerramento.xml",
+			family:         MDFe,
+			rootName:       "procEventoMDFe",
+			version:        "3.00",
+			accessKey:      "41999999999999999999999999999999999999999999",
+			environment:    "1",
+			issueDate:      "2023-03-03T14:42:16-03:00",
+			protocolNumber: "949999999999999",
+			statusCode:     "135",
+			statusReason:   "Evento registrado e vinculado ao MDF-e",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data, err := os.ReadFile(tt.path)
+			require.NoError(t, err)
+
+			doc, err := Parse(data)
+			require.NoError(t, err)
+			require.Equal(t, tt.family, doc.Family)
+			require.Equal(t, tt.rootName, doc.RootName)
+
+			info := doc.Info()
+			require.NotNil(t, info)
+			require.Equal(t, tt.version, info.GetVersion())
+			require.Equal(t, tt.accessKey, info.GetAccessKey())
+			require.Equal(t, tt.environment, info.GetEnvironment())
+			require.Equal(t, tt.issueDate, info.GetIssueDate())
+			require.Equal(t, tt.protocolNumber, info.GetProtocolNumber())
+			require.Equal(t, tt.statusCode, info.GetStatusCode())
+			require.Equal(t, tt.statusReason, info.GetStatusReason())
+			require.False(t, info.IsAuthorized())
+		})
+	}
+}
+
 func TestParseDetectsPrefixedRootNamespace(t *testing.T) {
 	data := []byte(`<x:NFe xmlns:x="http://www.portalfiscal.inf.br/nfe"></x:NFe>`)
 

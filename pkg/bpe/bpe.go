@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"reflect"
 
 	schema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/core"
 	alteracaoPoltronaEventSchema "github.com/awafinance/fiscal/internal/bpe/gen/v1_0/evento_alteracao_poltrona"
@@ -16,7 +17,10 @@ import (
 	"github.com/awafinance/fiscal/pkg/fiscalerr"
 )
 
-const namespace = "http://www.portalfiscal.inf.br/bpe"
+const (
+	namespace     = "http://www.portalfiscal.inf.br/bpe"
+	rootEventoBPe = "eventoBPe"
+)
 
 var errSingleRoot = errors.New("marshal bpe: document must contain exactly one supported root")
 
@@ -30,7 +34,7 @@ var parsersByRoot = map[string]func([]byte, string) (*Document, error){
 	"retConsSitBPe":      parseRetConsSitBPe,
 	"consStatServBPe":    parseConsStatServBPe,
 	"retConsStatServBPe": parseRetConsStatServBPe,
-	"eventoBPe":          func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseEventDocument) },
+	rootEventoBPe:        func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseEventDocument) },
 	"retEventoBPe":       func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseRetEventDocument) },
 	"procEventoBPe":      func(d []byte, rn string) (*Document, error) { return parseEventRoot(d, rn, parseProcEventDocument) },
 }
@@ -88,7 +92,7 @@ func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return marshalConsStatServBPe(e, d)
 	case "retConsStatServBPe":
 		return marshalRetConsStatServBPe(e, d)
-	case "eventoBPe":
+	case rootEventoBPe:
 		return marshalEventRoot(e, d)
 	case "retEventoBPe":
 		return marshalRetEventRoot(e, d)
@@ -371,6 +375,43 @@ func eventTypeFromXML(data []byte) (string, error) {
 	return head.EventoBPe.InfEvento.TpEvento, nil
 }
 
+type bpeEventRootKind uint8
+
+const (
+	bpeSentEventRoot bpeEventRootKind = iota
+	bpeRetEventRoot
+	bpeProcEventRoot
+)
+
+type bpeEventSpec struct {
+	eventTypes []string
+	context    string
+	eventField string
+
+	eventTypeOf     reflect.Type
+	retEventTypeOf  reflect.Type
+	procEventTypeOf reflect.Type
+}
+
+var bpeEventSpecs = []bpeEventSpec{
+	bpeEvent[schema.TEvento, schema.TRetEvento, schema.TProcEvento](nil, "generic", "EventoBPe"),
+	bpeEvent[cancelEventSchema.TEvento, cancelEventSchema.TRetEvento, cancelEventSchema.TProcEvento]([]string{"110111"}, "cancelamento", "EventoCancBPe"),
+	bpeEvent[naoEmbEventSchema.TEvento, naoEmbEventSchema.TRetEvento, naoEmbEventSchema.TProcEvento]([]string{"110115"}, "nao embarque", "EventoNaoEmbBPe"),
+	bpeEvent[alteracaoPoltronaEventSchema.TEvento, alteracaoPoltronaEventSchema.TRetEvento, alteracaoPoltronaEventSchema.TProcEvento]([]string{"110116"}, "alteracao poltrona", "EventoAlteracaoPoltrona"),
+	bpeEvent[excessoBagagemEventSchema.TEvento, excessoBagagemEventSchema.TRetEvento, excessoBagagemEventSchema.TProcEvento]([]string{"110117"}, "excesso bagagem", "EventoExcessoBagagem"),
+}
+
+func bpeEvent[E, R, P any](eventTypes []string, context, eventField string) bpeEventSpec {
+	return bpeEventSpec{
+		eventTypes:      eventTypes,
+		context:         context,
+		eventField:      eventField,
+		eventTypeOf:     reflect.TypeFor[E](),
+		retEventTypeOf:  reflect.TypeFor[R](),
+		procEventTypeOf: reflect.TypeFor[P](),
+	}
+}
+
 var rootValidators = []func(*Document) error{
 	validateBPeRoot,
 	validateBPeTMRoot,
@@ -542,78 +583,19 @@ func validateInfBPeTM(inf *schema.TAnonComplexInfBPe1) error {
 }
 
 func validateEventRoots(doc *Document) error {
-	if err := validateEventos(doc); err != nil {
-		return err
-	}
-	if err := validateRetEventos(doc); err != nil {
-		return err
-	}
-	return validateProcEventos(doc)
-}
-
-func validateEventos(doc *Document) error {
-	switch {
-	case doc.EventoBPe != nil:
-		return validateEvento(doc.EventoBPe.InfEvento)
-	case doc.EventoCancBPe != nil:
-		return validateEvento(doc.EventoCancBPe.InfEvento)
-	case doc.EventoAlteracaoPoltrona != nil:
-		return validateEvento(doc.EventoAlteracaoPoltrona.InfEvento)
-	case doc.EventoExcessoBagagem != nil:
-		return validateEvento(doc.EventoExcessoBagagem.InfEvento)
-	case doc.EventoNaoEmbBPe != nil:
-		return validateEvento(doc.EventoNaoEmbBPe.InfEvento)
+	for i := range bpeEventSpecs {
+		spec := &bpeEventSpecs[i]
+		if err := validateBPeEventField(doc, spec, bpeSentEventRoot, validateBPeSentEventRoot); err != nil {
+			return err
+		}
+		if err := validateBPeEventField(doc, spec, bpeRetEventRoot, validateBPeRetEventRoot); err != nil {
+			return err
+		}
+		if err := validateBPeProcEventField(doc, spec); err != nil {
+			return err
+		}
 	}
 	return nil
-}
-
-func validateRetEventos(doc *Document) error {
-	switch {
-	case doc.RetEventoBPe != nil:
-		return validateRetEvento(doc.RetEventoBPe.InfEvento)
-	case doc.RetEventoCancBPe != nil:
-		return validateRetEvento(doc.RetEventoCancBPe.InfEvento)
-	case doc.RetEventoAlteracaoPoltrona != nil:
-		return validateRetEvento(doc.RetEventoAlteracaoPoltrona.InfEvento)
-	case doc.RetEventoExcessoBagagem != nil:
-		return validateRetEvento(doc.RetEventoExcessoBagagem.InfEvento)
-	case doc.RetEventoNaoEmbBPe != nil:
-		return validateRetEvento(doc.RetEventoNaoEmbBPe.InfEvento)
-	}
-	return nil
-}
-
-func validateProcEventos(doc *Document) error {
-	switch {
-	case doc.ProcEventoBPe != nil:
-		return validateProcEvento(doc.ProcEventoBPe.EventoBPe, doc.ProcEventoBPe.RetEventoBPe)
-	case doc.ProcEventoCancBPe != nil:
-		return validateProcEvento(doc.ProcEventoCancBPe.EventoBPe, doc.ProcEventoCancBPe.RetEventoBPe)
-	case doc.ProcEventoAlteracaoPoltrona != nil:
-		return validateProcEvento(doc.ProcEventoAlteracaoPoltrona.EventoBPe, doc.ProcEventoAlteracaoPoltrona.RetEventoBPe)
-	case doc.ProcEventoExcessoBagagem != nil:
-		return validateProcEvento(doc.ProcEventoExcessoBagagem.EventoBPe, doc.ProcEventoExcessoBagagem.RetEventoBPe)
-	case doc.ProcEventoNaoEmbBPe != nil:
-		return validateProcEvento(doc.ProcEventoNaoEmbBPe.EventoBPe, doc.ProcEventoNaoEmbBPe.RetEventoBPe)
-	}
-	return nil
-}
-
-func validateEvento(inf any) error {
-	switch inf := inf.(type) {
-	case *schema.TAnonComplexInfEvento1:
-		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
-	case *cancelEventSchema.TAnonComplexInfEvento1:
-		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
-	case *alteracaoPoltronaEventSchema.TAnonComplexInfEvento1:
-		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
-	case *excessoBagagemEventSchema.TAnonComplexInfEvento1:
-		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
-	case *naoEmbEventSchema.TAnonComplexInfEvento1:
-		return validateEventoFields(inf == nil, inf.ChBPe, inf.DetEvento == nil)
-	default:
-		return errors.New("parse bpe: missing infEvento")
-	}
 }
 
 func validateEventoFields(isNil bool, chBPe string, missingDetEvento bool) error {
@@ -629,23 +611,6 @@ func validateEventoFields(isNil bool, chBPe string, missingDetEvento bool) error
 	return nil
 }
 
-func validateRetEvento(inf any) error {
-	switch inf := inf.(type) {
-	case *schema.TAnonComplexInfEvento2:
-		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *cancelEventSchema.TAnonComplexInfEvento2:
-		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *alteracaoPoltronaEventSchema.TAnonComplexInfEvento2:
-		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *excessoBagagemEventSchema.TAnonComplexInfEvento2:
-		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *naoEmbEventSchema.TAnonComplexInfEvento2:
-		return validateRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	default:
-		return errors.New("parse bpe: missing infEvento")
-	}
-}
-
 func validateRetEventoFields(isNil bool, tpAmb, cStat string) error {
 	if isNil {
 		return errors.New("parse bpe: missing infEvento")
@@ -659,6 +624,32 @@ func validateRetEventoFields(isNil bool, tpAmb, cStat string) error {
 	return nil
 }
 
+func validateBPeEventField(doc *Document, spec *bpeEventSpec, kind bpeEventRootKind, validate func(any) error) error {
+	root := bpeDocumentEventField(doc, spec, kind)
+	if !bpeHasValue(root) {
+		return nil
+	}
+	return validate(root.Interface())
+}
+
+func validateBPeProcEventField(doc *Document, spec *bpeEventSpec) error {
+	root := bpeDocumentEventField(doc, spec, bpeProcEventRoot)
+	if !bpeHasValue(root) {
+		return nil
+	}
+	return validateProcEvento(bpeAnyField(root, "EventoBPe"), bpeAnyField(root, "RetEventoBPe"))
+}
+
+func validateBPeSentEventRoot(evento any) error {
+	inf := bpeField(reflect.ValueOf(evento), "InfEvento")
+	return validateEventoFields(!bpeHasValue(inf), bpeStringField(inf, "ChBPe"), !bpeHasValue(bpeField(inf, "DetEvento")))
+}
+
+func validateBPeRetEventRoot(retEvento any) error {
+	inf := bpeField(reflect.ValueOf(retEvento), "InfEvento")
+	return validateRetEventoFields(!bpeHasValue(inf), bpeStringField(inf, "TpAmb"), bpeStringField(inf, "CStat"))
+}
+
 func validateProcEvento(evento any, retEvento any) error {
 	if evento == nil {
 		return errors.New("parse bpe: missing eventoBPe")
@@ -670,65 +661,43 @@ func validateProcEvento(evento any, retEvento any) error {
 }
 
 func marshalEventRoot(e *xml.Encoder, d *Document) error {
-	if activeRootCount(d) != 1 {
-		return errors.New("marshal bpe: document must contain exactly one supported root")
-	}
-
-	switch {
-	case d.EventoBPe != nil:
-		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoBPe.VersaoAttr), d.EventoBPe.InfEvento, d.EventoBPe.DsSignature)
-	case d.EventoCancBPe != nil:
-		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancBPe.VersaoAttr), d.EventoCancBPe.InfEvento, d.EventoCancBPe.DsSignature)
-	case d.EventoAlteracaoPoltrona != nil:
-		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPoltrona.VersaoAttr), d.EventoAlteracaoPoltrona.InfEvento, d.EventoAlteracaoPoltrona.DsSignature)
-	case d.EventoExcessoBagagem != nil:
-		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoExcessoBagagem.VersaoAttr), d.EventoExcessoBagagem.InfEvento, d.EventoExcessoBagagem.DsSignature)
-	case d.EventoNaoEmbBPe != nil:
-		return encodeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoNaoEmbBPe.VersaoAttr), d.EventoNaoEmbBPe.InfEvento, d.EventoNaoEmbBPe.DsSignature)
-	default:
-		return errors.New("marshal bpe: document must contain exactly one supported root")
-	}
+	return marshalBPeEventRoot(e, d, bpeSentEventRoot)
 }
 
 func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
-	if activeRootCount(d) != 1 {
-		return errors.New("marshal bpe: document must contain exactly one supported root")
-	}
-
-	switch {
-	case d.RetEventoBPe != nil:
-		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoBPe.VersaoAttr), d.RetEventoBPe.InfEvento, d.RetEventoBPe.DsSignature)
-	case d.RetEventoCancBPe != nil:
-		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoCancBPe.VersaoAttr), d.RetEventoCancBPe.InfEvento, d.RetEventoCancBPe.DsSignature)
-	case d.RetEventoAlteracaoPoltrona != nil:
-		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPoltrona.VersaoAttr), d.RetEventoAlteracaoPoltrona.InfEvento, d.RetEventoAlteracaoPoltrona.DsSignature)
-	case d.RetEventoExcessoBagagem != nil:
-		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoExcessoBagagem.VersaoAttr), d.RetEventoExcessoBagagem.InfEvento, d.RetEventoExcessoBagagem.DsSignature)
-	case d.RetEventoNaoEmbBPe != nil:
-		return encodeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoNaoEmbBPe.VersaoAttr), d.RetEventoNaoEmbBPe.InfEvento, d.RetEventoNaoEmbBPe.DsSignature)
-	default:
-		return errors.New("marshal bpe: document must contain exactly one supported root")
-	}
+	return marshalBPeEventRoot(e, d, bpeRetEventRoot)
 }
 
 func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
-	if activeRootCount(d) != 1 {
-		return errors.New("marshal bpe: document must contain exactly one supported root")
-	}
+	return marshalBPeEventRoot(e, d, bpeProcEventRoot)
+}
 
-	switch {
-	case d.ProcEventoBPe != nil:
-		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoBPe.VersaoAttr), d.ProcEventoBPe.IpTransmissorAttr, d.ProcEventoBPe.NPortaConAttr, d.ProcEventoBPe.DhConexaoAttr, d.ProcEventoBPe.EventoBPe, d.ProcEventoBPe.RetEventoBPe)
-	case d.ProcEventoCancBPe != nil:
-		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoCancBPe.VersaoAttr), d.ProcEventoCancBPe.IpTransmissorAttr, d.ProcEventoCancBPe.NPortaConAttr, d.ProcEventoCancBPe.DhConexaoAttr, d.ProcEventoCancBPe.EventoBPe, d.ProcEventoCancBPe.RetEventoBPe)
-	case d.ProcEventoAlteracaoPoltrona != nil:
-		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPoltrona.VersaoAttr), d.ProcEventoAlteracaoPoltrona.IpTransmissorAttr, d.ProcEventoAlteracaoPoltrona.NPortaConAttr, d.ProcEventoAlteracaoPoltrona.DhConexaoAttr, d.ProcEventoAlteracaoPoltrona.EventoBPe, d.ProcEventoAlteracaoPoltrona.RetEventoBPe)
-	case d.ProcEventoExcessoBagagem != nil:
-		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoExcessoBagagem.VersaoAttr), d.ProcEventoExcessoBagagem.IpTransmissorAttr, d.ProcEventoExcessoBagagem.NPortaConAttr, d.ProcEventoExcessoBagagem.DhConexaoAttr, d.ProcEventoExcessoBagagem.EventoBPe, d.ProcEventoExcessoBagagem.RetEventoBPe)
-	case d.ProcEventoNaoEmbBPe != nil:
-		return encodeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoNaoEmbBPe.VersaoAttr), d.ProcEventoNaoEmbBPe.IpTransmissorAttr, d.ProcEventoNaoEmbBPe.NPortaConAttr, d.ProcEventoNaoEmbBPe.DhConexaoAttr, d.ProcEventoNaoEmbBPe.EventoBPe, d.ProcEventoNaoEmbBPe.RetEventoBPe)
+func marshalBPeEventRoot(e *xml.Encoder, d *Document, kind bpeEventRootKind) error {
+	if activeRootCount(d) != 1 {
+		return errSingleRoot
+	}
+	_, root, ok := bpeEventSpecForDocument(d, kind)
+	if !ok {
+		return errSingleRoot
+	}
+	versao := xmlutil.FirstNonEmpty(d.VersaoAttr, bpeStringField(root, "VersaoAttr"))
+	switch kind {
+	case bpeSentEventRoot:
+		return encodeEvent(e, versao, bpeAnyField(root, "InfEvento"), bpeAnyField(root, "DsSignature"))
+	case bpeRetEventRoot:
+		return encodeRetEvent(e, versao, bpeAnyField(root, "InfEvento"), bpeAnyField(root, "DsSignature"))
+	case bpeProcEventRoot:
+		return encodeProcEvent(
+			e,
+			versao,
+			bpeStringPtrField(root, "IpTransmissorAttr"),
+			bpeStringPtrField(root, "NPortaConAttr"),
+			bpeStringPtrField(root, "DhConexaoAttr"),
+			bpeAnyField(root, "EventoBPe"),
+			bpeAnyField(root, "RetEventoBPe"),
+		)
 	default:
-		return errors.New("marshal bpe: document must contain exactly one supported root")
+		return errSingleRoot
 	}
 }
 
@@ -786,87 +755,189 @@ func encodeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon, dh
 	})
 }
 
-func decodeEvent[T any](data []byte, context string, assign func(*T) *Document) (*Document, error) {
-	var parsed T
-	if err := xml.Unmarshal(data, &parsed); err != nil {
-		return nil, fmt.Errorf("parse bpe: decode %s: %w", context, err)
-	}
-	return finalizeDoc(assign(&parsed))
-}
-
 func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
-	switch tpEvento {
-	case "110111":
-		return decodeEvent(data, "eventoBPe cancelamento", func(p *cancelEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoCancBPe: p, RootName: rootName}
-		})
-	case "110115":
-		return decodeEvent(data, "eventoBPe nao embarque", func(p *naoEmbEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoNaoEmbBPe: p, RootName: rootName}
-		})
-	case "110116":
-		return decodeEvent(data, "eventoBPe alteracao poltrona", func(p *alteracaoPoltronaEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoAlteracaoPoltrona: p, RootName: rootName}
-		})
-	case "110117":
-		return decodeEvent(data, "eventoBPe excesso bagagem", func(p *excessoBagagemEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoExcessoBagagem: p, RootName: rootName}
-		})
-	default:
-		return decodeEvent(data, "eventoBPe", func(p *schema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoBPe: p, RootName: rootName}
-		})
-	}
+	return parseBPeEventDocument(data, rootName, tpEvento, bpeSentEventRoot)
 }
 
 func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
-	switch tpEvento {
-	case "110111":
-		return decodeEvent(data, "retEventoBPe cancelamento", func(p *cancelEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancBPe: p, RootName: rootName}
-		})
-	case "110115":
-		return decodeEvent(data, "retEventoBPe nao embarque", func(p *naoEmbEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoNaoEmbBPe: p, RootName: rootName}
-		})
-	case "110116":
-		return decodeEvent(data, "retEventoBPe alteracao poltrona", func(p *alteracaoPoltronaEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoAlteracaoPoltrona: p, RootName: rootName}
-		})
-	case "110117":
-		return decodeEvent(data, "retEventoBPe excesso bagagem", func(p *excessoBagagemEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoExcessoBagagem: p, RootName: rootName}
-		})
-	default:
-		return decodeEvent(data, "retEventoBPe", func(p *schema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoBPe: p, RootName: rootName}
-		})
-	}
+	return parseBPeEventDocument(data, rootName, tpEvento, bpeRetEventRoot)
 }
 
 func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
-	switch tpEvento {
-	case "110111":
-		return decodeEvent(data, "procEventoBPe cancelamento", func(p *cancelEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancBPe: p, RootName: rootName}
-		})
-	case "110115":
-		return decodeEvent(data, "procEventoBPe nao embarque", func(p *naoEmbEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoNaoEmbBPe: p, RootName: rootName}
-		})
-	case "110116":
-		return decodeEvent(data, "procEventoBPe alteracao poltrona", func(p *alteracaoPoltronaEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoAlteracaoPoltrona: p, RootName: rootName}
-		})
-	case "110117":
-		return decodeEvent(data, "procEventoBPe excesso bagagem", func(p *excessoBagagemEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoExcessoBagagem: p, RootName: rootName}
-		})
-	default:
-		return decodeEvent(data, "procEventoBPe", func(p *schema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoBPe: p, RootName: rootName}
-		})
+	return parseBPeEventDocument(data, rootName, tpEvento, bpeProcEventRoot)
+}
+
+func parseBPeEventDocument(data []byte, rootName, tpEvento string, kind bpeEventRootKind) (*Document, error) {
+	spec := bpeEventSpecForType(tpEvento)
+	if spec == nil {
+		return nil, fmt.Errorf("parse bpe: unsupported eventoBPe type %q", tpEvento)
 	}
+
+	parsed := reflect.New(spec.rootType(kind))
+	if err := xml.Unmarshal(data, parsed.Interface()); err != nil {
+		return nil, fmt.Errorf("parse bpe: decode %s %s: %w", kind.rootName(), spec.context, err)
+	}
+
+	doc := &Document{
+		VersaoAttr: bpeStringField(parsed, "VersaoAttr"),
+		RootName:   rootName,
+	}
+	bpeDocumentEventField(doc, spec, kind).Set(parsed)
+	return finalizeDoc(doc)
+}
+
+func bpeEventSpecForType(tpEvento string) *bpeEventSpec {
+	var generic *bpeEventSpec
+	for i := range bpeEventSpecs {
+		spec := &bpeEventSpecs[i]
+		if len(spec.eventTypes) == 0 {
+			generic = spec
+			continue
+		}
+		for _, eventType := range spec.eventTypes {
+			if eventType == tpEvento {
+				return spec
+			}
+		}
+	}
+	return generic
+}
+
+func bpeEventSpecForDocument(d *Document, kind bpeEventRootKind) (*bpeEventSpec, reflect.Value, bool) {
+	for i := range bpeEventSpecs {
+		spec := &bpeEventSpecs[i]
+		root := bpeDocumentEventField(d, spec, kind)
+		if root.IsValid() && !root.IsNil() {
+			return spec, root, true
+		}
+	}
+	return nil, reflect.Value{}, false
+}
+
+func bpeDocumentEventField(d *Document, spec *bpeEventSpec, kind bpeEventRootKind) reflect.Value {
+	if d == nil || spec == nil {
+		return reflect.Value{}
+	}
+	return reflect.ValueOf(d).Elem().FieldByName(spec.docField(kind))
+}
+
+func activeBPeEventRootCount(d *Document) int {
+	count := 0
+	for i := range bpeEventSpecs {
+		spec := &bpeEventSpecs[i]
+		for _, kind := range []bpeEventRootKind{bpeSentEventRoot, bpeRetEventRoot, bpeProcEventRoot} {
+			root := bpeDocumentEventField(d, spec, kind)
+			if root.IsValid() && !root.IsNil() {
+				count++
+			}
+		}
+	}
+	return count
+}
+
+func (s *bpeEventSpec) rootType(kind bpeEventRootKind) reflect.Type {
+	switch kind {
+	case bpeSentEventRoot:
+		return s.eventTypeOf
+	case bpeRetEventRoot:
+		return s.retEventTypeOf
+	case bpeProcEventRoot:
+		return s.procEventTypeOf
+	default:
+		return nil
+	}
+}
+
+func (s *bpeEventSpec) docField(kind bpeEventRootKind) string {
+	switch kind {
+	case bpeSentEventRoot:
+		return s.eventField
+	case bpeRetEventRoot:
+		return "Ret" + s.eventField
+	case bpeProcEventRoot:
+		return "Proc" + s.eventField
+	default:
+		return ""
+	}
+}
+
+func (kind bpeEventRootKind) rootName() string {
+	switch kind {
+	case bpeSentEventRoot:
+		return rootEventoBPe
+	case bpeRetEventRoot:
+		return "retEventoBPe"
+	case bpeProcEventRoot:
+		return "procEventoBPe"
+	default:
+		return rootEventoBPe
+	}
+}
+
+func bpeField(value reflect.Value, name string) reflect.Value {
+	if !value.IsValid() {
+		return reflect.Value{}
+	}
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return reflect.Value{}
+		}
+		value = value.Elem()
+	}
+	if value.Kind() != reflect.Struct {
+		return reflect.Value{}
+	}
+	return value.FieldByName(name)
+}
+
+func bpeAnyField(value reflect.Value, name string) any {
+	field := bpeField(value, name)
+	if !field.IsValid() {
+		return nil
+	}
+	if field.Kind() == reflect.Pointer && field.IsNil() {
+		return nil
+	}
+	return field.Interface()
+}
+
+func bpeStringField(value reflect.Value, name string) string {
+	return bpeStringValue(bpeField(value, name))
+}
+
+func bpeStringPtrField(value reflect.Value, name string) *string {
+	field := bpeField(value, name)
+	if !field.IsValid() || field.Kind() != reflect.Pointer || field.IsNil() {
+		return nil
+	}
+	if ptr, ok := field.Interface().(*string); ok {
+		return ptr
+	}
+	if field.Type().Elem().Kind() == reflect.String {
+		value := field.Elem().String()
+		return &value
+	}
+	return nil
+}
+
+func bpeStringValue(value reflect.Value) string {
+	if !value.IsValid() {
+		return ""
+	}
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return ""
+		}
+		value = value.Elem()
+	}
+	if value.Kind() != reflect.String {
+		return ""
+	}
+	return value.String()
+}
+
+func bpeHasValue(value reflect.Value) bool {
+	return value.IsValid() && (value.Kind() != reflect.Pointer || !value.IsNil())
 }
 
 func versionFromBPe(inf *schema.TAnonComplexInfBPe2) string {
@@ -895,25 +966,11 @@ func activeRootCount(doc *Document) int {
 		doc.RetConsSitBPe != nil,
 		doc.ConsStatServBPe != nil,
 		doc.RetConsStatServBPe != nil,
-		doc.EventoBPe != nil,
-		doc.RetEventoBPe != nil,
-		doc.ProcEventoBPe != nil,
-		doc.EventoCancBPe != nil,
-		doc.RetEventoCancBPe != nil,
-		doc.ProcEventoCancBPe != nil,
-		doc.EventoAlteracaoPoltrona != nil,
-		doc.RetEventoAlteracaoPoltrona != nil,
-		doc.ProcEventoAlteracaoPoltrona != nil,
-		doc.EventoExcessoBagagem != nil,
-		doc.RetEventoExcessoBagagem != nil,
-		doc.ProcEventoExcessoBagagem != nil,
-		doc.EventoNaoEmbBPe != nil,
-		doc.RetEventoNaoEmbBPe != nil,
-		doc.ProcEventoNaoEmbBPe != nil,
 	} {
 		if ok {
 			count++
 		}
 	}
+	count += activeBPeEventRootCount(doc)
 	return count
 }

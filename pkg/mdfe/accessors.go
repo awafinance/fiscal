@@ -1,12 +1,16 @@
 package mdfe
 
 import (
+	"reflect"
 	"strings"
 
 	"github.com/awafinance/fiscal/pkg/info"
 )
 
 func (d *Document) GetAccessKey() string {
+	if info := d.eventInfo(); info.AccessKey != "" {
+		return info.AccessKey
+	}
 	if prot := d.prot(); prot != nil && prot.ChMDFe != "" {
 		return prot.ChMDFe
 	}
@@ -27,6 +31,9 @@ func (d *Document) GetVersion() string {
 }
 
 func (d *Document) GetEnvironment() string {
+	if info := d.eventInfo(); info.Environment != "" {
+		return info.Environment
+	}
 	if inf := d.infMDFe(); inf != nil && inf.Ide != nil {
 		return inf.Ide.TpAmb
 	}
@@ -58,6 +65,9 @@ func (d *Document) GetModel() string {
 }
 
 func (d *Document) GetIssueDate() string {
+	if info := d.eventInfo(); info.IssueDate != "" {
+		return info.IssueDate
+	}
 	if inf := d.infMDFe(); inf != nil && inf.Ide != nil {
 		return inf.Ide.DhEmi
 	}
@@ -97,6 +107,9 @@ func (d *Document) GetProtocolNumber() string {
 	if prot := d.prot(); prot != nil {
 		return stringPtrValue(prot.NProt)
 	}
+	if info := d.eventInfo(); info.ProtocolNumber != "" {
+		return info.ProtocolNumber
+	}
 	return ""
 }
 
@@ -104,12 +117,18 @@ func (d *Document) GetStatusCode() string {
 	if prot := d.prot(); prot != nil {
 		return prot.CStat
 	}
+	if info := d.eventInfo(); info.StatusCode != "" {
+		return info.StatusCode
+	}
 	return ""
 }
 
 func (d *Document) GetStatusReason() string {
 	if prot := d.prot(); prot != nil && prot.XMotivo != nil {
 		return string(*prot.XMotivo)
+	}
+	if info := d.eventInfo(); info.StatusReason != "" {
+		return info.StatusReason
 	}
 	return ""
 }
@@ -189,6 +208,104 @@ func (d *Document) prot() *MDFeTAnonComplexInfProt1 {
 		return d.MDFeProc.ProtMDFe.InfProt
 	}
 	return nil
+}
+
+type mdfeEventInfo struct {
+	AccessKey      string
+	Environment    string
+	IssueDate      string
+	ProtocolNumber string
+	StatusCode     string
+	StatusReason   string
+}
+
+func (d *Document) eventInfo() mdfeEventInfo {
+	if d == nil {
+		return mdfeEventInfo{}
+	}
+	if info, ok := d.processedEventInfo(); ok {
+		return info
+	}
+	if info, ok := d.standaloneSentEventInfo(); ok {
+		return info
+	}
+	if info, ok := d.standaloneRetEventInfo(); ok {
+		return info
+	}
+	return mdfeEventInfo{}
+}
+
+func (d *Document) processedEventInfo() (mdfeEventInfo, bool) {
+	_, root, ok := mdfeEventSpecForDocument(d, mdfeProcEventRoot)
+	if !ok {
+		return mdfeEventInfo{}, false
+	}
+	return mergeMDFeEventInfo(
+		sentEventInfoFromRoot(mdfeAnyField(root, "EventoMDFe")),
+		retEventInfoFromRoot(mdfeAnyField(root, "RetEventoMDFe")),
+	), true
+}
+
+func (d *Document) standaloneSentEventInfo() (mdfeEventInfo, bool) {
+	_, root, ok := mdfeEventSpecForDocument(d, mdfeSentEventRoot)
+	if !ok {
+		return mdfeEventInfo{}, false
+	}
+	return sentEventInfoFromRoot(root.Interface()), true
+}
+
+func (d *Document) standaloneRetEventInfo() (mdfeEventInfo, bool) {
+	_, root, ok := mdfeEventSpecForDocument(d, mdfeRetEventRoot)
+	if !ok {
+		return mdfeEventInfo{}, false
+	}
+	return retEventInfoFromRoot(root.Interface()), true
+}
+
+func sentEventInfoFromRoot(evento any) mdfeEventInfo {
+	inf := mdfeField(reflect.ValueOf(evento), "InfEvento")
+	if !mdfeHasValue(inf) {
+		return mdfeEventInfo{}
+	}
+	return mdfeEventInfo{
+		AccessKey:   mdfeStringField(inf, "ChMDFe"),
+		Environment: mdfeStringField(inf, "TpAmb"),
+		IssueDate:   mdfeStringField(inf, "DhEvento"),
+	}
+}
+
+func retEventInfoFromRoot(retEvento any) mdfeEventInfo {
+	inf := mdfeField(reflect.ValueOf(retEvento), "InfEvento")
+	if !mdfeHasValue(inf) {
+		return mdfeEventInfo{}
+	}
+	return mdfeEventInfo{
+		AccessKey:      mdfeStringField(inf, "ChMDFe"),
+		Environment:    mdfeStringField(inf, "TpAmb"),
+		ProtocolNumber: mdfeStringField(inf, "NProt"),
+		StatusCode:     mdfeStringField(inf, "CStat"),
+		StatusReason:   mdfeStringField(inf, "XMotivo"),
+	}
+}
+
+func mergeMDFeEventInfo(primary, fallback mdfeEventInfo) mdfeEventInfo {
+	return mdfeEventInfo{
+		AccessKey:      firstNonEmpty(primary.AccessKey, fallback.AccessKey),
+		Environment:    firstNonEmpty(primary.Environment, fallback.Environment),
+		IssueDate:      firstNonEmpty(primary.IssueDate, fallback.IssueDate),
+		ProtocolNumber: firstNonEmpty(primary.ProtocolNumber, fallback.ProtocolNumber),
+		StatusCode:     firstNonEmpty(primary.StatusCode, fallback.StatusCode),
+		StatusReason:   firstNonEmpty(primary.StatusReason, fallback.StatusReason),
+	}
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
+			return value
+		}
+	}
+	return ""
 }
 
 func firstStringPtr(values ...*string) string {
