@@ -1,6 +1,7 @@
 package bpe
 
 import (
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -8,6 +9,9 @@ import (
 )
 
 func (d *Document) GetAccessKey() string {
+	if info := d.eventInfo(); info.AccessKey != "" {
+		return info.AccessKey
+	}
 	if prot := d.prot(); prot != nil && prot.ChBPe != "" {
 		return prot.ChBPe
 	}
@@ -28,6 +32,9 @@ func (d *Document) GetVersion() string {
 }
 
 func (d *Document) GetEnvironment() string {
+	if info := d.eventInfo(); info.Environment != "" {
+		return info.Environment
+	}
 	if inf := d.infBPe(); inf != nil && inf.Ide != nil {
 		return inf.Ide.TpAmb
 	}
@@ -59,6 +66,9 @@ func (d *Document) GetModel() string {
 }
 
 func (d *Document) GetIssueDate() string {
+	if info := d.eventInfo(); info.IssueDate != "" {
+		return info.IssueDate
+	}
 	if inf := d.infBPe(); inf != nil && inf.Ide != nil {
 		return inf.Ide.DhEmi
 	}
@@ -104,6 +114,9 @@ func (d *Document) GetProtocolNumber() string {
 	if prot := d.prot(); prot != nil {
 		return stringPtrValue(prot.NProt)
 	}
+	if info := d.eventInfo(); info.ProtocolNumber != "" {
+		return info.ProtocolNumber
+	}
 	return ""
 }
 
@@ -111,12 +124,18 @@ func (d *Document) GetStatusCode() string {
 	if prot := d.prot(); prot != nil {
 		return prot.CStat
 	}
+	if info := d.eventInfo(); info.StatusCode != "" {
+		return info.StatusCode
+	}
 	return ""
 }
 
 func (d *Document) GetStatusReason() string {
 	if prot := d.prot(); prot != nil && prot.XMotivo != nil {
 		return string(*prot.XMotivo)
+	}
+	if info := d.eventInfo(); info.StatusReason != "" {
+		return info.StatusReason
 	}
 	return ""
 }
@@ -223,6 +242,104 @@ func (d *Document) prot() *TAnonComplexInfProt1 {
 	default:
 		return nil
 	}
+}
+
+type bpeEventInfo struct {
+	AccessKey      string
+	Environment    string
+	IssueDate      string
+	ProtocolNumber string
+	StatusCode     string
+	StatusReason   string
+}
+
+func (d *Document) eventInfo() bpeEventInfo {
+	if d == nil {
+		return bpeEventInfo{}
+	}
+	if info, ok := d.processedEventInfo(); ok {
+		return info
+	}
+	if info, ok := d.standaloneSentEventInfo(); ok {
+		return info
+	}
+	if info, ok := d.standaloneRetEventInfo(); ok {
+		return info
+	}
+	return bpeEventInfo{}
+}
+
+func (d *Document) processedEventInfo() (bpeEventInfo, bool) {
+	_, root, ok := bpeEventSpecForDocument(d, bpeProcEventRoot)
+	if !ok {
+		return bpeEventInfo{}, false
+	}
+	return mergeBPeEventInfo(
+		sentEventInfoFromRoot(bpeAnyField(root, "EventoBPe")),
+		retEventInfoFromRoot(bpeAnyField(root, "RetEventoBPe")),
+	), true
+}
+
+func (d *Document) standaloneSentEventInfo() (bpeEventInfo, bool) {
+	_, root, ok := bpeEventSpecForDocument(d, bpeSentEventRoot)
+	if !ok {
+		return bpeEventInfo{}, false
+	}
+	return sentEventInfoFromRoot(root.Interface()), true
+}
+
+func (d *Document) standaloneRetEventInfo() (bpeEventInfo, bool) {
+	_, root, ok := bpeEventSpecForDocument(d, bpeRetEventRoot)
+	if !ok {
+		return bpeEventInfo{}, false
+	}
+	return retEventInfoFromRoot(root.Interface()), true
+}
+
+func sentEventInfoFromRoot(evento any) bpeEventInfo {
+	inf := bpeField(reflect.ValueOf(evento), "InfEvento")
+	if !bpeHasValue(inf) {
+		return bpeEventInfo{}
+	}
+	return bpeEventInfo{
+		AccessKey:   bpeStringField(inf, "ChBPe"),
+		Environment: bpeStringField(inf, "TpAmb"),
+		IssueDate:   bpeStringField(inf, "DhEvento"),
+	}
+}
+
+func retEventInfoFromRoot(retEvento any) bpeEventInfo {
+	inf := bpeField(reflect.ValueOf(retEvento), "InfEvento")
+	if !bpeHasValue(inf) {
+		return bpeEventInfo{}
+	}
+	return bpeEventInfo{
+		AccessKey:      bpeStringField(inf, "ChBPe"),
+		Environment:    bpeStringField(inf, "TpAmb"),
+		ProtocolNumber: bpeStringField(inf, "NProt"),
+		StatusCode:     bpeStringField(inf, "CStat"),
+		StatusReason:   bpeStringField(inf, "XMotivo"),
+	}
+}
+
+func mergeBPeEventInfo(primary, fallback bpeEventInfo) bpeEventInfo {
+	return bpeEventInfo{
+		AccessKey:      firstNonEmpty(primary.AccessKey, fallback.AccessKey),
+		Environment:    firstNonEmpty(primary.Environment, fallback.Environment),
+		IssueDate:      firstNonEmpty(primary.IssueDate, fallback.IssueDate),
+		ProtocolNumber: firstNonEmpty(primary.ProtocolNumber, fallback.ProtocolNumber),
+		StatusCode:     firstNonEmpty(primary.StatusCode, fallback.StatusCode),
+		StatusReason:   firstNonEmpty(primary.StatusReason, fallback.StatusReason),
+	}
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
+			return value
+		}
+	}
+	return ""
 }
 
 func firstStringPtr(values ...*string) string {

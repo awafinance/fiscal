@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  BP-e processed-event fixture shaped from nfephp-org/sped-bpe's
+  examples/xml_extraidos/procEventoBPe_v1.00.xsd.xml with compact synthetic
+  business values for the public convenience-accessor test.
+-->
+<procEventoBPe versao="1.00" xmlns="http://www.portalfiscal.inf.br/bpe">
+  <eventoBPe versao="1.00">
+    <infEvento Id="ID1101154318020736461700013563000000000030100000008101">
+      <cOrgao>43</cOrgao>
+      <tpAmb>2</tpAmb>
+      <CNPJ>07364617000135</CNPJ>
+      <chBPe>43180207364617000135630000000000301000000081</chBPe>
+      <dhEvento>2018-02-21T14:58:46-03:00</dhEvento>
+      <tpEvento>110115</tpEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <detEvento versaoEvento="1.00">
+        <evNaoEmbBPe>
+          <descEvento>Nao Embarque</descEvento>
+          <nProt>443170000037618</nProt>
+          <xJust>Nao compareceu</xJust>
+        </evNaoEmbBPe>
+      </detEvento>
+    </infEvento>
+  </eventoBPe>
+  <retEventoBPe versao="1.00">
+    <infEvento Id="ID143180000002623">
+      <tpAmb>2</tpAmb>
+      <verAplic>RS20180221145846</verAplic>
+      <cOrgao>43</cOrgao>
+      <cStat>135</cStat>
+      <xMotivo>Evento registrado e vinculado a BP-e</xMotivo>
+      <chBPe>43180207364617000135630000000000301000000081</chBPe>
+      <tpEvento>110115</tpEvento>
+      <xEvento>Nao Embarque</xEvento>
+      <nSeqEvento>1</nSeqEvento>
+      <dhRegEvento>2018-02-21T14:58:46-03:00</dhRegEvento>
+      <nProt>143180000002623</nProt>
+    </infEvento>
+  </retEventoBPe>
+</procEventoBPe>

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"reflect"
 
 	distSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v1_0/dist_dfe"
 	consNaoEncSchema "github.com/awafinance/fiscal/internal/mdfe/gen/v3_0/cons_nao_enc"
@@ -597,6 +598,46 @@ func eventTypeFromXML(data []byte) (string, error) {
 	return head.EventoMDFe.InfEvento.TpEvento, nil
 }
 
+type mdfeEventRootKind uint8
+
+const (
+	mdfeSentEventRoot mdfeEventRootKind = iota
+	mdfeRetEventRoot
+	mdfeProcEventRoot
+)
+
+type mdfeEventSpec struct {
+	eventTypes []string
+	context    string
+	eventField string
+
+	eventTypeOf     reflect.Type
+	retEventTypeOf  reflect.Type
+	procEventTypeOf reflect.Type
+}
+
+var mdfeEventSpecs = []mdfeEventSpec{
+	mdfeEvent[eventSchema.TEvento, eventSchema.TRetEvento, eventSchema.TProcEvento](nil, "generic", "EventoMDFe"),
+	mdfeEvent[cancelEventSchema.TEvento, cancelEventSchema.TRetEvento, cancelEventSchema.TProcEvento]([]string{"110111"}, "cancelamento", "EventoCancMDFe"),
+	mdfeEvent[encEventSchema.TEvento, encEventSchema.TRetEvento, encEventSchema.TProcEvento]([]string{"110112"}, "encerramento", "EventoEncMDFe"),
+	mdfeEvent[incCondutorEventSchema.TEvento, incCondutorEventSchema.TRetEvento, incCondutorEventSchema.TProcEvento]([]string{"110114"}, "inclusao condutor", "EventoIncCondutorMDFe"),
+	mdfeEvent[inclusaoDFeEventSchema.TEvento, inclusaoDFeEventSchema.TRetEvento, inclusaoDFeEventSchema.TProcEvento]([]string{"110115"}, "inclusao dfe", "EventoInclusaoDFeMDFe"),
+	mdfeEvent[pagtoOperEventSchema.TEvento, pagtoOperEventSchema.TRetEvento, pagtoOperEventSchema.TProcEvento]([]string{"110116"}, "pagamento operacao", "EventoPagtoOperMDFe"),
+	mdfeEvent[confirmaServEventSchema.TEvento, confirmaServEventSchema.TRetEvento, confirmaServEventSchema.TProcEvento]([]string{"110117"}, "confirma servico", "EventoConfirmaServMDFe"),
+	mdfeEvent[alteracaoPagtoServEventSchema.TEvento, alteracaoPagtoServEventSchema.TRetEvento, alteracaoPagtoServEventSchema.TProcEvento]([]string{"110118"}, "alteracao pagamento servico", "EventoAlteracaoPagtoServMDFe"),
+}
+
+func mdfeEvent[E, R, P any](eventTypes []string, context, eventField string) mdfeEventSpec {
+	return mdfeEventSpec{
+		eventTypes:      eventTypes,
+		context:         context,
+		eventField:      eventField,
+		eventTypeOf:     reflect.TypeFor[E](),
+		retEventTypeOf:  reflect.TypeFor[R](),
+		procEventTypeOf: reflect.TypeFor[P](),
+	}
+}
+
 var rootValidators = []func(*Document) error{
 	validateMDFeRootDoc,
 	validateMDFeProcRoot,
@@ -877,102 +918,19 @@ func validateMDFeRoot(doc *mdfeSchema.TMDFe) error {
 }
 
 func validateEventRoots(doc *Document) error {
-	if err := validateEventos(doc); err != nil {
-		return err
-	}
-	if err := validateRetEventos(doc); err != nil {
-		return err
-	}
-	return validateProcEventos(doc)
-}
-
-func validateEventos(doc *Document) error {
-	switch {
-	case doc.EventoMDFe != nil:
-		return validateMDFeEvento(doc.EventoMDFe.InfEvento)
-	case doc.EventoCancMDFe != nil:
-		return validateMDFeEvento(doc.EventoCancMDFe.InfEvento)
-	case doc.EventoEncMDFe != nil:
-		return validateMDFeEvento(doc.EventoEncMDFe.InfEvento)
-	case doc.EventoIncCondutorMDFe != nil:
-		return validateMDFeEvento(doc.EventoIncCondutorMDFe.InfEvento)
-	case doc.EventoInclusaoDFeMDFe != nil:
-		return validateMDFeEvento(doc.EventoInclusaoDFeMDFe.InfEvento)
-	case doc.EventoPagtoOperMDFe != nil:
-		return validateMDFeEvento(doc.EventoPagtoOperMDFe.InfEvento)
-	case doc.EventoAlteracaoPagtoServMDFe != nil:
-		return validateMDFeEvento(doc.EventoAlteracaoPagtoServMDFe.InfEvento)
-	case doc.EventoConfirmaServMDFe != nil:
-		return validateMDFeEvento(doc.EventoConfirmaServMDFe.InfEvento)
+	for i := range mdfeEventSpecs {
+		spec := &mdfeEventSpecs[i]
+		if err := validateMDFeEventField(doc, spec, mdfeSentEventRoot, validateMDFeSentEventRoot); err != nil {
+			return err
+		}
+		if err := validateMDFeEventField(doc, spec, mdfeRetEventRoot, validateMDFeRetEventRoot); err != nil {
+			return err
+		}
+		if err := validateMDFeProcEventField(doc, spec); err != nil {
+			return err
+		}
 	}
 	return nil
-}
-
-func validateRetEventos(doc *Document) error {
-	switch {
-	case doc.RetEventoMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoMDFe.InfEvento)
-	case doc.RetEventoCancMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoCancMDFe.InfEvento)
-	case doc.RetEventoEncMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoEncMDFe.InfEvento)
-	case doc.RetEventoIncCondutorMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoIncCondutorMDFe.InfEvento)
-	case doc.RetEventoInclusaoDFeMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoInclusaoDFeMDFe.InfEvento)
-	case doc.RetEventoPagtoOperMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoPagtoOperMDFe.InfEvento)
-	case doc.RetEventoAlteracaoPagtoServMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoAlteracaoPagtoServMDFe.InfEvento)
-	case doc.RetEventoConfirmaServMDFe != nil:
-		return validateMDFeRetEvento(doc.RetEventoConfirmaServMDFe.InfEvento)
-	}
-	return nil
-}
-
-func validateProcEventos(doc *Document) error {
-	switch {
-	case doc.ProcEventoMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoMDFe.EventoMDFe, doc.ProcEventoMDFe.RetEventoMDFe)
-	case doc.ProcEventoCancMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoCancMDFe.EventoMDFe, doc.ProcEventoCancMDFe.RetEventoMDFe)
-	case doc.ProcEventoEncMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoEncMDFe.EventoMDFe, doc.ProcEventoEncMDFe.RetEventoMDFe)
-	case doc.ProcEventoIncCondutorMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoIncCondutorMDFe.EventoMDFe, doc.ProcEventoIncCondutorMDFe.RetEventoMDFe)
-	case doc.ProcEventoInclusaoDFeMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoInclusaoDFeMDFe.EventoMDFe, doc.ProcEventoInclusaoDFeMDFe.RetEventoMDFe)
-	case doc.ProcEventoPagtoOperMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoPagtoOperMDFe.EventoMDFe, doc.ProcEventoPagtoOperMDFe.RetEventoMDFe)
-	case doc.ProcEventoAlteracaoPagtoServMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoAlteracaoPagtoServMDFe.EventoMDFe, doc.ProcEventoAlteracaoPagtoServMDFe.RetEventoMDFe)
-	case doc.ProcEventoConfirmaServMDFe != nil:
-		return validateMDFeProcEvento(doc.ProcEventoConfirmaServMDFe.EventoMDFe, doc.ProcEventoConfirmaServMDFe.RetEventoMDFe)
-	}
-	return nil
-}
-
-func validateMDFeEvento(inf any) error {
-	switch inf := inf.(type) {
-	case *eventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *cancelEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *encEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *incCondutorEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *inclusaoDFeEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *pagtoOperEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *alteracaoPagtoServEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	case *confirmaServEventSchema.TAnonComplexInfEvento1:
-		return validateMDFeEventoFields(inf == nil, inf.ChMDFe, inf.DetEvento == nil)
-	default:
-		return errors.New("parse mdfe: missing infEvento")
-	}
 }
 
 func validateMDFeEventoFields(isNil bool, chMDFe string, missingDetEvento bool) error {
@@ -988,29 +946,6 @@ func validateMDFeEventoFields(isNil bool, chMDFe string, missingDetEvento bool) 
 	return nil
 }
 
-func validateMDFeRetEvento(inf any) error {
-	switch inf := inf.(type) {
-	case *eventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *cancelEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *encEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *incCondutorEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *inclusaoDFeEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *pagtoOperEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *alteracaoPagtoServEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	case *confirmaServEventSchema.TAnonComplexInfEvento2:
-		return validateMDFeRetEventoFields(inf == nil, inf.TpAmb, inf.CStat)
-	default:
-		return errors.New("parse mdfe: missing infEvento")
-	}
-}
-
 func validateMDFeRetEventoFields(isNil bool, tpAmb, cStat string) error {
 	if isNil {
 		return errors.New("parse mdfe: missing infEvento")
@@ -1024,6 +959,32 @@ func validateMDFeRetEventoFields(isNil bool, tpAmb, cStat string) error {
 	return nil
 }
 
+func validateMDFeEventField(doc *Document, spec *mdfeEventSpec, kind mdfeEventRootKind, validate func(any) error) error {
+	root := mdfeDocumentEventField(doc, spec, kind)
+	if !mdfeHasValue(root) {
+		return nil
+	}
+	return validate(root.Interface())
+}
+
+func validateMDFeProcEventField(doc *Document, spec *mdfeEventSpec) error {
+	root := mdfeDocumentEventField(doc, spec, mdfeProcEventRoot)
+	if !mdfeHasValue(root) {
+		return nil
+	}
+	return validateMDFeProcEvento(mdfeAnyField(root, "EventoMDFe"), mdfeAnyField(root, "RetEventoMDFe"))
+}
+
+func validateMDFeSentEventRoot(evento any) error {
+	inf := mdfeField(reflect.ValueOf(evento), "InfEvento")
+	return validateMDFeEventoFields(!mdfeHasValue(inf), mdfeStringField(inf, "ChMDFe"), !mdfeHasValue(mdfeField(inf, "DetEvento")))
+}
+
+func validateMDFeRetEventRoot(retEvento any) error {
+	inf := mdfeField(reflect.ValueOf(retEvento), "InfEvento")
+	return validateMDFeRetEventoFields(!mdfeHasValue(inf), mdfeStringField(inf, "TpAmb"), mdfeStringField(inf, "CStat"))
+}
+
 func validateMDFeProcEvento(evento any, retEvento any) error {
 	if evento == nil {
 		return errors.New("parse mdfe: missing eventoMDFe")
@@ -1035,81 +996,41 @@ func validateMDFeProcEvento(evento any, retEvento any) error {
 }
 
 func marshalEventRoot(e *xml.Encoder, d *Document) error {
-	if activeRootCount(d) != 1 {
-		return errSingleRoot
-	}
-
-	switch {
-	case d.EventoMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoMDFe.VersaoAttr), d.EventoMDFe.InfEvento, d.EventoMDFe.DsSignature)
-	case d.EventoCancMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoCancMDFe.VersaoAttr), d.EventoCancMDFe.InfEvento, d.EventoCancMDFe.DsSignature)
-	case d.EventoEncMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoEncMDFe.VersaoAttr), d.EventoEncMDFe.InfEvento, d.EventoEncMDFe.DsSignature)
-	case d.EventoIncCondutorMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoIncCondutorMDFe.VersaoAttr), d.EventoIncCondutorMDFe.InfEvento, d.EventoIncCondutorMDFe.DsSignature)
-	case d.EventoInclusaoDFeMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoInclusaoDFeMDFe.VersaoAttr), d.EventoInclusaoDFeMDFe.InfEvento, d.EventoInclusaoDFeMDFe.DsSignature)
-	case d.EventoPagtoOperMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoPagtoOperMDFe.VersaoAttr), d.EventoPagtoOperMDFe.InfEvento, d.EventoPagtoOperMDFe.DsSignature)
-	case d.EventoAlteracaoPagtoServMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoAlteracaoPagtoServMDFe.VersaoAttr), d.EventoAlteracaoPagtoServMDFe.InfEvento, d.EventoAlteracaoPagtoServMDFe.DsSignature)
-	case d.EventoConfirmaServMDFe != nil:
-		return encodeMDFeEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.EventoConfirmaServMDFe.VersaoAttr), d.EventoConfirmaServMDFe.InfEvento, d.EventoConfirmaServMDFe.DsSignature)
-	default:
-		return errSingleRoot
-	}
+	return marshalMDFeEventRoot(e, d, mdfeSentEventRoot)
 }
 
 func marshalRetEventRoot(e *xml.Encoder, d *Document) error {
-	if activeRootCount(d) != 1 {
-		return errSingleRoot
-	}
-
-	switch {
-	case d.RetEventoMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoMDFe.VersaoAttr), d.RetEventoMDFe.InfEvento)
-	case d.RetEventoCancMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoCancMDFe.VersaoAttr), d.RetEventoCancMDFe.InfEvento)
-	case d.RetEventoEncMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoEncMDFe.VersaoAttr), d.RetEventoEncMDFe.InfEvento)
-	case d.RetEventoIncCondutorMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoIncCondutorMDFe.VersaoAttr), d.RetEventoIncCondutorMDFe.InfEvento)
-	case d.RetEventoInclusaoDFeMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoInclusaoDFeMDFe.VersaoAttr), d.RetEventoInclusaoDFeMDFe.InfEvento)
-	case d.RetEventoPagtoOperMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoPagtoOperMDFe.VersaoAttr), d.RetEventoPagtoOperMDFe.InfEvento)
-	case d.RetEventoAlteracaoPagtoServMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoAlteracaoPagtoServMDFe.VersaoAttr), d.RetEventoAlteracaoPagtoServMDFe.InfEvento)
-	case d.RetEventoConfirmaServMDFe != nil:
-		return encodeMDFeRetEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.RetEventoConfirmaServMDFe.VersaoAttr), d.RetEventoConfirmaServMDFe.InfEvento)
-	default:
-		return errSingleRoot
-	}
+	return marshalMDFeEventRoot(e, d, mdfeRetEventRoot)
 }
 
 func marshalProcEventRoot(e *xml.Encoder, d *Document) error {
+	return marshalMDFeEventRoot(e, d, mdfeProcEventRoot)
+}
+
+func marshalMDFeEventRoot(e *xml.Encoder, d *Document, kind mdfeEventRootKind) error {
 	if activeRootCount(d) != 1 {
 		return errSingleRoot
 	}
-
-	switch {
-	case d.ProcEventoMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoMDFe.VersaoAttr), d.ProcEventoMDFe.IpTransmissorAttr, d.ProcEventoMDFe.NPortaConAttr, d.ProcEventoMDFe.DhConexaoAttr, d.ProcEventoMDFe.EventoMDFe, d.ProcEventoMDFe.RetEventoMDFe)
-	case d.ProcEventoCancMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoCancMDFe.VersaoAttr), d.ProcEventoCancMDFe.IpTransmissorAttr, d.ProcEventoCancMDFe.NPortaConAttr, d.ProcEventoCancMDFe.DhConexaoAttr, d.ProcEventoCancMDFe.EventoMDFe, d.ProcEventoCancMDFe.RetEventoMDFe)
-	case d.ProcEventoEncMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoEncMDFe.VersaoAttr), d.ProcEventoEncMDFe.IpTransmissorAttr, d.ProcEventoEncMDFe.NPortaConAttr, d.ProcEventoEncMDFe.DhConexaoAttr, d.ProcEventoEncMDFe.EventoMDFe, d.ProcEventoEncMDFe.RetEventoMDFe)
-	case d.ProcEventoIncCondutorMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoIncCondutorMDFe.VersaoAttr), d.ProcEventoIncCondutorMDFe.IpTransmissorAttr, d.ProcEventoIncCondutorMDFe.NPortaConAttr, d.ProcEventoIncCondutorMDFe.DhConexaoAttr, d.ProcEventoIncCondutorMDFe.EventoMDFe, d.ProcEventoIncCondutorMDFe.RetEventoMDFe)
-	case d.ProcEventoInclusaoDFeMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoInclusaoDFeMDFe.VersaoAttr), d.ProcEventoInclusaoDFeMDFe.IpTransmissorAttr, d.ProcEventoInclusaoDFeMDFe.NPortaConAttr, d.ProcEventoInclusaoDFeMDFe.DhConexaoAttr, d.ProcEventoInclusaoDFeMDFe.EventoMDFe, d.ProcEventoInclusaoDFeMDFe.RetEventoMDFe)
-	case d.ProcEventoPagtoOperMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoPagtoOperMDFe.VersaoAttr), d.ProcEventoPagtoOperMDFe.IpTransmissorAttr, d.ProcEventoPagtoOperMDFe.NPortaConAttr, d.ProcEventoPagtoOperMDFe.DhConexaoAttr, d.ProcEventoPagtoOperMDFe.EventoMDFe, d.ProcEventoPagtoOperMDFe.RetEventoMDFe)
-	case d.ProcEventoAlteracaoPagtoServMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoAlteracaoPagtoServMDFe.VersaoAttr), d.ProcEventoAlteracaoPagtoServMDFe.IpTransmissorAttr, d.ProcEventoAlteracaoPagtoServMDFe.NPortaConAttr, d.ProcEventoAlteracaoPagtoServMDFe.DhConexaoAttr, d.ProcEventoAlteracaoPagtoServMDFe.EventoMDFe, d.ProcEventoAlteracaoPagtoServMDFe.RetEventoMDFe)
-	case d.ProcEventoConfirmaServMDFe != nil:
-		return encodeMDFeProcEvent(e, xmlutil.FirstNonEmpty(d.VersaoAttr, d.ProcEventoConfirmaServMDFe.VersaoAttr), d.ProcEventoConfirmaServMDFe.IpTransmissorAttr, d.ProcEventoConfirmaServMDFe.NPortaConAttr, d.ProcEventoConfirmaServMDFe.DhConexaoAttr, d.ProcEventoConfirmaServMDFe.EventoMDFe, d.ProcEventoConfirmaServMDFe.RetEventoMDFe)
+	_, root, ok := mdfeEventSpecForDocument(d, kind)
+	if !ok {
+		return errSingleRoot
+	}
+	versao := xmlutil.FirstNonEmpty(d.VersaoAttr, mdfeStringField(root, "VersaoAttr"))
+	switch kind {
+	case mdfeSentEventRoot:
+		return encodeMDFeEvent(e, versao, mdfeAnyField(root, "InfEvento"), mdfeAnyField(root, "DsSignature"))
+	case mdfeRetEventRoot:
+		return encodeMDFeRetEvent(e, versao, mdfeAnyField(root, "InfEvento"))
+	case mdfeProcEventRoot:
+		return encodeMDFeProcEvent(
+			e,
+			versao,
+			mdfeStringPtrField(root, "IpTransmissorAttr"),
+			mdfeStringPtrField(root, "NPortaConAttr"),
+			mdfeStringPtrField(root, "DhConexaoAttr"),
+			mdfeAnyField(root, "EventoMDFe"),
+			mdfeAnyField(root, "RetEventoMDFe"),
+		)
 	default:
 		return errSingleRoot
 	}
@@ -1167,123 +1088,189 @@ func encodeMDFeProcEvent(e *xml.Encoder, versao string, ipTransmissor, nPortaCon
 	})
 }
 
-func decodeEvent[T any](data []byte, context string, assign func(*T) *Document) (*Document, error) {
-	var parsed T
-	if err := xml.Unmarshal(data, &parsed); err != nil {
-		return nil, fmt.Errorf("parse mdfe: decode %s: %w", context, err)
-	}
-	return finalizeDoc(assign(&parsed))
-}
-
 func parseEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
-	switch tpEvento {
-	case "110111":
-		return decodeEvent(data, "eventoMDFe cancelamento", func(p *cancelEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoCancMDFe: p, RootName: rootName}
-		})
-	case "110112":
-		return decodeEvent(data, "eventoMDFe encerramento", func(p *encEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoEncMDFe: p, RootName: rootName}
-		})
-	case "110114":
-		return decodeEvent(data, "eventoMDFe inclusao condutor", func(p *incCondutorEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoIncCondutorMDFe: p, RootName: rootName}
-		})
-	case "110115":
-		return decodeEvent(data, "eventoMDFe inclusao dfe", func(p *inclusaoDFeEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoInclusaoDFeMDFe: p, RootName: rootName}
-		})
-	case "110116":
-		return decodeEvent(data, "eventoMDFe pagamento operacao", func(p *pagtoOperEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoPagtoOperMDFe: p, RootName: rootName}
-		})
-	case "110117":
-		return decodeEvent(data, "eventoMDFe confirma servico", func(p *confirmaServEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoConfirmaServMDFe: p, RootName: rootName}
-		})
-	case "110118":
-		return decodeEvent(data, "eventoMDFe alteracao pagamento servico", func(p *alteracaoPagtoServEventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoAlteracaoPagtoServMDFe: p, RootName: rootName}
-		})
-	default:
-		return decodeEvent(data, "eventoMDFe", func(p *eventSchema.TEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, EventoMDFe: p, RootName: rootName}
-		})
-	}
+	return parseMDFeEventDocument(data, rootName, tpEvento, mdfeSentEventRoot)
 }
 
 func parseRetEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
-	switch tpEvento {
-	case "110111":
-		return decodeEvent(data, "retEventoMDFe cancelamento", func(p *cancelEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoCancMDFe: p, RootName: rootName}
-		})
-	case "110112":
-		return decodeEvent(data, "retEventoMDFe encerramento", func(p *encEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoEncMDFe: p, RootName: rootName}
-		})
-	case "110114":
-		return decodeEvent(data, "retEventoMDFe inclusao condutor", func(p *incCondutorEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoIncCondutorMDFe: p, RootName: rootName}
-		})
-	case "110115":
-		return decodeEvent(data, "retEventoMDFe inclusao dfe", func(p *inclusaoDFeEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoInclusaoDFeMDFe: p, RootName: rootName}
-		})
-	case "110116":
-		return decodeEvent(data, "retEventoMDFe pagamento operacao", func(p *pagtoOperEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoPagtoOperMDFe: p, RootName: rootName}
-		})
-	case "110117":
-		return decodeEvent(data, "retEventoMDFe confirma servico", func(p *confirmaServEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoConfirmaServMDFe: p, RootName: rootName}
-		})
-	case "110118":
-		return decodeEvent(data, "retEventoMDFe alteracao pagamento servico", func(p *alteracaoPagtoServEventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoAlteracaoPagtoServMDFe: p, RootName: rootName}
-		})
-	default:
-		return decodeEvent(data, "retEventoMDFe", func(p *eventSchema.TRetEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, RetEventoMDFe: p, RootName: rootName}
-		})
-	}
+	return parseMDFeEventDocument(data, rootName, tpEvento, mdfeRetEventRoot)
 }
 
 func parseProcEventDocument(data []byte, rootName, tpEvento string) (*Document, error) {
-	switch tpEvento {
-	case "110111":
-		return decodeEvent(data, "procEventoMDFe cancelamento", func(p *cancelEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoCancMDFe: p, RootName: rootName}
-		})
-	case "110112":
-		return decodeEvent(data, "procEventoMDFe encerramento", func(p *encEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoEncMDFe: p, RootName: rootName}
-		})
-	case "110114":
-		return decodeEvent(data, "procEventoMDFe inclusao condutor", func(p *incCondutorEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoIncCondutorMDFe: p, RootName: rootName}
-		})
-	case "110115":
-		return decodeEvent(data, "procEventoMDFe inclusao dfe", func(p *inclusaoDFeEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoInclusaoDFeMDFe: p, RootName: rootName}
-		})
-	case "110116":
-		return decodeEvent(data, "procEventoMDFe pagamento operacao", func(p *pagtoOperEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoPagtoOperMDFe: p, RootName: rootName}
-		})
-	case "110117":
-		return decodeEvent(data, "procEventoMDFe confirma servico", func(p *confirmaServEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoConfirmaServMDFe: p, RootName: rootName}
-		})
-	case "110118":
-		return decodeEvent(data, "procEventoMDFe alteracao pagamento servico", func(p *alteracaoPagtoServEventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoAlteracaoPagtoServMDFe: p, RootName: rootName}
-		})
-	default:
-		return decodeEvent(data, "procEventoMDFe", func(p *eventSchema.TProcEvento) *Document {
-			return &Document{VersaoAttr: p.VersaoAttr, ProcEventoMDFe: p, RootName: rootName}
-		})
+	return parseMDFeEventDocument(data, rootName, tpEvento, mdfeProcEventRoot)
+}
+
+func parseMDFeEventDocument(data []byte, rootName, tpEvento string, kind mdfeEventRootKind) (*Document, error) {
+	spec := mdfeEventSpecForType(tpEvento)
+	if spec == nil {
+		return nil, fmt.Errorf("parse mdfe: unsupported eventoMDFe type %q", tpEvento)
 	}
+
+	parsed := reflect.New(spec.rootType(kind))
+	if err := xml.Unmarshal(data, parsed.Interface()); err != nil {
+		return nil, fmt.Errorf("parse mdfe: decode %s %s: %w", kind.rootName(), spec.context, err)
+	}
+
+	doc := &Document{
+		VersaoAttr: mdfeStringField(parsed, "VersaoAttr"),
+		RootName:   rootName,
+	}
+	mdfeDocumentEventField(doc, spec, kind).Set(parsed)
+	return finalizeDoc(doc)
+}
+
+func mdfeEventSpecForType(tpEvento string) *mdfeEventSpec {
+	var generic *mdfeEventSpec
+	for i := range mdfeEventSpecs {
+		spec := &mdfeEventSpecs[i]
+		if len(spec.eventTypes) == 0 {
+			generic = spec
+			continue
+		}
+		for _, eventType := range spec.eventTypes {
+			if eventType == tpEvento {
+				return spec
+			}
+		}
+	}
+	return generic
+}
+
+func mdfeEventSpecForDocument(d *Document, kind mdfeEventRootKind) (*mdfeEventSpec, reflect.Value, bool) {
+	for i := range mdfeEventSpecs {
+		spec := &mdfeEventSpecs[i]
+		root := mdfeDocumentEventField(d, spec, kind)
+		if root.IsValid() && !root.IsNil() {
+			return spec, root, true
+		}
+	}
+	return nil, reflect.Value{}, false
+}
+
+func mdfeDocumentEventField(d *Document, spec *mdfeEventSpec, kind mdfeEventRootKind) reflect.Value {
+	if d == nil || spec == nil {
+		return reflect.Value{}
+	}
+	return reflect.ValueOf(d).Elem().FieldByName(spec.docField(kind))
+}
+
+func activeMDFeEventRootCount(d *Document) int {
+	count := 0
+	for i := range mdfeEventSpecs {
+		spec := &mdfeEventSpecs[i]
+		for _, kind := range []mdfeEventRootKind{mdfeSentEventRoot, mdfeRetEventRoot, mdfeProcEventRoot} {
+			root := mdfeDocumentEventField(d, spec, kind)
+			if root.IsValid() && !root.IsNil() {
+				count++
+			}
+		}
+	}
+	return count
+}
+
+func (s *mdfeEventSpec) rootType(kind mdfeEventRootKind) reflect.Type {
+	switch kind {
+	case mdfeSentEventRoot:
+		return s.eventTypeOf
+	case mdfeRetEventRoot:
+		return s.retEventTypeOf
+	case mdfeProcEventRoot:
+		return s.procEventTypeOf
+	default:
+		return nil
+	}
+}
+
+func (s *mdfeEventSpec) docField(kind mdfeEventRootKind) string {
+	switch kind {
+	case mdfeSentEventRoot:
+		return s.eventField
+	case mdfeRetEventRoot:
+		return "Ret" + s.eventField
+	case mdfeProcEventRoot:
+		return "Proc" + s.eventField
+	default:
+		return ""
+	}
+}
+
+func (kind mdfeEventRootKind) rootName() string {
+	switch kind {
+	case mdfeSentEventRoot:
+		return "eventoMDFe"
+	case mdfeRetEventRoot:
+		return "retEventoMDFe"
+	case mdfeProcEventRoot:
+		return "procEventoMDFe"
+	default:
+		return "eventoMDFe"
+	}
+}
+
+func mdfeField(value reflect.Value, name string) reflect.Value {
+	if !value.IsValid() {
+		return reflect.Value{}
+	}
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return reflect.Value{}
+		}
+		value = value.Elem()
+	}
+	if value.Kind() != reflect.Struct {
+		return reflect.Value{}
+	}
+	return value.FieldByName(name)
+}
+
+func mdfeAnyField(value reflect.Value, name string) any {
+	field := mdfeField(value, name)
+	if !field.IsValid() {
+		return nil
+	}
+	if field.Kind() == reflect.Pointer && field.IsNil() {
+		return nil
+	}
+	return field.Interface()
+}
+
+func mdfeStringField(value reflect.Value, name string) string {
+	return mdfeStringValue(mdfeField(value, name))
+}
+
+func mdfeStringPtrField(value reflect.Value, name string) *string {
+	field := mdfeField(value, name)
+	if !field.IsValid() || field.Kind() != reflect.Pointer || field.IsNil() {
+		return nil
+	}
+	if ptr, ok := field.Interface().(*string); ok {
+		return ptr
+	}
+	if field.Type().Elem().Kind() == reflect.String {
+		value := field.Elem().String()
+		return &value
+	}
+	return nil
+}
+
+func mdfeStringValue(value reflect.Value) string {
+	if !value.IsValid() {
+		return ""
+	}
+	if value.Kind() == reflect.Pointer {
+		if value.IsNil() {
+			return ""
+		}
+		value = value.Elem()
+	}
+	if value.Kind() != reflect.String {
+		return ""
+	}
+	return value.String()
+}
+
+func mdfeHasValue(value reflect.Value) bool {
+	return value.IsValid() && (value.Kind() != reflect.Pointer || !value.IsNil())
 }
 
 func activeRootCount(doc *Document) int {
@@ -1302,30 +1289,6 @@ func activeRootCount(doc *Document) int {
 		doc.RetConsSitMDFe != nil,
 		doc.ConsStatServMDFe != nil,
 		doc.RetConsStatServMDFe != nil,
-		doc.EventoMDFe != nil,
-		doc.RetEventoMDFe != nil,
-		doc.ProcEventoMDFe != nil,
-		doc.EventoCancMDFe != nil,
-		doc.RetEventoCancMDFe != nil,
-		doc.ProcEventoCancMDFe != nil,
-		doc.EventoEncMDFe != nil,
-		doc.RetEventoEncMDFe != nil,
-		doc.ProcEventoEncMDFe != nil,
-		doc.EventoIncCondutorMDFe != nil,
-		doc.RetEventoIncCondutorMDFe != nil,
-		doc.ProcEventoIncCondutorMDFe != nil,
-		doc.EventoInclusaoDFeMDFe != nil,
-		doc.RetEventoInclusaoDFeMDFe != nil,
-		doc.ProcEventoInclusaoDFeMDFe != nil,
-		doc.EventoPagtoOperMDFe != nil,
-		doc.RetEventoPagtoOperMDFe != nil,
-		doc.ProcEventoPagtoOperMDFe != nil,
-		doc.EventoAlteracaoPagtoServMDFe != nil,
-		doc.RetEventoAlteracaoPagtoServMDFe != nil,
-		doc.ProcEventoAlteracaoPagtoServMDFe != nil,
-		doc.EventoConfirmaServMDFe != nil,
-		doc.RetEventoConfirmaServMDFe != nil,
-		doc.ProcEventoConfirmaServMDFe != nil,
 		doc.DistDFeInt != nil,
 		doc.RetDistDFeInt != nil,
 		doc.DistMDFe != nil,
@@ -1337,6 +1300,7 @@ func activeRootCount(doc *Document) int {
 			count++
 		}
 	}
+	count += activeMDFeEventRootCount(doc)
 	return count
 }
 
