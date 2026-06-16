@@ -118,3 +118,31 @@ func TestParseRejectsEmptyDocument(t *testing.T) {
 	require.Error(t, err)
 	require.ErrorIs(t, err, ErrEmptyDocument)
 }
+
+func TestLifecycleEventInfoViaInfo(t *testing.T) {
+	data, err := os.ReadFile("testdata/cte/v4_0/cancel35150107565416000104570000000012301000012300-ped-eve.xml")
+	require.NoError(t, err)
+
+	doc, err := Parse(data)
+	require.NoError(t, err)
+
+	event, ok := doc.Info().(LifecycleEventInfo)
+	require.True(t, ok)
+	require.Equal(t, "110111", event.GetEventType())
+	require.Equal(t, "1", event.GetEventSequence())
+}
+
+func TestNFSeSubstituicaoViaRelatedDocuments(t *testing.T) {
+	data, err := os.ReadFile("testdata/nfse/v1_0/nfse-prod-substituicao.xml")
+	require.NoError(t, err)
+
+	doc, err := Parse(data)
+	require.NoError(t, err)
+
+	related, ok := doc.Info().(RelatedDocumentsInfo)
+	require.True(t, ok)
+	require.Contains(t, related.GetRelatedDocuments(), RelatedDocument{
+		Type:      "nfse",
+		AccessKey: "33045572214043710000103000000000001726012751532718",
+	})
+}

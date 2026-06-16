@@ -81,3 +81,8 @@ type BillingInfo interface {
 type AdditionalInformation interface {
 	GetAdditionalInfo() string
 }
+
+type LifecycleEventInfo interface {
+	GetEventType() string
+	GetEventSequence() string
+}

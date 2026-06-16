@@ -34,6 +34,9 @@ func (d *Document) GetAccessKey() string {
 	if inf := d.infNFe(); inf != nil {
 		return strings.TrimPrefix(inf.IdAttr, "NFe")
 	}
+	if ev := d.eventInfo().AccessKey; ev != "" {
+		return ev
+	}
 	return ""
 }
 
@@ -84,6 +87,9 @@ func (d *Document) GetIssueDate() string {
 	}
 	if d != nil && d.ResNFe != nil {
 		return d.ResNFe.DhEmi
+	}
+	if ev := d.eventInfo().IssueDate; ev != "" {
+		return ev
 	}
 	return ""
 }
@@ -139,21 +145,21 @@ func (d *Document) GetProtocolNumber() string {
 	if d != nil && d.ResNFe != nil {
 		return d.ResNFe.NProt
 	}
-	return ""
+	return d.eventInfo().ProtocolNumber
 }
 
 func (d *Document) GetStatusCode() string {
 	if d != nil && d.ProtNFe != nil && d.ProtNFe.InfProt != nil {
 		return d.ProtNFe.InfProt.CStat
 	}
-	return ""
+	return d.eventInfo().StatusCode
 }
 
 func (d *Document) GetStatusReason() string {
 	if d != nil && d.ProtNFe != nil && d.ProtNFe.InfProt != nil && d.ProtNFe.InfProt.XMotivo != nil {
 		return string(*d.ProtNFe.InfProt.XMotivo)
 	}
-	return ""
+	return d.eventInfo().StatusReason
 }
 
 func (d *Document) IsAuthorized() bool {

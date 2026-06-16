@@ -370,10 +370,12 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		{name: "ret generico", data: minimalBPERetEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.RetEventoBPe)
+			assertBPEEventReturnInfo(t, doc, "990001")
 		}},
 		{name: "ret cancelamento", data: minimalBPERetEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.RetEventoCancBPe)
+			assertBPEEventReturnInfo(t, doc, "110111")
 		}},
 		{name: "ret nao embarque", data: minimalBPERetEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) {
 			t.Helper()
@@ -390,10 +392,12 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		{name: "proc generico", data: minimalBPEProcEventXML("990001"), assert: func(t *testing.T, doc *bpe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.ProcEventoBPe)
+			assertBPEProcessedEventInfo(t, doc, "990001")
 		}},
 		{name: "proc cancelamento", data: minimalBPEProcEventXML("110111"), assert: func(t *testing.T, doc *bpe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.ProcEventoCancBPe)
+			assertBPEProcessedEventInfo(t, doc, "110111")
 		}},
 		{name: "proc nao embarque", data: minimalBPEProcEventXML("110115"), assert: func(t *testing.T, doc *bpe.Document) {
 			t.Helper()
@@ -608,6 +612,23 @@ func minimalBPERetEventXML(tpEvento string) string {
 
 func minimalBPEProcEventXML(tpEvento string) string {
 	return fmt.Sprintf(`<procEventoBPe xmlns="%s" versao="1.00"><eventoBPe versao="1.00"><infEvento Id="ID%s%s01"><cOrgao>43</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chBPe>%s</chBPe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoBPe><retEventoBPe versao="1.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoBPe></procEventoBPe>`, bpeNamespace, tpEvento, documentKey, documentKey, tpEvento, tpEvento)
+}
+
+func assertBPEEventReturnInfo(t *testing.T, doc *bpe.Document, expectedEventType string) {
+	t.Helper()
+
+	require.Equal(t, expectedEventType, doc.GetEventType())
+	require.Empty(t, doc.GetEventSequence())
+	require.Equal(t, "135", doc.GetStatusCode())
+}
+
+func assertBPEProcessedEventInfo(t *testing.T, doc *bpe.Document, expectedEventType string) {
+	t.Helper()
+
+	require.Equal(t, expectedEventType, doc.GetEventType())
+	require.Equal(t, "1", doc.GetEventSequence())
+	require.Equal(t, documentKey, doc.GetAccessKey())
+	require.Equal(t, "135", doc.GetStatusCode())
 }
 
 func normalizeXML(t *testing.T, data []byte) string {

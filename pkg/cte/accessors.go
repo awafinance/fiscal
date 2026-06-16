@@ -408,6 +408,26 @@ func (d *Document) GetAdditionalInfo() string {
 	return ""
 }
 
+// GetType returns the raw tpCTe (0 normal, 1 complemento, 3 substitution) for a
+// CT-e or CT-e OS; "" for non-CT-e roots such as events.
+func (d *Document) GetType() string {
+	if inf := d.infCTe(); inf != nil && inf.Ide != nil {
+		return inf.Ide.TpCTe
+	}
+	if inf := d.infCTeOS(); inf != nil && inf.Ide != nil {
+		return inf.Ide.TpCTe
+	}
+	return ""
+}
+
+func (d *Document) GetEventType() string {
+	return d.eventInfo().EventType
+}
+
+func (d *Document) GetEventSequence() string {
+	return d.eventInfo().Sequence
+}
+
 func (d *Document) GetRelatedDocuments() []info.RelatedDocument {
 	docs := d.cteRelatedDocuments()
 	if related := d.eventInfo().RelatedDocument; !isEmptyRelatedDocument(related) {
@@ -420,29 +440,64 @@ func (d *Document) GetRelatedDocuments() []info.RelatedDocument {
 }
 
 func (d *Document) cteRelatedDocuments() []info.RelatedDocument {
-	inf := d.infCTe()
-	if inf == nil || inf.InfCTeNorm == nil {
+	var docs []info.RelatedDocument
+	// Modelo 57. infCTeNorm and infCteComp are an XSD choice, so a complemento
+	// carries infCteComp with no infCTeNorm — read infCteComp unconditionally.
+	if inf := d.infCTe(); inf != nil {
+		if norm := inf.InfCTeNorm; norm != nil {
+			docs = append(docs, cteInfDocRelatedDocuments(norm.InfDoc)...)
+			docs = append(docs, cteSubstitutionDocument(norm.InfCteSub)...)
+		}
+		docs = append(docs, cteComplementDocuments(inf.InfCteComp)...)
+	}
+	// Modelo 67 (CT-e OS) carries the same complement and substitute back-references.
+	if inf := d.infCTeOS(); inf != nil {
+		if norm := inf.InfCTeNorm; norm != nil && norm.InfCteSub != nil && norm.InfCteSub.ChCte != "" {
+			docs = append(docs, info.RelatedDocument{Type: "cte", AccessKey: norm.InfCteSub.ChCte})
+		}
+		for _, comp := range inf.InfCteComp {
+			if comp != nil && comp.ChCTe != "" {
+				docs = append(docs, info.RelatedDocument{Type: "cte", AccessKey: comp.ChCTe})
+			}
+		}
+	}
+	return docs
+}
+
+func cteInfDocRelatedDocuments(infDoc *CTeAnonComplexInfDoc1) []info.RelatedDocument {
+	if infDoc == nil {
 		return nil
 	}
+
 	docs := make([]info.RelatedDocument, 0)
-	if inf.InfCTeNorm.InfDoc != nil {
-		for _, nfe := range inf.InfCTeNorm.InfDoc.InfNFe {
-			if nfe != nil && nfe.Chave != "" {
-				docs = append(docs, info.RelatedDocument{Type: "nfe", AccessKey: nfe.Chave})
-			}
-		}
-		for _, dce := range inf.InfCTeNorm.InfDoc.InfDCe {
-			if dce != nil && dce.Chave != "" {
-				docs = append(docs, info.RelatedDocument{Type: "dce", AccessKey: dce.Chave})
-			}
+	for _, nfe := range infDoc.InfNFe {
+		if nfe != nil && nfe.Chave != "" {
+			docs = append(docs, info.RelatedDocument{Type: "nfe", AccessKey: nfe.Chave})
 		}
 	}
-	for _, comp := range inf.InfCteComp {
+	for _, dce := range infDoc.InfDCe {
+		if dce != nil && dce.Chave != "" {
+			docs = append(docs, info.RelatedDocument{Type: "dce", AccessKey: dce.Chave})
+		}
+	}
+	return docs
+}
+
+func cteComplementDocuments(complements []*CTeAnonComplexInfCteComp1) []info.RelatedDocument {
+	var docs []info.RelatedDocument
+	for _, comp := range complements {
 		if comp != nil && comp.ChCTe != "" {
 			docs = append(docs, info.RelatedDocument{Type: "cte", AccessKey: comp.ChCTe})
 		}
 	}
 	return docs
+}
+
+func cteSubstitutionDocument(sub *CTeAnonComplexInfCteSub2) []info.RelatedDocument {
+	if sub == nil || sub.ChCte == "" {
+		return nil
+	}
+	return []info.RelatedDocument{{Type: "cte", AccessKey: sub.ChCte}}
 }
 
 func (d *Document) GetModal() string {
@@ -516,6 +571,8 @@ func (d *Document) cteOSProt() *CTeOSAnonComplexInfProt2 {
 }
 
 type cteEventInfo struct {
+	EventType       string
+	Sequence        string
 	AccessKey       string
 	Environment     string
 	IssueDate       string
@@ -671,6 +728,8 @@ func sentEventInfoFromRoot(evento any) cteEventInfo {
 		return cteEventInfo{}
 	}
 	eventInfo := sentEventInfo(env.AccessKey, env.Environment, env.IssueDate)
+	eventInfo.EventType = env.EventType
+	eventInfo.Sequence = env.Sequence
 	if env.EventType == "310610" {
 		eventInfo.RelatedDocument = mdfeDocumentFrom310610(env.DetailXML)
 	}
@@ -682,7 +741,7 @@ func retEventInfoFromRoot(retEvento any) cteEventInfo {
 	if !ok || !env.InfPresent {
 		return cteEventInfo{}
 	}
-	return retEventInfo(env.AccessKey, env.Environment, env.ProtocolNumber, env.StatusCode, env.StatusReason)
+	return retEventInfo(env.EventType, env.Sequence, env.AccessKey, env.Environment, env.ProtocolNumber, env.StatusCode, env.StatusReason)
 }
 
 func sentEventInfo(chCTe, tpAmb, dhEvento string) cteEventInfo {
@@ -693,8 +752,10 @@ func sentEventInfo(chCTe, tpAmb, dhEvento string) cteEventInfo {
 	}
 }
 
-func retEventInfo(chCTe, tpAmb, nProt, cStat, xMotivo string) cteEventInfo {
+func retEventInfo(tpEvento, nSeqEvento, chCTe, tpAmb, nProt, cStat, xMotivo string) cteEventInfo {
 	return cteEventInfo{
+		EventType:      tpEvento,
+		Sequence:       nSeqEvento,
 		AccessKey:      chCTe,
 		Environment:    tpAmb,
 		ProtocolNumber: nProt,
@@ -720,6 +781,12 @@ func mdfeDocumentFrom310610(raw string) info.RelatedDocument {
 }
 
 func mergeCTeEventInfo(primary, fallback cteEventInfo) cteEventInfo {
+	if primary.EventType == "" {
+		primary.EventType = fallback.EventType
+	}
+	if primary.Sequence == "" {
+		primary.Sequence = fallback.Sequence
+	}
 	if primary.AccessKey == "" {
 		primary.AccessKey = fallback.AccessKey
 	}
