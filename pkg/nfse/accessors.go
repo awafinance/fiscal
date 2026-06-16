@@ -15,8 +15,8 @@ func (d *Document) GetAccessKey() string {
 		return strings.TrimPrefix(d.NFSe.InfNFSe.IdAttr, "NFS")
 	case d.DPS != nil && d.DPS.InfDPS != nil:
 		return strings.TrimPrefix(d.DPS.InfDPS.IdAttr, "DPS")
-	case d.PedRegEvento != nil && d.PedRegEvento.InfPedReg != nil:
-		return d.PedRegEvento.InfPedReg.ChNFSe
+	case d.infPedReg() != nil:
+		return d.infPedReg().ChNFSe
 	default:
 		return ""
 	}
@@ -35,6 +35,12 @@ func (d *Document) GetEnvironment() string {
 	}
 	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil {
 		return d.NFSe.InfNFSe.AmbGer
+	}
+	if d != nil && d.EventoNFSe != nil && d.EventoNFSe.InfEvento != nil && d.EventoNFSe.InfEvento.AmbGer != "" {
+		return d.EventoNFSe.InfEvento.AmbGer
+	}
+	if reg := d.infPedReg(); reg != nil && reg.TpAmb != "" {
+		return reg.TpAmb
 	}
 	return ""
 }
@@ -69,6 +75,12 @@ func (d *Document) GetIssueDate() string {
 	}
 	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil {
 		return d.NFSe.InfNFSe.DhProc
+	}
+	if reg := d.infPedReg(); reg != nil && reg.DhEvento != "" {
+		return reg.DhEvento
+	}
+	if d != nil && d.EventoNFSe != nil && d.EventoNFSe.InfEvento != nil && d.EventoNFSe.InfEvento.DhProc != "" {
+		return d.EventoNFSe.InfEvento.DhProc
 	}
 	return ""
 }

@@ -11,6 +11,7 @@ type AmountsInfo = info.AmountsInfo
 type PartiesInfo = info.PartiesInfo
 type RelatedDocumentsInfo = info.RelatedDocumentsInfo
 type RouteInfo = info.RouteInfo
+type LifecycleEventInfo = info.LifecycleEventInfo
 
 type DocumentInfo interface {
 	GetAccessKey() string

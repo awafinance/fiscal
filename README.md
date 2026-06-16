@@ -202,6 +202,13 @@ if route, ok := doc.Info().(fiscal.RouteInfo); ok {
  fmt.Println(route.GetOrigin())
  fmt.Println(route.GetDestination())
 }
+
+if event, ok := doc.Info().(fiscal.LifecycleEventInfo); ok {
+ fmt.Println(event.GetEventType())        // raw tpEvento ("110111") or NFS-e code ("e101101")
+ fmt.Println(event.GetEventSequence())    // nSeqEvento
+ fmt.Println(doc.Info().GetAccessKey())   // the referenced note
+ fmt.Println(doc.Info().GetStatusCode())  // SEFAZ return, when the event carries one
+}
 ```
 
 Optional interface support is intentionally grouped by concept:
@@ -211,9 +218,17 @@ Optional interface support is intentionally grouped by concept:
 - `PartiesInfo` returns known parties with roles, such as issuer, recipient,
   provider, taker, sender, dispatcher, receiver, and buyer.
 - `RelatedDocumentsInfo` returns document references such as linked NFe, CTe,
-  MDF-e, or DCe access keys where the schema carries them.
+  MDF-e, or DCe access keys where the schema carries them. This also covers
+  correction back-references: a CT-e complemento/substituto points at the
+  original CT-e (`Type: "cte"`), and an NFS-e substitute note points at the
+  superseded note (`Type: "nfse"`).
 - `RouteInfo` returns modal, origin, and destination fields for transport and
   service documents where those concepts exist.
+- `LifecycleEventInfo` returns the raw event type and sequence for event
+  documents (cancelamento, substituição, manifestação, ...). The referenced
+  note, date, and SEFAZ return ride the base accessors (`GetAccessKey`,
+  `GetIssueDate`, `GetStatusCode`). `GetEventType` is never translated to a
+  friendly name.
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use
@@ -243,6 +258,16 @@ period the invoice belongs to (distinct from the issue date):
 
 ```go
 fmt.Println(doc.NFSe.GetCompetenceDate())
+```
+
+### CT-e Details
+
+CT-e exposes the raw document type (`tpCTe`): `0` normal, `1` complemento,
+`3` substituto. The referenced original (for complemento/substituto) is surfaced
+through `GetRelatedDocuments()`.
+
+```go
+fmt.Println(doc.CTe.GetType())
 ```
 
 ## Round-trip behavior

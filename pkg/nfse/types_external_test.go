@@ -7,10 +7,12 @@ import (
 
 func acceptsDPS(*nfse.TCDPS)                {}
 func acceptsPedRegEvento(*nfse.TCPedRegEvt) {}
+func acceptsEvento(*nfse.TCEvento)          {}
 
 var _ = func(doc nfse.Document) {
 	acceptsDPS(doc.DPS)
 	acceptsPedRegEvento(doc.PedRegEvento)
+	acceptsEvento(doc.EventoNFSe)
 }
 
 var (

@@ -60,6 +60,7 @@ func TestParse_InvalidInputs(t *testing.T) {
 		{name: "invalid dps", data: []byte(`<DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></DPS>`), errContains: "missing infDPS"},
 		{name: "invalid nfse", data: []byte(`<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></NFSe>`), errContains: "missing infNFSe"},
 		{name: "invalid event", data: []byte(`<pedRegEvento xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></pedRegEvento>`), errContains: "missing infPedReg"},
+		{name: "invalid registered event", data: []byte(`<evento xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00"></evento>`), errContains: "missing infEvento"},
 	}
 
 	for _, tt := range tests {
@@ -176,6 +177,7 @@ func assertSameRoot(t *testing.T, expected, actual *nfse.Document) {
 	require.Equal(t, expected.DPS != nil, actual.DPS != nil)
 	require.Equal(t, expected.NFSe != nil, actual.NFSe != nil)
 	require.Equal(t, expected.PedRegEvento != nil, actual.PedRegEvento != nil)
+	require.Equal(t, expected.EventoNFSe != nil, actual.EventoNFSe != nil)
 }
 
 func allFixtureNames(t *testing.T) []string {

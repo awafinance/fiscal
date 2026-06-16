@@ -618,10 +618,12 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		{name: "ret generico", data: minimalMDFERetEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.RetEventoMDFe)
+			assertMDFEEventReturnInfo(t, doc, "990001")
 		}},
 		{name: "ret cancelamento", data: minimalMDFERetEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.RetEventoCancMDFe)
+			assertMDFEEventReturnInfo(t, doc, "110111")
 		}},
 		{name: "ret encerramento", data: minimalMDFERetEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) {
 			t.Helper()
@@ -650,10 +652,12 @@ func TestParse_EventReturnAndProcRoots(t *testing.T) {
 		{name: "proc generico", data: minimalMDFEProcEventXML("990001"), assert: func(t *testing.T, doc *mdfe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.ProcEventoMDFe)
+			assertMDFEProcessedEventInfo(t, doc, "990001")
 		}},
 		{name: "proc cancelamento", data: minimalMDFEProcEventXML("110111"), assert: func(t *testing.T, doc *mdfe.Document) {
 			t.Helper()
 			require.NotNil(t, doc.ProcEventoCancMDFe)
+			assertMDFEProcessedEventInfo(t, doc, "110111")
 		}},
 		{name: "proc encerramento", data: minimalMDFEProcEventXML("110112"), assert: func(t *testing.T, doc *mdfe.Document) {
 			t.Helper()
@@ -870,6 +874,23 @@ func minimalMDFERetEventXML(tpEvento string) string {
 
 func minimalMDFEProcEventXML(tpEvento string) string {
 	return fmt.Sprintf(`<procEventoMDFe xmlns="%s" versao="3.00"><eventoMDFe versao="3.00"><infEvento Id="ID%s4124011234567800019558001000000001100000001101"><cOrgao>41</cOrgao><tpAmb>2</tpAmb><CNPJ>12345678000195</CNPJ><chMDFe>%s</chMDFe><dhEvento>2024-01-02T03:04:05-03:00</dhEvento><tpEvento>%s</tpEvento><nSeqEvento>1</nSeqEvento><detEvento></detEvento></infEvento></eventoMDFe><retEventoMDFe versao="3.00"><infEvento><tpAmb>2</tpAmb><cStat>135</cStat><tpEvento>%s</tpEvento></infEvento></retEventoMDFe></procEventoMDFe>`, mdfeNamespace, tpEvento, mdfeDocumentKey, tpEvento, tpEvento)
+}
+
+func assertMDFEEventReturnInfo(t *testing.T, doc *mdfe.Document, expectedEventType string) {
+	t.Helper()
+
+	require.Equal(t, expectedEventType, doc.GetEventType())
+	require.Empty(t, doc.GetEventSequence())
+	require.Equal(t, "135", doc.GetStatusCode())
+}
+
+func assertMDFEProcessedEventInfo(t *testing.T, doc *mdfe.Document, expectedEventType string) {
+	t.Helper()
+
+	require.Equal(t, expectedEventType, doc.GetEventType())
+	require.Equal(t, "1", doc.GetEventSequence())
+	require.Equal(t, mdfeDocumentKey, doc.GetAccessKey())
+	require.Equal(t, "135", doc.GetStatusCode())
 }
 
 func normalizeXML(t *testing.T, data []byte) string {
