@@ -7,6 +7,7 @@ type cteSentEventEnvelope struct {
 	Environment string
 	IssueDate   string
 	EventType   string
+	Sequence    string
 	HasDetail   bool
 	DetailXML   string
 }
@@ -14,6 +15,8 @@ type cteSentEventEnvelope struct {
 type cteRetEventEnvelope struct {
 	RootPresent    bool
 	InfPresent     bool
+	EventType      string
+	Sequence       string
 	AccessKey      string
 	Environment    string
 	ProtocolNumber string
@@ -436,84 +439,84 @@ func sentEnvelopeFromEventoCTeInfEvento(inf *EventoCTeAnonComplexInfEvento1) cte
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoCancCTeInfEvento(inf *EventoCancCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoCECTeInfEvento(inf *EventoCECTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoCancCECTeInfEvento(inf *EventoCancCECTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoEPECCTeInfEvento(inf *EventoEPECCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoRegMultimodalInfEvento(inf *EventoRegMultimodalCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoGTVInfEvento(inf *EventoGTVCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoIECTeInfEvento(inf *EventoIECTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoCancIECTeInfEvento(inf *EventoCancIECTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoPrestDesacordoInfEvento(inf *EventoPrestDesacordoCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoCancPrestDesacordoInfEvento(inf *EventoCancPrestDesacordoCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	return cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 }
 
 func sentEnvelopeFromEventoGenericoInfEvento(inf *EventoGenericoCTeAnonComplexInfEvento1) cteSentEventEnvelope {
 	if inf == nil {
 		return cteSentEventEnvelope{RootPresent: true}
 	}
-	env := cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, HasDetail: inf.DetEvento != nil}
+	env := cteSentEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: inf.ChCTe, Environment: inf.TpAmb, IssueDate: inf.DhEvento, EventType: inf.TpEvento, Sequence: inf.NSeqEvento, HasDetail: inf.DetEvento != nil}
 	if inf.DetEvento != nil {
 		env.DetailXML = inf.DetEvento.InnerXML
 	}
@@ -524,82 +527,82 @@ func retEnvelopeFromEventoCTeInfEvento(inf *EventoCTeAnonComplexInfEvento2) cteR
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoCancCTeInfEvento(inf *EventoCancCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoCECTeInfEvento(inf *EventoCECTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoCancCECTeInfEvento(inf *EventoCancCECTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoEPECCTeInfEvento(inf *EventoEPECCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoRegMultimodalInfEvento(inf *EventoRegMultimodalCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoGTVInfEvento(inf *EventoGTVCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoIECTeInfEvento(inf *EventoIECTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoCancIECTeInfEvento(inf *EventoCancIECTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoPrestDesacordoInfEvento(inf *EventoPrestDesacordoCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoCancPrestDesacordoInfEvento(inf *EventoCancPrestDesacordoCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }
 
 func retEnvelopeFromEventoGenericoInfEvento(inf *EventoGenericoCTeAnonComplexInfEvento2) cteRetEventEnvelope {
 	if inf == nil {
 		return cteRetEventEnvelope{RootPresent: true}
 	}
-	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
+	return cteRetEventEnvelope{RootPresent: true, InfPresent: true, EventType: stringPtrValue(inf.TpEvento), Sequence: stringPtrValue(inf.NSeqEvento), AccessKey: stringPtrValue(inf.ChCTe), Environment: inf.TpAmb, ProtocolNumber: stringPtrValue(inf.NProt), StatusCode: inf.CStat, StatusReason: typedStringPtrValue(inf.XMotivo)}
 }

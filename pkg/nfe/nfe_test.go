@@ -1208,6 +1208,10 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 				t.Helper()
 				require.NotNil(t, doc.RetEnvEvento)
 				require.Equal(t, "128", doc.RetEnvEvento.CStat)
+				require.Equal(t, "999999", doc.GetEventType())
+				require.Equal(t, "1", doc.GetEventSequence())
+				require.Equal(t, "35180803102452000172550010000476051695511860", doc.GetAccessKey())
+				require.Equal(t, "135", doc.GetStatusCode())
 			},
 		},
 		{
@@ -1218,6 +1222,10 @@ func TestParse_ExpandedNFESurfaceRoots(t *testing.T) {
 				require.NotNil(t, doc.ProcEventoNFe)
 				require.NotNil(t, doc.ProcEventoNFe.Evento)
 				require.NotNil(t, doc.ProcEventoNFe.RetEvento)
+				require.Equal(t, "999999", doc.GetEventType())
+				require.Equal(t, "1", doc.GetEventSequence())
+				require.Equal(t, "35180803102452000172550010000476051695511860", doc.GetAccessKey())
+				require.Equal(t, "135", doc.GetStatusCode())
 			},
 		},
 		{
