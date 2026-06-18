@@ -1,0 +1,22 @@
+<evento xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00">
+  <infEvento Id="EVT2">
+    <ambGer>1</ambGer>
+    <nSeqEvento>001</nSeqEvento>
+    <dhProc>2022-09-29T10:11:12-03:00</dhProc>
+    <nDFe></nDFe>
+    <pedRegEvento versao="1.00">
+      <infPedReg Id="PRE2">
+        <tpAmb>2</tpAmb>
+        <verAplic></verAplic>
+        <dhEvento>2022-09-29T10:11:11-03:00</dhEvento>
+        <chNFSe>33045572214043710000103000000000001726012751532718</chNFSe>
+        <nPedRegEvento>001</nPedRegEvento>
+        <e105102>
+          <xDesc>Cancelamento por substituicao</xDesc>
+          <cMotivo>1</cMotivo>
+          <chSubstituta>33045572214043710000103000000000001826012751532719</chSubstituta>
+        </e105102>
+      </infPedReg>
+    </pedRegEvento>
+  </infEvento>
+</evento>

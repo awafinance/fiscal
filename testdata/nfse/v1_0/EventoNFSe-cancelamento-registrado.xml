@@ -1,0 +1,22 @@
+<evento xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.00">
+  <infEvento Id="EVT1">
+    <ambGer>1</ambGer>
+    <nSeqEvento>002</nSeqEvento>
+    <dhProc>2022-09-28T13:50:30-03:00</dhProc>
+    <nDFe></nDFe>
+    <pedRegEvento versao="1.00">
+      <infPedReg Id="PRE1">
+        <tpAmb>2</tpAmb>
+        <verAplic></verAplic>
+        <dhEvento>2022-09-28T13:50:29-03:00</dhEvento>
+        <chNFSe>14001591201761135000132000000000000022096100197260</chNFSe>
+        <nPedRegEvento>001</nPedRegEvento>
+        <e101101>
+          <xDesc>Cancelamento</xDesc>
+          <cMotivo>1</cMotivo>
+          <xMotivo>erro na emissao</xMotivo>
+        </e101101>
+      </infPedReg>
+    </pedRegEvento>
+  </infEvento>
+</evento>

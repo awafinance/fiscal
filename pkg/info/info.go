@@ -51,6 +51,20 @@ type Billing struct {
 	Duplicates []Duplicata `json:"duplicates,omitempty"`
 }
 
+const (
+	LifecycleEventRegistrationStateRequest    = "request"
+	LifecycleEventRegistrationStateRegistered = "registered"
+)
+
+type LifecycleEventFacts struct {
+	RegistrationState string `json:"registrationState,omitempty"`
+	Type              string `json:"type,omitempty"`
+	Sequence          string `json:"sequence,omitempty"`
+	RequestNumber     string `json:"requestNumber,omitempty"`
+	IssueDate         string `json:"issueDate,omitempty"`
+	ProcessingTime    string `json:"processingTime,omitempty"`
+}
+
 type AmountsInfo interface {
 	GetAmounts() []Amount
 }
@@ -85,4 +99,8 @@ type AdditionalInformation interface {
 type LifecycleEventInfo interface {
 	GetEventType() string
 	GetEventSequence() string
+}
+
+type LifecycleEventFactsInfo interface {
+	GetLifecycleEventFacts() *LifecycleEventFacts
 }

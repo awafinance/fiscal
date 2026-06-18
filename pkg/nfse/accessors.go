@@ -154,7 +154,12 @@ func (d *Document) GetStatusReason() string {
 }
 
 func (d *Document) IsAuthorized() bool {
-	return d.GetStatusCode() == "100"
+	switch d.GetStatusCode() {
+	case "100", "101", "102", "103", "107":
+		return true
+	default:
+		return false
+	}
 }
 
 func (d *Document) GetAmounts() []info.Amount {
