@@ -76,6 +76,26 @@ func (d *Document) GetEventSequence() string {
 	return ""
 }
 
+func (d *Document) GetLifecycleEventFacts() *info.LifecycleEventFacts {
+	reg := d.infPedReg()
+	if reg == nil {
+		return nil
+	}
+
+	facts := &info.LifecycleEventFacts{
+		RegistrationState: info.LifecycleEventRegistrationStateRequest,
+		Type:              d.GetEventType(),
+		RequestNumber:     reg.NPedRegEvento,
+		IssueDate:         reg.DhEvento,
+	}
+	if d != nil && d.EventoNFSe != nil && d.EventoNFSe.InfEvento != nil {
+		facts.RegistrationState = info.LifecycleEventRegistrationStateRegistered
+		facts.Sequence = d.EventoNFSe.InfEvento.NSeqEvento
+		facts.ProcessingTime = d.EventoNFSe.InfEvento.DhProc
+	}
+	return facts
+}
+
 // GetRelatedDocuments surfaces the substituição back-reference: the substitute
 // note carries the superseded key in subst/chSubstda, and the e105102 event
 // carries it in chSubstituta. Both are typed with the bare kind "nfse".

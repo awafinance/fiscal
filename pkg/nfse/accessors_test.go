@@ -2,6 +2,7 @@ package nfse_test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/awafinance/fiscal/pkg/info"
@@ -48,6 +49,23 @@ func TestDocumentConvenienceAccessorsHandleIssuedNFSe(t *testing.T) {
 	require.True(t, doc.IsAuthorized())
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "service", Value: "999999999.99"})
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "net", Value: "989999961.04"})
+}
+
+func TestDocumentIsAuthorizedAcceptsGeneratedNFSeStatuses(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/ConsultarNFSeEnvio-ped-sitnfse.xml")
+	require.NoError(t, err)
+
+	for _, status := range []string{"100", "101", "102", "103", "107"} {
+		t.Run(status, func(t *testing.T) {
+			doc, err := nfse.Parse([]byte(strings.Replace(string(data), "<cStat>100</cStat>", "<cStat>"+status+"</cStat>", 1)))
+			require.NoError(t, err)
+			require.True(t, doc.IsAuthorized())
+		})
+	}
+
+	doc, err := nfse.Parse([]byte(strings.Replace(string(data), "<cStat>100</cStat>", "<cStat>999</cStat>", 1)))
+	require.NoError(t, err)
+	require.False(t, doc.IsAuthorized())
 }
 
 func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {

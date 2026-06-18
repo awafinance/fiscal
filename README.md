@@ -209,6 +209,14 @@ if event, ok := doc.Info().(fiscal.LifecycleEventInfo); ok {
  fmt.Println(doc.Info().GetAccessKey())   // the referenced note
  fmt.Println(doc.Info().GetStatusCode())  // SEFAZ return, when the event carries one
 }
+
+if facts, ok := doc.Info().(fiscal.LifecycleEventFactsInfo); ok {
+ if event := facts.GetLifecycleEventFacts(); event != nil {
+  fmt.Println(event.RegistrationState) // "request" or "registered"
+  fmt.Println(event.RequestNumber)     // nPedRegEvento
+  fmt.Println(event.ProcessingTime)    // dhProc on registered events
+ }
+}
 ```
 
 Optional interface support is intentionally grouped by concept:
@@ -229,11 +237,16 @@ Optional interface support is intentionally grouped by concept:
   note, date, and SEFAZ return ride the base accessors (`GetAccessKey`,
   `GetIssueDate`, `GetStatusCode`). `GetEventType` is never translated to a
   friendly name.
+- `LifecycleEventFactsInfo` returns one normalized event fact record where the
+  schema needs more than type and sequence. NFS-e uses this to distinguish a
+  bare `pedRegEvento` request (`RegistrationState: "request"`) from a generated
+  `evento` (`RegistrationState: "registered"`), and to expose `nPedRegEvento`
+  and `dhProc` without inventing NF-e/CT-e status semantics.
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use
-`fiscal.Amount`, `fiscal.Party`, `fiscal.RelatedDocument`, and
-`fiscal.Location`.
+`fiscal.Amount`, `fiscal.Party`, `fiscal.RelatedDocument`, `fiscal.Location`,
+and `fiscal.LifecycleEventFacts`.
 
 ### NFe Details
 
@@ -259,6 +272,10 @@ period the invoice belongs to (distinct from the issue date):
 ```go
 fmt.Println(doc.NFSe.GetCompetenceDate())
 ```
+
+For NFS-e, `IsAuthorized()` is true for generated NFS-e status codes `100`,
+`101`, `102`, `103`, and `107`. Event documents keep `GetStatusCode()` empty;
+use `LifecycleEventFactsInfo` for NFS-e event registration facts.
 
 ### CT-e Details
 

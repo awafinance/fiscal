@@ -6,12 +6,19 @@ type Amount = info.Amount
 type Party = info.Party
 type RelatedDocument = info.RelatedDocument
 type Location = info.Location
+type LifecycleEventFacts = info.LifecycleEventFacts
+
+const (
+	LifecycleEventRegistrationStateRequest    = info.LifecycleEventRegistrationStateRequest
+	LifecycleEventRegistrationStateRegistered = info.LifecycleEventRegistrationStateRegistered
+)
 
 type AmountsInfo = info.AmountsInfo
 type PartiesInfo = info.PartiesInfo
 type RelatedDocumentsInfo = info.RelatedDocumentsInfo
 type RouteInfo = info.RouteInfo
 type LifecycleEventInfo = info.LifecycleEventInfo
+type LifecycleEventFactsInfo = info.LifecycleEventFactsInfo
 
 type DocumentInfo interface {
 	GetAccessKey() string

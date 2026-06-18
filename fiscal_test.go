@@ -132,6 +132,23 @@ func TestLifecycleEventInfoViaInfo(t *testing.T) {
 	require.Equal(t, "1", event.GetEventSequence())
 }
 
+func TestNFSeLifecycleEventFactsViaInfo(t *testing.T) {
+	data, err := os.ReadFile("testdata/nfse/v1_0/CancelarNFSe-ped-cannfse.xml")
+	require.NoError(t, err)
+
+	doc, err := Parse(data)
+	require.NoError(t, err)
+
+	facts, ok := doc.Info().(LifecycleEventFactsInfo)
+	require.True(t, ok)
+	require.Equal(t, &LifecycleEventFacts{
+		RegistrationState: LifecycleEventRegistrationStateRequest,
+		Type:              "e101101",
+		RequestNumber:     "001",
+		IssueDate:         "2022-09-28T13:50:29-03:00",
+	}, facts.GetLifecycleEventFacts())
+}
+
 func TestNFSeSubstituicaoViaRelatedDocuments(t *testing.T) {
 	data, err := os.ReadFile("testdata/nfse/v1_0/nfse-prod-substituicao.xml")
 	require.NoError(t, err)

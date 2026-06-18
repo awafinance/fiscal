@@ -166,6 +166,18 @@ func assertFixtureShape(t *testing.T, fixture string, doc *nfse.Document) {
 		require.Equal(t, "001", doc.PedRegEvento.InfPedReg.NPedRegEvento)
 		require.NotNil(t, doc.PedRegEvento.InfPedReg.E101101)
 		require.Equal(t, "1", doc.PedRegEvento.InfPedReg.E101101.CMotivo)
+	case "EventoNFSe-cancelamento-registrado.xml":
+		require.NotNil(t, doc.EventoNFSe)
+		require.Equal(t, "1.00", doc.EventoNFSe.VersaoAttr)
+		require.Equal(t, "002", doc.EventoNFSe.InfEvento.NSeqEvento)
+		require.Equal(t, "2022-09-28T13:50:30-03:00", doc.EventoNFSe.InfEvento.DhProc)
+		require.NotNil(t, doc.EventoNFSe.InfEvento.PedRegEvento.InfPedReg.E101101)
+	case "EventoNFSe-substituicao-registrado.xml":
+		require.NotNil(t, doc.EventoNFSe)
+		require.Equal(t, "001", doc.EventoNFSe.InfEvento.NSeqEvento)
+		reg := doc.EventoNFSe.InfEvento.PedRegEvento.InfPedReg
+		require.NotNil(t, reg.E105102)
+		require.Equal(t, "33045572214043710000103000000000001826012751532719", reg.E105102.ChSubstituta)
 	default:
 		t.Fatalf("unhandled fixture %s", fixture)
 	}
