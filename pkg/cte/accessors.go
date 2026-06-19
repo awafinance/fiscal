@@ -332,25 +332,261 @@ func cteOSIBSCBSAmounts(t *CTeOSTribCTe) []info.Amount {
 }
 
 func (d *Document) GetParties() []info.Party {
-	parties := compactParties(
-		info.Party{Role: "issuer", Name: d.GetIssuer(), Document: d.GetIssuerDocument()},
-		info.Party{Role: "recipient", Name: d.GetRecipient(), Document: d.GetRecipientDocument()},
-	)
 	if inf := d.infCTe(); inf != nil {
-		if inf.Rem != nil {
-			parties = append(parties, info.Party{Role: "sender", Name: inf.Rem.XNome, Document: firstStringPtr(inf.Rem.CNPJ, inf.Rem.CPF)})
-		}
-		if inf.Exped != nil {
-			parties = append(parties, info.Party{Role: "dispatcher", Name: inf.Exped.XNome, Document: firstStringPtr(inf.Exped.CNPJ, inf.Exped.CPF)})
-		}
-		if inf.Receb != nil {
-			parties = append(parties, info.Party{Role: "receiver", Name: inf.Receb.XNome, Document: firstStringPtr(inf.Receb.CNPJ, inf.Receb.CPF)})
-		}
-		if inf.Dest != nil {
-			parties = append(parties, info.Party{Role: "addressee", Name: inf.Dest.XNome, Document: firstStringPtr(inf.Dest.CNPJ, inf.Dest.CPF)})
+		return compactParties(
+			cteIssuerParty(inf.Emit),
+			d.cteTomadorParty(),
+			cteSenderParty(inf.Rem),
+			cteDispatcherParty(inf.Exped),
+			cteReceiverParty(inf.Receb),
+			cteAddresseeParty(inf.Dest),
+		)
+	}
+	if inf := d.infCTeOS(); inf != nil {
+		return compactParties(
+			cteOSIssuerParty(inf.Emit),
+			cteOSTakerParty(inf.Toma),
+		)
+	}
+	return nil
+}
+
+func cteIssuerParty(emit *CTeAnonComplexEmit3) info.Party {
+	if emit == nil {
+		return info.Party{Role: "issuer"}
+	}
+	party := info.Party{
+		Role:                 "issuer",
+		Name:                 emit.XNome,
+		Document:             firstStringPtr(emit.CNPJ, emit.CPF),
+		StateRegistration:    stringPtrValue(emit.IE),
+		SimpleNationalOption: stringPtrValue(emit.CRT),
+	}
+	if emit.EnderEmit != nil {
+		party.Phone = stringPtrValue(emit.EnderEmit.Fone)
+		party.Address = cteIssuerAddress(emit.EnderEmit)
+	}
+	return party
+}
+
+func cteOSIssuerParty(emit *CTeOSAnonComplexEmit4) info.Party {
+	if emit == nil {
+		return info.Party{Role: "issuer"}
+	}
+	party := info.Party{
+		Role:                 "issuer",
+		Name:                 emit.XNome,
+		Document:             emit.CNPJ,
+		StateRegistration:    emit.IE,
+		SimpleNationalOption: stringPtrValue(emit.CRT),
+	}
+	if emit.EnderEmit != nil {
+		party.Phone = stringPtrValue(emit.EnderEmit.Fone)
+		party.Address = cteOSIssuerAddress(emit.EnderEmit)
+	}
+	return party
+}
+
+func (d *Document) cteTomadorParty() info.Party {
+	inf := d.infCTe()
+	if inf == nil || inf.Ide == nil {
+		return info.Party{Role: "recipient"}
+	}
+	if t := inf.Ide.Toma3; t != nil {
+		switch t.Toma {
+		case "0":
+			return cteSenderPartyWithRole("recipient", inf.Rem)
+		case "1":
+			return cteDispatcherPartyWithRole("recipient", inf.Exped)
+		case "2":
+			return cteReceiverPartyWithRole("recipient", inf.Receb)
+		case "3":
+			return cteAddresseePartyWithRole("recipient", inf.Dest)
 		}
 	}
-	return compactParties(parties...)
+	if t := inf.Ide.Toma4; t != nil {
+		return cteToma4Party("recipient", t)
+	}
+	return info.Party{Role: "recipient"}
+}
+
+func cteSenderParty(rem *CTeAnonComplexRem2) info.Party {
+	return cteSenderPartyWithRole("sender", rem)
+}
+
+func cteSenderPartyWithRole(role string, rem *CTeAnonComplexRem2) info.Party {
+	if rem == nil {
+		return info.Party{Role: role}
+	}
+	return info.Party{
+		Role:              role,
+		Name:              rem.XNome,
+		Document:          firstStringPtr(rem.CNPJ, rem.CPF),
+		StateRegistration: stringPtrValue(rem.IE),
+		Address:           cteAddress(rem.EnderReme),
+		Phone:             stringPtrValue(rem.Fone),
+		Email:             stringPtrValue(rem.Email),
+	}
+}
+
+func cteDispatcherParty(exped *CTeAnonComplexExped1) info.Party {
+	return cteDispatcherPartyWithRole("dispatcher", exped)
+}
+
+func cteDispatcherPartyWithRole(role string, exped *CTeAnonComplexExped1) info.Party {
+	if exped == nil {
+		return info.Party{Role: role}
+	}
+	return info.Party{
+		Role:              role,
+		Name:              exped.XNome,
+		Document:          firstStringPtr(exped.CNPJ, exped.CPF),
+		StateRegistration: stringPtrValue(exped.IE),
+		Address:           cteAddress(exped.EnderExped),
+		Phone:             stringPtrValue(exped.Fone),
+		Email:             stringPtrValue(exped.Email),
+	}
+}
+
+func cteReceiverParty(receb *CTeAnonComplexReceb1) info.Party {
+	return cteReceiverPartyWithRole("receiver", receb)
+}
+
+func cteReceiverPartyWithRole(role string, receb *CTeAnonComplexReceb1) info.Party {
+	if receb == nil {
+		return info.Party{Role: role}
+	}
+	return info.Party{
+		Role:              role,
+		Name:              receb.XNome,
+		Document:          firstStringPtr(receb.CNPJ, receb.CPF),
+		StateRegistration: stringPtrValue(receb.IE),
+		Address:           cteAddress(receb.EnderReceb),
+		Phone:             stringPtrValue(receb.Fone),
+		Email:             stringPtrValue(receb.Email),
+	}
+}
+
+func cteAddresseeParty(dest *CTeAnonComplexDest2) info.Party {
+	return cteAddresseePartyWithRole("addressee", dest)
+}
+
+func cteAddresseePartyWithRole(role string, dest *CTeAnonComplexDest2) info.Party {
+	if dest == nil {
+		return info.Party{Role: role}
+	}
+	return info.Party{
+		Role:              role,
+		Name:              dest.XNome,
+		Document:          firstStringPtr(dest.CNPJ, dest.CPF),
+		StateRegistration: stringPtrValue(dest.IE),
+		Address:           cteAddress(dest.EnderDest),
+		Phone:             stringPtrValue(dest.Fone),
+		Email:             stringPtrValue(dest.Email),
+	}
+}
+
+func cteToma4Party(role string, toma *CTeAnonComplexToma41) info.Party {
+	if toma == nil {
+		return info.Party{Role: role}
+	}
+	return info.Party{
+		Role:              role,
+		Name:              toma.XNome,
+		Document:          firstStringPtr(toma.CNPJ, toma.CPF),
+		StateRegistration: stringPtrValue(toma.IE),
+		Address:           cteAddress(toma.EnderToma),
+		Phone:             stringPtrValue(toma.Fone),
+		Email:             stringPtrValue(toma.Email),
+	}
+}
+
+func cteOSTakerParty(toma *CTeOSAnonComplexToma3) info.Party {
+	if toma == nil {
+		return info.Party{Role: "recipient"}
+	}
+	return info.Party{
+		Role:              "recipient",
+		Name:              toma.XNome,
+		Document:          firstStringPtr(toma.CNPJ, toma.CPF),
+		StateRegistration: stringPtrValue(toma.IE),
+		Address:           cteOSAddress(toma.EnderToma),
+		Phone:             stringPtrValue(toma.Fone),
+		Email:             stringPtrValue(toma.Email),
+	}
+}
+
+func cteIssuerAddress(end *CTeEndeEmi) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+	})
+}
+
+func cteOSIssuerAddress(end *CTeOSEndeEmi) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+	})
+}
+
+func cteAddress(end *CTeEndereco) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+		CountryCode:  stringPtrValue(end.CPais),
+	})
+}
+
+func cteOSAddress(end *CTeOSEndereco) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+		CountryCode:  stringPtrValue(end.CPais),
+	})
+}
+
+func compactAddress(address *info.Address) *info.Address {
+	if address == nil || *address == (info.Address{}) {
+		return nil
+	}
+	return address
 }
 
 func (d *Document) GetBilling() *info.Billing {
@@ -924,9 +1160,22 @@ func isZeroAmount(value string) bool {
 func compactParties(parties ...info.Party) []info.Party {
 	out := make([]info.Party, 0, len(parties))
 	for _, party := range parties {
-		if party.Name != "" || party.Document != "" {
+		if partyHasData(party) {
 			out = append(out, party)
 		}
 	}
 	return out
+}
+
+func partyHasData(party info.Party) bool {
+	return party.Name != "" ||
+		party.Document != "" ||
+		party.StateRegistration != "" ||
+		party.MunicipalRegistration != "" ||
+		party.Address != nil ||
+		party.Phone != "" ||
+		party.Email != "" ||
+		party.SimpleNationalOption != "" ||
+		party.SimpleNationalRegime != "" ||
+		party.SpecialTaxRegime != ""
 }

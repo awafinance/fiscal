@@ -3,6 +3,7 @@ package fiscal
 import "github.com/awafinance/fiscal/pkg/info"
 
 type Amount = info.Amount
+type Address = info.Address
 type Party = info.Party
 type RelatedDocument = info.RelatedDocument
 type Location = info.Location

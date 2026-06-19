@@ -5,10 +5,30 @@ type Amount struct {
 	Value string `json:"value,omitempty"`
 }
 
+type Address struct {
+	Street       string `json:"street,omitempty"`
+	Number       string `json:"number,omitempty"`
+	Complement   string `json:"complement,omitempty"`
+	Neighborhood string `json:"neighborhood,omitempty"`
+	PostalCode   string `json:"postalCode,omitempty"`
+	CityCode     string `json:"cityCode,omitempty"`
+	CityName     string `json:"cityName,omitempty"`
+	State        string `json:"state,omitempty"`
+	CountryCode  string `json:"countryCode,omitempty"`
+}
+
 type Party struct {
-	Role     string `json:"role,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Document string `json:"document,omitempty"`
+	Role                  string   `json:"role,omitempty"`
+	Name                  string   `json:"name,omitempty"`
+	Document              string   `json:"document,omitempty"`
+	StateRegistration     string   `json:"stateRegistration,omitempty"`
+	MunicipalRegistration string   `json:"municipalRegistration,omitempty"`
+	Address               *Address `json:"address,omitempty"`
+	Phone                 string   `json:"phone,omitempty"`
+	Email                 string   `json:"email,omitempty"`
+	SimpleNationalOption  string   `json:"simpleNationalOption,omitempty"`
+	SimpleNationalRegime  string   `json:"simpleNationalRegime,omitempty"`
+	SpecialTaxRegime      string   `json:"specialTaxRegime,omitempty"`
 }
 
 type RelatedDocument struct {

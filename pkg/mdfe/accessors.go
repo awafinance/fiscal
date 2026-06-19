@@ -135,7 +135,45 @@ func (d *Document) GetAmounts() []info.Amount {
 }
 
 func (d *Document) GetParties() []info.Party {
-	return compactParties(info.Party{Role: "issuer", Name: d.GetIssuer(), Document: d.GetIssuerDocument()})
+	inf := d.infMDFe()
+	if inf == nil {
+		return nil
+	}
+	return compactParties(mdfeIssuerParty(inf.Emit))
+}
+
+func mdfeIssuerParty(emit *MDFeTAnonComplexEmit1) info.Party {
+	if emit == nil {
+		return info.Party{Role: "issuer"}
+	}
+	party := info.Party{
+		Role:              "issuer",
+		Name:              emit.XNome,
+		Document:          firstStringPtr(emit.CNPJ, emit.CPF),
+		StateRegistration: stringPtrValue(emit.IE),
+	}
+	if emit.EnderEmit != nil {
+		party.Phone = stringPtrValue(emit.EnderEmit.Fone)
+		party.Email = stringPtrValue(emit.EnderEmit.Email)
+		party.Address = mdfeIssuerAddress(emit.EnderEmit)
+	}
+	return party
+}
+
+func mdfeIssuerAddress(end *MDFeTEndeEmi) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+	})
 }
 
 func (d *Document) GetRelatedDocuments() []info.RelatedDocument {
@@ -268,9 +306,29 @@ func compactAmounts(amounts ...info.Amount) []info.Amount {
 func compactParties(parties ...info.Party) []info.Party {
 	out := make([]info.Party, 0, len(parties))
 	for _, party := range parties {
-		if party.Name != "" || party.Document != "" {
+		if partyHasData(party) {
 			out = append(out, party)
 		}
 	}
 	return out
+}
+
+func partyHasData(party info.Party) bool {
+	return party.Name != "" ||
+		party.Document != "" ||
+		party.StateRegistration != "" ||
+		party.MunicipalRegistration != "" ||
+		party.Address != nil ||
+		party.Phone != "" ||
+		party.Email != "" ||
+		party.SimpleNationalOption != "" ||
+		party.SimpleNationalRegime != "" ||
+		party.SpecialTaxRegime != ""
+}
+
+func compactAddress(address *info.Address) *info.Address {
+	if address == nil || *address == (info.Address{}) {
+		return nil
+	}
+	return address
 }

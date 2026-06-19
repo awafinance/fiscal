@@ -34,8 +34,29 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Empty(t, doc.GetStatusCode())
 	require.False(t, doc.IsAuthorized())
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "service", Value: "2300.00"})
-	require.Contains(t, doc.GetParties(), info.Party{Role: "sender", Name: "KERBER E CIA. LTDA.", Document: "78408960000182"})
-	require.Contains(t, doc.GetParties(), info.Party{Role: "addressee", Name: "HOBI E CIA LTDA. - MATRIZ", Document: "81639791000104"})
+	sender := requireParty(t, doc.GetParties(), "sender")
+	require.Equal(t, "KERBER E CIA. LTDA.", sender.Name)
+	require.Equal(t, "78408960000182", sender.Document)
+	require.Equal(t, "251079554", sender.StateRegistration)
+	require.Equal(t, "4235224933", sender.Phone)
+	require.Equal(t, "pedreira@kerberecia.com.br", sender.Email)
+	require.Equal(t, &info.Address{
+		Street:       "ESTRADA VELHA DE PALMAS",
+		Number:       "S/N",
+		Complement:   "CAIXA POSTAL 268",
+		Neighborhood: "RIO DA AREIA",
+		PostalCode:   "89400000",
+		CityCode:     "4213609",
+		CityName:     "PORTO UNIAO",
+		State:        "SC",
+		CountryCode:  "1058",
+	}, sender.Address)
+	addressee := requireParty(t, doc.GetParties(), "addressee")
+	require.Equal(t, "HOBI E CIA LTDA. - MATRIZ", addressee.Name)
+	require.Equal(t, "81639791000104", addressee.Document)
+	require.Equal(t, "3010264714", addressee.StateRegistration)
+	require.Equal(t, "4235211922", addressee.Phone)
+	require.Equal(t, "84600000", addressee.Address.PostalCode)
 	require.Equal(t, "01", doc.GetModal())
 	require.Equal(t, info.Location{State: "SC", CityCode: "4213609", CityName: "PORTO UNIAO"}, doc.GetOrigin())
 }
@@ -53,6 +74,48 @@ func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 	for _, a := range amounts {
 		require.NotEqual(t, "tax_pis", a.Type, "zero-valued tax_pis should be filtered out")
 	}
+
+	issuer := requireParty(t, doc.GetParties(), "issuer")
+	require.Equal(t, "99999999999999", issuer.Document)
+	require.Equal(t, "999999999999", issuer.StateRegistration)
+	require.Equal(t, "9999999999", issuer.Phone)
+	require.Equal(t, &info.Address{
+		Street:       "XXXXXXXXXXXXXXXX",
+		Number:       "720",
+		Neighborhood: "XXXXXXXXXXX",
+		PostalCode:   "99999999",
+		CityCode:     "3534401",
+		CityName:     "SAO PAULO",
+		State:        "SP",
+	}, issuer.Address)
+
+	recipient := requireParty(t, doc.GetParties(), "recipient")
+	require.Equal(t, "XXXXXXXXXXXXXXXXXXXXXX", recipient.Name)
+	require.Equal(t, "99999999999999", recipient.Document)
+	require.Equal(t, "999999999999", recipient.StateRegistration)
+	require.Equal(t, "9999999999", recipient.Phone)
+	require.Equal(t, "xxxxxx@xxxxxxx.com.br", recipient.Email)
+	require.Equal(t, &info.Address{
+		Street:       "XXXXXXXXXXXXXXXXXXXX",
+		Number:       "209",
+		Neighborhood: "XXXXXXXXXXXXX",
+		PostalCode:   "99999999",
+		CityCode:     "3550308",
+		CityName:     "SAO PAULO",
+		State:        "SP",
+		CountryCode:  "1058",
+	}, recipient.Address)
+}
+
+func requireParty(t *testing.T, parties []info.Party, role string) info.Party {
+	t.Helper()
+	for _, party := range parties {
+		if party.Role == role {
+			return party
+		}
+	}
+	require.Failf(t, "party not found", "role %q in %#v", role, parties)
+	return info.Party{}
 }
 
 func TestDocumentResolvesTomadorViaToma3(t *testing.T) {
