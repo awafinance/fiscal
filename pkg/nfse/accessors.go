@@ -285,9 +285,142 @@ func (d *Document) GetAdditionalInfo() string {
 
 func (d *Document) GetParties() []info.Party {
 	return compactParties(
-		info.Party{Role: "provider", Name: d.GetIssuer(), Document: d.GetIssuerDocument()},
-		info.Party{Role: "taker", Name: d.GetRecipient(), Document: d.GetRecipientDocument()},
+		d.providerParty(),
+		d.takerParty(),
+		d.intermediaryParty(),
 	)
+}
+
+func (d *Document) providerParty() info.Party {
+	party := info.Party{Role: "provider", Name: d.GetIssuer(), Document: d.GetIssuerDocument()}
+
+	if emit := d.nfseEmit(); emit != nil {
+		party.Name = firstNonEmpty(party.Name, emit.XNome)
+		party.Document = firstNonEmpty(party.Document, firstStringPtr(emit.CNPJ, emit.CPF))
+		party.MunicipalRegistration = firstNonEmpty(party.MunicipalRegistration, stringPtrValue(emit.IM))
+		party.Phone = firstNonEmpty(party.Phone, stringPtrValue(emit.Fone))
+		party.Email = firstNonEmpty(party.Email, stringPtrValue(emit.Email))
+		party.Address = mergeAddress(party.Address, nfseIssuerAddress(emit.EnderNac))
+	}
+
+	if inf := d.infDPS(); inf != nil && inf.Prest != nil {
+		prest := inf.Prest
+		party.Name = firstNonEmpty(party.Name, stringPtrValue(prest.XNome))
+		party.Document = firstNonEmpty(party.Document, firstStringPtr(prest.CNPJ, prest.CPF, prest.NIF))
+		party.MunicipalRegistration = firstNonEmpty(party.MunicipalRegistration, stringPtrValue(prest.IM))
+		party.Phone = firstNonEmpty(party.Phone, stringPtrValue(prest.Fone))
+		party.Email = firstNonEmpty(party.Email, stringPtrValue(prest.Email))
+		party.Address = mergeAddress(party.Address, nfseAddress(prest.End))
+		if prest.RegTrib != nil {
+			party.SimpleNationalOption = firstNonEmpty(party.SimpleNationalOption, prest.RegTrib.OpSimpNac)
+			party.SimpleNationalRegime = firstNonEmpty(party.SimpleNationalRegime, stringPtrValue(prest.RegTrib.RegApTribSN))
+			party.SpecialTaxRegime = firstNonEmpty(party.SpecialTaxRegime, prest.RegTrib.RegEspTrib)
+		}
+	}
+
+	return party
+}
+
+func (d *Document) takerParty() info.Party {
+	party := info.Party{Role: "taker", Name: d.GetRecipient(), Document: d.GetRecipientDocument()}
+	if inf := d.infDPS(); inf != nil && inf.Toma != nil {
+		fillPersonParty(&party, inf.Toma)
+	}
+	return party
+}
+
+func (d *Document) intermediaryParty() info.Party {
+	party := info.Party{Role: "intermediary"}
+	if inf := d.infDPS(); inf != nil {
+		person := inf.Interm //nolint:misspell // Generated schema field name for <interm>.
+		if person != nil {
+			fillPersonParty(&party, person)
+		}
+	}
+	return party
+}
+
+func fillPersonParty(party *info.Party, person *TCInfoPessoa) {
+	if party == nil || person == nil {
+		return
+	}
+	party.Name = firstNonEmpty(party.Name, person.XNome)
+	party.Document = firstNonEmpty(party.Document, firstStringPtr(person.CNPJ, person.CPF, person.NIF))
+	party.MunicipalRegistration = firstNonEmpty(party.MunicipalRegistration, stringPtrValue(person.IM))
+	party.Phone = firstNonEmpty(party.Phone, stringPtrValue(person.Fone))
+	party.Email = firstNonEmpty(party.Email, stringPtrValue(person.Email))
+	party.Address = mergeAddress(party.Address, nfseAddress(person.End))
+}
+
+func (d *Document) nfseEmit() *TCEmitente {
+	if d == nil || d.NFSe == nil || d.NFSe.InfNFSe == nil {
+		return nil
+	}
+	return d.NFSe.InfNFSe.Emit
+}
+
+func nfseAddress(end *TCEndereco) *info.Address {
+	if end == nil {
+		return nil
+	}
+	address := &info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+	}
+	if end.EndNac != nil {
+		address.CityCode = end.EndNac.CMun
+		address.PostalCode = end.EndNac.CEP
+	}
+	if end.EndExt != nil {
+		address.CountryCode = end.EndExt.CPais
+		address.PostalCode = end.EndExt.CEndPost
+		address.CityName = end.EndExt.XCidade
+		address.State = end.EndExt.XEstProvReg
+	}
+	return compactAddress(address)
+}
+
+func nfseIssuerAddress(end *TCEnderecoEmitente) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   end.CEP,
+		CityCode:     end.CMun,
+		State:        end.UF,
+	})
+}
+
+func mergeAddress(current, candidate *info.Address) *info.Address {
+	if current == nil {
+		return candidate
+	}
+	if candidate == nil {
+		return current
+	}
+	current.Street = firstNonEmpty(current.Street, candidate.Street)
+	current.Number = firstNonEmpty(current.Number, candidate.Number)
+	current.Complement = firstNonEmpty(current.Complement, candidate.Complement)
+	current.Neighborhood = firstNonEmpty(current.Neighborhood, candidate.Neighborhood)
+	current.PostalCode = firstNonEmpty(current.PostalCode, candidate.PostalCode)
+	current.CityCode = firstNonEmpty(current.CityCode, candidate.CityCode)
+	current.CityName = firstNonEmpty(current.CityName, candidate.CityName)
+	current.State = firstNonEmpty(current.State, candidate.State)
+	current.CountryCode = firstNonEmpty(current.CountryCode, candidate.CountryCode)
+	return compactAddress(current)
+}
+
+func compactAddress(address *info.Address) *info.Address {
+	if address == nil || *address == (info.Address{}) {
+		return nil
+	}
+	return address
 }
 
 func (d *Document) GetModal() string {
@@ -337,6 +470,15 @@ func stringPtrValue(value *string) string {
 	return *value
 }
 
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		if value != "" {
+			return value
+		}
+	}
+	return ""
+}
+
 func compactAmounts(amounts ...info.Amount) []info.Amount {
 	out := make([]info.Amount, 0, len(amounts))
 	for _, amount := range amounts {
@@ -372,11 +514,24 @@ func isZeroAmount(value string) bool {
 func compactParties(parties ...info.Party) []info.Party {
 	out := make([]info.Party, 0, len(parties))
 	for _, party := range parties {
-		if party.Name != "" || party.Document != "" {
+		if partyHasData(party) {
 			out = append(out, party)
 		}
 	}
 	return out
+}
+
+func partyHasData(party info.Party) bool {
+	return party.Name != "" ||
+		party.Document != "" ||
+		party.StateRegistration != "" ||
+		party.MunicipalRegistration != "" ||
+		party.Address != nil ||
+		party.Phone != "" ||
+		party.Email != "" ||
+		party.SimpleNationalOption != "" ||
+		party.SimpleNationalRegime != "" ||
+		party.SpecialTaxRegime != ""
 }
 
 func joinNonEmpty(sep string, values ...string) string {

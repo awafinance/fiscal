@@ -355,10 +355,86 @@ func retentionAmounts(total *schema.TAnonComplexTotal1) []info.Amount {
 }
 
 func (d *Document) GetParties() []info.Party {
+	inf := d.infNFe()
+	if inf == nil {
+		return nil
+	}
 	return compactParties(
-		info.Party{Role: "issuer", Name: d.GetIssuer(), Document: d.GetIssuerDocument()},
-		info.Party{Role: "recipient", Name: d.GetRecipient(), Document: d.GetRecipientDocument()},
+		nfeIssuerParty(inf.Emit),
+		nfeRecipientParty(inf.Dest),
 	)
+}
+
+func nfeIssuerParty(emit *schema.TAnonComplexEmit1) info.Party {
+	if emit == nil {
+		return info.Party{Role: "issuer"}
+	}
+	party := info.Party{
+		Role:                  "issuer",
+		Name:                  emit.XNome,
+		Document:              firstString(emit.CNPJ, emit.CPF),
+		StateRegistration:     emit.IE,
+		MunicipalRegistration: stringPtrValue(emit.IM),
+		SimpleNationalOption:  emit.CRT,
+	}
+	if emit.EnderEmit != nil {
+		party.Phone = stringPtrValue(emit.EnderEmit.Fone)
+		party.Address = nfeIssuerAddress(emit.EnderEmit)
+	}
+	return party
+}
+
+func nfeRecipientParty(dest *schema.TAnonComplexDest1) info.Party {
+	if dest == nil {
+		return info.Party{Role: "recipient"}
+	}
+	party := info.Party{
+		Role:                  "recipient",
+		Name:                  stringPtrValue(dest.XNome),
+		Document:              firstString(dest.CNPJ, dest.CPF, dest.IdEstrangeiro),
+		StateRegistration:     stringPtrValue(dest.IE),
+		MunicipalRegistration: stringPtrValue(dest.IM),
+		Email:                 stringPtrValue(dest.Email),
+	}
+	if dest.EnderDest != nil {
+		party.Phone = stringPtrValue(dest.EnderDest.Fone)
+		party.Address = nfeAddress(dest.EnderDest)
+	}
+	return party
+}
+
+func nfeIssuerAddress(end *schema.TEnderEmi) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: stringPtrValue(end.XBairro),
+		PostalCode:   end.CEP,
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+		CountryCode:  stringPtrValue(end.CPais),
+	})
+}
+
+func nfeAddress(end *schema.TEndereco) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: stringPtrValue(end.XBairro),
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+		CountryCode:  stringPtrValue(end.CPais),
+	})
 }
 
 func (d *Document) GetRelatedDocuments() []info.RelatedDocument {
@@ -447,11 +523,31 @@ func isZeroAmount(value string) bool {
 func compactParties(parties ...info.Party) []info.Party {
 	out := make([]info.Party, 0, len(parties))
 	for _, party := range parties {
-		if party.Name != "" || party.Document != "" {
+		if partyHasData(party) {
 			out = append(out, party)
 		}
 	}
 	return out
+}
+
+func partyHasData(party info.Party) bool {
+	return party.Name != "" ||
+		party.Document != "" ||
+		party.StateRegistration != "" ||
+		party.MunicipalRegistration != "" ||
+		party.Address != nil ||
+		party.Phone != "" ||
+		party.Email != "" ||
+		party.SimpleNationalOption != "" ||
+		party.SimpleNationalRegime != "" ||
+		party.SpecialTaxRegime != ""
+}
+
+func compactAddress(address *info.Address) *info.Address {
+	if address == nil || *address == (info.Address{}) {
+		return nil
+	}
+	return address
 }
 
 func joinNonEmpty(sep string, values ...string) string {

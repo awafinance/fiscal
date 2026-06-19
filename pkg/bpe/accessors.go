@@ -178,10 +178,100 @@ func bpeImpICMSValue(t *TImp) string {
 }
 
 func (d *Document) GetParties() []info.Party {
+	inf := d.infBPe()
+	if inf == nil {
+		return nil
+	}
 	return compactParties(
-		info.Party{Role: "issuer", Name: d.GetIssuer(), Document: d.GetIssuerDocument()},
-		info.Party{Role: "buyer", Name: d.GetRecipient(), Document: d.GetRecipientDocument()},
+		bpeIssuerParty(inf.Emit),
+		bpeBuyerParty(inf.Comp),
+		bpePassengerParty(inf.InfPassagem),
 	)
+}
+
+func bpeIssuerParty(emit *TAnonComplexEmit2) info.Party {
+	if emit == nil {
+		return info.Party{Role: "issuer"}
+	}
+	party := info.Party{
+		Role:                  "issuer",
+		Name:                  emit.XNome,
+		Document:              emit.CNPJ,
+		StateRegistration:     emit.IE,
+		MunicipalRegistration: emit.IM,
+		SimpleNationalOption:  emit.CRT,
+	}
+	if emit.EnderEmit != nil {
+		party.Phone = stringPtrValue(emit.EnderEmit.Fone)
+		party.Email = stringPtrValue(emit.EnderEmit.Email)
+		party.Address = bpeIssuerAddress(emit.EnderEmit)
+	}
+	return party
+}
+
+func bpeBuyerParty(comp *TAnonComplexComp12) info.Party {
+	if comp == nil {
+		return info.Party{Role: "buyer"}
+	}
+	party := info.Party{
+		Role:              "buyer",
+		Name:              comp.XNome,
+		Document:          firstStringPtr(comp.CNPJ, comp.CPF, comp.IdEstrangeiro),
+		StateRegistration: stringPtrValue(comp.IE),
+	}
+	if comp.EnderComp != nil {
+		party.Phone = stringPtrValue(comp.EnderComp.Fone)
+		party.Email = stringPtrValue(comp.EnderComp.Email)
+		party.Address = bpeAddress(comp.EnderComp)
+	}
+	return party
+}
+
+func bpePassengerParty(passagem *TAnonComplexInfPassagem1) info.Party {
+	if passagem == nil || passagem.InfPassageiro == nil {
+		return info.Party{Role: "passenger"}
+	}
+	passenger := passagem.InfPassageiro
+	return info.Party{
+		Role:     "passenger",
+		Name:     passenger.XNome,
+		Document: firstStringPtr(passenger.CPF),
+		Phone:    stringPtrValue(passenger.Fone),
+		Email:    stringPtrValue(passenger.Email),
+	}
+}
+
+func bpeIssuerAddress(end *TEndeEmi) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+	})
+}
+
+func bpeAddress(end *TEndereco) *info.Address {
+	if end == nil {
+		return nil
+	}
+	return compactAddress(&info.Address{
+		Street:       end.XLgr,
+		Number:       end.Nro,
+		Complement:   stringPtrValue(end.XCpl),
+		Neighborhood: end.XBairro,
+		PostalCode:   stringPtrValue(end.CEP),
+		CityCode:     end.CMun,
+		CityName:     end.XMun,
+		State:        end.UF,
+		CountryCode:  stringPtrValue(end.CPais),
+	})
 }
 
 func (d *Document) GetModal() string {
@@ -279,12 +369,32 @@ func isZeroAmount(value string) bool {
 	return f == 0
 }
 
+func compactAddress(address *info.Address) *info.Address {
+	if address == nil || *address == (info.Address{}) {
+		return nil
+	}
+	return address
+}
+
 func compactParties(parties ...info.Party) []info.Party {
 	out := make([]info.Party, 0, len(parties))
 	for _, party := range parties {
-		if party.Name != "" || party.Document != "" {
+		if partyHasData(party) {
 			out = append(out, party)
 		}
 	}
 	return out
+}
+
+func partyHasData(party info.Party) bool {
+	return party.Name != "" ||
+		party.Document != "" ||
+		party.StateRegistration != "" ||
+		party.MunicipalRegistration != "" ||
+		party.Address != nil ||
+		party.Phone != "" ||
+		party.Email != "" ||
+		party.SimpleNationalOption != "" ||
+		party.SimpleNationalRegime != "" ||
+		party.SpecialTaxRegime != ""
 }

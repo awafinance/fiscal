@@ -34,7 +34,28 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Equal(t, "Autorizado o uso da NF-e", doc.GetStatusReason())
 	require.True(t, doc.IsAuthorized())
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "total", Value: "64237.04"})
-	require.Contains(t, doc.GetParties(), info.Party{Role: "issuer", Name: "FORNOS LTDA", Document: "75277525000178"})
+	issuer := requireParty(t, doc.GetParties(), "issuer")
+	require.Equal(t, "FORNOS LTDA", issuer.Name)
+	require.Equal(t, "75277525000178", issuer.Document)
+	require.Equal(t, "250745615", issuer.StateRegistration)
+	require.Equal(t, "554733270000", issuer.Phone)
+	require.Equal(t, "3", issuer.SimpleNationalOption)
+	require.Equal(t, &info.Address{
+		Street:       "Rua Bahia",
+		Number:       "3465",
+		Neighborhood: "Salto",
+		PostalCode:   "89031002",
+		CityCode:     "4202404",
+		CityName:     "Blumenau",
+		State:        "SC",
+		CountryCode:  "1058",
+	}, issuer.Address)
+	recipient := requireParty(t, doc.GetParties(), "recipient")
+	require.Equal(t, "Jung Usa Corporation", recipient.Name)
+	require.Equal(t, "371780142", recipient.Document)
+	require.Equal(t, "export@jung.com.br", recipient.Email)
+	require.Equal(t, "00037741", recipient.Address.PostalCode)
+	require.Equal(t, "2496", recipient.Address.CountryCode)
 }
 
 func TestDocumentGetItems(t *testing.T) {
@@ -99,6 +120,17 @@ func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 	for _, a := range amounts {
 		require.NotEqual(t, "tax_ipi", a.Type, "zero-valued tax_ipi should be filtered out")
 	}
+}
+
+func requireParty(t *testing.T, parties []info.Party, role string) info.Party {
+	t.Helper()
+	for _, party := range parties {
+		if party.Role == role {
+			return party
+		}
+	}
+	require.Failf(t, "party not found", "role %q in %#v", role, parties)
+	return info.Party{}
 }
 
 func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {

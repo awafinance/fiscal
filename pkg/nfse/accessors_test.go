@@ -30,7 +30,9 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Empty(t, doc.GetStatusCode())
 	require.False(t, doc.IsAuthorized())
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "service", Value: "999999999.99"})
-	require.Contains(t, doc.GetParties(), info.Party{Role: "provider", Document: "01761135000132"})
+	provider := requireParty(t, doc.GetParties(), "provider")
+	require.Equal(t, "01761135000132", provider.Document)
+	require.Equal(t, "3", provider.SimpleNationalOption)
 }
 
 func TestDocumentConvenienceAccessorsHandleIssuedNFSe(t *testing.T) {
@@ -42,6 +44,7 @@ func TestDocumentConvenienceAccessorsHandleIssuedNFSe(t *testing.T) {
 
 	require.Equal(t, "14001591201761135000132000000000000022097781063609", doc.GetAccessKey())
 	require.Equal(t, "2", doc.GetNumber())
+	require.Equal(t, "2022-09-28T13:50:29-03:00", doc.GetIssueDate())
 	require.Equal(t, "989999961.04", doc.GetAmount())
 	require.Equal(t, "LW SOFTWARES LTDA", doc.GetIssuer())
 	require.Equal(t, "01761135000132", doc.GetIssuerDocument())
@@ -191,4 +194,79 @@ func TestDocumentGetCompetenceDate(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, "2025-12-04", doc.GetCompetenceDate())
 	})
+}
+
+func TestDocumentGetPartiesIncludesNFSeDetails(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/nfse-prod-iss-retido-cooperativa.xml")
+	require.NoError(t, err)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	parties := doc.GetParties()
+	provider := requireParty(t, parties, "provider")
+	require.Equal(t, "56237242000158", provider.Document)
+	require.Equal(t, "3181219898", provider.Phone)
+	require.Equal(t, "NORTHASSESSORIACONTABIL@GMAIL.COM", provider.Email)
+	require.Equal(t, "1", provider.SimpleNationalOption)
+	require.Equal(t, "0", provider.SpecialTaxRegime)
+	require.Equal(t, &info.Address{
+		Street:       "TAPIRAPES",
+		Number:       "220",
+		Neighborhood: "SANTA MONICA",
+		PostalCode:   "31530080",
+		CityCode:     "3106200",
+		State:        "MG",
+	}, provider.Address)
+
+	taker := requireParty(t, parties, "taker")
+	require.Equal(t, "YOUNG RELATIONSHIP LTDA", taker.Name)
+	require.Equal(t, "44263001000102", taker.Document)
+	require.Equal(t, &info.Address{
+		Street:       "AMAZONAS",
+		Number:       "491",
+		Complement:   "PAVMTO2",
+		Neighborhood: "CENTRO",
+		PostalCode:   "30180907",
+		CityCode:     "3106200",
+	}, taker.Address)
+}
+
+func TestDocumentGetPartiesIncludesDPSOnlyProviderDetails(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/dps-cpf-taker-piscofins.xml")
+	require.NoError(t, err)
+
+	doc, err := nfse.Parse(data)
+	require.NoError(t, err)
+
+	provider := requireParty(t, doc.GetParties(), "provider")
+	require.Equal(t, "44827692000111", provider.Document)
+	require.Equal(t, "1255", provider.MunicipalRegistration)
+	require.Equal(t, "91991970568", provider.Phone)
+	require.Equal(t, "redfit2022@hotmail.com", provider.Email)
+	require.Equal(t, "3", provider.SimpleNationalOption)
+	require.Equal(t, "1", provider.SimpleNationalRegime)
+	require.Equal(t, "0", provider.SpecialTaxRegime)
+
+	taker := requireParty(t, doc.GetParties(), "taker")
+	require.Equal(t, "ADRIANA FREIRE DOS SANTOS", taker.Name)
+	require.Equal(t, "98216457200", taker.Document)
+	require.Equal(t, &info.Address{
+		Street:       "VICINAL DA ROXA",
+		Number:       "S/N",
+		Neighborhood: "ZONA RURAL",
+		PostalCode:   "68485000",
+		CityCode:     "1505486",
+	}, taker.Address)
+}
+
+func requireParty(t *testing.T, parties []info.Party, role string) info.Party {
+	t.Helper()
+	for _, party := range parties {
+		if party.Role == role {
+			return party
+		}
+	}
+	require.Failf(t, "party not found", "role %q in %#v", role, parties)
+	return info.Party{}
 }

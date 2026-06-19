@@ -188,6 +188,12 @@ if amounts, ok := doc.Info().(fiscal.AmountsInfo); ok {
 if parties, ok := doc.Info().(fiscal.PartiesInfo); ok {
  for _, party := range parties.GetParties() {
   fmt.Println(party.Role, party.Name, party.Document)
+  if party.Address != nil {
+   fmt.Println(party.Address.Street, party.Address.Number, party.Address.PostalCode)
+  }
+  fmt.Println(party.StateRegistration, party.MunicipalRegistration)
+  fmt.Println(party.Phone, party.Email)
+  fmt.Println(party.SimpleNationalOption, party.SimpleNationalRegime, party.SpecialTaxRegime)
  }
 }
 
@@ -224,7 +230,9 @@ Optional interface support is intentionally grouped by concept:
 - `AmountsInfo` returns raw amount fields such as NFe total, CTe service value,
   MDFe cargo value, BPe ticket value, and NFSe service/net values.
 - `PartiesInfo` returns known parties with roles, such as issuer, recipient,
-  provider, taker, sender, dispatcher, receiver, and buyer.
+  provider, taker, intermediary, sender, dispatcher, receiver, and buyer. When
+  the schema carries them, parties also include address, contact, state and
+  municipal registration, and raw tax-regime code fields.
 - `RelatedDocumentsInfo` returns document references such as linked NFe, CTe,
   MDF-e, or DCe access keys where the schema carries them. This also covers
   correction back-references: a CT-e complemento/substituto points at the
