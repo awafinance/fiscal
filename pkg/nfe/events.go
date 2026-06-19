@@ -2,6 +2,7 @@ package nfe
 
 import (
 	atorSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/ator_interessado"
+	distSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/dist_dfe"
 	epecSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/epec"
 	cancelSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/evento_cancel"
 	cancelEntregaSchema "github.com/awafinance/fiscal/internal/nfe/gen/v1_0/evento_cancel_entrega"
@@ -77,7 +78,7 @@ func (d *Document) eventValues() (sent []any, ret []any) {
 	sent = []any{
 		d.EventoCancel, d.EventoEntrega, d.EventoCancEntrega, d.EventoCCe, d.EventoEPEC,
 		d.EventoAtorInteressado, d.EventoMDE, d.EventoInsucesso, d.EventoCancInsucesso,
-		d.EventoGenerico,
+		d.EventoGenerico, d.ResEvento,
 	}
 	if d.EnvEvento != nil {
 		for _, ev := range d.EnvEvento.Evento {
@@ -147,6 +148,10 @@ func nfeSentEvent(ev any) (tpEvento, sequence, accessKey, issueDate string) {
 		if v != nil && v.InfEvento != nil {
 			i := v.InfEvento
 			return i.TpEvento, i.NSeqEvento, i.ChNFe, i.DhEvento
+		}
+	case *distSchema.TAnonComplexResEvento1:
+		if v != nil {
+			return v.TpEvento, v.NSeqEvento, v.ChNFe, v.DhEvento
 		}
 	}
 	return "", "", "", ""

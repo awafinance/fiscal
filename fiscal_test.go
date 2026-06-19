@@ -132,6 +132,28 @@ func TestLifecycleEventInfoViaInfo(t *testing.T) {
 	require.Equal(t, "1", event.GetEventSequence())
 }
 
+func TestNFeResEventoLifecycleEventInfoViaInfo(t *testing.T) {
+	data, err := os.ReadFile("testdata/nfe_dist_dfe/v1_0/35180803102452000172550010000476051695511860-resEvento.xml")
+	require.NoError(t, err)
+
+	doc, err := Parse(data)
+	require.NoError(t, err)
+	require.Equal(t, NFe, doc.Family)
+	require.Equal(t, "resEvento", doc.RootName)
+
+	info := doc.Info()
+	event, ok := info.(LifecycleEventInfo)
+	require.True(t, ok)
+	require.Equal(t, "110111", event.GetEventType())
+	require.Equal(t, "1", event.GetEventSequence())
+	require.Equal(t, "35180803102452000172550010000476051695511860", info.GetAccessKey())
+	require.Equal(t, "2018-08-31T09:09:09-03:00", info.GetIssueDate())
+	require.Equal(t, "135180000000001", info.GetProtocolNumber())
+	require.Empty(t, info.GetStatusCode())
+	require.Empty(t, info.GetStatusReason())
+	require.False(t, info.IsAuthorized())
+}
+
 func TestNFSeLifecycleEventFactsViaInfo(t *testing.T) {
 	data, err := os.ReadFile("testdata/nfse/v1_0/CancelarNFSe-ped-cannfse.xml")
 	require.NoError(t, err)

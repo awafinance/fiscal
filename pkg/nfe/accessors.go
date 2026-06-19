@@ -145,6 +145,9 @@ func (d *Document) GetProtocolNumber() string {
 	if d != nil && d.ResNFe != nil {
 		return d.ResNFe.NProt
 	}
+	if d != nil && d.ResEvento != nil {
+		return d.ResEvento.NProt
+	}
 	return d.eventInfo().ProtocolNumber
 }
 
