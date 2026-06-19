@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
+  <cOrgao>91</cOrgao>
+  <CNPJ>03102452000172</CNPJ>
+  <chNFe>35180803102452000172550010000476051695511860</chNFe>
+  <dhEvento>2018-08-31T09:09:09-03:00</dhEvento>
+  <tpEvento>110111</tpEvento>
+  <nSeqEvento>1</nSeqEvento>
+  <xEvento>Cancelamento</xEvento>
+  <dhRecbto>2018-08-31T09:09:10-03:00</dhRecbto>
+  <nProt>135180000000001</nProt>
+</resEvento>
