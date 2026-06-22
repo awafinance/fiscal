@@ -37,7 +37,6 @@ func TestBuildManifesto_Fields(t *testing.T) {
 		{"nao realizada", nfe.ManifestoOperacaoNaoRealizada, "Mercadoria nao recebida", "Operacao nao Realizada", "Mercadoria nao recebida"},
 	}
 	for _, tc := range tests {
-
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -102,6 +101,9 @@ func TestBuildManifesto_Validation(t *testing.T) {
 		{"sequence too high", func(in *nfe.ManifestoInput) { in.NSeqEvento = 21 }, nfe.ErrInvalidSequence},
 		{"bad environment", func(in *nfe.ManifestoInput) { in.TpAmb = "3" }, nfe.ErrInvalidEnvironment},
 		{"zero event time", func(in *nfe.ManifestoInput) { in.DhEvento = time.Time{} }, nfe.ErrInvalidEventTime},
+		{"event time with minute offset", func(in *nfe.ManifestoInput) {
+			in.DhEvento = time.Date(2024, 1, 2, 3, 4, 5, 0, time.FixedZone("IST", 5*3600+30*60))
+		}, nfe.ErrInvalidEventTime},
 		{"justificativa on event without xJust", func(in *nfe.ManifestoInput) { in.Justificativa = "should not be here" }, nfe.ErrJustificativa},
 		{"justificativa missing on 240", func(in *nfe.ManifestoInput) { in.TpEvento = nfe.ManifestoOperacaoNaoRealizada }, nfe.ErrJustificativa},
 		{"justificativa too short on 240", func(in *nfe.ManifestoInput) {
@@ -112,9 +114,16 @@ func TestBuildManifesto_Validation(t *testing.T) {
 			in.TpEvento = nfe.ManifestoDesconhecimento
 			in.Justificativa = "curta"
 		}, nfe.ErrJustificativa},
+		{"justificativa with newline", func(in *nfe.ManifestoInput) {
+			in.TpEvento = nfe.ManifestoOperacaoNaoRealizada
+			in.Justificativa = "mercadoria nao\nrecebida"
+		}, nfe.ErrJustificativa},
+		{"justificativa with unsupported character", func(in *nfe.ManifestoInput) {
+			in.TpEvento = nfe.ManifestoOperacaoNaoRealizada
+			in.Justificativa = "Mercadoria nao recebida 😀"
+		}, nfe.ErrJustificativa},
 	}
 	for _, tc := range tests {
-
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			in := base
@@ -203,7 +212,6 @@ func TestMarshalManifestoEnvEvento_Validation(t *testing.T) {
 		{"too many events", "1", manifestoEvents(ev, 21), nfe.ErrInvalidEnvelope},
 	}
 	for _, tc := range tests {
-
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			_, err := nfe.MarshalManifestoEnvEvento(tc.idLote, tc.eventos...)

@@ -46,7 +46,7 @@ var (
 	ErrInvalidCNPJ          = errors.New("nfe manifesto: CNPJ must be 14 digits")
 	ErrInvalidSequence      = errors.New("nfe manifesto: nSeqEvento must be between 1 and 20")
 	ErrInvalidEnvironment   = errors.New(`nfe manifesto: tpAmb must be "1" (produção) or "2" (homologação)`)
-	ErrInvalidEventTime     = errors.New("nfe manifesto: dhEvento must be non-zero")
+	ErrInvalidEventTime     = errors.New("nfe manifesto: dhEvento must match NF-e TDateTimeUTC")
 	ErrUnsupportedManifesto = errors.New("nfe manifesto: unsupported tpEvento")
 	ErrJustificativa        = errors.New("nfe manifesto: invalid justificativa")
 	ErrInvalidLoteID        = errors.New("nfe manifesto: idLote must be 1 to 15 digits")
@@ -62,7 +62,7 @@ type ManifestoInput struct {
 	ChNFe         string    // 44-digit NF-e access key
 	CNPJ          string    // recipient/author CNPJ (14 digits)
 	NSeqEvento    int       // event sequence, 1–20
-	DhEvento      time.Time // event timestamp; carries the offset (SEFAZ wants -03:00, not Z)
+	DhEvento      time.Time // event timestamp; carries the numeric offset (SEFAZ wants +00:00, not Z)
 	TpAmb         string    // "1" produção, "2" homologação
 	Justificativa string    // for ManifestoDesconhecimento and ManifestoOperacaoNaoRealizada
 }
@@ -88,7 +88,7 @@ func BuildManifesto(in ManifestoInput) (*EventoMDETEvento, error) {
 	if in.TpAmb != "1" && in.TpAmb != "2" {
 		return nil, ErrInvalidEnvironment
 	}
-	if in.DhEvento.IsZero() {
+	if !validManifestoEventTime(in.DhEvento) {
 		return nil, ErrInvalidEventTime
 	}
 	just, err := manifestoJustificativa(in.TpEvento, in.Justificativa)
@@ -167,16 +167,16 @@ func manifestoJustificativa(tpEvento, just string) (*string, error) {
 	just = strings.TrimSpace(just)
 	switch tpEvento {
 	case ManifestoOperacaoNaoRealizada:
-		if n := utf8.RuneCountInString(just); n < 15 || n > 255 {
-			return nil, fmt.Errorf("%w: %s requires 15–255 chars, got %d", ErrJustificativa, ManifestoOperacaoNaoRealizada, n)
+		if err := validateManifestoJustificativaText(ManifestoOperacaoNaoRealizada, just, "requires"); err != nil {
+			return nil, err
 		}
 		return &just, nil
 	case ManifestoDesconhecimento:
 		if just == "" {
 			return nil, nil
 		}
-		if n := utf8.RuneCountInString(just); n < 15 || n > 255 {
-			return nil, fmt.Errorf("%w: %s accepts 15–255 chars, got %d", ErrJustificativa, ManifestoDesconhecimento, n)
+		if err := validateManifestoJustificativaText(ManifestoDesconhecimento, just, "accepts"); err != nil {
+			return nil, err
 		}
 		return &just, nil
 	default:
@@ -185,6 +185,28 @@ func manifestoJustificativa(tpEvento, just string) (*string, error) {
 		}
 		return nil, nil
 	}
+}
+
+func validManifestoEventTime(t time.Time) bool {
+	if t.IsZero() {
+		return false
+	}
+	year := t.Year()
+	_, offset := t.Zone()
+	offsetHours := offset / 3600
+	return year >= 2000 && year <= 2099 && offset%3600 == 0 && offsetHours >= -11 && offsetHours <= 12
+}
+
+func validateManifestoJustificativaText(tpEvento, just, verb string) error {
+	if n := utf8.RuneCountInString(just); n < 15 || n > 255 {
+		return fmt.Errorf("%w: %s %s 15-255 chars, got %d", ErrJustificativa, tpEvento, verb, n)
+	}
+	for _, r := range just {
+		if r < ' ' || r > '\u00ff' {
+			return fmt.Errorf("%w: %s contains characters outside the xJust schema range", ErrJustificativa, tpEvento)
+		}
+	}
+	return nil
 }
 
 func isDigits(s string, n int) bool {
