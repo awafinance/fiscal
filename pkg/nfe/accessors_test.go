@@ -149,7 +149,7 @@ func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
 
 func TestDocumentConvenienceAccessorsHandleResNFe(t *testing.T) {
 	data := []byte(`<resNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
-		<chNFe>35180803102452000172550010000476051695511860</chNFe>
+		<chNFe>35240112345678000195550010000006811234567892</chNFe>
 		<CNPJ>12345678000195</CNPJ>
 		<xNome>Emitente Teste</xNome>
 		<IE>ISENTO</IE>
@@ -164,7 +164,10 @@ func TestDocumentConvenienceAccessorsHandleResNFe(t *testing.T) {
 	doc, err := nfe.Parse(data)
 	require.NoError(t, err)
 
-	require.Equal(t, "35180803102452000172550010000476051695511860", doc.GetAccessKey())
+	require.Equal(t, "35240112345678000195550010000006811234567892", doc.GetAccessKey())
+	require.Equal(t, "681", doc.GetNumber())
+	require.Equal(t, "1", doc.GetSeries())
+	require.Equal(t, "55", doc.GetModel())
 	require.Equal(t, "100.00", doc.GetAmount())
 	require.Equal(t, "Emitente Teste", doc.GetIssuer())
 	require.Equal(t, "12345678000195", doc.GetIssuerDocument())
@@ -180,6 +183,8 @@ func TestDocumentConvenienceAccessorsHandleNilDocument(t *testing.T) {
 
 	require.Empty(t, doc.GetAccessKey())
 	require.Empty(t, doc.GetNumber())
+	require.Empty(t, doc.GetSeries())
+	require.Empty(t, doc.GetModel())
 	require.Empty(t, doc.GetAmount())
 	require.Empty(t, doc.GetIssuer())
 	require.Empty(t, doc.GetIssuerDocument())

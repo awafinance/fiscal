@@ -64,6 +64,9 @@ func (d *Document) GetNumber() string {
 	if ide := d.ide(); ide != nil {
 		return ide.NNF
 	}
+	if key := d.resNFeAccessKey(); key != "" {
+		return dfeAccessKeyNumericField(key, 25, 34)
+	}
 	return ""
 }
 
@@ -71,12 +74,18 @@ func (d *Document) GetSeries() string {
 	if ide := d.ide(); ide != nil {
 		return ide.Serie
 	}
+	if key := d.resNFeAccessKey(); key != "" {
+		return dfeAccessKeyNumericField(key, 22, 25)
+	}
 	return ""
 }
 
 func (d *Document) GetModel() string {
 	if ide := d.ide(); ide != nil {
 		return ide.Mod
+	}
+	if key := d.resNFeAccessKey(); key != "" {
+		return dfeAccessKeyField(key, 20, 22)
 	}
 	return ""
 }
@@ -473,6 +482,37 @@ func (d *Document) ide() *schema.TAnonComplexIde1 {
 		return inf.Ide
 	}
 	return nil
+}
+
+func (d *Document) resNFeAccessKey() string {
+	if d == nil || d.ResNFe == nil {
+		return ""
+	}
+	return d.ResNFe.ChNFe
+}
+
+func dfeAccessKeyField(key string, start, end int) string {
+	if len(key) != 44 || start < 0 || end > len(key) || start >= end {
+		return ""
+	}
+	for i := range key {
+		if key[i] < '0' || key[i] > '9' {
+			return ""
+		}
+	}
+	return key[start:end]
+}
+
+func dfeAccessKeyNumericField(key string, start, end int) string {
+	field := dfeAccessKeyField(key, start, end)
+	if field == "" {
+		return ""
+	}
+	trimmed := strings.TrimLeft(field, "0")
+	if trimmed == "" {
+		return "0"
+	}
+	return trimmed
 }
 
 func firstString(values ...*string) string {
