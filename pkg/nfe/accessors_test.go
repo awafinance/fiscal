@@ -149,30 +149,30 @@ func TestDocumentGetAmountsIncludesRetentions(t *testing.T) {
 
 func TestDocumentConvenienceAccessorsHandleResNFe(t *testing.T) {
 	data := []byte(`<resNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.01">
-		<chNFe>33260626076267000156550010000006811257447222</chNFe>
-		<CNPJ>26076267000156</CNPJ>
-		<xNome>HIDRORIO CENTRAL MATERIAIS ELETRICOS E HIDRAULICOS LTDA</xNome>
+		<chNFe>35240112345678000195550010000006811234567892</chNFe>
+		<CNPJ>12345678000195</CNPJ>
+		<xNome>Emitente Teste</xNome>
 		<IE>ISENTO</IE>
-		<dhEmi>2026-06-22T15:06:30-03:00</dhEmi>
+		<dhEmi>2024-01-02T03:04:05-03:00</dhEmi>
 		<tpNF>1</tpNF>
-		<vNF>3920.00</vNF>
-		<dhRecbto>2026-06-22T15:06:37-03:00</dhRecbto>
-		<nProt>233260282145157</nProt>
+		<vNF>100.00</vNF>
+		<dhRecbto>2024-01-02T03:05:06-03:00</dhRecbto>
+		<nProt>123456789012345</nProt>
 		<cSitNFe>1</cSitNFe>
 	</resNFe>`)
 
 	doc, err := nfe.Parse(data)
 	require.NoError(t, err)
 
-	require.Equal(t, "33260626076267000156550010000006811257447222", doc.GetAccessKey())
+	require.Equal(t, "35240112345678000195550010000006811234567892", doc.GetAccessKey())
 	require.Equal(t, "681", doc.GetNumber())
 	require.Equal(t, "1", doc.GetSeries())
 	require.Equal(t, "55", doc.GetModel())
-	require.Equal(t, "3920.00", doc.GetAmount())
-	require.Equal(t, "HIDRORIO CENTRAL MATERIAIS ELETRICOS E HIDRAULICOS LTDA", doc.GetIssuer())
-	require.Equal(t, "26076267000156", doc.GetIssuerDocument())
-	require.Equal(t, "2026-06-22T15:06:30-03:00", doc.GetIssueDate())
-	require.Equal(t, "233260282145157", doc.GetProtocolNumber())
+	require.Equal(t, "100.00", doc.GetAmount())
+	require.Equal(t, "Emitente Teste", doc.GetIssuer())
+	require.Equal(t, "12345678000195", doc.GetIssuerDocument())
+	require.Equal(t, "2024-01-02T03:04:05-03:00", doc.GetIssueDate())
+	require.Equal(t, "123456789012345", doc.GetProtocolNumber())
 	require.Empty(t, doc.GetRecipient())
 	require.Empty(t, doc.GetStatusCode())
 	require.False(t, doc.IsAuthorized())
