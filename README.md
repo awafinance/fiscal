@@ -219,7 +219,7 @@ if event, ok := doc.Info().(fiscal.LifecycleEventInfo); ok {
 if facts, ok := doc.Info().(fiscal.LifecycleEventFactsInfo); ok {
  if event := facts.GetLifecycleEventFacts(); event != nil {
   fmt.Println(event.RegistrationState) // "request" or "registered"
-  fmt.Println(event.RequestNumber)     // nPedRegEvento
+  fmt.Println(event.RequestNumber)     // legacy v1.00 nPedRegEvento, when present
   fmt.Println(event.ProcessingTime)    // dhProc on registered events
  }
 }
@@ -248,8 +248,10 @@ Optional interface support is intentionally grouped by concept:
 - `LifecycleEventFactsInfo` returns one normalized event fact record where the
   schema needs more than type and sequence. NFS-e uses this to distinguish a
   bare `pedRegEvento` request (`RegistrationState: "request"`) from a generated
-  `evento` (`RegistrationState: "registered"`), and to expose `nPedRegEvento`
-  and `dhProc` without inventing NF-e/CT-e status semantics.
+  `evento` (`RegistrationState: "registered"`), and to expose optional legacy
+  v1.00 request numbers and `dhProc` without inventing NF-e/CT-e status
+  semantics. NFS-e request and registered event IDs are available through the
+  package accessors `GetRequestEventID` (`PRE...`) and `GetEventID` (`EVT...`).
 
 The `pkg/info` package contains the shared structs and optional interface
 definitions. The root package re-exports them as aliases, so callers can use
