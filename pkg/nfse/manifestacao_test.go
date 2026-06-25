@@ -2,7 +2,6 @@ package nfse_test
 
 import (
 	"encoding/xml"
-	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -213,5 +212,5 @@ func TestMarshalTomadorManifestacaoRejectsInvalidEvent(t *testing.T) {
 	t.Parallel()
 
 	_, err := nfse.MarshalTomadorManifestacao(nil)
-	require.True(t, errors.Is(err, nfse.ErrInvalidTomadorManifestacaoEvento))
+	require.ErrorIs(t, err, nfse.ErrInvalidTomadorManifestacaoEvento)
 }
