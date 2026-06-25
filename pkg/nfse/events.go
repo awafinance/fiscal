@@ -76,6 +76,20 @@ func (d *Document) GetEventSequence() string {
 	return ""
 }
 
+func (d *Document) GetEventID() string {
+	if d != nil && d.EventoNFSe != nil && d.EventoNFSe.InfEvento != nil {
+		return d.EventoNFSe.InfEvento.IdAttr
+	}
+	return ""
+}
+
+func (d *Document) GetRequestEventID() string {
+	if reg := d.infPedReg(); reg != nil {
+		return reg.IdAttr
+	}
+	return ""
+}
+
 func (d *Document) GetLifecycleEventFacts() *info.LifecycleEventFacts {
 	reg := d.infPedReg()
 	if reg == nil {

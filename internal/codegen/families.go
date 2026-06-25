@@ -222,6 +222,7 @@ func nfseFamily() family {
 		name: "nfse",
 		xgenJobs: []xgenJob{
 			{"v1_0/core", "v1_0/core"},
+			{"v1_1/core", "v1_1/core"},
 		},
 		postprocess: postprocessNFSe,
 	}
@@ -391,6 +392,7 @@ func postprocessNFSe(verbose bool) error {
 			pathPattern("nfelib", "nfelib", "nfse", "schemas"),
 			pathPattern("internal", "nfse", "schemas"),
 			pathPattern("internal", "nfse", "gen", "v1_0", "schemas"),
+			pathPattern("internal", "nfse", "gen", "v1_1", "schemas"),
 		},
 		workarounds: []generatedWorkaround{
 			workaround("fix typed root aliases from schema definitions", fixTypedRootAliasFromSchema),

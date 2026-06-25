@@ -1,6 +1,9 @@
 package nfse
 
-import schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
+import (
+	schema "github.com/awafinance/fiscal/internal/nfse/gen/v1_0/core"
+	schemaV101 "github.com/awafinance/fiscal/internal/nfse/gen/v1_1/core"
+)
 
 // Public aliases for the NFSe schema graph.
 type (
@@ -8,6 +11,8 @@ type (
 	NFSe         = schema.NFSe
 	Evento       = schema.Evento
 	PedRegEvento = schema.PedRegEvento
+
+	PedRegEventoV101 = schemaV101.TCPedRegEvt
 
 	CanonicalizationMethod = schema.CanonicalizationMethod
 	DigestMethod           = schema.DigestMethod
