@@ -9,16 +9,18 @@ import (
 )
 
 type Item struct {
-	Number      string `json:"number,omitempty"`
-	Code        string `json:"code,omitempty"`
-	EAN         string `json:"ean,omitempty"`
-	Description string `json:"description,omitempty"`
-	NCM         string `json:"ncm,omitempty"`
-	CFOP        string `json:"cfop,omitempty"`
-	Unit        string `json:"unit,omitempty"`
-	Quantity    string `json:"quantity,omitempty"`
-	UnitAmount  string `json:"unitAmount,omitempty"`
-	Amount      string `json:"amount,omitempty"`
+	Number                  string `json:"number,omitempty"`
+	Code                    string `json:"code,omitempty"`
+	EAN                     string `json:"ean,omitempty"`
+	Description             string `json:"description,omitempty"`
+	NCM                     string `json:"ncm,omitempty"`
+	CFOP                    string `json:"cfop,omitempty"`
+	Unit                    string `json:"unit,omitempty"`
+	Quantity                string `json:"quantity,omitempty"`
+	UnitAmount              string `json:"unitAmount,omitempty"`
+	Amount                  string `json:"amount,omitempty"`
+	PurchaseOrderNumber     string `json:"purchaseOrderNumber,omitempty"`
+	PurchaseOrderItemNumber string `json:"purchaseOrderItemNumber,omitempty"`
 }
 
 func (d *Document) GetAccessKey() string {
@@ -195,16 +197,18 @@ func (d *Document) GetItems() []Item {
 			continue
 		}
 		items = append(items, Item{
-			Number:      det.NItemAttr,
-			Code:        det.Prod.CProd,
-			EAN:         det.Prod.CEAN,
-			Description: det.Prod.XProd,
-			NCM:         det.Prod.NCM,
-			CFOP:        det.Prod.CFOP,
-			Unit:        det.Prod.UCom,
-			Quantity:    det.Prod.QCom,
-			UnitAmount:  det.Prod.VUnCom,
-			Amount:      det.Prod.VProd,
+			Number:                  det.NItemAttr,
+			Code:                    det.Prod.CProd,
+			EAN:                     det.Prod.CEAN,
+			Description:             det.Prod.XProd,
+			NCM:                     det.Prod.NCM,
+			CFOP:                    det.Prod.CFOP,
+			Unit:                    det.Prod.UCom,
+			Quantity:                det.Prod.QCom,
+			UnitAmount:              det.Prod.VUnCom,
+			Amount:                  det.Prod.VProd,
+			PurchaseOrderNumber:     stringPtrValue(det.Prod.XPed),
+			PurchaseOrderItemNumber: stringPtrValue(det.Prod.NItemPed),
 		})
 	}
 	return items
