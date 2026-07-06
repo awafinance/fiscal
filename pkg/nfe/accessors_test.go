@@ -81,6 +81,19 @@ func TestDocumentGetItems(t *testing.T) {
 	}, items[0])
 }
 
+func TestDocumentGetItemsIncludesPurchaseOrderReferences(t *testing.T) {
+	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "nfe", "41170706117473000150550010000463202612756525-procNFe.xml"))
+	require.NoError(t, err)
+
+	doc, err := nfe.Parse(data)
+	require.NoError(t, err)
+
+	items := doc.GetItems()
+	require.NotEmpty(t, items)
+	require.Equal(t, "230772", items[0].PurchaseOrderNumber)
+	require.Equal(t, "1", items[0].PurchaseOrderItemNumber)
+}
+
 func TestDocumentGetPayments(t *testing.T) {
 	data, err := os.ReadFile(filepath.Join("..", "..", "testdata", "nfe", "42220575277525000178550030000292481295366801-procNFe.xml"))
 	require.NoError(t, err)
