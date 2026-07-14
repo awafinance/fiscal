@@ -1,6 +1,7 @@
 package cte_test
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"testing"
@@ -64,9 +65,20 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 	data, err := os.ReadFile("../../testdata/cte/v4_0/35170799999999999999670000000000261309301440-cte-of.xml")
 	require.NoError(t, err)
+	data = bytes.Replace(data, []byte("</vPrest>"), []byte(`<Comp><xNome>FRET.INTERMUNIC</xNome><vComp>125.00</vComp></Comp>
+      <Comp><xNome>PEDAGIO</xNome><vComp>75.00</vComp></Comp></vPrest>`), 1)
 
 	doc, err := cte.Parse(data)
 	require.NoError(t, err)
+	require.Equal(t, cte.DeclaredAmounts{
+		ServiceTotal: "2500.00",
+		Receivable:   "2500.00",
+		Components: []cte.ComponentAmount{
+			{Name: "FRET.INTERMUNIC", Value: "2500.00"},
+			{Name: "FRET.INTERMUNIC", Value: "125.00"},
+			{Name: "PEDAGIO", Value: "75.00"},
+		},
+	}, doc.GetDeclaredAmounts())
 
 	amounts := doc.GetAmounts()
 	require.Contains(t, amounts, info.Amount{Type: "service", Value: "2500.00"})

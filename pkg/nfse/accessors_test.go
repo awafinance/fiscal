@@ -30,6 +30,11 @@ func TestDocumentConvenienceAccessors(t *testing.T) {
 	require.Empty(t, doc.GetStatusCode())
 	require.False(t, doc.IsAuthorized())
 	require.Contains(t, doc.GetAmounts(), info.Amount{Type: "service", Value: "999999999.99"})
+	require.Equal(t, nfse.DeclaredAmounts{
+		Service:               "999999999.99",
+		ConditionalDiscount:   "9.99",
+		UnconditionalDiscount: "9999999.99",
+	}, doc.GetDeclaredAmounts())
 	provider := requireParty(t, doc.GetParties(), "provider")
 	require.Equal(t, "01761135000132", provider.Document)
 	require.Equal(t, "3", provider.SimpleNationalOption)
@@ -86,6 +91,20 @@ func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 
 	doc, err := nfse.Parse(data)
 	require.NoError(t, err)
+	require.Equal(t, nfse.DeclaredAmounts{
+		Service:                      "1000.00",
+		Net:                          "950.00",
+		TotalRetentions:              "23.50",
+		ISS:                          "50.00",
+		PIS:                          "6.50",
+		COFINS:                       "30.00",
+		INSSRetention:                "0.00",
+		IRRFRetention:                "0.00",
+		SocialContributionsRetention: "0.00",
+		ApproximateFederalTaxes:      "36.50",
+		ApproximateStateTaxes:        "0.00",
+		ApproximateMunicipalTaxes:    "50.00",
+	}, doc.GetDeclaredAmounts())
 
 	amounts := doc.GetAmounts()
 	require.Contains(t, amounts, info.Amount{Type: "service", Value: "1000.00"})
@@ -123,6 +142,15 @@ func TestDocumentGetAmountsRetainedISS(t *testing.T) {
 
 		doc, err := nfse.Parse(data)
 		require.NoError(t, err)
+		require.Equal(t, nfse.DeclaredAmounts{
+			Service:                      "10000.00",
+			Net:                          "8885.00",
+			TotalRetentions:              "1115.00",
+			ISS:                          "500.00",
+			ISSWithheldBy:                "taker",
+			IRRFRetention:                "150.00",
+			SocialContributionsRetention: "465.00",
+		}, doc.GetDeclaredAmounts())
 
 		amounts := doc.GetAmounts()
 		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "500.00"})
