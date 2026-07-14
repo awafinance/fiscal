@@ -8,59 +8,6 @@ type Party = info.Party
 type RelatedDocument = info.RelatedDocument
 type Location = info.Location
 type LifecycleEventFacts = info.LifecycleEventFacts
-type MonetaryInterpretation = info.MonetaryInterpretation
-type MonetaryProvenance = info.MonetaryProvenance
-type MonetarySchemaSource = info.MonetarySchemaSource
-type MonetaryFact = info.MonetaryFact
-type MonetaryFactKind = info.MonetaryFactKind
-type MonetaryFactScope = info.MonetaryFactScope
-type MonetaryRetention = info.MonetaryRetention
-type MonetaryQualifier = info.MonetaryQualifier
-type MonetaryCheck = info.MonetaryCheck
-type MonetaryCheckStatus = info.MonetaryCheckStatus
-type MonetaryCalculation = info.MonetaryCalculation
-type MonetaryCheckTerm = info.MonetaryCheckTerm
-
-const MonetaryContractVersion = info.MonetaryContractVersion
-
-const (
-	MonetaryInterpretationComplete    = info.MonetaryInterpretationComplete
-	MonetaryInterpretationUnsupported = info.MonetaryInterpretationUnsupported
-
-	FiscalArtifactFullDocument = info.FiscalArtifactFullDocument
-	FiscalArtifactDeclaration  = info.FiscalArtifactDeclaration
-	FiscalArtifactSummary      = info.FiscalArtifactSummary
-	FiscalArtifactLifecycle    = info.FiscalArtifactLifecycle
-
-	MonetaryFactDeclaredAmount     = info.MonetaryFactDeclaredAmount
-	MonetaryFactDocumentTotal      = info.MonetaryFactDocumentTotal
-	MonetaryFactServiceTotal       = info.MonetaryFactServiceTotal
-	MonetaryFactSettlementAmount   = info.MonetaryFactSettlementAmount
-	MonetaryFactServiceAmount      = info.MonetaryFactServiceAmount
-	MonetaryFactComponent          = info.MonetaryFactComponent
-	MonetaryFactDiscount           = info.MonetaryFactDiscount
-	MonetaryFactTaxBase            = info.MonetaryFactTaxBase
-	MonetaryFactActualTax          = info.MonetaryFactActualTax
-	MonetaryFactRetention          = info.MonetaryFactRetention
-	MonetaryFactApproximateTax     = info.MonetaryFactApproximateTax
-	MonetaryFactApproximateTaxRate = info.MonetaryFactApproximateTaxRate
-	MonetaryFactBilling            = info.MonetaryFactBilling
-	MonetaryFactInstallment        = info.MonetaryFactInstallment
-	MonetaryFactPayment            = info.MonetaryFactPayment
-	MonetaryFactUnitPrice          = info.MonetaryFactUnitPrice
-
-	MonetaryScopeDocument    = info.MonetaryScopeDocument
-	MonetaryScopeItem        = info.MonetaryScopeItem
-	MonetaryScopeComponent   = info.MonetaryScopeComponent
-	MonetaryScopeBilling     = info.MonetaryScopeBilling
-	MonetaryScopeInstallment = info.MonetaryScopeInstallment
-	MonetaryScopePayment     = info.MonetaryScopePayment
-
-	MonetaryCheckPassed           = info.MonetaryCheckPassed
-	MonetaryCheckFailed           = info.MonetaryCheckFailed
-	MonetaryCheckNotApplicable    = info.MonetaryCheckNotApplicable
-	MonetaryCheckInsufficientData = info.MonetaryCheckInsufficientData
-)
 
 const (
 	LifecycleEventRegistrationStateRequest    = info.LifecycleEventRegistrationStateRequest
@@ -98,11 +45,4 @@ func (d *Document) Info() DocumentInfo {
 		return nil
 	}
 	return d.info
-}
-
-func (d *Document) MonetaryInterpretation() *MonetaryInterpretation {
-	if d == nil {
-		return nil
-	}
-	return d.monetary
 }

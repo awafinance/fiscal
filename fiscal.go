@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/awafinance/fiscal/internal/monetary"
 	"github.com/awafinance/fiscal/internal/xmlutil"
 	"github.com/awafinance/fiscal/pkg/bpe"
 	"github.com/awafinance/fiscal/pkg/cte"
 	"github.com/awafinance/fiscal/pkg/fiscalerr"
-	"github.com/awafinance/fiscal/pkg/info"
 	"github.com/awafinance/fiscal/pkg/mdfe"
 	"github.com/awafinance/fiscal/pkg/nfe"
 	"github.com/awafinance/fiscal/pkg/nfse"
@@ -40,8 +38,7 @@ type Document struct {
 	Family   Family `json:"family"`
 	RootName string `json:"rootName,omitempty"`
 
-	info     DocumentInfo
-	monetary *info.MonetaryInterpretation
+	info DocumentInfo
 
 	NFe  *nfe.Document  `json:"nfe,omitempty"`
 	NFSe *nfse.Document `json:"nfse,omitempty"`
@@ -59,54 +56,24 @@ func Parse(data []byte) (*Document, error) {
 		return nil, fmt.Errorf("parse fiscal: read root: %w", err)
 	}
 
-	family, ok := familyForNamespace(root.Space)
-	if !ok {
-		return nil, fmt.Errorf("parse fiscal: %w", &fiscalerr.UnsupportedNamespaceError{Namespace: root.Space, Root: root.Local})
-	}
-	interpretation, err := monetary.Interpret(data, family, root.Local)
-	if err != nil {
-		return nil, fmt.Errorf("parse fiscal: %w", err)
-	}
-
-	var wrapped *Document
 	switch root.Space {
 	case nfeNamespace:
-		doc, parseErr := nfe.Parse(data)
-		wrapped, err = wrapNFe(doc, parseErr)
+		doc, err := nfe.Parse(data)
+		return wrapNFe(doc, err)
 	case nfseNamespace:
-		doc, parseErr := nfse.Parse(data)
-		wrapped, err = wrapNFSe(doc, parseErr)
+		doc, err := nfse.Parse(data)
+		return wrapNFSe(doc, err)
 	case cteNamespace:
-		doc, parseErr := cte.Parse(data)
-		wrapped, err = wrapCTe(doc, parseErr)
+		doc, err := cte.Parse(data)
+		return wrapCTe(doc, err)
 	case mdfeNamespace:
-		doc, parseErr := mdfe.Parse(data)
-		wrapped, err = wrapMDFe(doc, parseErr)
+		doc, err := mdfe.Parse(data)
+		return wrapMDFe(doc, err)
 	case bpeNamespace:
-		doc, parseErr := bpe.Parse(data)
-		wrapped, err = wrapBPe(doc, parseErr)
-	}
-	if err != nil {
-		return nil, err
-	}
-	wrapped.monetary = interpretation
-	return wrapped, nil
-}
-
-func familyForNamespace(namespace string) (Family, bool) {
-	switch namespace {
-	case nfeNamespace:
-		return NFe, true
-	case nfseNamespace:
-		return NFSe, true
-	case cteNamespace:
-		return CTe, true
-	case mdfeNamespace:
-		return MDFe, true
-	case bpeNamespace:
-		return BPe, true
+		doc, err := bpe.Parse(data)
+		return wrapBPe(doc, err)
 	default:
-		return "", false
+		return nil, fmt.Errorf("parse fiscal: %w", &fiscalerr.UnsupportedNamespaceError{Namespace: root.Space, Root: root.Local})
 	}
 }
 

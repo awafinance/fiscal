@@ -112,6 +112,47 @@ func (d *Document) GetAmount() string {
 	return ""
 }
 
+type ComponentAmount struct {
+	Name  string
+	Value string
+}
+
+type DeclaredAmounts struct {
+	ServiceTotal string
+	Receivable   string
+	Components   []ComponentAmount
+}
+
+func (d *Document) GetDeclaredAmounts() DeclaredAmounts {
+	if inf := d.infCTe(); inf != nil && inf.VPrest != nil {
+		amounts := DeclaredAmounts{
+			ServiceTotal: inf.VPrest.VTPrest,
+			Receivable:   inf.VPrest.VRec,
+			Components:   make([]ComponentAmount, 0, len(inf.VPrest.Comp)),
+		}
+		for _, component := range inf.VPrest.Comp {
+			if component != nil {
+				amounts.Components = append(amounts.Components, ComponentAmount{Name: component.XNome, Value: component.VComp})
+			}
+		}
+		return amounts
+	}
+	if inf := d.infCTeOS(); inf != nil && inf.VPrest != nil {
+		amounts := DeclaredAmounts{
+			ServiceTotal: inf.VPrest.VTPrest,
+			Receivable:   inf.VPrest.VRec,
+			Components:   make([]ComponentAmount, 0, len(inf.VPrest.Comp)),
+		}
+		for _, component := range inf.VPrest.Comp {
+			if component != nil {
+				amounts.Components = append(amounts.Components, ComponentAmount{Name: component.XNome, Value: component.VComp})
+			}
+		}
+		return amounts
+	}
+	return DeclaredAmounts{}
+}
+
 func (d *Document) GetIssuer() string {
 	if inf := d.infCTe(); inf != nil && inf.Emit != nil {
 		return inf.Emit.XNome

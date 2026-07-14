@@ -67,6 +67,13 @@ func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 
 	doc, err := cte.Parse(data)
 	require.NoError(t, err)
+	require.Equal(t, cte.DeclaredAmounts{
+		ServiceTotal: "2500.00",
+		Receivable:   "2500.00",
+		Components: []cte.ComponentAmount{
+			{Name: "FRET.INTERMUNIC", Value: "2500.00"},
+		},
+	}, doc.GetDeclaredAmounts())
 
 	amounts := doc.GetAmounts()
 	require.Contains(t, amounts, info.Amount{Type: "service", Value: "2500.00"})

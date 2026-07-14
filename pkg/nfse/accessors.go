@@ -177,6 +177,82 @@ func (d *Document) GetAmounts() []info.Amount {
 	return compactAmounts(amounts...)
 }
 
+type DeclaredAmounts struct {
+	Service                      string
+	Net                          string
+	ConditionalDiscount          string
+	UnconditionalDiscount        string
+	DeductionOrReduction         string
+	TotalRetentions              string
+	ISS                          string
+	ISSWithheldBy                string
+	PIS                          string
+	COFINS                       string
+	INSSRetention                string
+	IRRFRetention                string
+	SocialContributionsRetention string
+	ApproximateFederalTaxes      string
+	ApproximateStateTaxes        string
+	ApproximateMunicipalTaxes    string
+}
+
+func (d *Document) GetDeclaredAmounts() DeclaredAmounts {
+	amounts := DeclaredAmounts{Service: nfseServiceAmount(d.infDPS())}
+	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
+		values := d.NFSe.InfNFSe.Valores
+		amounts.Net = values.VLiq
+		amounts.TotalRetentions = stringPtrValue(values.VTotalRet)
+		amounts.ISS = stringPtrValue(values.VISSQN)
+	}
+
+	inf := d.infDPS()
+	if inf == nil || inf.Valores == nil {
+		return amounts
+	}
+	values := inf.Valores
+	amounts.addAdjustments(values)
+	amounts.addTaxes(values.Trib)
+	return amounts
+}
+
+func (a *DeclaredAmounts) addAdjustments(values *TCInfoValores) {
+	if discounts := values.VDescCondIncond; discounts != nil {
+		a.ConditionalDiscount = stringPtrValue(discounts.VDescCond)
+		a.UnconditionalDiscount = stringPtrValue(discounts.VDescIncond)
+	}
+	if deduction := values.VDedRed; deduction != nil {
+		a.DeductionOrReduction = stringPtrValue(deduction.VDR)
+	}
+}
+
+func (a *DeclaredAmounts) addTaxes(taxes *TCInfoTributacao) {
+	if taxes == nil {
+		return
+	}
+	if municipal := taxes.TribMun; municipal != nil {
+		switch municipal.TpRetISSQN {
+		case "2":
+			a.ISSWithheldBy = "taker"
+		case "3":
+			a.ISSWithheldBy = "intermediary"
+		}
+	}
+	if federal := taxes.TribFed; federal != nil {
+		if pisCofins := federal.Piscofins; pisCofins != nil {
+			a.PIS = stringPtrValue(pisCofins.VPis)
+			a.COFINS = stringPtrValue(pisCofins.VCofins)
+		}
+		a.INSSRetention = stringPtrValue(federal.VRetCP)
+		a.IRRFRetention = stringPtrValue(federal.VRetIRRF)
+		a.SocialContributionsRetention = stringPtrValue(federal.VRetCSLL)
+	}
+	if totals := taxes.TotTrib; totals != nil && totals.VTotTrib != nil {
+		a.ApproximateFederalTaxes = totals.VTotTrib.VTotTribFed
+		a.ApproximateStateTaxes = totals.VTotTrib.VTotTribEst
+		a.ApproximateMunicipalTaxes = totals.VTotTrib.VTotTribMun
+	}
+}
+
 func (d *Document) headlineAmounts() []info.Amount {
 	if d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
 		v := d.NFSe.InfNFSe.Valores
