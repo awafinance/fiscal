@@ -32,6 +32,7 @@ var (
 	ErrEmptyDocument        = errors.New("empty xml document")
 	ErrUnsupportedNamespace = errors.New("unsupported namespace")
 	ErrUnsupportedRoot      = errors.New("unsupported root element")
+	ErrUnsupportedRelease   = errors.New("unsupported fiscal document release")
 )
 
 // UnsupportedNamespaceError is returned when the XML root belongs to a
@@ -65,4 +66,25 @@ func (e *UnsupportedRootError) Error() string {
 
 func (e *UnsupportedRootError) Unwrap() error {
 	return ErrUnsupportedRoot
+}
+
+type UnsupportedReleaseError struct {
+	Family  Family
+	Root    string
+	Model   string
+	Version string
+}
+
+func (e *UnsupportedReleaseError) Error() string {
+	return fmt.Sprintf(
+		"unsupported %s release root %q model %q version %q",
+		e.Family,
+		e.Root,
+		e.Model,
+		e.Version,
+	)
+}
+
+func (e *UnsupportedReleaseError) Unwrap() error {
+	return ErrUnsupportedRelease
 }

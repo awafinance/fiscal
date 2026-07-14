@@ -9,6 +9,7 @@ var (
 	ErrEmptyDocument        = fiscalerr.ErrEmptyDocument
 	ErrUnsupportedNamespace = fiscalerr.ErrUnsupportedNamespace
 	ErrUnsupportedRoot      = fiscalerr.ErrUnsupportedRoot
+	ErrUnsupportedRelease   = fiscalerr.ErrUnsupportedRelease
 )
 
 // Typed errors re-exported as aliases so they refer to the same underlying
@@ -16,4 +17,5 @@ var (
 type (
 	UnsupportedNamespaceError = fiscalerr.UnsupportedNamespaceError
 	UnsupportedRootError      = fiscalerr.UnsupportedRootError
+	UnsupportedReleaseError   = fiscalerr.UnsupportedReleaseError
 )

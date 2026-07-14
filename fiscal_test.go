@@ -11,6 +11,7 @@ func TestParseRoutesByNamespace(t *testing.T) {
 	tests := []struct {
 		name     string
 		path     string
+		xml      string
 		family   Family
 		rootName string
 	}{
@@ -28,7 +29,7 @@ func TestParseRoutesByNamespace(t *testing.T) {
 		},
 		{
 			name:     "cte",
-			path:     "testdata/cte/v4_0/43120178408960000182570010000000041000000047-cte.xml",
+			xml:      cteMonetaryXML,
 			family:   CTe,
 			rootName: "CTe",
 		},
@@ -48,8 +49,12 @@ func TestParseRoutesByNamespace(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			data, err := os.ReadFile(tt.path)
-			require.NoError(t, err)
+			data := []byte(tt.xml)
+			if tt.path != "" {
+				var err error
+				data, err = os.ReadFile(tt.path)
+				require.NoError(t, err)
+			}
 
 			doc, err := Parse(data)
 			require.NoError(t, err)
@@ -82,13 +87,12 @@ func TestDocumentNFeConvenienceAccessors(t *testing.T) {
 	require.True(t, info.IsAuthorized())
 }
 
-func TestParseDetectsPrefixedRootNamespace(t *testing.T) {
+func TestParseRejectsIncompleteCurrentRelease(t *testing.T) {
 	data := []byte(`<x:NFe xmlns:x="http://www.portalfiscal.inf.br/nfe"></x:NFe>`)
 
 	_, err := Parse(data)
 	require.Error(t, err)
-	require.Contains(t, err.Error(), "parse nfe:")
-	require.NotErrorIs(t, err, ErrUnsupportedNamespace)
+	require.ErrorIs(t, err, ErrUnsupportedRelease)
 }
 
 func TestParseRejectsUnsupportedNamespace(t *testing.T) {
