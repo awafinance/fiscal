@@ -178,22 +178,23 @@ func (d *Document) GetAmounts() []info.Amount {
 }
 
 type DeclaredAmounts struct {
-	Service                      string
-	Net                          string
-	ConditionalDiscount          string
-	UnconditionalDiscount        string
-	DeductionOrReduction         string
-	TotalRetentions              string
-	ISS                          string
-	ISSWithheldBy                string
-	PIS                          string
-	COFINS                       string
-	INSSRetention                string
-	IRRFRetention                string
-	SocialContributionsRetention string
-	ApproximateFederalTaxes      string
-	ApproximateStateTaxes        string
-	ApproximateMunicipalTaxes    string
+	Service                          string
+	Net                              string
+	ConditionalDiscount              string
+	UnconditionalDiscount            string
+	DeductionOrReduction             string
+	TotalRetentions                  string
+	ISS                              string
+	ISSWithheldBy                    string
+	PIS                              string
+	COFINS                           string
+	INSSRetention                    string
+	IRRFRetention                    string
+	SocialContributionsRetention     string
+	SocialContributionsRetentionCode string
+	ApproximateFederalTaxes          string
+	ApproximateStateTaxes            string
+	ApproximateMunicipalTaxes        string
 }
 
 func (d *Document) GetDeclaredAmounts() DeclaredAmounts {
@@ -241,6 +242,7 @@ func (a *DeclaredAmounts) addTaxes(taxes *TCInfoTributacao) {
 		if pisCofins := federal.Piscofins; pisCofins != nil {
 			a.PIS = stringPtrValue(pisCofins.VPis)
 			a.COFINS = stringPtrValue(pisCofins.VCofins)
+			a.SocialContributionsRetentionCode = stringPtrValue(pisCofins.TpRetPisCofins)
 		}
 		a.INSSRetention = stringPtrValue(federal.VRetCP)
 		a.IRRFRetention = stringPtrValue(federal.VRetIRRF)
@@ -308,12 +310,17 @@ func (d *Document) retentionAmounts() []info.Amount {
 
 	var amounts []info.Amount
 
-	// Municipal ISS retention: tpRetISSQN 2=retained by taker, 3=retained by intermediary.
-	// The retained amount is vISSQN on the authorized NFSe's valores (computed by Sefin Nacional).
-	if mun := trib.TribMun; mun != nil && (mun.TpRetISSQN == "2" || mun.TpRetISSQN == "3") {
-		if d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
+	if mun := trib.TribMun; mun != nil {
+		amountType := ""
+		switch mun.TpRetISSQN {
+		case "2":
+			amountType = "retained_iss_by_taker"
+		case "3":
+			amountType = "retained_iss_by_intermediary"
+		}
+		if amountType != "" && d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
 			amounts = append(amounts, info.Amount{
-				Type:  "retained_iss",
+				Type:  amountType,
 				Value: stringPtrValue(d.NFSe.InfNFSe.Valores.VISSQN),
 			})
 		}
@@ -322,15 +329,9 @@ func (d *Document) retentionAmounts() []info.Amount {
 	if fed := trib.TribFed; fed != nil {
 		amounts = append(amounts,
 			info.Amount{Type: "retained_irrf", Value: stringPtrValue(fed.VRetIRRF)},
-			info.Amount{Type: "retained_csll", Value: stringPtrValue(fed.VRetCSLL)},
+			info.Amount{Type: "retained_social_contributions", Value: stringPtrValue(fed.VRetCSLL)},
 			info.Amount{Type: "retained_inss", Value: stringPtrValue(fed.VRetCP)},
 		)
-		if pc := fed.Piscofins; pc != nil && stringPtrValue(pc.TpRetPisCofins) == "1" {
-			amounts = append(amounts,
-				info.Amount{Type: "retained_pis", Value: stringPtrValue(pc.VPis)},
-				info.Amount{Type: "retained_cofins", Value: stringPtrValue(pc.VCofins)},
-			)
-		}
 	}
 
 	return amounts
