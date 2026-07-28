@@ -92,18 +92,19 @@ func TestDocumentGetAmountsIncludesTaxBreakdown(t *testing.T) {
 	doc, err := nfse.Parse(data)
 	require.NoError(t, err)
 	require.Equal(t, nfse.DeclaredAmounts{
-		Service:                      "1000.00",
-		Net:                          "950.00",
-		TotalRetentions:              "23.50",
-		ISS:                          "50.00",
-		PIS:                          "6.50",
-		COFINS:                       "30.00",
-		INSSRetention:                "0.00",
-		IRRFRetention:                "0.00",
-		SocialContributionsRetention: "0.00",
-		ApproximateFederalTaxes:      "36.50",
-		ApproximateStateTaxes:        "0.00",
-		ApproximateMunicipalTaxes:    "50.00",
+		Service:                          "1000.00",
+		Net:                              "950.00",
+		TotalRetentions:                  "23.50",
+		ISS:                              "50.00",
+		PIS:                              "6.50",
+		COFINS:                           "30.00",
+		INSSRetention:                    "0.00",
+		IRRFRetention:                    "0.00",
+		SocialContributionsRetention:     "0.00",
+		SocialContributionsRetentionCode: "2",
+		ApproximateFederalTaxes:          "36.50",
+		ApproximateStateTaxes:            "0.00",
+		ApproximateMunicipalTaxes:        "50.00",
 	}, doc.GetDeclaredAmounts())
 
 	amounts := doc.GetAmounts()
@@ -133,10 +134,10 @@ func TestDocumentGetAmountsRetainedISS(t *testing.T) {
 		require.Contains(t, amounts, info.Amount{Type: "net", Value: "9878.06"})
 		require.Contains(t, amounts, info.Amount{Type: "tax_iss", Value: "519.90"})
 		require.Contains(t, amounts, info.Amount{Type: "retained", Value: "519.90"})
-		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "519.90"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_iss_by_taker", Value: "519.90"})
 	})
 
-	t.Run("ISS retention with IRRF and CSLL", func(t *testing.T) {
+	t.Run("ISS retention with IRRF and social contributions", func(t *testing.T) {
 		data, err := os.ReadFile("../../testdata/nfse/v1_0/third_party/nfse-iss-retido-irrf-csll.xml")
 		require.NoError(t, err)
 
@@ -153,9 +154,9 @@ func TestDocumentGetAmountsRetainedISS(t *testing.T) {
 		}, doc.GetDeclaredAmounts())
 
 		amounts := doc.GetAmounts()
-		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "500.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_iss_by_taker", Value: "500.00"})
 		require.Contains(t, amounts, info.Amount{Type: "retained_irrf", Value: "150.00"})
-		require.Contains(t, amounts, info.Amount{Type: "retained_csll", Value: "465.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_social_contributions", Value: "465.00"})
 	})
 
 	t.Run("ISS retention with INSS on transport service", func(t *testing.T) {
@@ -166,11 +167,11 @@ func TestDocumentGetAmountsRetainedISS(t *testing.T) {
 		require.NoError(t, err)
 
 		amounts := doc.GetAmounts()
-		require.Contains(t, amounts, info.Amount{Type: "retained_iss", Value: "150.00"})
+		require.Contains(t, amounts, info.Amount{Type: "retained_iss_by_taker", Value: "150.00"})
 		require.Contains(t, amounts, info.Amount{Type: "retained_inss", Value: "550.00"})
 	})
 
-	t.Run("no retained_iss when tpRetISSQN=1", func(t *testing.T) {
+	t.Run("no retained ISS when tpRetISSQN=1", func(t *testing.T) {
 		data, err := os.ReadFile("../../testdata/nfse/v1_0/ConsultarNFSeEnvio-ped-sitnfse.xml")
 		require.NoError(t, err)
 
@@ -179,6 +180,8 @@ func TestDocumentGetAmountsRetainedISS(t *testing.T) {
 
 		for _, a := range doc.GetAmounts() {
 			require.NotEqual(t, "retained_iss", a.Type)
+			require.NotEqual(t, "retained_iss_by_taker", a.Type)
+			require.NotEqual(t, "retained_iss_by_intermediary", a.Type)
 		}
 	})
 
@@ -191,8 +194,74 @@ func TestDocumentGetAmountsRetainedISS(t *testing.T) {
 
 		for _, a := range doc.GetAmounts() {
 			require.NotEqual(t, "retained_iss", a.Type)
+			require.NotEqual(t, "retained_iss_by_taker", a.Type)
+			require.NotEqual(t, "retained_iss_by_intermediary", a.Type)
 		}
 	})
+}
+
+func TestDocumentGetAmountsPreservesSocialContributionRetentionCode(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/third_party/nfse-iss-retido-irrf-csll.xml")
+	require.NoError(t, err)
+
+	for _, code := range []string{"", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"} {
+		name := code
+		if name == "" {
+			name = "absent"
+		}
+		t.Run(name, func(t *testing.T) {
+			codeElement := ""
+			if code != "" {
+				codeElement = "<tpRetPisCofins>" + code + "</tpRetPisCofins>"
+			}
+			pisCofins := "<piscofins><CST>01</CST><vPis>65.00</vPis><vCofins>300.00</vCofins>" + codeElement + "</piscofins>"
+			doc, err := nfse.Parse([]byte(strings.Replace(string(data), "<vRetIRRF>", pisCofins+"<vRetIRRF>", 1)))
+			require.NoError(t, err)
+
+			declared := doc.GetDeclaredAmounts()
+			require.Equal(t, "465.00", declared.SocialContributionsRetention)
+			require.Equal(t, code, declared.SocialContributionsRetentionCode)
+
+			amounts := doc.GetAmounts()
+			require.Contains(t, amounts, info.Amount{Type: "tax_pis", Value: "65.00"})
+			require.Contains(t, amounts, info.Amount{Type: "tax_cofins", Value: "300.00"})
+			require.Contains(t, amounts, info.Amount{Type: "retained_social_contributions", Value: "465.00"})
+			require.NotContains(t, amounts, info.Amount{Type: "retained_pis", Value: "65.00"})
+			require.NotContains(t, amounts, info.Amount{Type: "retained_cofins", Value: "300.00"})
+			require.NotContains(t, amounts, info.Amount{Type: "retained_csll", Value: "465.00"})
+		})
+	}
+}
+
+func TestDocumentGetAmountsPreservesISSWithholder(t *testing.T) {
+	data, err := os.ReadFile("../../testdata/nfse/v1_0/third_party/nfse-iss-retido-irrf-csll.xml")
+	require.NoError(t, err)
+
+	tests := []struct {
+		code       string
+		withheldBy string
+		amountType string
+	}{
+		{code: "1"},
+		{code: "2", withheldBy: "taker", amountType: "retained_iss_by_taker"},
+		{code: "3", withheldBy: "intermediary", amountType: "retained_iss_by_intermediary"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.code, func(t *testing.T) {
+			doc, err := nfse.Parse([]byte(strings.Replace(string(data), "<tpRetISSQN>2</tpRetISSQN>", "<tpRetISSQN>"+tt.code+"</tpRetISSQN>", 1)))
+			require.NoError(t, err)
+			require.Equal(t, tt.withheldBy, doc.GetDeclaredAmounts().ISSWithheldBy)
+
+			amounts := doc.GetAmounts()
+			require.NotContains(t, amounts, info.Amount{Type: "retained_iss", Value: "500.00"})
+			if tt.amountType == "" {
+				require.NotContains(t, amounts, info.Amount{Type: "retained_iss_by_taker", Value: "500.00"})
+				require.NotContains(t, amounts, info.Amount{Type: "retained_iss_by_intermediary", Value: "500.00"})
+			} else {
+				require.Contains(t, amounts, info.Amount{Type: tt.amountType, Value: "500.00"})
+			}
+		})
+	}
 }
 
 func TestDocumentGetCompetenceDate(t *testing.T) {
