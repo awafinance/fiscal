@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A-734 source excerpt. Signature, contact details, and address fields omitted. -->
+<NFe>
+  <ChaveNFe>
+    <InscricaoPrestador>61416720</InscricaoPrestador>
+    <NumeroNFe>5651823</NumeroNFe>
+    <CodigoVerificacao>VCF3LS79</CodigoVerificacao>
+    <ChaveNotaNacional>35503081232223020000118000000565182326095180335000</ChaveNotaNacional>
+  </ChaveNFe>
+  <DataEmissaoNFe>2026-09-24T14:00:16</DataEmissaoNFe>
+  <ChaveRPS>
+    <InscricaoPrestador>61416720</InscricaoPrestador>
+    <SerieRPS>NFSE2</SerieRPS>
+    <NumeroRPS>4104701</NumeroRPS>
+  </ChaveRPS>
+  <DataFatoGeradorNFe>2026-09-24T00:00:00</DataFatoGeradorNFe>
+  <CPFCNPJPrestador><CNPJ>32223020000118</CNPJ></CPFCNPJPrestador>
+  <RazaoSocialPrestador>FLASH TECNOLOGIA E INSTITUICAO DE PAGAMENTO LTDA</RazaoSocialPrestador>
+  <StatusNFe>N</StatusNFe>
+  <ValorServicos>260</ValorServicos>
+  <ValorDeducoes>260</ValorDeducoes>
+  <ValorISS>0</ValorISS>
+  <ISSRetido>false</ISSRetido>
+  <CPFCNPJTomador><CNPJ>29478269000321</CNPJ></CPFCNPJTomador>
+  <RazaoSocialTomador>INDUSTRIA DE BEBIDAS TRES RIOS LTDA</RazaoSocialTomador>
+  <ValorFinalCobrado>260</ValorFinalCobrado>
+</NFe>

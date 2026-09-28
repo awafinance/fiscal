@@ -15,6 +15,7 @@ import (
 const namespace = "http://www.sped.fazenda.gov.br/nfse"
 
 type Document struct {
+	SaoPaulo     *SaoPauloNFSe       `json:"saoPaulo,omitempty"`
 	VersaoAttr   string              `json:"versao,omitempty"`
 	DPS          *schema.TCDPS       `json:"DPS,omitempty"`
 	NFSe         *schema.TCNFSe      `json:"NFSe,omitempty"`
@@ -26,6 +27,9 @@ type Document struct {
 func (d *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if d == nil {
 		return nil
+	}
+	if d.SaoPaulo != nil {
+		return errors.New("marshal nfse: Sao Paulo exports support parsing only")
 	}
 
 	switch d.RootName {
@@ -150,6 +154,8 @@ func Parse(data []byte) (*Document, error) {
 	}
 
 	switch RootName {
+	case "NFe":
+		return parseSaoPaulo(data)
 	case "DPS":
 		return parseDPS(data, RootName)
 	case "NFSe":

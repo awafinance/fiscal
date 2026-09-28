@@ -55,6 +55,10 @@ func Parse(data []byte) (*Document, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parse fiscal: read root: %w", err)
 	}
+	if root.Space == "" && root.Local == "NFe" {
+		doc, err := nfse.Parse(data)
+		return wrapNFSe(doc, err)
+	}
 
 	switch root.Space {
 	case nfeNamespace:

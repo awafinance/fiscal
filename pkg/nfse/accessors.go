@@ -8,6 +8,9 @@ import (
 )
 
 func (d *Document) GetAccessKey() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.ChaveNFe.ChaveNotaNacional
+	}
 	switch {
 	case d == nil:
 		return ""
@@ -46,6 +49,9 @@ func (d *Document) GetEnvironment() string {
 }
 
 func (d *Document) GetNumber() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.ChaveNFe.NumeroNFe
+	}
 	switch {
 	case d == nil:
 		return ""
@@ -70,6 +76,9 @@ func (d *Document) GetModel() string {
 }
 
 func (d *Document) GetIssueDate() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.DataEmissaoNFe
+	}
 	if inf := d.infDPS(); inf != nil {
 		return inf.DhEmi
 	}
@@ -86,6 +95,9 @@ func (d *Document) GetIssueDate() string {
 }
 
 func (d *Document) GetAmount() string {
+	if d != nil && d.SaoPaulo != nil {
+		return firstNonEmpty(d.SaoPaulo.ValorFinalCobrado, d.SaoPaulo.ValorServicos)
+	}
 	switch {
 	case d == nil:
 		return ""
@@ -99,6 +111,9 @@ func (d *Document) GetAmount() string {
 }
 
 func (d *Document) GetIssuer() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.RazaoSocialPrestador
+	}
 	switch {
 	case d == nil:
 		return ""
@@ -112,6 +127,9 @@ func (d *Document) GetIssuer() string {
 }
 
 func (d *Document) GetIssuerDocument() string {
+	if d != nil && d.SaoPaulo != nil {
+		return firstNonEmpty(d.SaoPaulo.CPFCNPJPrestador.CNPJ, d.SaoPaulo.CPFCNPJPrestador.CPF)
+	}
 	switch {
 	case d == nil:
 		return ""
@@ -125,6 +143,9 @@ func (d *Document) GetIssuerDocument() string {
 }
 
 func (d *Document) GetRecipient() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.RazaoSocialTomador
+	}
 	if inf := d.infDPS(); inf != nil && inf.Toma != nil {
 		return inf.Toma.XNome
 	}
@@ -132,6 +153,9 @@ func (d *Document) GetRecipient() string {
 }
 
 func (d *Document) GetRecipientDocument() string {
+	if d != nil && d.SaoPaulo != nil {
+		return firstNonEmpty(d.SaoPaulo.CPFCNPJTomador.CNPJ, d.SaoPaulo.CPFCNPJTomador.CPF)
+	}
 	if inf := d.infDPS(); inf != nil && inf.Toma != nil {
 		return firstStringPtr(inf.Toma.CNPJ, inf.Toma.CPF, inf.Toma.NIF)
 	}
@@ -143,6 +167,9 @@ func (d *Document) GetProtocolNumber() string {
 }
 
 func (d *Document) GetStatusCode() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.StatusNFe
+	}
 	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil {
 		return d.NFSe.InfNFSe.CStat
 	}
@@ -154,6 +181,9 @@ func (d *Document) GetStatusReason() string {
 }
 
 func (d *Document) IsAuthorized() bool {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.StatusNFe == "N"
+	}
 	switch d.GetStatusCode() {
 	case "100", "101", "102", "103", "107":
 		return true
@@ -165,6 +195,23 @@ func (d *Document) IsAuthorized() bool {
 func (d *Document) GetAmounts() []info.Amount {
 	if d == nil {
 		return nil
+	}
+	if d.SaoPaulo != nil {
+		amounts := []info.Amount{
+			{Type: "service", Value: d.SaoPaulo.ValorServicos},
+			{Type: "tax_iss", Value: d.SaoPaulo.ValorISS},
+			{Type: "retained_irrf", Value: d.SaoPaulo.ValorIR},
+			{Type: "retained_inss", Value: d.SaoPaulo.ValorINSS},
+			{Type: "retained_social_contributions", Value: d.SaoPaulo.ValorCSLL},
+		}
+		amounts = append(amounts, nonZeroAmounts(
+			info.Amount{Type: "tax_pis", Value: d.SaoPaulo.ValorPIS},
+			info.Amount{Type: "tax_cofins", Value: d.SaoPaulo.ValorCOFINS},
+		)...)
+		if d.SaoPaulo.ISSRetido {
+			amounts = append(amounts, info.Amount{Type: "retained_iss_by_taker", Value: d.SaoPaulo.ValorISS})
+		}
+		return compactAmounts(amounts...)
 	}
 
 	amounts := d.headlineAmounts()
@@ -198,6 +245,23 @@ type DeclaredAmounts struct {
 }
 
 func (d *Document) GetDeclaredAmounts() DeclaredAmounts {
+	if d != nil && d.SaoPaulo != nil {
+		amounts := DeclaredAmounts{
+			Service:                          d.SaoPaulo.ValorServicos,
+			DeductionOrReduction:             d.SaoPaulo.ValorDeducoes,
+			ISS:                              d.SaoPaulo.ValorISS,
+			PIS:                              d.SaoPaulo.ValorPIS,
+			COFINS:                           d.SaoPaulo.ValorCOFINS,
+			INSSRetention:                    d.SaoPaulo.ValorINSS,
+			IRRFRetention:                    d.SaoPaulo.ValorIR,
+			SocialContributionsRetention:     d.SaoPaulo.ValorCSLL,
+			SocialContributionsRetentionCode: d.SaoPaulo.RetencaoPisCofins,
+		}
+		if d.SaoPaulo.ISSRetido {
+			amounts.ISSWithheldBy = "taker"
+		}
+		return amounts
+	}
 	amounts := DeclaredAmounts{Service: nfseServiceAmount(d.infDPS())}
 	if d != nil && d.NFSe != nil && d.NFSe.InfNFSe != nil && d.NFSe.InfNFSe.Valores != nil {
 		values := d.NFSe.InfNFSe.Valores
@@ -338,6 +402,9 @@ func (d *Document) retentionAmounts() []info.Amount {
 }
 
 func (d *Document) GetCompetenceDate() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.DataFatoGeradorNFe
+	}
 	if inf := d.infDPS(); inf != nil {
 		return inf.DCompet
 	}
@@ -345,6 +412,9 @@ func (d *Document) GetCompetenceDate() string {
 }
 
 func (d *Document) GetAdditionalInfo() string {
+	if d != nil && d.SaoPaulo != nil {
+		return d.SaoPaulo.Discriminacao
+	}
 	values := make([]string, 0, 3)
 	if inf := d.infDPS(); inf != nil && inf.Serv != nil {
 		if inf.Serv.InfoCompl != nil {
